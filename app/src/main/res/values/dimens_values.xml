@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="ptr_header_height">300dp</dimen>
+    <dimen name="action_bar_height">50dp</dimen>
+
+</resources>
