@@ -16,6 +16,8 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrUIHandler;
 import in.srain.cube.views.ptr.indicator.PtrIndicator;
 import razerdp.friendcircle.R;
+import razerdp.friendcircle.api.ptrwidget.PullStatus;
+import razerdp.friendcircle.utils.SmoothChangeThread;
 
 /**
  * Created by 大灯泡 on 2016/2/9.
@@ -27,7 +29,11 @@ public class FriendCirclePtrHeader extends RelativeLayout {
     private ImageView mRotateIcon;
     private View rootView;
     private boolean isAutoRefresh;
-    RotateAnimation rotateAnimation;
+    private RotateAnimation rotateAnimation;
+    private SmoothChangeThread mSmoothChangeThread;
+
+    //当前状态
+    private PullStatus mPullStatus;
 
     public FriendCirclePtrHeader(Context context) {
         this(context, null);
@@ -64,7 +70,10 @@ public class FriendCirclePtrHeader extends RelativeLayout {
         /**回到初始位置*/
         @Override
         public void onUIReset(PtrFrameLayout frame) {
-
+            mPullStatus = PullStatus.NORMAL;
+            if (mRotateIcon.getAnimation() != null) {
+                mRotateIcon.clearAnimation();
+            }
         }
 
         /**离开初始位置*/
@@ -76,6 +85,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
         /**开始刷新动画*/
         @Override
         public void onUIRefreshBegin(PtrFrameLayout frame) {
+            mPullStatus = PullStatus.REFRESHING;
             if (mRotateIcon != null) {
                 if (mRotateIcon.getAnimation() != null) {
                     mRotateIcon.clearAnimation();
@@ -87,6 +97,20 @@ public class FriendCirclePtrHeader extends RelativeLayout {
         /**刷新完成*/
         @Override
         public void onUIRefreshComplete(PtrFrameLayout frame) {
+            mPullStatus = PullStatus.NORMAL;
+            if (mSmoothChangeThread==null){
+                mSmoothChangeThread=SmoothChangeThread.CreateLinearInterpolator(mRotateIcon,frame.getOffsetToRefresh
+                        (),0,300,75);
+                mSmoothChangeThread.setOnSmoothResultChangeListener(new SmoothChangeThread.OnSmoothResultChangeListener() {
+                    @Override
+                    public void onSmoothResultChange(int result) {
+                        updateRotateAnima(result);
+                    }
+                });
+            }else {
+                mSmoothChangeThread.stop();
+            }
+            mRotateIcon.post(mSmoothChangeThread);
 
         }
 
@@ -101,20 +125,21 @@ public class FriendCirclePtrHeader extends RelativeLayout {
                 //未到达刷新线
                 if (status == PtrFrameLayout.PTR_STATUS_PREPARE && mRotateIcon != null) {
                     updateRotateAnima(currentPos);
-                    mRotateIcon.setRotation(-(currentPos<<1));
+                    mRotateIcon.setRotation(-(currentPos << 1));
                 }
             }
             else if (currentPos > mOffsetToRefresh) {
                 //到达或超过刷新线
                 if (isUnderTouch && status == PtrFrameLayout.PTR_STATUS_PREPARE && mRotateIcon != null) {
                     updateRotateAnima(mOffsetToRefresh);
-                    mRotateIcon.setRotation(-(currentPos<<1));
+                    mRotateIcon.setRotation(-(currentPos << 1));
                 }
             }
         }
     };
+
     private void updateRotateAnima(int marginTop) {
-        Log.d(TAG,"curMargin========="+marginTop);
+        Log.d(TAG, "curMargin=========" + marginTop);
         if (mRotateIcon == null) return;
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mRotateIcon.getLayoutParams();
         params.topMargin = marginTop;
@@ -145,5 +170,9 @@ public class FriendCirclePtrHeader extends RelativeLayout {
 
     public void setRotateIcon(ImageView rotateIcon) {
         mRotateIcon = rotateIcon;
+    }
+
+    public PullStatus getPullStatus() {
+        return mPullStatus;
     }
 }

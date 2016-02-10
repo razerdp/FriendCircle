@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -33,14 +34,11 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
     private ListView mListView;
     private FriendCirclePtrHeader mHeader;
     private FriendCirclePtrFooter mFooter;
-
-    private Bitmap bm_rotateIcon;
     //=============================================================接口
     private OnPullDownRefreshListener mOnPullDownRefreshListener;
     private OnLoadMoreRefreshListener mOnLoadMoreRefreshListener;
 
     //=============================================================status
-    private PullStatus mPullStatus;
     private PullStatus loadmoreState;
     private PullMode curMode;
 
@@ -58,15 +56,6 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
 
     public FriendCirclePtrListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        TypedArray a=context.obtainStyledAttributes(attrs, R.styleable.FriendCirclePtrListView);
-        final int iconRes=a.getResourceId(R.styleable.FriendCirclePtrListView_rotate_icon,0);
-        if (iconRes!=0){
-            BitmapDrawable dr= (BitmapDrawable) getResources().getDrawable(iconRes);
-            if (dr!=null){
-                bm_rotateIcon=dr.getBitmap();
-            }
-        }
-        a.recycle();
         initView(context);
     }
 
@@ -116,6 +105,9 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
 
     @Override
     public void onRefreshBegin(PtrFrameLayout frame) {
+        curMode=PullMode.FROM_START;
+        loadmoreState=PullStatus.NORMAL;
+        if (mOnPullDownRefreshListener!=null)mOnPullDownRefreshListener.onRefreshing(frame);
 
     }
 
@@ -127,6 +119,35 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
     public void setRotateIcon(ImageView rotateIcon) {
         mHeader.setRotateIcon(rotateIcon);
     }
+
+    public OnPullDownRefreshListener getOnPullDownRefreshListener() {
+        return mOnPullDownRefreshListener;
+    }
+
+    public void setOnPullDownRefreshListener(OnPullDownRefreshListener onPullDownRefreshListener) {
+        mOnPullDownRefreshListener = onPullDownRefreshListener;
+    }
+
+    public OnLoadMoreRefreshListener getOnLoadMoreRefreshListener() {
+        return mOnLoadMoreRefreshListener;
+    }
+
+    public void setOnLoadMoreRefreshListener(OnLoadMoreRefreshListener onLoadMoreRefreshListener) {
+        mOnLoadMoreRefreshListener = onLoadMoreRefreshListener;
+    }
+
+    public PullMode getCurMode() {
+        return curMode;
+    }
+
+    public void setCurMode(PullMode curMode) {
+        this.curMode = curMode;
+    }
+    public PullStatus getPullStatus() {
+        return mHeader.getPullStatus();
+    }
+
+
     //=============================================================tools
     int lastItem=0;
     private void setScrollListener() {
@@ -159,5 +180,18 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
                 autoRefresh();
             }
         }, 200);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        Log.d(TAG,"-----------执行了measure");
+    }
+
+    @Override
+    protected void onLayout(boolean flag, int i, int j, int k, int l) {
+        super.onLayout(flag, i, j, k, l);
+        Log.d(TAG,"-----------执行了layout");
+
     }
 }
