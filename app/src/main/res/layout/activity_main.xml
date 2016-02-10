@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/action_bar"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="razerdp.friendcircle.MainActivity">
@@ -20,6 +19,7 @@
         />
 
     <RelativeLayout
+        android:id="@+id/action_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/action_bar_height"
         android:background="@color/action_bar_bg">
