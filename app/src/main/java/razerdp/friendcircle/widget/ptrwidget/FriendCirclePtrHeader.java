@@ -16,7 +16,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrUIHandler;
 import in.srain.cube.views.ptr.indicator.PtrIndicator;
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.api.ptrwidget.PullStatus;
+import razerdp.friendcircle.api.ptrwidget.PullState;
 import razerdp.friendcircle.utils.SmoothChangeThread;
 
 /**
@@ -33,7 +33,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
     private SmoothChangeThread mSmoothChangeThread;
 
     //当前状态
-    private PullStatus mPullStatus;
+    private PullState mPullState;
 
     public FriendCirclePtrHeader(Context context) {
         this(context, null);
@@ -65,12 +65,20 @@ public class FriendCirclePtrHeader extends RelativeLayout {
         rotateAnimation.setRepeatCount(Animation.INFINITE);
     }
 
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        if (getChildCount()>1){
+            throw new IllegalStateException("不可以添加多个view噢");
+        }
+    }
+
     //=============================================================ptr:
     private PtrUIHandler mPtrUIHandler = new PtrUIHandler() {
         /**回到初始位置*/
         @Override
         public void onUIReset(PtrFrameLayout frame) {
-            mPullStatus = PullStatus.NORMAL;
+            mPullState = PullState.NORMAL;
             if (mRotateIcon.getAnimation() != null) {
                 mRotateIcon.clearAnimation();
             }
@@ -85,7 +93,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
         /**开始刷新动画*/
         @Override
         public void onUIRefreshBegin(PtrFrameLayout frame) {
-            mPullStatus = PullStatus.REFRESHING;
+            mPullState = PullState.REFRESHING;
             if (mRotateIcon != null) {
                 if (mRotateIcon.getAnimation() != null) {
                     mRotateIcon.clearAnimation();
@@ -97,7 +105,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
         /**刷新完成*/
         @Override
         public void onUIRefreshComplete(PtrFrameLayout frame) {
-            mPullStatus = PullStatus.NORMAL;
+            mPullState = PullState.NORMAL;
             if (mSmoothChangeThread==null){
                 mSmoothChangeThread=SmoothChangeThread.CreateLinearInterpolator(mRotateIcon,frame.getOffsetToRefresh
                         (),0,300,75);
@@ -173,7 +181,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
         mRotateIcon = rotateIcon;
     }
 
-    public PullStatus getPullStatus() {
-        return mPullStatus;
+    public PullState getPullState() {
+        return mPullState;
     }
 }
