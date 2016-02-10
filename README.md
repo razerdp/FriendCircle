@@ -3,7 +3,8 @@
 
 欢迎来到本项目，这个项目是一个尝试性项目，目的在于从无到有撸出一个微信朋友圈。</br>
 
-更新日志请点击：
+更新日志请点击：https://github.com/razerdp/FriendCircle/blob/master/UPDATE_LOG.md
+</br>
 #####关于作者我:
 在下大四即将毕业小朋友一枚，工作（实习）半年，大三开始的Android开发，至今约一年。
 
