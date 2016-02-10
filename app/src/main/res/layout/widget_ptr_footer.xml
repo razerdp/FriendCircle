@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    >
+    <TextView
+        android:id="@+id/friend_footer_load_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="加载更多"
+        android:layout_centerInParent="true"
+        android:textColor="@color/ptr_footer_tx"
+        android:textSize="18sp"/>
+    <ImageView
+        android:id="@+id/friend_footer_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/loading"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/friend_footer_load_state"
+        android:layout_marginRight="10dp"
+        />
+
+</RelativeLayout>

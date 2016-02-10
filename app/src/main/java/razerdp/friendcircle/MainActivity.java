@@ -13,6 +13,7 @@ import android.widget.TextView;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import java.util.ArrayList;
 import java.util.List;
+import razerdp.friendcircle.api.ptrwidget.OnLoadMoreRefreshListener;
 import razerdp.friendcircle.api.ptrwidget.OnPullDownRefreshListener;
 import razerdp.friendcircle.widget.ptrwidget.FriendCirclePtrListView;
 
@@ -50,8 +51,18 @@ public class MainActivity extends AppCompatActivity {
                 },1800);
             }
         });
-
-
+        mFriendCirclePtrListView.setOnLoadMoreRefreshListener(new OnLoadMoreRefreshListener() {
+            @Override
+            public void onRefreshing(PtrFrameLayout frame) {
+                frame.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mFriendCirclePtrListView.refreshComplete();
+                    }
+                },1800);
+            }
+        });
+        mFriendCirclePtrListView.setHasMore(true);
 
     }
 

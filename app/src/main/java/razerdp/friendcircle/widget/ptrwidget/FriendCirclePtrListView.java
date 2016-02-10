@@ -2,12 +2,9 @@ package razerdp.friendcircle.widget.ptrwidget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -17,11 +14,12 @@ import android.widget.ListView;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
+import in.srain.cube.views.ptr.PtrUIHandler;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.api.ptrwidget.OnLoadMoreRefreshListener;
 import razerdp.friendcircle.api.ptrwidget.OnPullDownRefreshListener;
 import razerdp.friendcircle.api.ptrwidget.PullMode;
-import razerdp.friendcircle.api.ptrwidget.PullStatus;
+import razerdp.friendcircle.api.ptrwidget.PullState;
 
 /**
  * Created by 大灯泡 on 2016/2/9.
@@ -42,13 +40,13 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
     private OnLoadMoreRefreshListener mOnLoadMoreRefreshListener;
 
     //=============================================================status
-    private PullStatus loadmoreState;
+    private PullState loadmoreState=PullState.NORMAL;
     private PullMode curMode;
 
     //=============================================================参数
     //是否有下一页
     private boolean hasMore;
-    private boolean canPull;
+    private boolean canPull=true;
 
     public FriendCirclePtrListView(Context context) {
         this(context, null);
@@ -162,7 +160,7 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
     @Override
     public void onRefreshBegin(PtrFrameLayout frame) {
         curMode = PullMode.FROM_START;
-        loadmoreState = PullStatus.NORMAL;
+        loadmoreState = PullState.NORMAL;
         if (mOnPullDownRefreshListener != null) mOnPullDownRefreshListener.onRefreshing(frame);
     }
 
@@ -199,8 +197,8 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
         this.curMode = curMode;
     }
 
-    public PullStatus getPullStatus() {
-        return mHeader.getPullStatus();
+    public PullState getPullStatus() {
+        return mHeader.getPullState();
     }
 
     public boolean isCanPull() {
@@ -212,7 +210,39 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
         setEnabled(canPull);
     }
 
+    public boolean isHasMore() {
+        return hasMore;
+    }
+
+    public void setHasMore(boolean hasMore) {
+        if (mOnLoadMoreRefreshListener == null) return;
+        if (mListView.getFooterViewsCount() == 0 && hasMore) {
+            mListView.addFooterView(mFooter);
+        }
+        this.hasMore = hasMore;
+    }
+
     //=============================================================tools
+    private void changeLoadMoreState(PullState curLoadMoreState) {
+        final PtrUIHandler footerHandler = mFooter.getPtrUIHandler();
+        switch (curLoadMoreState) {
+            case NORMAL:
+                footerHandler.onUIReset(this);
+                break;
+            case REFRESHING:
+                footerHandler.onUIRefreshBegin(this);
+                if (mOnLoadMoreRefreshListener != null) mOnLoadMoreRefreshListener.onRefreshing(this);
+                break;
+            default:
+                break;
+        }
+        loadmoreState = curLoadMoreState;
+    }
+
+    public void loadmoreCompelete() {
+        changeLoadMoreState(PullState.NORMAL);
+    }
+
     int lastItem = 0;
 
     private void setScrollListener() {
@@ -222,9 +252,11 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
                 if (mOnLoadMoreRefreshListener != null) {
                     if (SCROLL_STATE_IDLE == scrollState &&
                             0 != mListView.getFirstVisiblePosition() && lastItem == mListView.getCount()) {
-                        if (hasMore && loadmoreState != PullStatus.REFRESHING) {
+                        if (hasMore && loadmoreState != PullState.REFRESHING) {
                             // TODO: 2016/2/10 待完成
                             //当有更多同时当前加载更多布局不再刷新状态，则执行刷新
+                            curMode = PullMode.FROM_BOTTOM;
+                            changeLoadMoreState(PullState.REFRESHING);
                         }
                     }
                 }
