@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -27,7 +30,7 @@ import razerdp.friendcircle.api.ptrwidget.PullStatus;
  * git:
  * https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh
  */
-public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandler{
+public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandler {
     private static final String TAG = "FriendCirclePtrListView";
 
     //=============================================================元素定义
@@ -45,30 +48,32 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
     //=============================================================参数
     //是否有下一页
     private boolean hasMore;
+    private boolean canPull;
 
     public FriendCirclePtrListView(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public FriendCirclePtrListView(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public FriendCirclePtrListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initView(context);
+        initAttrs(context, attrs);
     }
 
     private void initView(Context context) {
         //header
-        mHeader=new FriendCirclePtrHeader(context);
+        mHeader = new FriendCirclePtrHeader(context);
         //listview
         mListView = new ListView(context);
         mListView.setSelector(android.R.color.transparent);
         mListView.setLayoutParams(
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         //footer
-        mFooter=new FriendCirclePtrFooter(context);
+        mFooter = new FriendCirclePtrFooter(context);
 
         //view add
         setHeaderView(mHeader);
@@ -90,7 +95,58 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
         setKeepHeaderWhenRefresh(false);
 
         setScrollListener();
+    }
 
+    private void initAttrs(Context context, AttributeSet attrs) {
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FriendCirclePtrListView);
+
+        final Drawable selector = a.getDrawable(R.styleable.FriendCirclePtrListView_listSelector);
+        if (selector != null) {
+            mListView.setSelector(selector);
+        }
+
+        mListView.setTranscriptMode(a.getInt(R.styleable.FriendCirclePtrListView_transcriptMode, 0));
+        mListView.setCacheColorHint(a.getColor(R.styleable.FriendCirclePtrListView_cacheColorHint, 0));
+        mListView.setFastScrollEnabled(a.getBoolean(R.styleable.FriendCirclePtrListView_fastScrollEnabled, false));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mListView.setFastScrollStyle(a.getResourceId(R.styleable.FriendCirclePtrListView_fastScrollStyle, 0));
+        }
+        mListView.setSmoothScrollbarEnabled(a.getBoolean(R.styleable.FriendCirclePtrListView_smoothScrollbar, true));
+        mListView.setChoiceMode(a.getInt(R.styleable.FriendCirclePtrListView_choiceMode, 0));
+
+        final Drawable d = a.getDrawable(R.styleable.FriendCirclePtrListView_listview_divider);
+        if (d != null) {
+            // Use an implicit divider height which may be explicitly
+            // overridden by android:dividerHeight further down.
+            mListView.setDivider(d);
+        }
+
+        // Use an explicit divider height, if specified.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (a.hasValueOrEmpty(R.styleable.FriendCirclePtrListView_dividerHeight)) {
+                final int dividerHeight = a.getDimensionPixelSize(R.styleable.FriendCirclePtrListView_dividerHeight, 0);
+                if (dividerHeight != 0) {
+                    mListView.setDividerHeight(dividerHeight);
+                }
+            }
+        }
+        else {
+            final int dividerHeight = a.getDimensionPixelSize(R.styleable.FriendCirclePtrListView_dividerHeight, 0);
+            if (dividerHeight != 0) {
+                mListView.setDividerHeight(dividerHeight);
+            }
+        }
+
+        final Drawable osHeader = a.getDrawable(R.styleable.FriendCirclePtrListView_overScrollHeader);
+        if (osHeader != null) {
+            mListView.setOverscrollHeader(osHeader);
+        }
+
+        final Drawable osFooter = a.getDrawable(R.styleable.FriendCirclePtrListView_overScrollFooter);
+        if (osFooter != null) {
+            mListView.setOverscrollFooter(osFooter);
+        }
+        a.recycle();
     }
 
     @Override
@@ -105,10 +161,9 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
 
     @Override
     public void onRefreshBegin(PtrFrameLayout frame) {
-        curMode=PullMode.FROM_START;
-        loadmoreState=PullStatus.NORMAL;
-        if (mOnPullDownRefreshListener!=null)mOnPullDownRefreshListener.onRefreshing(frame);
-
+        curMode = PullMode.FROM_START;
+        loadmoreState = PullStatus.NORMAL;
+        if (mOnPullDownRefreshListener != null) mOnPullDownRefreshListener.onRefreshing(frame);
     }
 
     //=============================================================Getter/Setter
@@ -143,13 +198,23 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
     public void setCurMode(PullMode curMode) {
         this.curMode = curMode;
     }
+
     public PullStatus getPullStatus() {
         return mHeader.getPullStatus();
     }
 
+    public boolean isCanPull() {
+        return canPull;
+    }
+
+    public void setCanPull(boolean canPull) {
+        this.canPull = canPull;
+        setEnabled(canPull);
+    }
 
     //=============================================================tools
-    int lastItem=0;
+    int lastItem = 0;
+
     private void setScrollListener() {
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -158,7 +223,8 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
                     if (SCROLL_STATE_IDLE == scrollState &&
                             0 != mListView.getFirstVisiblePosition() && lastItem == mListView.getCount()) {
                         if (hasMore && loadmoreState != PullStatus.REFRESHING) {
-                            //setLoadMoreState(PullToRefreshState.REFRESHING);
+                            // TODO: 2016/2/10 待完成
+                            //当有更多同时当前加载更多布局不再刷新状态，则执行刷新
                         }
                     }
                 }
@@ -182,16 +248,112 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
         }, 200);
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        Log.d(TAG,"-----------执行了measure");
+    /** ============================================================= 下面是listview的方法，让ptrframe看起来就是一个listview */
+    public void addHeaderView(View v) {
+        mListView.addHeaderView(v);
     }
 
-    @Override
-    protected void onLayout(boolean flag, int i, int j, int k, int l) {
-        super.onLayout(flag, i, j, k, l);
-        Log.d(TAG,"-----------执行了layout");
+    public void addFooterView(View v) {
+        mListView.addFooterView(v);
+    }
 
+    public int getHeaderViewsCount() {
+        return mListView.getHeaderViewsCount();
+    }
+
+    public boolean removeHeaderView(View v) {
+        return mListView.removeHeaderView(v);
+    }
+
+    public boolean removeFooterView(View v) {
+        return mListView.removeFooterView(v);
+    }
+
+    public void setSelection(int position) {
+        mListView.setSelection(position);
+    }
+
+    public boolean post(Runnable action) {
+        return mListView.post(action);
+    }
+
+    public boolean postDelayed(Runnable action, long delayMillis) {
+        return mListView.postDelayed(action, delayMillis);
+    }
+
+    public Drawable getDivider() {
+        return mListView.getDivider();
+    }
+
+    public ListAdapter getAdapter() {
+        return mListView.getAdapter();
+    }
+
+    public void setAdapter(ListAdapter adapter) {
+        mListView.setAdapter(adapter);
+    }
+
+    public boolean getItemsCanFocus() {
+        return mListView.getItemsCanFocus();
+    }
+
+    public int getDividerHeight() {
+        return mListView.getDividerHeight();
+    }
+
+    public void setDividerHeight(int height) {
+        mListView.setDividerHeight(height);
+    }
+
+    public void setCacheColorHint(int color) {
+        mListView.setCacheColorHint(color);
+    }
+
+    public int getCacheColorHint() {
+        return mListView.getCacheColorHint();
+    }
+
+    public void smoothScrollByOffset(int offset) {
+        mListView.smoothScrollByOffset(offset);
+    }
+
+    public void smoothScrollToPosition(int position) {
+        mListView.smoothScrollToPosition(position);
+    }
+
+    public void smoothScrollToPositionFromTop(int position, int offset, int duration) {
+        mListView.smoothScrollToPositionFromTop(position, offset, duration);
+    }
+
+    public void smoothScrollToPositionFromTop(int position, int offset) {
+        mListView.smoothScrollToPositionFromTop(position, offset);
+    }
+
+    public boolean removeCallbacks(Runnable action) {
+        return mListView.removeCallbacks(action);
+    }
+
+    public void removeAllViews() {
+        mListView.removeAllViews();
+    }
+
+    public void removeView(View child) {
+        mListView.removeView(child);
+    }
+
+    public void removeViewAt(int index) {
+        mListView.removeViewAt(index);
+    }
+
+    public void removeViews(int start, int count) {
+        mListView.removeViews(start, count);
+    }
+
+    public void setEmptyView(View emptyView) {
+        mListView.setEmptyView(emptyView);
+    }
+
+    public View getEmptyView() {
+        return mListView.getEmptyView();
     }
 }

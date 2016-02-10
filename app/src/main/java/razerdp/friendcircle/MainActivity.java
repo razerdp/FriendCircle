@@ -1,10 +1,18 @@
 package razerdp.friendcircle;
 
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import in.srain.cube.views.ptr.PtrFrameLayout;
+import java.util.ArrayList;
+import java.util.List;
 import razerdp.friendcircle.api.ptrwidget.OnPullDownRefreshListener;
 import razerdp.friendcircle.widget.ptrwidget.FriendCirclePtrListView;
 
@@ -12,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private FriendCirclePtrListView mFriendCirclePtrListView;
     private ImageView rotateIcon;
     private RelativeLayout actionBar;
+    private List<String> test=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +30,14 @@ public class MainActivity extends AppCompatActivity {
         rotateIcon= (ImageView) findViewById(R.id.rotate_icon);
         mFriendCirclePtrListView= (FriendCirclePtrListView) findViewById(R.id.listview);
         mFriendCirclePtrListView.setRotateIcon(rotateIcon);
+        initTestData();
+
+        View header= LayoutInflater.from(this).inflate(R.layout.item_header,null,false);
+        mFriendCirclePtrListView.addHeaderView(header);
+
+        testAdapter adapter=new testAdapter();
+        mFriendCirclePtrListView.setAdapter(adapter);
+
 
         mFriendCirclePtrListView.setOnPullDownRefreshListener(new OnPullDownRefreshListener() {
             @Override
@@ -34,6 +51,52 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
+    }
+
+    // TODO: 2016/2/10
+    //暂行测试数据，往后改
+    private void initTestData() {
+        for (int i=0;i<40;i++){
+            test.add("test"+i);
+        }
+    }
+    class testAdapter extends BaseAdapter{
+
+        @Override
+        public int getCount() {
+            return test.size();
+        }
+
+        @Override
+        public String getItem(int position) {
+            return test.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder vh=null;
+            if (convertView==null){
+                convertView=LayoutInflater.from(MainActivity.this).inflate(R.layout.item_test,parent,false);
+                vh=new ViewHolder();
+                vh.mTextView= (TextView) convertView.findViewById(R.id.test);
+                convertView.setTag(vh);
+            }else {
+                vh= (ViewHolder) convertView.getTag();
+            }
+            vh.mTextView.setText(getItem(position));
+
+            return convertView;
+        }
+        class ViewHolder{
+            public TextView mTextView;
+        }
 
     }
 }

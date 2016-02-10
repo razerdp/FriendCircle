@@ -105,6 +105,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
                     @Override
                     public void onSmoothResultChange(int result) {
                         updateRotateAnima(result);
+                        mRotateIcon.setRotation(-(result << 1));
                     }
                 });
             }else {
