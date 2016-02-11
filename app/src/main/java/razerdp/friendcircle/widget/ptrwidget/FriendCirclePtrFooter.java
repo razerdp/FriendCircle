@@ -50,6 +50,7 @@ public class FriendCirclePtrFooter extends RelativeLayout {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public FriendCirclePtrFooter(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        initView(context);
     }
 
     private void initView(Context context) {
@@ -79,6 +80,8 @@ public class FriendCirclePtrFooter extends RelativeLayout {
         /**回到初始位置*/
         @Override
         public void onUIReset(PtrFrameLayout frame) {
+            if (mRotateIcon==null)return;
+            mRotateIcon.setVisibility(GONE);
             mRotateIcon.clearAnimation();
             loadingText.setText(LOAD_MORE);
         }
@@ -94,6 +97,7 @@ public class FriendCirclePtrFooter extends RelativeLayout {
         public void onUIRefreshBegin(PtrFrameLayout frame) {
             loadingText.setText(LOADING);
             if (mRotateIcon.getAnimation() != null) {
+                mRotateIcon.setVisibility(VISIBLE);
                 mRotateIcon.clearAnimation();
             }
             mRotateIcon.startAnimation(rotateAnimation);
@@ -102,6 +106,7 @@ public class FriendCirclePtrFooter extends RelativeLayout {
         /**刷新完成*/
         @Override
         public void onUIRefreshComplete(PtrFrameLayout frame) {
+            mRotateIcon.setVisibility(GONE);
             mRotateIcon.clearAnimation();
             loadingText.setText(LOAD_MORE);
         }
@@ -125,7 +130,6 @@ public class FriendCirclePtrFooter extends RelativeLayout {
     public void setHasMore(boolean loadMore){
         if (loadMore){
             mRotateIcon.clearAnimation();
-            mRotateIcon.setVisibility(VISIBLE);
         }else {
             mRotateIcon.clearAnimation();
             mRotateIcon.setVisibility(GONE);
