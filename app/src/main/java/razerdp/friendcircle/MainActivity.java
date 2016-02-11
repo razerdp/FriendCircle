@@ -1,6 +1,7 @@
 package razerdp.friendcircle;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.MainThread;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         View header= LayoutInflater.from(this).inflate(R.layout.item_header,null,false);
         mFriendCirclePtrListView.addHeaderView(header);
 
-        testAdapter adapter=new testAdapter();
+        final testAdapter adapter=new testAdapter();
         mFriendCirclePtrListView.setAdapter(adapter);
 
 
@@ -54,12 +55,24 @@ public class MainActivity extends AppCompatActivity {
         mFriendCirclePtrListView.setOnLoadMoreRefreshListener(new OnLoadMoreRefreshListener() {
             @Override
             public void onRefreshing(PtrFrameLayout frame) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        SystemClock.sleep(1500);
+                        for (int i=0,size=test.size();i<20;i++){
+                            test.add("test"+(size+i));
+                        }
+                    }
+                }).start();
+
                 frame.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         mFriendCirclePtrListView.refreshComplete();
+                        adapter.notifyDataSetChanged();
+                        mFriendCirclePtrListView.setHasMore(false);
                     }
-                },1800);
+                },3000);
             }
         });
         mFriendCirclePtrListView.setHasMore(true);
@@ -69,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     // TODO: 2016/2/10
     //暂行测试数据，往后改
     private void initTestData() {
-        for (int i=0;i<40;i++){
+        for (int i=0;i<20;i++){
             test.add("test"+i);
         }
     }

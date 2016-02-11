@@ -219,6 +219,7 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
         if (mListView.getFooterViewsCount() == 0 && hasMore) {
             mListView.addFooterView(mFooter);
         }
+        mFooter.setHasMore(hasMore);
         this.hasMore = hasMore;
     }
 
@@ -253,8 +254,7 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
                     if (SCROLL_STATE_IDLE == scrollState &&
                             0 != mListView.getFirstVisiblePosition() && lastItem == mListView.getCount()) {
                         if (hasMore && loadmoreState != PullState.REFRESHING) {
-                            // TODO: 2016/2/10 待完成
-                            //当有更多同时当前加载更多布局不再刷新状态，则执行刷新
+                            //当有更多同时当前加载更多布局不在刷新状态，则执行刷新
                             curMode = PullMode.FROM_BOTTOM;
                             changeLoadMoreState(PullState.REFRESHING);
                         }

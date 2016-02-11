@@ -26,6 +26,8 @@ public class FriendCirclePtrFooter extends RelativeLayout {
 
     private static final String LOAD_MORE = "加载更多";
     private static final String LOADING = "正在加载";
+    private static final String LOAD_ALL = "已经全部加载";
+
 
     private ImageView mRotateIcon;
     private View rootView;
@@ -118,5 +120,16 @@ public class FriendCirclePtrFooter extends RelativeLayout {
 
     public void setPtrUIHandler(PtrUIHandler ptrUIHandler) {
         mPtrUIHandler = ptrUIHandler;
+    }
+
+    public void setHasMore(boolean loadMore){
+        if (loadMore){
+            mRotateIcon.clearAnimation();
+            mRotateIcon.setVisibility(VISIBLE);
+        }else {
+            mRotateIcon.clearAnimation();
+            mRotateIcon.setVisibility(GONE);
+            loadingText.setText(LOAD_ALL);
+        }
     }
 }
