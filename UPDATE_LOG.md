@@ -9,7 +9,7 @@
 ##2016-02-10
 实现了上拉加载更多</br>
 代码解析地址：</br>
-下篇：(待写) </br>
+下篇：http://www.jianshu.com/p/68e13214cde4 </br>
 图片预览：</br>
 ![](https://github.com/razerdp/FriendCircle/blob/master/img/2016-02-10%20%E5%8A%A0%E8%BD%BD%E6%9B%B4%E5%A4%9A.gif)
 
