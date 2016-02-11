@@ -68,7 +68,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        if (getChildCount()>1){
+        if (getChildCount() > 1) {
             throw new IllegalStateException("不可以添加多个view噢");
         }
     }
@@ -79,7 +79,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
         @Override
         public void onUIReset(PtrFrameLayout frame) {
             mPullState = PullState.NORMAL;
-            if (mRotateIcon.getAnimation() != null) {
+            if (null != mRotateIcon && mRotateIcon.getAnimation() != null) {
                 mRotateIcon.clearAnimation();
             }
         }
@@ -94,7 +94,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
         @Override
         public void onUIRefreshBegin(PtrFrameLayout frame) {
             mPullState = PullState.REFRESHING;
-            if (mRotateIcon != null) {
+            if (null != mRotateIcon) {
                 if (mRotateIcon.getAnimation() != null) {
                     mRotateIcon.clearAnimation();
                 }
@@ -106,26 +106,29 @@ public class FriendCirclePtrHeader extends RelativeLayout {
         @Override
         public void onUIRefreshComplete(PtrFrameLayout frame) {
             mPullState = PullState.NORMAL;
-            if (mSmoothChangeThread==null){
-                mSmoothChangeThread=SmoothChangeThread.CreateLinearInterpolator(mRotateIcon,frame.getOffsetToRefresh
-                        (),0,300,75);
-                mSmoothChangeThread.setOnSmoothResultChangeListener(new SmoothChangeThread.OnSmoothResultChangeListener() {
-                    @Override
-                    public void onSmoothResultChange(int result) {
-                        updateRotateAnima(result);
-                        mRotateIcon.setRotation(-(result << 1));
-                    }
-                });
-            }else {
+            if (mRotateIcon==null)return;
+            if (mSmoothChangeThread == null) {
+                mSmoothChangeThread = SmoothChangeThread.CreateLinearInterpolator(mRotateIcon,
+                        frame.getOffsetToRefresh(), 0, 300, 75);
+                mSmoothChangeThread.setOnSmoothResultChangeListener(
+                        new SmoothChangeThread.OnSmoothResultChangeListener() {
+                            @Override
+                            public void onSmoothResultChange(int result) {
+                                updateRotateAnima(result);
+                                mRotateIcon.setRotation(-(result << 1));
+                            }
+                        });
+            }
+            else {
                 mSmoothChangeThread.stop();
             }
             mRotateIcon.post(mSmoothChangeThread);
-
         }
 
         /**位移更新重载*/
         @Override
         public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte status, PtrIndicator ptrIndicator) {
+            if (mRotateIcon==null)return;
             final int mOffsetToRefresh = frame.getOffsetToRefresh();
             final int currentPos = ptrIndicator.getCurrentPosY();
             final int lastPos = ptrIndicator.getLastPosY();
