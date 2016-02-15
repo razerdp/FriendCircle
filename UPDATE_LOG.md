@@ -1,6 +1,11 @@
 # 更新日志
 
 ##2016-02-15
+关于icon使用margintop来更新是否会重复导致measure和layout的问题
+在setAdapter后发现采用relativelayout的话在不断的改变margin时会导致多次测量（如果布局复杂，将会导致测量时间较长，在视觉上表现为掉帧），现改正布局根节点为FrameLayout，多次测量消失。
+
+***
+##2016-02-15
 采取论坛评论区兄弟的建议，使用valueAnimator代替smoothChangeThread，源代码保留。
 ***
 

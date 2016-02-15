@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -171,7 +172,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
     private void updateRotateAnima(int marginTop) {
         Log.d(TAG, "curMargin=========" + marginTop);
         if (mRotateIcon == null) return;
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mRotateIcon.getLayoutParams();
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mRotateIcon.getLayoutParams();
         params.topMargin = marginTop;
         mRotateIcon.setLayoutParams(params);
     }
