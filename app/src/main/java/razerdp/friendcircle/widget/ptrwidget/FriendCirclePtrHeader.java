@@ -1,5 +1,6 @@
 package razerdp.friendcircle.widget.ptrwidget;
 
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
@@ -7,11 +8,13 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ViewAnimator;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrUIHandler;
 import in.srain.cube.views.ptr.indicator.PtrIndicator;
@@ -31,6 +34,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
     private boolean isAutoRefresh;
     private RotateAnimation rotateAnimation;
     private SmoothChangeThread mSmoothChangeThread;
+    private ValueAnimator mValueAnimator;
 
     //当前状态
     private PullState mPullState;
@@ -107,7 +111,8 @@ public class FriendCirclePtrHeader extends RelativeLayout {
         public void onUIRefreshComplete(PtrFrameLayout frame) {
             mPullState = PullState.NORMAL;
             if (mRotateIcon==null)return;
-            if (mSmoothChangeThread == null) {
+            /**采取通用插值器线程实现*/
+           /* if (mSmoothChangeThread == null) {
                 mSmoothChangeThread = SmoothChangeThread.CreateLinearInterpolator(mRotateIcon,
                         frame.getOffsetToRefresh(), 0, 300, 75);
                 mSmoothChangeThread.setOnSmoothResultChangeListener(
@@ -122,7 +127,22 @@ public class FriendCirclePtrHeader extends RelativeLayout {
             else {
                 mSmoothChangeThread.stop();
             }
-            mRotateIcon.post(mSmoothChangeThread);
+            mRotateIcon.post(mSmoothChangeThread);*/
+
+            /**采取valueAnimator*/
+            if (mValueAnimator==null){
+                mValueAnimator=ValueAnimator.ofInt(frame.getOffsetToRefresh(),0);
+                mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        int result= (int) animation.getAnimatedValue();
+                        updateRotateAnima(result);
+                        mRotateIcon.setRotation(-(result << 1));
+                    }
+                });
+                mValueAnimator.setDuration(300);
+            }
+            mValueAnimator.start();
         }
 
         /**位移更新重载*/
