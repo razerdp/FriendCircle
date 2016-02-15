@@ -269,7 +269,7 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
         });
     }
 
-    public void autoRefresh() {
+    public void manualRefresh() {
         if (mHeader != null) mHeader.setAutoRefresh(true);
         //必须延迟，否则因为过快，还没measure完，也就是headerHeight=0就导致了自动刷新刷在了0位置
         postDelayed(new Runnable() {
