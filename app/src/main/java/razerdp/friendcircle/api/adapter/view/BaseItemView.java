@@ -10,11 +10,8 @@ import android.view.View;
  */
 public interface BaseItemView<T> {
     int getViewRes();
-
-    void onBindData(final int position, @NonNull View v, @NonNull T data,final int dynamicType);
     void onFindView(@NonNull View parent);
-
+    void onBindData(final int position, @NonNull View v, @NonNull T data,final int dynamicType);
     Activity getActivityContext();
-
     void setActivityContext(Activity context);
 }
