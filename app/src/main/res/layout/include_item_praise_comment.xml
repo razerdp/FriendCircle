@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="30dp"
-    android:paddingLeft="74dp"
+    android:layout_height="25dp"
+    android:paddingLeft="@dimen/item_padding"
     android:paddingRight="@dimen/item_padding"
     android:layout_marginTop="10dp"
     >
