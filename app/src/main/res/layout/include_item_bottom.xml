@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="30dp"
+    android:paddingLeft="@dimen/item_padding"
+    android:paddingRight="@dimen/item_padding"
+    android:layout_marginTop="10dp"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="@dimen/small_font"
+        android:gravity="center_vertical"
+        android:textColor="@color/item_bottom_text"
+        tools:text="3小时前"/>
+    <FrameLayout
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true">
+        <ImageView
+            android:id="@+id/comment_press"
+            android:layout_width="25dp"
+            android:layout_height="15dp"
+            android:src="@drawable/bg_comment_pressed"
+            android:layout_gravity="center_vertical|right"/>
+    </FrameLayout>
+
+
+</RelativeLayout>

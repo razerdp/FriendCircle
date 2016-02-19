@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/item_padding"
+    android:paddingLeft="@dimen/item_padding"
+    android:paddingRight="@dimen/item_padding"
+    android:paddingBottom="10dp">
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/item_avatar"
+        android:layout_height="@dimen/item_avatar"
+        tools:src="@drawable/test_avatar"/>
+
+    <TextView
+        android:id="@+id/nick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/avatar"
+        android:layout_toRightOf="@id/avatar"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="4dp"
+        android:textSize="@dimen/normal_font"
+        android:textColor="@color/nick"
+        tools:text="羽翼君"/>
+    <TextView
+        android:id="@+id/item_text_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nick"
+        android:layout_alignLeft="@id/nick"
+        android:layout_marginTop="8dp"
+        android:textSize="@dimen/normal_font"
+        android:textColor="@color/normal_font_color"
+        tools:text="这是一个朋友圈测试哦这是一个朋友圈测试哦这是一个朋友圈测试哦这是一个朋友圈测试哦这是一个朋友圈测试哦这是一个朋友圈测试哦"/>
+</RelativeLayout>
