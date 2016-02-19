@@ -1,5 +1,11 @@
 # 更新日志
 
+##2016-02-20
+点击展开全文控件实现
+图片预览：</br>
+![](https://github.com/razerdp/FriendCircle/blob/master/img/click_to_show_more.gif)
+
+***
 ##2016-02-19
 布局上传，下一步实现文字更多的控件
 
