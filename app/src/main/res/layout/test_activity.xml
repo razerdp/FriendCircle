@@ -6,8 +6,8 @@
     android:layout_height="match_parent">
     <razerdp.friendcircle.widget.ClickShowMoreLayout
         android:id="@+id/test_click_to_show"
-        android:layout_width="50dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:show_line="3"/>
+        app:show_line="5"/>
 
 </LinearLayout>

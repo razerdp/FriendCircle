@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
         test_click_to_show = (ClickShowMoreLayout) findViewById(R.id.test_click_to_show);
-        test_click_to_show.setText("Asdfasdfasdfasdfasdfasdfadsfasdfasdfasdfasdf");
+        test_click_to_show.setText("这是一条长文测试这是一条长文测试这是一条长文测试\n这是一条长文测试\n这是一条长文测试\n\n\n\n这是一条长文测试这是一条长文测试这是一条长文测试这是一条长文测试这是一条长文测试");
     }
 }
 
