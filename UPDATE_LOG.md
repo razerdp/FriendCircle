@@ -3,6 +3,8 @@
 ##2016-02-20
 点击展开全文控件实现
 图片预览：</br>
+代码解析地址：</br>
+http://www.jianshu.com/p/80d7f34c5f08 </br>
 ![](https://github.com/razerdp/FriendCircle/blob/master/img/click_to_show_more.gif)
 
 ***
