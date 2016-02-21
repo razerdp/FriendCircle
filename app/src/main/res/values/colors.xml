@@ -18,4 +18,5 @@
     <!--朋友圈色值-->
     <color name="nick">#517fae</color>
     <color name="item_bottom_text">#8e8e8e</color>
+    <color name="item_showmore_click">#bc2adb86</color>
 </resources>
