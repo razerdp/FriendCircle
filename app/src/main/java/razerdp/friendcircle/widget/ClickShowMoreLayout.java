@@ -60,6 +60,7 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
         mTextView.setTextColor(textColor);
         mTextView.setMaxLines(showLine);
 
+        mClickToShow.setBackgroundDrawable(getResources().getDrawable(R.drawable.selector_tx_show_more));
         mClickToShow.setTextSize(textSize);
         mClickToShow.setTextColor(getResources().getColor(R.color.nick));
         mClickToShow.setText(clickText);

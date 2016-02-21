@@ -4,10 +4,11 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <razerdp.friendcircle.widget.ClickShowMoreLayout
-        android:id="@+id/test_click_to_show"
+
+    <razerdp.friendcircle.widget.praisewidget.PraiseWidget
+        android:id="@+id/praise"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:show_line="5"/>
+        app:font_size="@dimen/small_font"/>
 
 </LinearLayout>

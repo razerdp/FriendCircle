@@ -45,12 +45,27 @@
             format="reference|color"/>
     </declare-styleable>
 
-  <declare-styleable name="ClickShowMoreLayout">
-      <attr name="show_line"
-          format="integer"/>
-      <attr name="click_text"
-          format="string"/>
-      <attr name="text_color" format="color"/>
-      <attr name="text_size" format="dimension"/>
-  </declare-styleable>
+    <declare-styleable name="ClickShowMoreLayout">
+        <attr name="show_line"
+            format="integer"/>
+        <attr name="click_text"
+            format="string"/>
+        <attr name="text_color"
+            format="color"/>
+        <attr name="text_size"
+            format="dimension"/>
+    </declare-styleable>
+
+    <!--显示点赞控件-->
+
+    <declare-styleable name="PraiseWidget">
+        <attr name="click_bg_color"
+            format="color"/>
+        <attr name="font_color"
+            format="color"/>
+        <attr name="font_size"
+            format="dimension"/>
+        <attr name="like_icon"
+            format="reference"/>
+    </declare-styleable>
 </resources>
