@@ -3,6 +3,8 @@
 点赞列表控件
 图片预览：</br>
 代码解析地址：</br>
+http://www.jianshu.com/p/26dd3aad965a </br>
+![](https://github.com/razerdp/FriendCircle/blob/master/img/praise_widget.gif)
 
 ***
 ##2016-02-20
