@@ -104,14 +104,13 @@ public class PraiseWidget extends TextView {
                                                                                           .build();
                 spanStrBuilder.append(datas.get(i).userNick, clickEvent, 0);
                 if (i != datas.size() - 1) spanStrBuilder.append(", ");
-                else spanStrBuilder.append("\u200B");
+                else spanStrBuilder.append("\0");
             }
             praiseCache.put(key, spanStrBuilder);
         }
         setText(spanStrBuilder);
     }
 
-    // TODO: 2016/2/21  这里有待商榷，在listview里面会否导致复用前视图消失的时候回调.
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
