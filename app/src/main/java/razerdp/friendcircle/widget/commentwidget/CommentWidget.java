@@ -96,7 +96,7 @@ public class CommentWidget extends TextView {
         setText(mSpannableStringBuilderAllVer);
     }
 
-    public CommentInfo getData() {
+    public CommentInfo getData() throws ClassCastException {
         return (CommentInfo) getTag();
     }
 }
