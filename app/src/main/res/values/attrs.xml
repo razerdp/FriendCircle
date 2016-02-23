@@ -57,7 +57,6 @@
     </declare-styleable>
 
     <!--显示点赞控件-->
-
     <declare-styleable name="PraiseWidget">
         <attr name="click_bg_color"
             format="color"/>

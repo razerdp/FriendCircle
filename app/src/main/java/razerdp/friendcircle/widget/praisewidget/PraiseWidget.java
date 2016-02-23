@@ -100,9 +100,14 @@ public class PraiseWidget extends TextView {
             //给出两个空格，点赞图标后
             spanStrBuilder.append("  ");
             for (int i = 0; i < datas.size(); i++) {
-                ClickEvent clickEvent = new ClickEvent.Builder(getContext(), datas.get(i)).setTextSize(textSize)
-                                                                                          .build();
-                spanStrBuilder.append(datas.get(i).userNick, clickEvent, 0);
+                PraiseClick praiseClick = new PraiseClick.Builder(getContext(), datas.get(i)).setTextSize(textSize)
+                                                                                             .build();
+                try {
+                    spanStrBuilder.append(datas.get(i).praiseUserInfo.nick, praiseClick, 0);
+                }catch (NullPointerException e){
+                    e.printStackTrace();
+                    Log.e(TAG,"praiseUserInfo是空的哦");
+                }
                 if (i != datas.size() - 1) spanStrBuilder.append(", ");
                 else spanStrBuilder.append("\0");
             }
