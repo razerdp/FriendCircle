@@ -6,6 +6,8 @@
 代码实现逻辑（简书合集）：http://www.jianshu.com/notebooks/3224048/latest </br>
 更新日志请点击：https://github.com/razerdp/FriendCircle/blob/master/UPDATE_LOG.md
 </br>
+###PR须知：非常欢迎PR，如果您有pr申请，请提交到dev分支，谢谢。
+</br>
 #####关于作者我:
 在下大四即将毕业小朋友一枚，工作（实习）半年，大三开始的Android开发，至今约一年。
 
