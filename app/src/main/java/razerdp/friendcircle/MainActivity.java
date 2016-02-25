@@ -20,7 +20,7 @@ public class MainActivity extends FriendCircleBaseActivity {
         View header= LayoutInflater.from(this).inflate(R.layout.item_header,null,false);
         bindListView(R.id.listview,header, FriendCircleAdapterUtil.getAdapter(this,mMomentsInfos));
         initReq();
-        mListView.manualRefresh();
+        //mListView.manualRefresh();
     }
 
     private void initReq() {
