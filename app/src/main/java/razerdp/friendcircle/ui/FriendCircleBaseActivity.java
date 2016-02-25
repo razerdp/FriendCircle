@@ -1,6 +1,8 @@
 package razerdp.friendcircle.ui;
 
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -25,10 +27,11 @@ public abstract class FriendCircleBaseActivity extends AppCompatActivity impleme
     protected List<MomentsInfo> mMomentsInfos = new ArrayList<>();
     protected BaseAdapter mAdapter;
 
-    public void bindListView(int listResId, BaseAdapter adapter) {
+    public void bindListView(int listResId, View headerView, BaseAdapter adapter) {
         this.mAdapter = adapter;
         mListView = (FriendCirclePtrListView) findViewById(listResId);
         mListView.setRotateIcon(bindRefreshIcon());
+        mListView.addHeaderView(headerView);
         mListView.setAdapter(adapter);
 
         mListView.setOnPullDownRefreshListener(new OnPullDownRefreshListener() {
@@ -57,7 +60,7 @@ public abstract class FriendCircleBaseActivity extends AppCompatActivity impleme
 
     @Override
     public void onFailure(BaseResponse response) {
-        ToastUtils.ToastMessage(this, response.getErrorMsg());
+        ToastUtils.ToastMessage(this, "网络出错。。。。");
         if (mListView != null) {
             mListView.refreshComplete();
         }
@@ -65,6 +68,22 @@ public abstract class FriendCircleBaseActivity extends AppCompatActivity impleme
 
     @Override
     public void onSuccess(BaseResponse response) {
+        if (response.getRequestType() == 0) {
+            if (response.getStatus() == 200) {
+                // FIXME: 2016/2/25 确保request没错。。。。
+                List<MomentsInfo> momentsInfos = (List<MomentsInfo>) response.getData();
+                if (mListView != null && mListView.getCurMode() == PullMode.FROM_START){
+                    mMomentsInfos.clear();
+                }
+                mListView.setHasMore(response.getHasMore());
+                mMomentsInfos.addAll(momentsInfos);
+                mListView.refreshComplete();
+                mAdapter.notifyDataSetChanged();
+            }else {
+                mListView.refreshComplete();
+                ToastUtils.ToastMessage(this,response.getErrorMsg());
+            }
+        }
     }
 
     //=============================================================绑定刷新Logo

@@ -54,7 +54,7 @@ public class CommentWidget extends TextView {
             key = info.hashCode();
         }
         else {
-            hasContent = (key == info.canDelete);
+            hasContent = (key == info.hashCode());
         }
         if (!hasContent) {
             key = info.hashCode();
@@ -73,7 +73,7 @@ public class CommentWidget extends TextView {
     }
 
     private void createCommentStringBuilder(@NonNull CommentInfo info) {
-        String content = ": " + info.commentText + "\0";
+        String content = ": " + info.content + "\0";
         if (mSpannableStringBuilderAllVer == null) {
             mSpannableStringBuilderAllVer = new SpannableStringBuilderAllVer();
             boolean isApply = (info.userB == null);

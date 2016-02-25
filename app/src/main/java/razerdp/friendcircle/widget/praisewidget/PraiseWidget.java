@@ -14,6 +14,7 @@ import android.util.LruCache;
 import android.widget.TextView;
 import java.util.List;
 import razerdp.friendcircle.R;
+import razerdp.friendcircle.api.data.model.UserInfo;
 import razerdp.friendcircle.widget.SpannableStringBuilderAllVer;
 
 /**
@@ -32,7 +33,7 @@ public class PraiseWidget extends TextView {
     //默认点击背景
     private int clickBg = 0x00000000;
 
-    private List<PraiseInfo> datas;
+    private List<UserInfo> datas;
 
     private static final LruCache<String, SpannableStringBuilderAllVer> praiseCache
             = new LruCache<String, SpannableStringBuilderAllVer>(50) {
@@ -69,7 +70,7 @@ public class PraiseWidget extends TextView {
         this.setHighlightColor(clickBg);
     }
 
-    public void setDatas(List<PraiseInfo> datas) {
+    public void setDatas(List<UserInfo> datas) {
         this.datas = datas;
         onPreDraw();
     }
@@ -85,7 +86,7 @@ public class PraiseWidget extends TextView {
         }
     }
 
-    private void createSpanStringBuilder(List<PraiseInfo> datas) {
+    private void createSpanStringBuilder(List<UserInfo> datas) {
         if (datas == null || datas.size() == 0) return;
         String key = Integer.toString(datas.hashCode() + datas.size());
         SpannableStringBuilderAllVer spanStrBuilder = praiseCache.get(key);
@@ -102,7 +103,7 @@ public class PraiseWidget extends TextView {
                 PraiseClick praiseClick = new PraiseClick.Builder(getContext(), datas.get(i)).setTextSize(textSize)
                                                                                              .build();
                 try {
-                    spanStrBuilder.append(datas.get(i).praiseUserInfo.nick, praiseClick, 0);
+                    spanStrBuilder.append(datas.get(i).nick, praiseClick, 0);
                 }catch (NullPointerException e){
                     e.printStackTrace();
                     Log.e(TAG,"praiseUserInfo是空的哦");
