@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -159,6 +160,12 @@ public abstract class BaseItemDelegate
             int subCount = commentList.size() - childCount;
             for (int i = 0; i < subCount; i++) {
                 CommentWidget commentWidget = new CommentWidget(context);
+                LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.topMargin=1;
+                params.bottomMargin=1;
+                commentWidget.setLayoutParams(params);
+                commentWidget.setLineSpacing(4,1);
                 commentWidget.setOnClickListener(this);
                 commentWidget.setOnLongClickListener(this);
                 commentLayout.addView(commentWidget);

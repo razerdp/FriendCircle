@@ -15,6 +15,7 @@ import android.widget.TextView;
 import java.util.List;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.api.data.model.UserInfo;
+import razerdp.friendcircle.widget.CustomImageSpan;
 import razerdp.friendcircle.widget.SpannableStringBuilderAllVer;
 
 /**
@@ -29,7 +30,7 @@ public class PraiseWidget extends TextView {
     //点赞列表心心默认图标
     private int iconRes = R.drawable.icon_like;
     //默认字体大小
-    private int textSize = 16;
+    private int textSize = 14;
     //默认点击背景
     private int clickBg = 0x00000000;
 
@@ -61,18 +62,18 @@ public class PraiseWidget extends TextView {
     private void init(Context context, AttributeSet attrs) {
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PraiseWidget);
         textColor = a.getColor(R.styleable.PraiseWidget_font_color, 0xff517fae);
-        textSize = a.getDimensionPixelSize(R.styleable.PraiseWidget_font_size, 16);
+        textSize = a.getDimensionPixelSize(R.styleable.PraiseWidget_font_size, 14);
         clickBg = a.getColor(R.styleable.PraiseWidget_click_bg_color, 0x00000000);
         iconRes = a.getResourceId(R.styleable.PraiseWidget_like_icon, R.drawable.icon_like);
         a.recycle();
         //如果不设置，clickableSpan不能响应点击事件
         this.setMovementMethod(LinkMovementMethod.getInstance());
         this.setHighlightColor(clickBg);
+        setTextSize(textSize);
     }
 
     public void setDatas(List<UserInfo> datas) {
         this.datas = datas;
-        onPreDraw();
     }
 
     @Override
@@ -91,14 +92,14 @@ public class PraiseWidget extends TextView {
         String key = Integer.toString(datas.hashCode() + datas.size());
         SpannableStringBuilderAllVer spanStrBuilder = praiseCache.get(key);
         if (spanStrBuilder == null) {
-            ImageSpan icon = new ImageSpan(getContext(), iconRes, TEXT_ALIGNMENT_GRAVITY);
+            CustomImageSpan icon = new CustomImageSpan(getContext(), iconRes);
             //因为spanstringbuilder不支持直接append span，所以通过spanstring转换
             SpannableString iconSpanStr = new SpannableString(" ");
             iconSpanStr.setSpan(icon, 0, 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
             spanStrBuilder = new SpannableStringBuilderAllVer(iconSpanStr);
             //给出两个空格，点赞图标后
-            spanStrBuilder.append("  ");
+            spanStrBuilder.append(" ");
             for (int i = 0; i < datas.size(); i++) {
                 PraiseClick praiseClick = new PraiseClick.Builder(getContext(), datas.get(i)).setTextSize(textSize)
                                                                                              .build();

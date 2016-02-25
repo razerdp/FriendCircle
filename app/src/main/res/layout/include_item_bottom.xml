@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:paddingLeft="74dp"
     android:paddingRight="@dimen/item_padding"
+    android:paddingBottom="16dp"
     android:layout_marginTop="10dp">
 
     <TextView
@@ -42,7 +43,12 @@
         <razerdp.friendcircle.widget.praisewidget.PraiseWidget
             android:id="@+id/praise"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:paddingRight="5dp"
+            android:lineSpacingExtra="2dp"
+            android:lineSpacingMultiplier="1"
+            />
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
@@ -50,13 +56,16 @@
             android:background="@color/line_bg"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="5dp"
+            />
 
         <LinearLayout
             android:id="@+id/comment_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="5dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             android:orientation="vertical">
 
         </LinearLayout>
