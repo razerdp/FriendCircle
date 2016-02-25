@@ -18,7 +18,7 @@ import razerdp.friendcircle.api.adapter.view.BaseItemView;
 public abstract class CircleBaseAdapter<T> extends BaseAdapter {
     private static final String TAG = "FriendCircleAdapter";
     //数据
-    protected List<T> datas = new ArrayList<>();
+    protected List<T> datas;
     //类型集合
     protected HashMap<Integer, Class<? extends BaseItemView<T>>> itemInfos;
     protected Activity context;
@@ -27,8 +27,7 @@ public abstract class CircleBaseAdapter<T> extends BaseAdapter {
     public CircleBaseAdapter(Activity context, Builder<T> mBuilder) {
         this.context = context;
         mInflater = LayoutInflater.from(context);
-        datas.clear();
-        datas.addAll(mBuilder.datas);
+        datas=mBuilder.datas;
         itemInfos = mBuilder.itemInfos;
     }
 

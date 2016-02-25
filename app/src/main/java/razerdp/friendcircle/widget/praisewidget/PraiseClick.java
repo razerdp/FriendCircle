@@ -7,6 +7,7 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.Toast;
 import razerdp.friendcircle.api.data.model.UserInfo;
+import razerdp.friendcircle.utils.UIHelper;
 
 /**
  * Created by 大灯泡 on 2016/2/21.
@@ -61,7 +62,7 @@ public class PraiseClick extends ClickableSpan {
         }
 
         public Builder setTextSize(int textSize) {
-            this.textSize = textSize;
+            this.textSize = UIHelper.sp2px(mContext,textSize);
             return this;
         }
 

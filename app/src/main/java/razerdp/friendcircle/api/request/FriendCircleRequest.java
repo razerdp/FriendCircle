@@ -1,6 +1,7 @@
 package razerdp.friendcircle.api.request;
 
 import com.google.gson.reflect.TypeToken;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import org.json.JSONException;
@@ -36,7 +37,7 @@ public class FriendCircleRequest extends BaseHttpRequestClient {
     @Override
     public void parseResponse(BaseResponse response, JSONObject json, int start, boolean hasMore) throws JSONException {
         hostInfo= JSONUtil.toObject(json.optString("hostInfo"),HostInfo.class);
-        List<MomentsInfo> momentsInfos=JSONUtil.toList(json.optString("moments"),new TypeToken<MomentsInfo>(){}
+        List<MomentsInfo> momentsInfos=JSONUtil.toList(json.optString("moments"),new TypeToken<ArrayList<MomentsInfo>>(){}
                 .getType());
         response.setData(momentsInfos);
     }

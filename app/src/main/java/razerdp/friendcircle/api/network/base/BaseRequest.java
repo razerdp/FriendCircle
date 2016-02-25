@@ -51,13 +51,15 @@ public class BaseRequest extends Request<BaseResponse> {
             JSONTokener jsonParser = new JSONTokener(responseStr);
             JSONObject json = null;
             json = (JSONObject) jsonParser.nextValue();
-            baseResponse.setJsonStr(responseStr);
             if (json!=null) {
                 baseResponse.setStatus(json.optInt("stateCode"));
                 baseResponse.setErrorMsg(json.optString("errorStr"));
                 start=json.optInt("start");
                 hasMore=json.optInt("loadMore")==1;
             }
+            json=json.optJSONObject("data");
+            baseResponse.setJsonStr(responseStr);
+
             baseResponse.setStart(start);
             baseResponse.setHasMore(hasMore);
             mClient.parseResponse(baseResponse, json,start,hasMore);
