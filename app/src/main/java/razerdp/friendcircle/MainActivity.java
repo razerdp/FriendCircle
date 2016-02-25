@@ -2,33 +2,30 @@ package razerdp.friendcircle;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import java.util.ArrayList;
-import java.util.List;
-import razerdp.friendcircle.api.data.model.PraiseInfo;
-import razerdp.friendcircle.widget.praisewidget.PraiseWidget;
+import android.widget.ImageView;
+import razerdp.friendcircle.ui.FriendCircleBaseActivity;
 
-public class MainActivity extends AppCompatActivity {
-
-    private PraiseWidget praise;
-    private List<PraiseInfo> mPraiseInfos;
+public class MainActivity extends FriendCircleBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.test_activity);
-        initView();
+        setContentView(R.layout.activity_main);
     }
 
-    private void initView() {
-        praise = (PraiseWidget) findViewById(R.id.praise);
-        mPraiseInfos=new ArrayList<>();
-        for (int i=0;i<50;i++){
-            PraiseInfo info=new PraiseInfo();
-            info.userNick="用户"+i;
-            info.userId=i;
-            mPraiseInfos.add(info);
-        }
-        praise.setDatas(mPraiseInfos);
+    @Override
+    public ImageView bindRefreshIcon() {
+        return null;
+    }
+
+    @Override
+    public void onPullDownRefresh() {
+
+    }
+
+    @Override
+    public void onLoadMore() {
+
     }
 }
 

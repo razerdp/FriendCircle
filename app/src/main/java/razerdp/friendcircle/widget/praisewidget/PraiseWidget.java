@@ -14,7 +14,6 @@ import android.util.LruCache;
 import android.widget.TextView;
 import java.util.List;
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.api.data.model.PraiseInfo;
 import razerdp.friendcircle.widget.SpannableStringBuilderAllVer;
 
 /**

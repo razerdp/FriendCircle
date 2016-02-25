@@ -5,12 +5,7 @@ import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
-import razerdp.friendcircle.api.data.model.CommentInfo;
-import razerdp.friendcircle.api.data.model.PraiseInfo;
 import razerdp.friendcircle.api.data.model.UserInfo;
-import razerdp.friendcircle.widget.praisewidget.PraiseClick;
 
 /**
  * Created by 大灯泡 on 2016/2/23.

@@ -6,7 +6,6 @@ import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.Toast;
-import razerdp.friendcircle.api.data.model.PraiseInfo;
 
 /**
  * Created by 大灯泡 on 2016/2/21.

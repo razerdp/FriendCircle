@@ -1,7 +1,5 @@
 package razerdp.friendcircle.api.data.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import razerdp.friendcircle.widget.commentwidget.CommentWidget;
 
 /**
@@ -9,42 +7,33 @@ import razerdp.friendcircle.widget.commentwidget.CommentWidget;
  * 评论用的bean
  * @see CommentWidget
  */
-public class CommentInfo implements Parcelable {
+public class CommentInfo  {
+
+    /**
+     * nick : 诗雁
+     * avatar : http://img4.duitang.com/uploads/item/201601/11/20160111175420_ZmTzU.jpeg
+     * userId : 1006
+     */
+
     public UserInfo userA;
+    /**
+     * nick : 羽翼君
+     * avatar : http://upload.jianshu.io/users/upload_avatars/684042/bd1b2f796e3a.jpg
+     * userId : 1001
+     */
+
     public UserInfo userB;
+    /**
+     * userA : {"nick":"诗雁","avatar":"http://img4.duitang.com/uploads/item/201601/11/20160111175420_ZmTzU.jpeg","userId":1006}
+     * userB : {"nick":"羽翼君","avatar":"http://upload.jianshu.io/users/upload_avatars/684042/bd1b2f796e3a.jpg","userId":1001}
+     * commentId : 1
+     * content : 哇，好巧-V-
+     * candelete : 1
+     * createTime : 1454483715
+     */
 
-    public String commentText;
     public long commentId;
+    public String content;
+    public int candelete;
     public long createTime;
-    public int canDelete;
-
-    @Override
-    public int describeContents() { return 0; }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.userA, 0);
-        dest.writeParcelable(this.userB, 0);
-        dest.writeString(this.commentText);
-        dest.writeLong(this.commentId);
-        dest.writeLong(this.createTime);
-        dest.writeInt(this.canDelete);
-    }
-
-    public CommentInfo() {}
-
-    protected CommentInfo(Parcel in) {
-        this.userA = in.readParcelable(UserInfo.class.getClassLoader());
-        this.userB = in.readParcelable(UserInfo.class.getClassLoader());
-        this.commentText = in.readString();
-        this.commentId = in.readLong();
-        this.createTime = in.readLong();
-        this.canDelete = in.readInt();
-    }
-
-    public static final Parcelable.Creator<CommentInfo> CREATOR = new Parcelable.Creator<CommentInfo>() {
-        public CommentInfo createFromParcel(Parcel source) {return new CommentInfo(source);}
-
-        public CommentInfo[] newArray(int size) {return new CommentInfo[size];}
-    };
 }
