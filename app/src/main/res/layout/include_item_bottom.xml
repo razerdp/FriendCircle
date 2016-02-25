@@ -8,6 +8,7 @@
     android:layout_marginTop="10dp">
 
     <TextView
+        android:id="@+id/create_time"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:textSize="@dimen/small_font"
@@ -31,20 +32,31 @@
 
     <!--praise && comment-->
     <LinearLayout
+        android:id="@+id/comment_praise_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@id/comment_button">
+        android:layout_below="@id/comment_button"
+        android:background="@drawable/comment_praise">
 
         <razerdp.friendcircle.widget.praisewidget.PraiseWidget
             android:id="@+id/praise"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/line_bg"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="8dp"/>
 
         <LinearLayout
             android:id="@+id/comment_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:orientation="vertical">
 
         </LinearLayout>

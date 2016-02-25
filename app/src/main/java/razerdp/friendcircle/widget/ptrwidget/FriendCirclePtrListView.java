@@ -144,6 +144,8 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
         if (osFooter != null) {
             mListView.setOverscrollFooter(osFooter);
         }
+        mListView.setHeaderDividersEnabled(false);
+        mListView.setFooterDividersEnabled(false);
         a.recycle();
     }
 

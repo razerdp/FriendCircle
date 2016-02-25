@@ -15,13 +15,13 @@ import razerdp.friendcircle.utils.JSONUtil;
 /**
  * Created by 大灯泡 on 2016/2/25.
  */
-public class FirendCircleRequest extends BaseHttpRequestClient {
+public class FriendCircleRequest extends BaseHttpRequestClient {
     private int start;
     private int count;
     private long userId;
     public HostInfo hostInfo;
 
-    public FirendCircleRequest(long userId, int start, int count) {
+    public FriendCircleRequest(long userId, int start, int count) {
         this.userId = userId;
         this.start = start;
         this.count = count;

@@ -3,8 +3,12 @@ package razerdp.friendcircle.utils;
 import android.app.Activity;
 import java.util.List;
 import razerdp.friendcircle.api.adapter.CircleBaseAdapter;
+import razerdp.friendcircle.api.data.DynamicType;
 import razerdp.friendcircle.api.data.model.MomentsInfo;
 import razerdp.friendcircle.ui.FriendCircleAdapter;
+import razerdp.friendcircle.ui.itemview.ItemOnlyChar;
+import razerdp.friendcircle.ui.itemview.ItemShareWeb;
+import razerdp.friendcircle.ui.itemview.ItemWithImg;
 
 /**
  * Created by 大灯泡 on 2016/2/25.
@@ -12,8 +16,11 @@ import razerdp.friendcircle.ui.FriendCircleAdapter;
  */
 public class FriendCircleAdapterUtil {
 
-    public static FriendCircleAdapter getAdapter(Activity context, List<MomentsInfo> datas){
-        FriendCircleAdapter.Builder<MomentsInfo> builder=new CircleBaseAdapter.Builder<>(datas).addType().build();
-        return new FriendCircleAdapter(context,builder);
+    public static FriendCircleAdapter getAdapter(Activity context, List<MomentsInfo> datas) {
+        FriendCircleAdapter.Builder<MomentsInfo> builder = new CircleBaseAdapter.Builder<>(datas).addType(DynamicType.TYPE_ONLY_CHAR, ItemOnlyChar.class)
+                                                                                                 .addType(DynamicType.TYPE_WITH_IMG,ItemWithImg.class)
+                                                                                                 .addType(DynamicType.TYPE_SHARE_WEB,ItemShareWeb.class)
+                                                                                                 .build();
+        return new FriendCircleAdapter(context, builder);
     }
 }

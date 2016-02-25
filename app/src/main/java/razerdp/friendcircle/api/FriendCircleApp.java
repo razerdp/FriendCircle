@@ -2,6 +2,7 @@ package razerdp.friendcircle.api;
 
 import android.app.Application;
 import android.content.Context;
+import razerdp.friendcircle.api.network.base.VolleyManager;
 
 /**
  * Created by 大灯泡 on 2016/2/24.
@@ -16,9 +17,10 @@ public class FriendCircleApp extends Application {
     public void onCreate() {
         super.onCreate();
         appContext = getApplicationContext();
+        VolleyManager.INSTANCE.initQueue(10*1024*1024);
     }
 
     public static String getRootUrl(){
-        return isLocalServer?"127.0.0.1/momentsList":"";
+        return isLocalServer?"http://10.0.0.165/momentsList":"";
     }
 }
