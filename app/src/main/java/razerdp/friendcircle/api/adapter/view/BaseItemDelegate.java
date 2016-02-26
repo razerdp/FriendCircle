@@ -26,7 +26,7 @@ import razerdp.friendcircle.widget.praisewidget.PraiseWidget;
  * 基本item封装
  */
 public abstract class BaseItemDelegate
-        implements BaseItemView<MomentsInfo>, View.OnClickListener, View.OnLongClickListener {
+        implements BaseItemView<MomentsInfo>, View.OnClickListener, View.OnLongClickListener ,ViewGroup.OnHierarchyChangeListener{
     protected Activity context;
     //顶部
     protected SuperImageView avatar;
@@ -45,6 +45,9 @@ public abstract class BaseItemDelegate
     protected RelativeLayout contentLayout;
 
     private MomentsInfo mInfo;
+
+    //评论区的view对象池
+    private static final CommentPool COMMENT_TEXT_POOL=new CommentPool(20);
 
     public BaseItemDelegate() {
     }
@@ -153,19 +156,25 @@ public abstract class BaseItemDelegate
          * 于是采取以下方案：
          *    根据现有的view进行remove/add差额
          *    然后统一设置
+         *
+         * 2016-02-26:复用池进一步优化
          * */
         final int childCount = commentLayout.getChildCount();
+        commentLayout.setOnHierarchyChangeListener(this);
         if (childCount < commentList.size()) {
             //当前的view少于list的长度，则补充相差的view
             int subCount = commentList.size() - childCount;
             for (int i = 0; i < subCount; i++) {
-                CommentWidget commentWidget = new CommentWidget(context);
-                LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.topMargin=1;
-                params.bottomMargin=1;
-                commentWidget.setLayoutParams(params);
-                commentWidget.setLineSpacing(4,1);
+                CommentWidget commentWidget =COMMENT_TEXT_POOL.get();
+                if (commentWidget == null) {
+                    commentWidget = new CommentWidget(context);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params.topMargin = 1;
+                    params.bottomMargin = 1;
+                    commentWidget.setLayoutParams(params);
+                    commentWidget.setLineSpacing(4, 1);
+                }
                 commentWidget.setOnClickListener(this);
                 commentWidget.setOnLongClickListener(this);
                 commentLayout.addView(commentWidget);
@@ -192,6 +201,20 @@ public abstract class BaseItemDelegate
         return false;
     }
 
+    @Override
+    public void onChildViewAdded(View parent, View child) {
+
+    }
+
+    @Override
+    public void onChildViewRemoved(View parent, View child) {
+        if (child instanceof CommentWidget)
+            COMMENT_TEXT_POOL.put((CommentWidget)child);
+    }
+
+    public void clearCommentPool(){
+        COMMENT_TEXT_POOL.clearPool();
+    }
     //=============================================================
     @Override
     public Activity getActivityContext() {
@@ -204,4 +227,41 @@ public abstract class BaseItemDelegate
     }
 
     protected abstract void bindData(int position, @NonNull View v, @NonNull MomentsInfo data, final int dynamicType);
+
+    //=============================================================pool class
+    static class CommentPool{
+        private CommentWidget[] CommentPool;
+        private int size;
+        private int curPointer=-1;
+
+        public CommentPool(int size) {
+            this.size = size;
+            CommentPool=new CommentWidget[size];
+        }
+
+        public synchronized CommentWidget get(){
+            if (curPointer==-1||curPointer>CommentPool.length)return null;
+            CommentWidget commentTextView=CommentPool[curPointer];
+            CommentPool[curPointer]=null;
+            curPointer--;
+            return commentTextView;
+        }
+        public synchronized boolean put(CommentWidget commentTextView){
+            if (curPointer==-1||curPointer<CommentPool.length-1) {
+                curPointer++;
+                CommentPool[curPointer] = commentTextView;
+                return true;
+            }
+            return false;
+        }
+        public void clearPool(){
+            for (int i = 0; i < CommentPool.length; i++) {
+                CommentPool[i]=null;
+            }
+            curPointer=-1;
+        }
+    }
+
+
+
 }

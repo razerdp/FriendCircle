@@ -1,10 +1,15 @@
 # 更新日志
 
+##2016-02-26
+评论区控件采用池，进一步优化。
+
+***
 ##2016-02-25
 服务器就绪，暂时合并控件
 图片预览：</br>
 代码解析地址：</br>
-![](https://github.com/razerdp/FriendCircle/blob/master/img/2016-02-25_test.gif)
+http://www.jianshu.com/p/4cc3f9c8a713 </br>
+![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-02-25_test.gif)
 
 ***
 ##2016-02-23
