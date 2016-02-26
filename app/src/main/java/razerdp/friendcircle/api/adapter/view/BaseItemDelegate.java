@@ -3,6 +3,7 @@ package razerdp.friendcircle.api.adapter.view;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -243,6 +244,7 @@ public abstract class BaseItemDelegate
             if (curPointer==-1||curPointer>CommentPool.length)return null;
             CommentWidget commentTextView=CommentPool[curPointer];
             CommentPool[curPointer]=null;
+            Log.d("itemDelegate","复用成功---- 当前的游标为： "+curPointer);
             curPointer--;
             return commentTextView;
         }
@@ -251,6 +253,7 @@ public abstract class BaseItemDelegate
             if (curPointer==-1||curPointer<CommentPool.length-1) {
                 curPointer++;
                 CommentPool[curPointer] = commentTextView;
+                Log.d("itemDelegate","入池成功---- 当前的游标为： "+curPointer);
                 return true;
             }
             return false;
