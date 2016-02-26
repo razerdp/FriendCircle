@@ -246,6 +246,7 @@ public abstract class BaseItemDelegate
             curPointer--;
             return commentTextView;
         }
+
         public synchronized boolean put(CommentWidget commentTextView){
             if (curPointer==-1||curPointer<CommentPool.length-1) {
                 curPointer++;
@@ -254,6 +255,7 @@ public abstract class BaseItemDelegate
             }
             return false;
         }
+
         public void clearPool(){
             for (int i = 0; i < CommentPool.length; i++) {
                 CommentPool[i]=null;
