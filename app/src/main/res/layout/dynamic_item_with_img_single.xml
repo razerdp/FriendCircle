@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <include layout="@layout/include_item_header"/>
+
+    <RelativeLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="74dp"
+        android:layout_marginRight="@dimen/item_padding"
+        tools:background="@android:color/holo_red_light">
+
+        <ImageView
+            android:id="@+id/img_single"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitStart"
+            tools:src="@drawable/test_wallpic"/>
+
+    </RelativeLayout>
+
+    <include layout="@layout/include_item_bottom"/>
+    <!--点赞控件/评论控件-->
+
+</LinearLayout>

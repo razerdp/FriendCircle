@@ -14,4 +14,7 @@ public class DynamicType {
     public static final int TYPE_VIDEO = 12;
     public static final int TYPE_SHARE_WEB = 13;
     public static final int TYPE_AD = 14;
+
+    //仅仅只有一张图片
+    public static final int TYPE_IMG_SINGLE=9;
 }
