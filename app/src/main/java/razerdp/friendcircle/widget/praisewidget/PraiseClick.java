@@ -6,7 +6,8 @@ import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.Toast;
-import razerdp.friendcircle.api.data.model.PraiseInfo;
+import razerdp.friendcircle.api.data.entity.UserInfo;
+import razerdp.friendcircle.utils.UIHelper;
 
 /**
  * Created by 大灯泡 on 2016/2/21.
@@ -17,7 +18,7 @@ public class PraiseClick extends ClickableSpan {
     private int color;
     private Context mContext;
     private int textSize;
-    private PraiseInfo mPraiseInfo;
+    private UserInfo mPraiseInfo;
 
     private PraiseClick() {}
 
@@ -30,8 +31,8 @@ public class PraiseClick extends ClickableSpan {
 
     @Override
     public void onClick(View widget) {
-        if (mPraiseInfo.praiseUserInfo!=null)
-        Toast.makeText(mContext, "当前用户名是： " + mPraiseInfo.praiseUserInfo.nick + "   它的ID是： " + mPraiseInfo.praiseUserInfo.userId,
+        if (mPraiseInfo!=null)
+        Toast.makeText(mContext, "当前用户名是： " + mPraiseInfo.nick + "   它的ID是： " + mPraiseInfo.userId,
                 Toast.LENGTH_SHORT).show();
     }
 
@@ -53,15 +54,15 @@ public class PraiseClick extends ClickableSpan {
         private int color;
         private Context mContext;
         private int textSize=16;
-        private PraiseInfo mPraiseInfo;
+        private UserInfo mPraiseInfo;
 
-        public Builder(Context context, @NonNull PraiseInfo info) {
+        public Builder(Context context, @NonNull UserInfo info) {
             mContext = context;
             mPraiseInfo=info;
         }
 
         public Builder setTextSize(int textSize) {
-            this.textSize = textSize;
+            this.textSize = UIHelper.sp2px(mContext,textSize);
             return this;
         }
 

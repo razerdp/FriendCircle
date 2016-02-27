@@ -5,12 +5,8 @@ import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
-import razerdp.friendcircle.api.data.model.CommentInfo;
-import razerdp.friendcircle.api.data.model.PraiseInfo;
-import razerdp.friendcircle.api.data.model.UserInfo;
-import razerdp.friendcircle.widget.praisewidget.PraiseClick;
+import razerdp.friendcircle.api.data.entity.UserInfo;
+import razerdp.friendcircle.utils.UIHelper;
 
 /**
  * Created by 大灯泡 on 2016/2/23.
@@ -53,7 +49,7 @@ public class CommentClick extends ClickableSpan {
     public static class Builder {
         private int color;
         private Context mContext;
-        private int textSize=14;
+        private int textSize=16;
         private UserInfo mUserInfo;
 
         public Builder(Context context, @NonNull UserInfo info) {
@@ -62,7 +58,7 @@ public class CommentClick extends ClickableSpan {
         }
 
         public Builder setTextSize(int textSize) {
-            this.textSize = textSize;
+            this.textSize = UIHelper.sp2px(mContext,textSize);
             return this;
         }
 
