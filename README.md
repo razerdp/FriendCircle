@@ -23,5 +23,25 @@
 
 另外，因为在下木有服务器的原因，所以一切数据只能本地模拟，也就导致小视频功能也许没法实现。
 
-#####最后：
-本项目完全开源，仅供学习之用，所以LICENSE什么的，就算了，在下只能保证在实现朋友圈前不会太监（不更新），但不能保证更新间隔，因为有些地方需要细细想下，而且也要控制时间，毕竟在下还得做毕业设计的说。
+#####关于许可，在下使用MIT咯- -：
+The MIT License (MIT)
+
+Copyright (c) [2016] [razerdp]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
