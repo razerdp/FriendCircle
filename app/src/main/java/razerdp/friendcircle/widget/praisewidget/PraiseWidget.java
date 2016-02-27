@@ -7,14 +7,13 @@ import android.os.Build;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.LruCache;
 import android.widget.TextView;
 import java.util.List;
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.api.data.model.UserInfo;
+import razerdp.friendcircle.api.data.entity.UserInfo;
 import razerdp.friendcircle.widget.CustomImageSpan;
 import razerdp.friendcircle.widget.SpannableStringBuilderAllVer;
 

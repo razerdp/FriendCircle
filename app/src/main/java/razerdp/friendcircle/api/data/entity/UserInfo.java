@@ -1,8 +1,7 @@
-package razerdp.friendcircle.api.data.model;
+package razerdp.friendcircle.api.data.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import java.io.Serializable;
 
 /**
  * Created by 大灯泡 on 2016/2/23.

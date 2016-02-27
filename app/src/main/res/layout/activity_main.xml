@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="razerdp.friendcircle.MainActivity">
+    tools:context=".ui.activity.FriendCircleDemoActivity">
 
     <razerdp.friendcircle.widget.ptrwidget.FriendCirclePtrListView
         android:id="@+id/listview"

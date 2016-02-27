@@ -12,7 +12,7 @@ public class FriendCircleApp extends Application {
     public static Context appContext;
 
     //是否在宿舍。。。。
-    public static boolean isAtHome=true;
+    public static boolean isAtHome=false;
 
     @Override
     public void onCreate() {
@@ -22,6 +22,6 @@ public class FriendCircleApp extends Application {
     }
 
     public static String getRootUrl(){
-        return isAtHome?"http://192.168.199.105/momentsList":"http://10.0.0.165/momentsList";
+        return isAtHome?"http://192.168.199.105":"http://10.0.0.165";
     }
 }

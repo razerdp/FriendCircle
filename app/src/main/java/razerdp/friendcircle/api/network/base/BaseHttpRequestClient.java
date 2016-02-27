@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
+import razerdp.friendcircle.api.interfaces.BaseResponseListener;
 
 /**
  * Created by 大灯泡 on 2016/2/9.

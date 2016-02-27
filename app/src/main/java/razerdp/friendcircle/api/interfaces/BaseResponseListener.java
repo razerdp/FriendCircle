@@ -1,4 +1,6 @@
-package razerdp.friendcircle.api.network.base;
+package razerdp.friendcircle.api.interfaces;
+
+import razerdp.friendcircle.api.network.base.BaseResponse;
 
 /**
  * Created by 大灯泡 on 2016/2/9.

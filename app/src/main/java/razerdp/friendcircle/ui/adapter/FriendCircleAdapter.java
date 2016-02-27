@@ -1,8 +1,8 @@
-package razerdp.friendcircle.ui;
+package razerdp.friendcircle.ui.adapter;
 
 import android.app.Activity;
 import razerdp.friendcircle.api.adapter.CircleBaseAdapter;
-import razerdp.friendcircle.api.data.model.MomentsInfo;
+import razerdp.friendcircle.api.data.entity.MomentsInfo;
 
 /**
  * Created by 大灯泡 on 2016/2/16.

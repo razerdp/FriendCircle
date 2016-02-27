@@ -4,12 +4,11 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.TextView;
-import razerdp.friendcircle.api.data.model.CommentInfo;
+import razerdp.friendcircle.api.data.entity.CommentInfo;
 import razerdp.friendcircle.widget.SpannableStringBuilderAllVer;
 
 /**

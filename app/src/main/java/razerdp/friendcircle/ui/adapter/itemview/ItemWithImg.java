@@ -1,20 +1,19 @@
-package razerdp.friendcircle.ui.itemview;
+package razerdp.friendcircle.ui.adapter.itemview;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.view.View;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.api.adapter.view.BaseItemDelegate;
-import razerdp.friendcircle.api.data.model.MomentsInfo;
+import razerdp.friendcircle.api.data.entity.MomentsInfo;
 
 /**
  * Created by 大灯泡 on 2016/2/25.
- * 只有文字
- * type=10
+ * 图文
+ * type=13
  */
-public class ItemOnlyChar extends BaseItemDelegate {
+public class ItemWithImg extends BaseItemDelegate {
 
-    public ItemOnlyChar(){}
+    public ItemWithImg(){}
 
     @Override
     protected void bindData(int position, @NonNull View v, @NonNull MomentsInfo data, int dynamicType) {
@@ -23,7 +22,7 @@ public class ItemOnlyChar extends BaseItemDelegate {
 
     @Override
     public int getViewRes() {
-        return R.layout.dynamic_item_only_char;
+        return R.layout.dynamic_item_with_img;
     }
 
     @Override

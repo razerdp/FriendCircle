@@ -1,4 +1,4 @@
-package razerdp.friendcircle.api.data.model;
+package razerdp.friendcircle.api.data.entity;
 
 import razerdp.friendcircle.widget.commentwidget.CommentWidget;
 

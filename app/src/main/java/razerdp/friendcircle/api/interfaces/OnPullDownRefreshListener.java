@@ -1,11 +1,11 @@
-package razerdp.friendcircle.api.ptrwidget;
+package razerdp.friendcircle.api.interfaces;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 
 /**
  * Created by 大灯泡 on 2016/2/9.
- * 加载更多接口
+ * 下拉刷新接口
  */
-public interface OnLoadMoreRefreshListener {
+public interface OnPullDownRefreshListener {
     void onRefreshing(PtrFrameLayout frame);
 }

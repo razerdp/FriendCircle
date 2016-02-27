@@ -1,19 +1,18 @@
-package razerdp.friendcircle.ui;
+package razerdp.friendcircle.ui.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import java.util.ArrayList;
 import java.util.List;
-import razerdp.friendcircle.api.data.model.MomentsInfo;
+import razerdp.friendcircle.api.data.entity.MomentsInfo;
 import razerdp.friendcircle.api.network.base.BaseResponse;
-import razerdp.friendcircle.api.network.base.BaseResponseListener;
-import razerdp.friendcircle.api.ptrwidget.OnLoadMoreRefreshListener;
-import razerdp.friendcircle.api.ptrwidget.OnPullDownRefreshListener;
-import razerdp.friendcircle.api.ptrwidget.PullMode;
+import razerdp.friendcircle.api.interfaces.BaseResponseListener;
+import razerdp.friendcircle.api.interfaces.OnLoadMoreRefreshListener;
+import razerdp.friendcircle.api.interfaces.OnPullDownRefreshListener;
+import razerdp.friendcircle.api.data.ptrwidget.PullMode;
 import razerdp.friendcircle.utils.ToastUtils;
 import razerdp.friendcircle.widget.ptrwidget.FriendCirclePtrListView;
 

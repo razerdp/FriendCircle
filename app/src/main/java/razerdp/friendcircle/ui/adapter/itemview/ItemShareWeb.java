@@ -1,10 +1,10 @@
-package razerdp.friendcircle.ui.itemview;
+package razerdp.friendcircle.ui.adapter.itemview;
 
 import android.support.annotation.NonNull;
 import android.view.View;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.api.adapter.view.BaseItemDelegate;
-import razerdp.friendcircle.api.data.model.MomentsInfo;
+import razerdp.friendcircle.api.data.entity.MomentsInfo;
 
 /**
  * Created by 大灯泡 on 2016/2/25.

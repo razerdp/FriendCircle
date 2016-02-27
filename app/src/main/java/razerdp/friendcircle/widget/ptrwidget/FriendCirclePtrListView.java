@@ -16,10 +16,10 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
 import in.srain.cube.views.ptr.PtrUIHandler;
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.api.ptrwidget.OnLoadMoreRefreshListener;
-import razerdp.friendcircle.api.ptrwidget.OnPullDownRefreshListener;
-import razerdp.friendcircle.api.ptrwidget.PullMode;
-import razerdp.friendcircle.api.ptrwidget.PullState;
+import razerdp.friendcircle.api.interfaces.OnLoadMoreRefreshListener;
+import razerdp.friendcircle.api.interfaces.OnPullDownRefreshListener;
+import razerdp.friendcircle.api.data.ptrwidget.PullMode;
+import razerdp.friendcircle.api.data.ptrwidget.PullState;
 
 /**
  * Created by 大灯泡 on 2016/2/9.
