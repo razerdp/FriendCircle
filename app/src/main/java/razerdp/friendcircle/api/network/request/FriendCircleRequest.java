@@ -7,6 +7,7 @@ import java.util.Locale;
 import org.json.JSONException;
 import org.json.JSONObject;
 import razerdp.friendcircle.api.FriendCircleApp;
+import razerdp.friendcircle.api.data.DynamicType;
 import razerdp.friendcircle.api.data.entity.HostInfo;
 import razerdp.friendcircle.api.data.entity.MomentsInfo;
 import razerdp.friendcircle.api.network.base.BaseHttpRequestClient;
@@ -40,8 +41,21 @@ public class FriendCircleRequest extends BaseHttpRequestClient {
         hostInfo= JSONUtil.toObject(json.optString("hostInfo"),HostInfo.class);
         List<MomentsInfo> momentsInfos=JSONUtil.toList(json.optString("moments"),new TypeToken<ArrayList<MomentsInfo>>(){}
                 .getType());
-        response.setData(momentsInfos);
         setStart(start);
+
+        //手动判断
+        if (momentsInfos != null) {
+            for (int i = 0; i < momentsInfos.size(); i++) {
+                MomentsInfo momentsInfo = momentsInfos.get(i);
+                if (momentsInfo.dynamicInfo != null &&
+                        momentsInfo.dynamicInfo.dynamicType == DynamicType.TYPE_WITH_IMG) {
+                    if (momentsInfo.content.imgurl != null && momentsInfo.content.imgurl.size() == 1) {
+                        momentsInfo.dynamicInfo.dynamicType = DynamicType.TYPE_IMG_SINGLE;
+                    }
+                }
+            }
+        }
+        response.setData(momentsInfos);
     }
 
     public int getStart() {
