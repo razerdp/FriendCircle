@@ -1,5 +1,13 @@
 # 更新日志
 
+##2016-02-27
+内容页 - 图文（单张）
+代码解析地址：</br>
+http://www.jianshu.com/p/885538a261ea </br>
+图片预览：</br>
+![](https://github.com/razerdp/FriendCircle/blob/main-dev/single_image.gif)
+
+***
 ##2016-02-26~27
 评论区控件采用池，进一步优化。
 代码解析地址：</br>
