@@ -40,6 +40,7 @@ public class FriendCircleRequest extends BaseHttpRequestClient {
         List<MomentsInfo> momentsInfos=JSONUtil.toList(json.optString("moments"),new TypeToken<ArrayList<MomentsInfo>>(){}
                 .getType());
         response.setData(momentsInfos);
+        setStart(start);
     }
 
     public int getStart() {
