@@ -163,6 +163,7 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
     public void onRefreshBegin(PtrFrameLayout frame) {
         curMode = PullMode.FROM_START;
         loadmoreState = PullState.NORMAL;
+        mHeader.setPullMode(curMode);
         if (mOnPullDownRefreshListener != null) mOnPullDownRefreshListener.onRefreshing(frame);
     }
 
@@ -233,6 +234,7 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
                 footerHandler.onUIReset(this);
                 break;
             case REFRESHING:
+                mHeader.setPullMode(curMode);
                 footerHandler.onUIRefreshBegin(this);
                 if (mOnLoadMoreRefreshListener != null) mOnLoadMoreRefreshListener.onRefreshing(this);
                 break;

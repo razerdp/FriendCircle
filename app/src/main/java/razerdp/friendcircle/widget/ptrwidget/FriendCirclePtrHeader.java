@@ -18,6 +18,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrUIHandler;
 import in.srain.cube.views.ptr.indicator.PtrIndicator;
 import razerdp.friendcircle.R;
+import razerdp.friendcircle.api.data.ptrwidget.PullMode;
 import razerdp.friendcircle.api.data.ptrwidget.PullState;
 import razerdp.friendcircle.utils.SmoothChangeThread;
 
@@ -37,6 +38,8 @@ public class FriendCirclePtrHeader extends RelativeLayout {
 
     //当前状态
     private PullState mPullState;
+    //当前模式，加载更多的时候刷新的icon无需执行动画
+    private PullMode mPullMode;
 
     public FriendCirclePtrHeader(Context context) {
         this(context, null);
@@ -109,7 +112,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
         @Override
         public void onUIRefreshComplete(PtrFrameLayout frame) {
             mPullState = PullState.NORMAL;
-            if (mRotateIcon==null)return;
+            if (mRotateIcon == null) return;
             /**采取通用插值器线程实现*/
            /* if (mSmoothChangeThread == null) {
                 mSmoothChangeThread = SmoothChangeThread.CreateLinearInterpolator(mRotateIcon,
@@ -128,20 +131,22 @@ public class FriendCirclePtrHeader extends RelativeLayout {
             }
             mRotateIcon.post(mSmoothChangeThread);*/
 
-            /**采取valueAnimator*/
-            if (mValueAnimator==null){
-                mValueAnimator=ValueAnimator.ofInt(frame.getOffsetToRefresh(),0);
-                mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        int result= (int) animation.getAnimatedValue();
-                        updateRotateAnima(result);
-                        mRotateIcon.setRotation(-(result << 1));
-                    }
-                });
-                mValueAnimator.setDuration(300);
+            if (mPullMode == PullMode.FROM_START) {
+                /**采取valueAnimator*/
+                if (mValueAnimator == null) {
+                    mValueAnimator = ValueAnimator.ofInt(frame.getOffsetToRefresh(), 0);
+                    mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            int result = (int) animation.getAnimatedValue();
+                            updateRotateAnima(result);
+                            mRotateIcon.setRotation(-(result << 1));
+                        }
+                    });
+                    mValueAnimator.setDuration(300);
+                }
+                mValueAnimator.start();
             }
-            mValueAnimator.start();
         }
 
         /**位移更新重载*/
@@ -205,5 +210,13 @@ public class FriendCirclePtrHeader extends RelativeLayout {
 
     public PullState getPullState() {
         return mPullState;
+    }
+
+    public PullMode getPullMode() {
+        return mPullMode;
+    }
+
+    public void setPullMode(PullMode pullMode) {
+        mPullMode = pullMode;
     }
 }
