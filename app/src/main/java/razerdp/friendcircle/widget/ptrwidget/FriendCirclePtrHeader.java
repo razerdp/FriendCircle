@@ -18,7 +18,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrUIHandler;
 import in.srain.cube.views.ptr.indicator.PtrIndicator;
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.api.ptrwidget.PullState;
+import razerdp.friendcircle.api.data.ptrwidget.PullState;
 import razerdp.friendcircle.utils.SmoothChangeThread;
 
 /**

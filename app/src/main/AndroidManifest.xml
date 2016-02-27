@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:name=".api.FriendCircleApp"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.activity.FriendCircleDemoActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

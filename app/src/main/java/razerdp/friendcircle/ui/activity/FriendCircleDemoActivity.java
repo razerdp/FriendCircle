@@ -1,15 +1,15 @@
-package razerdp.friendcircle;
+package razerdp.friendcircle.ui.activity;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import razerdp.friendcircle.R;
 import razerdp.friendcircle.api.network.base.BaseResponse;
-import razerdp.friendcircle.api.request.FriendCircleRequest;
-import razerdp.friendcircle.ui.FriendCircleBaseActivity;
+import razerdp.friendcircle.api.network.request.FriendCircleRequest;
 import razerdp.friendcircle.utils.FriendCircleAdapterUtil;
 
-public class MainActivity extends FriendCircleBaseActivity {
+public class FriendCircleDemoActivity extends FriendCircleBaseActivity {
     private FriendCircleRequest mCircleRequest;
 
 

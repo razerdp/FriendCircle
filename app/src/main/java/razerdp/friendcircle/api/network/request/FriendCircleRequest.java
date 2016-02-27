@@ -1,4 +1,4 @@
-package razerdp.friendcircle.api.request;
+package razerdp.friendcircle.api.network.request;
 
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
@@ -7,8 +7,8 @@ import java.util.Locale;
 import org.json.JSONException;
 import org.json.JSONObject;
 import razerdp.friendcircle.api.FriendCircleApp;
-import razerdp.friendcircle.api.data.model.HostInfo;
-import razerdp.friendcircle.api.data.model.MomentsInfo;
+import razerdp.friendcircle.api.data.entity.HostInfo;
+import razerdp.friendcircle.api.data.entity.MomentsInfo;
 import razerdp.friendcircle.api.network.base.BaseHttpRequestClient;
 import razerdp.friendcircle.api.network.base.BaseResponse;
 import razerdp.friendcircle.utils.JSONUtil;
@@ -31,7 +31,8 @@ public class FriendCircleRequest extends BaseHttpRequestClient {
     @Override
     public String setUrl() {
         return String.format(Locale.getDefault(),
-                FriendCircleApp.getRootUrl() + "?userid=%d" + "&start=%d" + "&count=%d", userId, start,count);
+                FriendCircleApp.getRootUrl() + "/momentsList?userid=%d" + "&start=%d" + "&count=%d", userId, start,
+                count);
     }
 
     @Override

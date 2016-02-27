@@ -1,4 +1,4 @@
-package razerdp.friendcircle.api.ptrwidget;
+package razerdp.friendcircle.api.data.ptrwidget;
 
 /**
  * Created by 大灯泡 on 2016/2/9.

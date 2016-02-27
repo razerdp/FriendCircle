@@ -1,4 +1,4 @@
-package razerdp.friendcircle.api.data.model;
+package razerdp.friendcircle.api.data.entity;
 
 /**
  * Created by 大灯泡 on 2016/2/25.
