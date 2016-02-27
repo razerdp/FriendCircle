@@ -4,7 +4,7 @@
 欢迎来到本项目，这个项目是一个尝试性项目，目的在于从无到有撸出一个微信朋友圈。</br>
 
 代码实现逻辑（简书合集）：http://www.jianshu.com/notebooks/3224048/latest </br>
-更新日志请点击（开发日志，主分支日志更新频率低）：https://github.com/razerdp/FriendCircle/blob/main-dev/UPDATE_LOG.md
+更新日志请点击：https://github.com/razerdp/FriendCircle/blob/main-dev/UPDATE_LOG.md
 </br>
 ###如果您有PR申请，请提交到dev分支，谢谢-V-
 </br>

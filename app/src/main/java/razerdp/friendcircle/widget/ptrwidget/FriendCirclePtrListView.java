@@ -16,10 +16,10 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
 import in.srain.cube.views.ptr.PtrUIHandler;
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.api.ptrwidget.OnLoadMoreRefreshListener;
-import razerdp.friendcircle.api.ptrwidget.OnPullDownRefreshListener;
-import razerdp.friendcircle.api.ptrwidget.PullMode;
-import razerdp.friendcircle.api.ptrwidget.PullState;
+import razerdp.friendcircle.api.interfaces.OnLoadMoreRefreshListener;
+import razerdp.friendcircle.api.interfaces.OnPullDownRefreshListener;
+import razerdp.friendcircle.api.data.ptrwidget.PullMode;
+import razerdp.friendcircle.api.data.ptrwidget.PullState;
 
 /**
  * Created by 大灯泡 on 2016/2/9.
@@ -144,6 +144,8 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
         if (osFooter != null) {
             mListView.setOverscrollFooter(osFooter);
         }
+        mListView.setHeaderDividersEnabled(false);
+        mListView.setFooterDividersEnabled(false);
         a.recycle();
     }
 
@@ -161,6 +163,7 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
     public void onRefreshBegin(PtrFrameLayout frame) {
         curMode = PullMode.FROM_START;
         loadmoreState = PullState.NORMAL;
+        mHeader.setPullMode(curMode);
         if (mOnPullDownRefreshListener != null) mOnPullDownRefreshListener.onRefreshing(frame);
     }
 
@@ -231,6 +234,7 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
                 footerHandler.onUIReset(this);
                 break;
             case REFRESHING:
+                mHeader.setPullMode(curMode);
                 footerHandler.onUIRefreshBegin(this);
                 if (mOnLoadMoreRefreshListener != null) mOnLoadMoreRefreshListener.onRefreshing(this);
                 break;
