@@ -1,14 +1,18 @@
 # 更新日志
 
-##2016-02-26
+##2016-02-26~27
 评论区控件采用池，进一步优化。
+代码解析地址：</br>
+http://www.jianshu.com/p/ff9788581fb0 </br>
+图片预览：</br>
+![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/comment_text_pool.gif)
 
 ***
 ##2016-02-25
 服务器就绪，暂时合并控件
-图片预览：</br>
 代码解析地址：</br>
 http://www.jianshu.com/p/4cc3f9c8a713 </br>
+图片预览：</br>
 ![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-02-25_test.gif)
 
 ***
@@ -19,17 +23,17 @@ http://www.jianshu.com/p/4cc3f9c8a713 </br>
 ***
 ##2016-02-22
 点赞列表控件
-图片预览：</br>
 代码解析地址：</br>
 http://www.jianshu.com/p/26dd3aad965a </br>
+图片预览：</br>
 ![](https://github.com/razerdp/FriendCircle/blob/master/img/praise_widget.gif)
 
 ***
 ##2016-02-20
 点击展开全文控件实现
-图片预览：</br>
 代码解析地址：</br>
 http://www.jianshu.com/p/80d7f34c5f08 </br>
+图片预览：</br>
 ![](https://github.com/razerdp/FriendCircle/blob/master/img/click_to_show_more.gif)
 
 ***
