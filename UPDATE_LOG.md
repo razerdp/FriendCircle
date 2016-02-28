@@ -1,5 +1,13 @@
 # 更新日志
 
+##2016-02-28
+内容页 - 图文（GridView）
+代码解析地址：</br>
+http://www.jianshu.com/p/3d0cc6882e1a </br>
+图片预览：</br>
+![](http://upload-images.jianshu.io/upload_images/684042-114feffc2a7be669.gif)
+
+***
 ##2016-02-27
 内容页 - 图文（单张）
 代码解析地址：</br>
