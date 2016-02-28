@@ -17,7 +17,6 @@ public class ItemOnlyChar extends BaseItemDelegate {
 
     @Override
     protected void bindData(int position, @NonNull View v, @NonNull MomentsInfo data, int dynamicType) {
-
     }
 
     @Override

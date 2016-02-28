@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.util.List;
 import razerdp.friendcircle.R;
+import razerdp.friendcircle.api.data.DynamicType;
 import razerdp.friendcircle.api.data.entity.CommentInfo;
 import razerdp.friendcircle.api.data.entity.MomentsInfo;
 import razerdp.friendcircle.utils.TimeUtil;
@@ -26,8 +27,10 @@ import razerdp.friendcircle.widget.praisewidget.PraiseWidget;
  * Created by 大灯泡 on 2016/2/16.
  * 基本item封装
  */
-public abstract class BaseItemDelegate
-        implements BaseItemView<MomentsInfo>, View.OnClickListener, View.OnLongClickListener ,ViewGroup.OnHierarchyChangeListener{
+public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
+        View.OnClickListener,
+        View.OnLongClickListener,
+        ViewGroup.OnHierarchyChangeListener {
     protected Activity context;
     //顶部
     protected SuperImageView avatar;
@@ -48,7 +51,7 @@ public abstract class BaseItemDelegate
     private MomentsInfo mInfo;
 
     //评论区的view对象池
-    private static final CommentPool COMMENT_TEXT_POOL=new CommentPool(20);
+    private static final CommentPool COMMENT_TEXT_POOL = new CommentPool(20);
 
     public BaseItemDelegate() {
     }
@@ -72,16 +75,13 @@ public abstract class BaseItemDelegate
         nick.setText(data.userInfo.nick);
         textField.setText(data.textField);
 
-        if (TextUtils.isEmpty(data.textField) && contentLayout != null) {
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) contentLayout.getLayoutParams();
-            params.topMargin = -UIHelper.dipToPx(context, 8);
-            contentLayout.setLayoutParams(params);
+        if (data.dynamicInfo.dynamicType == DynamicType.TYPE_ONLY_CHAR) {
+            contentLayout.setVisibility(View.GONE);
         }
         else {
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) contentLayout.getLayoutParams();
-            params.topMargin = 0;
-            contentLayout.setLayoutParams(params);
+            contentLayout.setVisibility(View.VISIBLE);
         }
+
         createTime.setText(TimeUtil.getTimeString(data.dynamicInfo.createTime));
         setCommentPraiseLayoutVisibility(data);
         //点赞
@@ -92,19 +92,21 @@ public abstract class BaseItemDelegate
 
     /** 绑定共用部分 */
     private void bindView(View v) {
-        avatar = (SuperImageView) v.findViewById(R.id.avatar);
-        nick = (TextView) v.findViewById(R.id.nick);
-        textField = (ClickShowMoreLayout) v.findViewById(R.id.item_text_field);
+        if (avatar == null) avatar = (SuperImageView) v.findViewById(R.id.avatar);
+        if (nick == null) nick = (TextView) v.findViewById(R.id.nick);
+        if (textField == null) textField = (ClickShowMoreLayout) v.findViewById(R.id.item_text_field);
 
-        contentLayout = (RelativeLayout) v.findViewById(R.id.content);
+        if (contentLayout == null) contentLayout = (RelativeLayout) v.findViewById(R.id.content);
 
-        createTime = (TextView) v.findViewById(R.id.create_time);
-        commentImage = (ImageView) v.findViewById(R.id.comment_press);
-        commentButton = (FrameLayout) v.findViewById(R.id.comment_button);
-        commentAndPraiseLayout = (LinearLayout) v.findViewById(R.id.comment_praise_layout);
-        praiseWidget = (PraiseWidget) v.findViewById(R.id.praise);
-        line = v.findViewById(R.id.divider);
-        commentLayout = (LinearLayout) v.findViewById(R.id.comment_layout);
+        if (createTime == null) createTime = (TextView) v.findViewById(R.id.create_time);
+        if (commentImage == null) commentImage = (ImageView) v.findViewById(R.id.comment_press);
+        if (commentButton == null) commentButton = (FrameLayout) v.findViewById(R.id.comment_button);
+        if (commentAndPraiseLayout == null) {
+            commentAndPraiseLayout = (LinearLayout) v.findViewById(R.id.comment_praise_layout);
+        }
+        if (praiseWidget == null) praiseWidget = (PraiseWidget) v.findViewById(R.id.praise);
+        if (line == null) line = v.findViewById(R.id.divider);
+        if (commentLayout == null) commentLayout = (LinearLayout) v.findViewById(R.id.comment_layout);
 
         avatar.setOnClickListener(this);
         nick.setOnClickListener(this);
@@ -166,7 +168,7 @@ public abstract class BaseItemDelegate
             //当前的view少于list的长度，则补充相差的view
             int subCount = commentList.size() - childCount;
             for (int i = 0; i < subCount; i++) {
-                CommentWidget commentWidget =COMMENT_TEXT_POOL.get();
+                CommentWidget commentWidget = COMMENT_TEXT_POOL.get();
                 if (commentWidget == null) {
                     commentWidget = new CommentWidget(context);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -209,13 +211,13 @@ public abstract class BaseItemDelegate
 
     @Override
     public void onChildViewRemoved(View parent, View child) {
-        if (child instanceof CommentWidget)
-            COMMENT_TEXT_POOL.put((CommentWidget)child);
+        if (child instanceof CommentWidget) COMMENT_TEXT_POOL.put((CommentWidget) child);
     }
 
-    public void clearCommentPool(){
+    public void clearCommentPool() {
         COMMENT_TEXT_POOL.clearPool();
     }
+
     //=============================================================
     @Override
     public Activity getActivityContext() {
@@ -230,43 +232,40 @@ public abstract class BaseItemDelegate
     protected abstract void bindData(int position, @NonNull View v, @NonNull MomentsInfo data, final int dynamicType);
 
     //=============================================================pool class
-    static class CommentPool{
+    static class CommentPool {
         private CommentWidget[] CommentPool;
         private int size;
-        private int curPointer=-1;
+        private int curPointer = -1;
 
         public CommentPool(int size) {
             this.size = size;
-            CommentPool=new CommentWidget[size];
+            CommentPool = new CommentWidget[size];
         }
 
-        public synchronized CommentWidget get(){
-            if (curPointer==-1||curPointer>CommentPool.length)return null;
-            CommentWidget commentTextView=CommentPool[curPointer];
-            CommentPool[curPointer]=null;
-            Log.d("itemDelegate","复用成功---- 当前的游标为： "+curPointer);
+        public synchronized CommentWidget get() {
+            if (curPointer == -1 || curPointer > CommentPool.length) return null;
+            CommentWidget commentTextView = CommentPool[curPointer];
+            CommentPool[curPointer] = null;
+            //Log.d("itemDelegate","复用成功---- 当前的游标为： "+curPointer);
             curPointer--;
             return commentTextView;
         }
 
-        public synchronized boolean put(CommentWidget commentTextView){
-            if (curPointer==-1||curPointer<CommentPool.length-1) {
+        public synchronized boolean put(CommentWidget commentTextView) {
+            if (curPointer == -1 || curPointer < CommentPool.length - 1) {
                 curPointer++;
                 CommentPool[curPointer] = commentTextView;
-                Log.d("itemDelegate","入池成功---- 当前的游标为： "+curPointer);
+                //Log.d("itemDelegate","入池成功---- 当前的游标为： "+curPointer);
                 return true;
             }
             return false;
         }
 
-        public void clearPool(){
+        public void clearPool() {
             for (int i = 0; i < CommentPool.length; i++) {
-                CommentPool[i]=null;
+                CommentPool[i] = null;
             }
-            curPointer=-1;
+            curPointer = -1;
         }
     }
-
-
-
 }

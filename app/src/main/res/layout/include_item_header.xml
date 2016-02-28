@@ -7,7 +7,7 @@
     android:paddingTop="@dimen/item_padding"
     android:paddingLeft="@dimen/item_padding"
     android:paddingRight="@dimen/item_padding"
-    android:paddingBottom="10dp">
+    android:paddingBottom="8dp">
 
     <razerdp.friendcircle.widget.SuperImageView
         android:id="@+id/avatar"
