@@ -6,21 +6,17 @@ import android.widget.GridView;
 
 /**
  * Created by 大灯泡 on 2016/2/27.
- * listview嵌套的gridview以及2列时与3列时的Item高度一致。
+ * listview嵌套的gridview
  */
 public class NoScrollGridView extends GridView{
     private static final String TAG = "NoScrollGridView";
 
-    private int columnWidth = 0;
-    private int mHorizontalSpacing;
-    private int mNumColumns;
-
     public NoScrollGridView(Context context) {
-        super(context);
+        this(context,null);
     }
 
     public NoScrollGridView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs,0);
     }
 
     public NoScrollGridView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -36,7 +32,6 @@ public class NoScrollGridView extends GridView{
         } else {
             heightSpec = heightMeasureSpec;
         }
-
         super.onMeasure(widthMeasureSpec, heightSpec);
     }
 }

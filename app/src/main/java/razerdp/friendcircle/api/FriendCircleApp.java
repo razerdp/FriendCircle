@@ -12,7 +12,7 @@ public class FriendCircleApp extends Application {
     public static Context appContext;
 
     //是否在宿舍。。。。
-    public static boolean isAtHome=false;
+    public static boolean isAtHome=true;
 
     @Override
     public void onCreate() {

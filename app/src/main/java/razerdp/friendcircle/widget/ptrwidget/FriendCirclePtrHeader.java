@@ -175,7 +175,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
     };
 
     private void updateRotateAnima(int marginTop) {
-        Log.d(TAG, "curMargin=========" + marginTop);
+        //Log.d(TAG, "curMargin=========" + marginTop);
         if (mRotateIcon == null) return;
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mRotateIcon.getLayoutParams();
         params.topMargin = marginTop;
