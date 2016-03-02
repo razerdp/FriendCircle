@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +19,8 @@ public abstract class MBaseAdapter<T, V extends MViewHolder> extends BaseAdapter
 
     public MBaseAdapter(Context context, List<T> datas) {
         mContext = context;
-        this.datas = datas;
+        this.datas=new ArrayList<>();
+        this.datas.addAll(datas);
         mInflater=LayoutInflater.from(context);
     }
 
