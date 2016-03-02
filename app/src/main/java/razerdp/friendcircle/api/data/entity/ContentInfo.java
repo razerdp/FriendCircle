@@ -8,8 +8,8 @@ import java.util.List;
  */
 public class ContentInfo implements Serializable {
     public List<String> imgurl;
-    private String webUrl;
-    private String webTitle;
-    private long dynamicid;
-    private String webImg;
+    public String webUrl;
+    public String webTitle;
+    public long dynamicid;
+    public String webImg;
 }
