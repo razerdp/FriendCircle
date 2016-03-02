@@ -14,13 +14,31 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="74dp"
         android:layout_marginRight="@dimen/item_padding"
-        tools:background="@android:color/holo_red_light">
+        android:padding="8dp"
+        android:background="#f1f1f1">
+
+        <razerdp.friendcircle.widget.SuperImageView
+            android:id="@+id/web_thumb"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/test_avatar"/>
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+            android:id="@+id/web_title"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_toRightOf="@id/web_thumb"
+            android:layout_marginLeft="5dp"
+            android:gravity="left|center_vertical"
+            android:textColor="@color/normal_font_color"
+            android:textSize="@dimen/normal_font"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="啦啦啦啦啦啦~啦啦啦啦啦啦~啦啦啦啦啦啦~"/>
 
     </RelativeLayout>
+
     <include layout="@layout/include_item_bottom"/>
     <!--点赞控件/评论控件-->
 
