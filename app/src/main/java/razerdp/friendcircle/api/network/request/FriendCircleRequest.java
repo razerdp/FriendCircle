@@ -3,7 +3,6 @@ package razerdp.friendcircle.api.network.request;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import org.json.JSONException;
 import org.json.JSONObject;
 import razerdp.friendcircle.api.FriendCircleApp;
@@ -13,6 +12,7 @@ import razerdp.friendcircle.api.data.entity.MomentsInfo;
 import razerdp.friendcircle.api.network.base.BaseHttpRequestClient;
 import razerdp.friendcircle.api.network.base.BaseResponse;
 import razerdp.friendcircle.utils.JSONUtil;
+import razerdp.friendcircle.utils.RequestUrlUtils;
 
 /**
  * Created by 大灯泡 on 2016/2/25.
@@ -31,16 +31,19 @@ public class FriendCircleRequest extends BaseHttpRequestClient {
 
     @Override
     public String setUrl() {
-        return String.format(Locale.getDefault(),
-                FriendCircleApp.getRootUrl() + "/momentsList?userid=%d" + "&start=%d" + "&count=%d", userId, start,
-                count);
+        return new RequestUrlUtils.Builder().setHost(FriendCircleApp.getRootUrl())
+                                            .setPath("/momentsList/")
+                                            .addParam("userid", userId)
+                                            .addParam("start", start)
+                                            .addParam("count", count)
+                                            .build();
     }
 
     @Override
     public void parseResponse(BaseResponse response, JSONObject json, int start, boolean hasMore) throws JSONException {
-        hostInfo= JSONUtil.toObject(json.optString("hostInfo"),HostInfo.class);
-        List<MomentsInfo> momentsInfos=JSONUtil.toList(json.optString("moments"),new TypeToken<ArrayList<MomentsInfo>>(){}
-                .getType());
+        hostInfo = JSONUtil.toObject(json.optString("hostInfo"), HostInfo.class);
+        List<MomentsInfo> momentsInfos = JSONUtil.toList(json.optString("moments"),
+                new TypeToken<ArrayList<MomentsInfo>>() {}.getType());
         setStart(start);
 
         //手动判断

@@ -11,9 +11,6 @@ import razerdp.friendcircle.api.network.base.VolleyManager;
 public class FriendCircleApp extends Application {
     public static Context appContext;
 
-    //是否在宿舍。。。。
-    public static boolean isAtHome=false;
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -22,6 +19,6 @@ public class FriendCircleApp extends Application {
     }
 
     public static String getRootUrl(){
-        return isAtHome?"http://192.168.199.105":"http://10.0.0.36";
+        return "http://115.28.102.139:8080/myserver";
     }
 }

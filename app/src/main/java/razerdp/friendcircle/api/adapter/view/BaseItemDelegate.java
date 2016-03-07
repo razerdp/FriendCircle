@@ -12,15 +12,18 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.util.List;
+import org.greenrobot.eventbus.EventBus;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.api.data.DynamicType;
 import razerdp.friendcircle.api.data.entity.CommentInfo;
+import razerdp.friendcircle.api.data.entity.DynamicInfo;
 import razerdp.friendcircle.api.data.entity.MomentsInfo;
 import razerdp.friendcircle.utils.TimeUtil;
 import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.ClickShowMoreLayout;
 import razerdp.friendcircle.widget.SuperImageView;
 import razerdp.friendcircle.widget.commentwidget.CommentWidget;
+import razerdp.friendcircle.widget.popup.CommentPopup;
 import razerdp.friendcircle.widget.praisewidget.PraiseWidget;
 
 /**
@@ -30,7 +33,7 @@ import razerdp.friendcircle.widget.praisewidget.PraiseWidget;
 public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
         View.OnClickListener,
         View.OnLongClickListener,
-        ViewGroup.OnHierarchyChangeListener {
+        ViewGroup.OnHierarchyChangeListener{
     protected Activity context;
     //顶部
     protected SuperImageView avatar;
@@ -59,6 +62,8 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
     public BaseItemDelegate(Activity context) {
         this.context = context;
     }
+
+    private CommentPopup mCommentPopup;
 
     @Override
     public void onBindData(int position, @NonNull View v, @NonNull MomentsInfo data, final int dynamicType) {
@@ -107,6 +112,7 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
         if (praiseWidget == null) praiseWidget = (PraiseWidget) v.findViewById(R.id.praise);
         if (line == null) line = v.findViewById(R.id.divider);
         if (commentLayout == null) commentLayout = (LinearLayout) v.findViewById(R.id.comment_layout);
+        if (mCommentPopup==null)mCommentPopup=new CommentPopup(context);
 
         avatar.setOnClickListener(this);
         nick.setOnClickListener(this);
