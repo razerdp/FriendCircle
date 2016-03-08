@@ -22,6 +22,6 @@
     <color name="line_bg">#e5e5e5</color>
 
     <!--点赞popup色值-->
-    <color name="comment_popup_bg">#292929</color>
+    <color name="comment_popup_bg">#4c5154</color>
     <color name="comment_popup_tx_bg">#c7c7c7</color>
 </resources>

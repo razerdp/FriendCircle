@@ -1,5 +1,14 @@
 # 更新日志
 
+##2016-03-08
+评论弹出popup
+代码解析地址：</br>
+http://www.jianshu.com/p/15a9fe8f917f </br>
+图片预览：</br>
+![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-03-08_comment_popup.gif)
+
+***
+
 ##2016-03-01
 内容页 - 网页分享
 

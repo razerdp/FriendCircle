@@ -10,7 +10,7 @@
         android:id="@+id/comment_popup_contianer"
         android:layout_width="180dp"
         android:orientation="horizontal"
-        android:layout_height="40dp"
+        android:layout_height="35dp"
         android:background="@drawable/bg_comment_popup"
         android:weightSum="2"
         android:clipChildren="false"

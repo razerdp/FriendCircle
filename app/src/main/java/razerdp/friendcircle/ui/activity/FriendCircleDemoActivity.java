@@ -14,7 +14,8 @@ import razerdp.friendcircle.utils.FriendCircleAdapterUtil;
 public class FriendCircleDemoActivity extends FriendCircleBaseActivity {
     private FriendCircleRequest mCircleRequest;
 
-    public void onEventMainThread(Events events) {
+    @Override
+    protected void onEventMainThread(Events events) {
         if (events == null || events.getEvent() == null) return;
         if (events.getEvent() instanceof Events.CallToRefresh) {
             if (((Events.CallToRefresh) events.getEvent()).needRefresh) mCircleRequest.execute();

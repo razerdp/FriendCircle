@@ -7,6 +7,8 @@ import android.widget.ImageView;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import java.util.ArrayList;
 import java.util.List;
+import org.greenrobot.eventbus.Subscribe;
+import razerdp.friendcircle.api.data.Events;
 import razerdp.friendcircle.api.data.entity.MomentsInfo;
 import razerdp.friendcircle.api.network.base.BaseResponse;
 import razerdp.friendcircle.api.interfaces.BaseResponseListener;
@@ -25,6 +27,10 @@ public abstract class FriendCircleBaseActivity extends AppCompatActivity impleme
     protected FriendCirclePtrListView mListView;
     protected List<MomentsInfo> mMomentsInfos = new ArrayList<>();
     protected BaseAdapter mAdapter;
+
+    @Subscribe
+    protected void onEventMainThread(Events events) {
+    }
 
     public void bindListView(int listResId, View headerView, BaseAdapter adapter) {
         this.mAdapter = adapter;
