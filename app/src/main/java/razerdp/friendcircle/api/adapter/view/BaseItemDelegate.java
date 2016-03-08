@@ -202,6 +202,16 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()){
+            // 评论按钮
+            case R.id.comment_button:
+                if (mInfo==null)return;
+                mCommentPopup.setDynamicInfo(mInfo.dynamicInfo);
+                mCommentPopup.showPopupWindow(commentImage);
+                break;
+            default:
+                break;
+        }
 
     }
 

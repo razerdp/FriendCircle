@@ -137,7 +137,7 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
             //参照点为view的右上角，偏移值为：x方向距离参照view的一定倍数距离
             //垂直方向自身减去popup自身高度的一半（确保在中间）
             mPopupWindow.showAtLocation(v, Gravity.RIGHT | Gravity.TOP, (int) (v.getWidth() * 1.8),
-                    viewLocation[1] - UIHelper.dipToPx(mContext, 15f));
+                    viewLocation[1] - UIHelper.dipToPx(mContext, 10f));
 
             if (getShowAnimation() != null && getAnimaView() != null) {
                 getAnimaView().startAnimation(getShowAnimation());
