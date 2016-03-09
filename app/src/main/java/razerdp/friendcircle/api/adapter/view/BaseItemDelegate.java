@@ -15,9 +15,12 @@ import java.util.List;
 import org.greenrobot.eventbus.EventBus;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.api.data.DynamicType;
+import razerdp.friendcircle.api.data.controller.BaseDynamicController;
+import razerdp.friendcircle.api.data.controller.DynamicController;
 import razerdp.friendcircle.api.data.entity.CommentInfo;
 import razerdp.friendcircle.api.data.entity.DynamicInfo;
 import razerdp.friendcircle.api.data.entity.MomentsInfo;
+import razerdp.friendcircle.api.network.request.RequestType;
 import razerdp.friendcircle.utils.TimeUtil;
 import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.ClickShowMoreLayout;
@@ -51,6 +54,7 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
     //中间内容层
     protected RelativeLayout contentLayout;
 
+    private BaseDynamicController mDynamicController;
     private MomentsInfo mInfo;
 
     //评论区的view对象池
@@ -207,6 +211,19 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
             case R.id.comment_button:
                 if (mInfo==null)return;
                 mCommentPopup.setDynamicInfo(mInfo.dynamicInfo);
+                mCommentPopup.setOnCommentPopupClickListener(new CommentPopup.OnCommentPopupClickListener() {
+                    @Override
+                    public void onLikeClick(View v, DynamicInfo info) {
+                        if (mDynamicController!=null){
+                            mDynamicController.addPraise(1001,info.dynamicId,RequestType.ADD_PRAISE);
+                        }
+                    }
+
+                    @Override
+                    public void onCommentClick(View v, DynamicInfo info) {
+
+                    }
+                });
                 mCommentPopup.showPopupWindow(commentImage);
                 break;
             default:
@@ -243,6 +260,16 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
     @Override
     public void setActivityContext(Activity context) {
         this.context = context;
+    }
+
+    @Override
+    public void setController(BaseDynamicController controller) {
+        mDynamicController=controller;
+    }
+
+    @Override
+    public BaseDynamicController getController() {
+        return mDynamicController;
     }
 
     protected abstract void bindData(int position, @NonNull View v, @NonNull MomentsInfo data, final int dynamicType);

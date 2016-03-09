@@ -18,7 +18,7 @@ public class DynamicAddPraiseRequest extends BaseHttpRequestClient {
 
     @Override
     public String setUrl() {
-        return new RequestUrlUtils.Builder().setPath(FriendCircleApp.getRootUrl())
+        return new RequestUrlUtils.Builder().setHost(FriendCircleApp.getRootUrl())
                                             .setPath("/dynamic/addpraise/")
                                             .addParam("userid", userid)
                                             .addParam("dyanmicid", dynamicid)
