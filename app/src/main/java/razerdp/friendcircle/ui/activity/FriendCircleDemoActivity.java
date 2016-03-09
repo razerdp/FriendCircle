@@ -7,31 +7,34 @@ import android.widget.ImageView;
 import org.greenrobot.eventbus.EventBus;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.api.data.Events;
+import razerdp.friendcircle.api.data.controller.DynamicController;
 import razerdp.friendcircle.api.network.base.BaseResponse;
 import razerdp.friendcircle.api.network.request.FriendCircleRequest;
 import razerdp.friendcircle.utils.FriendCircleAdapterUtil;
 
-public class FriendCircleDemoActivity extends FriendCircleBaseActivity {
+public class FriendCircleDemoActivity extends FriendCircleBaseActivity implements DynamicController.CallBack {
     private FriendCircleRequest mCircleRequest;
 
-    @Override
+    private DynamicController mDynamicController;
+
+    // 方案二，预留
+ /*   @Override
     protected void onEventMainThread(Events events) {
         if (events == null || events.getEvent() == null) return;
         if (events.getEvent() instanceof Events.CallToRefresh) {
             if (((Events.CallToRefresh) events.getEvent()).needRefresh) mCircleRequest.execute();
         }
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mDynamicController = new DynamicController(this, this);
         View header = LayoutInflater.from(this).inflate(R.layout.item_header, null, false);
-        bindListView(R.id.listview, header, FriendCircleAdapterUtil.getAdapter(this, mMomentsInfos));
+        bindListView(R.id.listview, header, FriendCircleAdapterUtil.getAdapter(this, mMomentsInfos,mDynamicController));
         initReq();
         //mListView.manualRefresh();
-
-        EventBus.getDefault().register(this);
     }
 
     private void initReq() {
@@ -61,9 +64,15 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity {
     }
 
     @Override
+    public void onResultCallBack(BaseResponse response) {
+        // 预留
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        mDynamicController.destroyController();
+        mDynamicController=null;
     }
 }
 

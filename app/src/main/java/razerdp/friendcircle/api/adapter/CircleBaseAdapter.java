@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import razerdp.friendcircle.api.adapter.view.BaseItemView;
+import razerdp.friendcircle.api.data.controller.BaseDynamicController;
+import razerdp.friendcircle.api.data.controller.DynamicController;
 
 /**
  * Created by 大灯泡 on 2016/2/16.
@@ -24,12 +26,16 @@ public abstract class CircleBaseAdapter<T> extends BaseAdapter {
     protected Activity context;
     protected LayoutInflater mInflater;
 
+    protected BaseDynamicController mDynamicController;
+
     public CircleBaseAdapter(Activity context, Builder<T> mBuilder) {
         this.context = context;
         mInflater = LayoutInflater.from(context);
         datas=mBuilder.datas;
         itemInfos = mBuilder.itemInfos;
+        mDynamicController=mBuilder.mDynamicController;
     }
+
 
     @Override
     public int getCount() {
@@ -82,6 +88,7 @@ public abstract class CircleBaseAdapter<T> extends BaseAdapter {
         view.setActivityContext(context);
         view.onFindView(convertView);
         view.onBindData(position, convertView, getItem(position), dynamicType);
+        if (view.getController()==null)view.setController(mDynamicController);
 
         return convertView;
     }
@@ -90,6 +97,7 @@ public abstract class CircleBaseAdapter<T> extends BaseAdapter {
         private HashMap<Integer, Class<? extends BaseItemView<T>>> itemInfos;
         private Activity context;
         private List<T> datas;
+        private BaseDynamicController mDynamicController;
 
         public Builder() {
             itemInfos = new HashMap<>();
@@ -102,6 +110,11 @@ public abstract class CircleBaseAdapter<T> extends BaseAdapter {
 
         public Builder addType(int type, Class<? extends BaseItemView<T>> viewClass) {
             itemInfos.put(type, viewClass);
+            return this;
+        }
+
+        public Builder setController(BaseDynamicController controller){
+            this.mDynamicController=controller;
             return this;
         }
 

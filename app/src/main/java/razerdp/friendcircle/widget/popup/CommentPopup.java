@@ -177,6 +177,7 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
 
     public void setDynamicInfo(DynamicInfo info) {
         if (info == null) return;
+        mDynamicInfo=info;
         if (info.praiseState == CommonValue.HAS_PRAISE) {
             mLikeText.setText("取消");
         }
