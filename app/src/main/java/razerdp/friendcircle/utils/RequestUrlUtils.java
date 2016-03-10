@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * Created by 大灯泡 on 2016/3/7.
+ * 请求url构造工具类
  */
 public class RequestUrlUtils {
 
