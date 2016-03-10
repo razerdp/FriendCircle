@@ -6,7 +6,7 @@
     android:paddingLeft="74dp"
     android:paddingRight="@dimen/item_padding"
     android:paddingBottom="16dp"
-    android:layout_marginTop="10dp">
+    android:layout_marginTop="5dp">
 
     <TextView
         android:id="@+id/create_time"

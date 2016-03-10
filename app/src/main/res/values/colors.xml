@@ -20,4 +20,8 @@
     <color name="item_bottom_text">#8e8e8e</color>
     <color name="item_showmore_click">#bc2adb86</color>
     <color name="line_bg">#e5e5e5</color>
+
+    <!--点赞popup色值-->
+    <color name="comment_popup_bg">#4c5154</color>
+    <color name="comment_popup_tx_bg">#c7c7c7</color>
 </resources>

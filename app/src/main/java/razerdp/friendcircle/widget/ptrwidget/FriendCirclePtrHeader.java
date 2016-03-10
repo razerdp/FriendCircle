@@ -5,7 +5,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -18,8 +17,8 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrUIHandler;
 import in.srain.cube.views.ptr.indicator.PtrIndicator;
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.api.data.ptrwidget.PullMode;
-import razerdp.friendcircle.api.data.ptrwidget.PullState;
+import razerdp.friendcircle.app.config.ptrwidget.PullMode;
+import razerdp.friendcircle.app.config.ptrwidget.PullState;
 import razerdp.friendcircle.utils.SmoothChangeThread;
 
 /**
@@ -175,7 +174,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
     };
 
     private void updateRotateAnima(int marginTop) {
-        Log.d(TAG, "curMargin=========" + marginTop);
+        //Log.d(TAG, "curMargin=========" + marginTop);
         if (mRotateIcon == null) return;
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mRotateIcon.getLayoutParams();
         params.topMargin = marginTop;
