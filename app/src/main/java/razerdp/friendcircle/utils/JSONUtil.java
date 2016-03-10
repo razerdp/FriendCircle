@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Created by 大灯泡 on 2016/2/25.
+ * GSON解析工具类
  */
 public class JSONUtil {
     public static String toString(Object obj) {

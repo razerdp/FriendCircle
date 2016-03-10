@@ -15,11 +15,18 @@
         android:layout_marginLeft="74dp"
         android:layout_marginRight="@dimen/item_padding"
         tools:background="@android:color/holo_red_light">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-
+       <razerdp.friendcircle.widget.NoScrollGridView
+           android:id="@+id/item_grid"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:columnWidth="80dp"
+           android:numColumns="3"
+           android:horizontalSpacing="5dp"
+           android:verticalSpacing="5dp"
+           android:scrollbars="none"
+           android:scrollbarAlwaysDrawHorizontalTrack="false"
+           android:scrollbarAlwaysDrawVerticalTrack="false"
+           android:stretchMode="none"/>
     </RelativeLayout>
     <include layout="@layout/include_item_bottom"/>
     <!--点赞控件/评论控件-->

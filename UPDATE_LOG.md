@@ -1,11 +1,32 @@
 # 更新日志
 
+##2016-03-08
+评论弹出popup
+代码解析地址：</br>
+http://www.jianshu.com/p/15a9fe8f917f </br>
+图片预览：</br>
+![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-03-08_comment_popup.gif)
+
+***
+
+##2016-03-01
+内容页 - 网页分享
+
+***
+##2016-02-28
+内容页 - 图文（GridView）
+代码解析地址：</br>
+http://www.jianshu.com/p/3d0cc6882e1a </br>
+图片预览：</br>
+![](http://upload-images.jianshu.io/upload_images/684042-114feffc2a7be669.gif)
+
+***
 ##2016-02-27
 内容页 - 图文（单张）
 代码解析地址：</br>
 http://www.jianshu.com/p/885538a261ea </br>
 图片预览：</br>
-![](https://github.com/razerdp/FriendCircle/blob/main-dev/single_image.gif)
+![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/single_image.gif)
 
 ***
 ##2016-02-26~27

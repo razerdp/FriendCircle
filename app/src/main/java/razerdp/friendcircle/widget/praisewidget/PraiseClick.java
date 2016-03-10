@@ -6,7 +6,7 @@ import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.Toast;
-import razerdp.friendcircle.api.data.entity.UserInfo;
+import razerdp.friendcircle.app.data.entity.UserInfo;
 import razerdp.friendcircle.utils.UIHelper;
 
 /**
