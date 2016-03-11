@@ -68,6 +68,7 @@ public class DynamicController implements BaseResponseListener, BaseDynamicContr
             mDynamicAddPraiseRequest.setOnResponseListener(this);
             mDynamicAddPraiseRequest.setRequestType(requesttype);
         }
+        mDynamicAddPraiseRequest.setInfo(info);
         mDynamicAddPraiseRequest.userid = userid;
         mDynamicAddPraiseRequest.dynamicid = dynamicid;
         mDynamicAddPraiseRequest.execute();
@@ -81,6 +82,7 @@ public class DynamicController implements BaseResponseListener, BaseDynamicContr
             mDynamicCancelPraiseRequest.setOnResponseListener(this);
             mDynamicCancelPraiseRequest.setRequestType(requesttype);
         }
+        mDynamicCancelPraiseRequest.setInfo(info);
         mDynamicCancelPraiseRequest.userid = userid;
         mDynamicCancelPraiseRequest.dynamicid = dynamicid;
         mDynamicCancelPraiseRequest.execute();
