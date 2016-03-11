@@ -1,16 +1,16 @@
 # 更新日志
 
 ##2016-03-11
-点赞模块完成
+点赞模块完成</br>
 代码解析地址：</br>
- </br>
+http://www.jianshu.com/p/deda1849a084 </br>
 图片预览：</br>
 ![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-03-11_praise.gif)
 
 ***
 
 ##2016-03-08
-评论弹出popup
+评论弹出popup</br>
 代码解析地址：</br>
 http://www.jianshu.com/p/15a9fe8f917f </br>
 图片预览：</br>
@@ -23,7 +23,7 @@ http://www.jianshu.com/p/15a9fe8f917f </br>
 
 ***
 ##2016-02-28
-内容页 - 图文（GridView）
+内容页 - 图文（GridView）</br>
 代码解析地址：</br>
 http://www.jianshu.com/p/3d0cc6882e1a </br>
 图片预览：</br>
@@ -31,7 +31,7 @@ http://www.jianshu.com/p/3d0cc6882e1a </br>
 
 ***
 ##2016-02-27
-内容页 - 图文（单张）
+内容页 - 图文（单张）</br>
 代码解析地址：</br>
 http://www.jianshu.com/p/885538a261ea </br>
 图片预览：</br>
@@ -39,7 +39,7 @@ http://www.jianshu.com/p/885538a261ea </br>
 
 ***
 ##2016-02-26~27
-评论区控件采用池，进一步优化。
+评论区控件采用池，进一步优化。</br>
 代码解析地址：</br>
 http://www.jianshu.com/p/ff9788581fb0 </br>
 图片预览：</br>
@@ -47,7 +47,7 @@ http://www.jianshu.com/p/ff9788581fb0 </br>
 
 ***
 ##2016-02-25
-服务器就绪，暂时合并控件
+服务器就绪，暂时合并控件</br>
 代码解析地址：</br>
 http://www.jianshu.com/p/4cc3f9c8a713 </br>
 图片预览：</br>
@@ -60,7 +60,7 @@ http://www.jianshu.com/p/4cc3f9c8a713 </br>
 
 ***
 ##2016-02-22
-点赞列表控件
+点赞列表控件</br>
 代码解析地址：</br>
 http://www.jianshu.com/p/26dd3aad965a </br>
 图片预览：</br>
@@ -68,7 +68,7 @@ http://www.jianshu.com/p/26dd3aad965a </br>
 
 ***
 ##2016-02-20
-点击展开全文控件实现
+点击展开全文控件实现</br>
 代码解析地址：</br>
 http://www.jianshu.com/p/80d7f34c5f08 </br>
 图片预览：</br>
