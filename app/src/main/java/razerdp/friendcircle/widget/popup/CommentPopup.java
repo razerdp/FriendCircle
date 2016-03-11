@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -39,7 +40,7 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
     private int[] viewLocation;
 
     private WeakHandler handler;
-    private AnimationSet mAnimationSet;
+    private ScaleAnimation mScaleAnimation;
 
     private OnCommentPopupClickListener mOnCommentPopupClickListener;
 
@@ -62,23 +63,13 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
     }
 
     private void buildAnima() {
-        ScaleAnimation mScaleAnimation = new ScaleAnimation(1f, 2f, 1f, 2f, Animation.RELATIVE_TO_SELF, 0.5f,
+        mScaleAnimation = new ScaleAnimation(1f, 2.5f, 1f, 2.5f, Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f);
-        mScaleAnimation.setDuration(400);
-        mScaleAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        mScaleAnimation.setDuration(300);
+        mScaleAnimation.setInterpolator(new SpringInterPolator());
         mScaleAnimation.setFillAfter(false);
 
-        ScaleAnimation mScaleAnimation2 = new ScaleAnimation(1f, 0f, 1f, 0f, Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF, 0.5f);
-        mScaleAnimation.setDuration(400);
-        mScaleAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
-        mScaleAnimation.setFillAfter(false);
-
-        mAnimationSet = new AnimationSet(false);
-        mAnimationSet.setDuration(400);
-        mAnimationSet.addAnimation(mScaleAnimation);
-        mAnimationSet.addAnimation(mScaleAnimation2);
-        mAnimationSet.setAnimationListener(new Animation.AnimationListener() {
+        mScaleAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
 
@@ -154,7 +145,7 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
                 if (mOnCommentPopupClickListener != null) {
                     mOnCommentPopupClickListener.onLikeClick(v, mDynamicInfo);
                     mLikeView.clearAnimation();
-                    mLikeView.startAnimation(mAnimationSet);
+                    mLikeView.startAnimation(mScaleAnimation);
                 }
                 break;
             case R.id.item_comment:
@@ -177,7 +168,7 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
 
     public void setDynamicInfo(DynamicInfo info) {
         if (info == null) return;
-        mDynamicInfo=info;
+        mDynamicInfo = info;
         if (info.praiseState == CommonValue.HAS_PRAISE) {
             mLikeText.setText("取消");
         }
@@ -192,13 +183,24 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
 
         void onCommentClick(View v, DynamicInfo info);
     }
-    //=============================================================abortMethods
 
     static class WeakHandler extends Handler {
         private final WeakReference<Context> contenxt;
 
         public WeakHandler(Context contenxt) {
             this.contenxt = new WeakReference<Context>(contenxt);
+        }
+    }
+
+    static class SpringInterPolator extends LinearInterpolator {
+
+        public SpringInterPolator() {
+        }
+
+
+        @Override
+        public float getInterpolation(float input) {
+            return (float) Math.sin(input*Math.PI);
         }
     }
 }
