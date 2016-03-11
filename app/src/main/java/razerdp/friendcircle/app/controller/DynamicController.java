@@ -29,7 +29,7 @@ public class DynamicController implements BaseResponseListener, BaseDynamicContr
         mCallBack = callBack;
     }
 
-    //=============================================================request
+    //=============================================================request callback
     @Override
     public void onStart(BaseResponse response) {
 
@@ -55,11 +55,7 @@ public class DynamicController implements BaseResponseListener, BaseDynamicContr
         }
     }
 
-    public void destroyController() {
-        mDynamicAddPraiseRequest = null;
-        mCallBack = null;
-    }
-
+    //=============================================================controller methods
     @Override
     public void addPraise(long userid, long dynamicid, MomentsInfo info,
                           @RequestType.DynamicRequestType int requesttype) {
@@ -87,7 +83,11 @@ public class DynamicController implements BaseResponseListener, BaseDynamicContr
         mDynamicCancelPraiseRequest.dynamicid = dynamicid;
         mDynamicCancelPraiseRequest.execute();
     }
-
+    //=============================================================destroy
+    public void destroyController() {
+        mDynamicAddPraiseRequest = null;
+        mCallBack = null;
+    }
     public interface CallBack {
         void onResultCallBack(BaseResponse response);
     }
