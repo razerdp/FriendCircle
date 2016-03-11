@@ -1,5 +1,14 @@
 # 更新日志
 
+##2016-03-11
+点赞模块完成
+代码解析地址：</br>
+ </br>
+图片预览：</br>
+![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-03-11_praise.gif)
+
+***
+
 ##2016-03-08
 评论弹出popup
 代码解析地址：</br>
