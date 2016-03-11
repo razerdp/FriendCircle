@@ -4,10 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import java.util.Collection;
+import java.util.List;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.config.CommonValue;
 import razerdp.friendcircle.app.config.LocalHostInfo;
 import razerdp.friendcircle.app.controller.DynamicController;
+import razerdp.friendcircle.app.data.controllerentity.DynamicControllerEntity;
 import razerdp.friendcircle.app.data.entity.MomentsInfo;
 import razerdp.friendcircle.app.data.entity.UserInfo;
 import razerdp.friendcircle.app.https.base.BaseResponse;
@@ -19,7 +22,7 @@ import razerdp.friendcircle.utils.FriendCircleAdapterUtil;
 /**
  * Created by 大灯泡 on 2016/2/25.
  * 朋友圈demo窗口
- * */
+ */
 public class FriendCircleDemoActivity extends FriendCircleBaseActivity implements DynamicController.CallBack {
     private FriendCircleRequest mCircleRequest;
 
@@ -40,7 +43,8 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity implement
         setContentView(R.layout.activity_main);
         mDynamicController = new DynamicController(this, this);
         View header = LayoutInflater.from(this).inflate(R.layout.item_header, null, false);
-        bindListView(R.id.listview, header, FriendCircleAdapterUtil.getAdapter(this, mMomentsInfos,mDynamicController));
+        bindListView(R.id.listview, header,
+                FriendCircleAdapterUtil.getAdapter(this, mMomentsInfos, mDynamicController));
         initReq();
         //mListView.manualRefresh();
     }
@@ -74,32 +78,45 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity implement
     @Override
     public void onResultCallBack(BaseResponse response) {
         // 通知更新
-        switch (response.getRequestType()){
+        switch (response.getRequestType()) {
             case RequestType.ADD_PRAISE:
-                // TODO: 2016/3/10 等待后端完成。
-              /*  MomentsInfo info= (MomentsInfo) response.getData();
-                info.dynamicInfo.praiseState= CommonValue.HAS_PRAISE;
-                UserInfo userInfo=new UserInfo();
-                userInfo.userId= LocalHostInfo.INSTANCE.getHostId();
-                userInfo.nick=LocalHostInfo.INSTANCE.getHostNick();
-                userInfo.avatar=LocalHostInfo.INSTANCE.getHostAvatar();
-                if (info.praiseList!=null){
-                    info.praiseList.add(0,userInfo);
+                DynamicControllerEntity<List<UserInfo>> entity
+                        = (DynamicControllerEntity<List<UserInfo>>) response.getData();
+                MomentsInfo info = entity.getMomentsInfo();
+                info.dynamicInfo.praiseState=CommonValue.HAS_PRAISE;
+                if (info != null) {
+                    if (info.praiseList != null) {
+                        info.praiseList.clear();
+                        info.praiseList.addAll(entity.getData());
+                    }else {
+                        info.praiseList=entity.getData();
+                    }
                 }
-                mAdapter.notifyDataSetChanged();*/
+                mAdapter.notifyDataSetChanged();
                 break;
             case RequestType.CANCEL_PRAISE:
-
+                DynamicControllerEntity<List<UserInfo>> cancelEntity
+                        = (DynamicControllerEntity<List<UserInfo>>) response.getData();
+                MomentsInfo mInfo = cancelEntity.getMomentsInfo();
+                mInfo.dynamicInfo.praiseState=CommonValue.NOT_PRAISE;
+                if (mInfo != null) {
+                    if (mInfo.praiseList != null) {
+                        mInfo.praiseList.clear();
+                        mInfo.praiseList.addAll(cancelEntity.getData());
+                    }else {
+                        mInfo.praiseList=cancelEntity.getData();
+                    }
+                }
+                mAdapter.notifyDataSetChanged();
                 break;
         }
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mDynamicController.destroyController();
-        mDynamicController=null;
+        mDynamicController = null;
     }
 }
 

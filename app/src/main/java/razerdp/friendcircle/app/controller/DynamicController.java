@@ -29,7 +29,7 @@ public class DynamicController implements BaseResponseListener, BaseDynamicContr
         mCallBack = callBack;
     }
 
-    //=============================================================request
+    //=============================================================request callback
     @Override
     public void onStart(BaseResponse response) {
 
@@ -55,11 +55,7 @@ public class DynamicController implements BaseResponseListener, BaseDynamicContr
         }
     }
 
-    public void destroyController() {
-        mDynamicAddPraiseRequest = null;
-        mCallBack = null;
-    }
-
+    //=============================================================controller methods
     @Override
     public void addPraise(long userid, long dynamicid, MomentsInfo info,
                           @RequestType.DynamicRequestType int requesttype) {
@@ -68,6 +64,7 @@ public class DynamicController implements BaseResponseListener, BaseDynamicContr
             mDynamicAddPraiseRequest.setOnResponseListener(this);
             mDynamicAddPraiseRequest.setRequestType(requesttype);
         }
+        mDynamicAddPraiseRequest.setInfo(info);
         mDynamicAddPraiseRequest.userid = userid;
         mDynamicAddPraiseRequest.dynamicid = dynamicid;
         mDynamicAddPraiseRequest.execute();
@@ -81,11 +78,16 @@ public class DynamicController implements BaseResponseListener, BaseDynamicContr
             mDynamicCancelPraiseRequest.setOnResponseListener(this);
             mDynamicCancelPraiseRequest.setRequestType(requesttype);
         }
+        mDynamicCancelPraiseRequest.setInfo(info);
         mDynamicCancelPraiseRequest.userid = userid;
         mDynamicCancelPraiseRequest.dynamicid = dynamicid;
         mDynamicCancelPraiseRequest.execute();
     }
-
+    //=============================================================destroy
+    public void destroyController() {
+        mDynamicAddPraiseRequest = null;
+        mCallBack = null;
+    }
     public interface CallBack {
         void onResultCallBack(BaseResponse response);
     }
