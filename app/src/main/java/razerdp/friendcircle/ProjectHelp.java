@@ -4,7 +4,7 @@ package razerdp.friendcircle;
  * Created by 大灯泡 on 2016/3/10.
  * 项目帮助类
  *
- * please see "ProjectHelp.md"
+ * please see "PROJECT_HELP.md"
  */
 public class ProjectHelp {
     //因为在下不知道怎么在AS创建package-info.java，所以只好出此下策了
