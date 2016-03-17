@@ -25,13 +25,13 @@
 	+ `config`：存放配置常量，基本账号信息，EventBus所使用的方法类等
 		* config.ptrwidget：存放朋友圈下拉刷新控件的模式/状态配置
 
-	+ `controller`：用于分离朋友圈BaseItemDelegate的交互事件处理，防止BaseItemDelegate代码量过多，同时将BaseItemDelegate与Activity解耦（类似于MVP）
 	+ `data`：存放各种数据，如JSON解析的实体类或数据库（暂时不需要数据库）
 	+ `https`：存放针对Volley封装的类以及抽象化的请求基类
 		* https.base：网络访问的基类
 		* https.request：继承基类实现的具体请求类
 
 	+ `interfaces`：存放一些回掉接口
+	+ `mvp`：mvp架构
 
 - **ui**：
 	+ `activity`：存放activity

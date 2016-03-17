@@ -1,21 +1,22 @@
 package razerdp.friendcircle.ui.activity;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
-import java.util.Collection;
 import java.util.List;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.config.CommonValue;
-import razerdp.friendcircle.app.config.LocalHostInfo;
-import razerdp.friendcircle.app.controller.DynamicController;
-import razerdp.friendcircle.app.data.controllerentity.DynamicControllerEntity;
-import razerdp.friendcircle.app.data.entity.MomentsInfo;
-import razerdp.friendcircle.app.data.entity.UserInfo;
 import razerdp.friendcircle.app.https.base.BaseResponse;
 import razerdp.friendcircle.app.https.request.FriendCircleRequest;
 import razerdp.friendcircle.app.https.request.RequestType;
+import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
+import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
+import razerdp.friendcircle.app.mvp.presenter.DynamicPresenterImpl;
+import razerdp.friendcircle.app.mvp.view.DynamicView;
 import razerdp.friendcircle.ui.activity.base.FriendCircleBaseActivity;
 import razerdp.friendcircle.utils.FriendCircleAdapterUtil;
 
@@ -23,10 +24,10 @@ import razerdp.friendcircle.utils.FriendCircleAdapterUtil;
  * Created by 大灯泡 on 2016/2/25.
  * 朋友圈demo窗口
  */
-public class FriendCircleDemoActivity extends FriendCircleBaseActivity implements DynamicController.CallBack {
+public class FriendCircleDemoActivity extends FriendCircleBaseActivity implements DynamicView {
     private FriendCircleRequest mCircleRequest;
 
-    private DynamicController mDynamicController;
+    private DynamicPresenterImpl mPresenter;
 
     // 方案二，预留
  /*   @Override
@@ -39,12 +40,12 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity implement
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mDynamicController = new DynamicController(this, this);
+        mPresenter = new DynamicPresenterImpl(this);
         View header = LayoutInflater.from(this).inflate(R.layout.item_header, null, false);
-        bindListView(R.id.listview, header,
-                FriendCircleAdapterUtil.getAdapter(this, mMomentsInfos, mDynamicController));
+        bindListView(R.id.listview, header, FriendCircleAdapterUtil.getAdapter(this, mMomentsInfos, mPresenter));
         initReq();
         //mListView.manualRefresh();
     }
@@ -76,47 +77,39 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity implement
     }
 
     @Override
-    public void onResultCallBack(BaseResponse response) {
-        // 通知更新
-        switch (response.getRequestType()) {
-            case RequestType.ADD_PRAISE:
-                DynamicControllerEntity<List<UserInfo>> entity
-                        = (DynamicControllerEntity<List<UserInfo>>) response.getData();
-                MomentsInfo info = entity.getMomentsInfo();
-                info.dynamicInfo.praiseState=CommonValue.HAS_PRAISE;
-                if (info != null) {
-                    if (info.praiseList != null) {
-                        info.praiseList.clear();
-                        info.praiseList.addAll(entity.getData());
-                    }else {
-                        info.praiseList=entity.getData();
-                    }
-                }
-                mAdapter.notifyDataSetChanged();
-                break;
-            case RequestType.CANCEL_PRAISE:
-                DynamicControllerEntity<List<UserInfo>> cancelEntity
-                        = (DynamicControllerEntity<List<UserInfo>>) response.getData();
-                MomentsInfo mInfo = cancelEntity.getMomentsInfo();
-                mInfo.dynamicInfo.praiseState=CommonValue.NOT_PRAISE;
-                if (mInfo != null) {
-                    if (mInfo.praiseList != null) {
-                        mInfo.praiseList.clear();
-                        mInfo.praiseList.addAll(cancelEntity.getData());
-                    }else {
-                        mInfo.praiseList=cancelEntity.getData();
-                    }
-                }
-                mAdapter.notifyDataSetChanged();
-                break;
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    //=============================================================mvp - view's method
+
+    @Override
+    public void refreshPraiseData(int currentDynamicPos,
+                                  @CommonValue.PraiseState int praiseState, @NonNull List<UserInfo> praiseList) {
+        MomentsInfo info = mAdapter.getItem(currentDynamicPos);
+        if (info != null) {
+            info.dynamicInfo.praiseState = praiseState;
+            if (info.praiseList != null) {
+                info.praiseList.clear();
+                info.praiseList.addAll(praiseList);
+            }
+            else {
+                info.praiseList = praiseList;
+            }
         }
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mDynamicController.destroyController();
-        mDynamicController = null;
+    public void refreshCommentData(int currentDynamicPos,
+                                   @RequestType.CommentRequestType int requestType,
+                                   @NonNull List<CommentInfo> commentList) {
+
+    }
+
+    @Override
+    public void showInputBox(int currentDynamicPos, @CommonValue.CommentType int commentType, CommentInfo commentInfo) {
+
     }
 }
 

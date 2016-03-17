@@ -2,19 +2,19 @@ package razerdp.friendcircle.ui.activity.base;
 
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import java.util.ArrayList;
 import java.util.List;
 import org.greenrobot.eventbus.Subscribe;
+import razerdp.friendcircle.app.adapter.FriendCircleAdapter;
 import razerdp.friendcircle.app.config.Events;
-import razerdp.friendcircle.app.data.entity.MomentsInfo;
+import razerdp.friendcircle.app.config.ptrwidget.PullMode;
 import razerdp.friendcircle.app.https.base.BaseResponse;
 import razerdp.friendcircle.app.interfaces.BaseResponseListener;
 import razerdp.friendcircle.app.interfaces.OnLoadMoreRefreshListener;
 import razerdp.friendcircle.app.interfaces.OnPullDownRefreshListener;
-import razerdp.friendcircle.app.config.ptrwidget.PullMode;
+import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.utils.ToastUtils;
 import razerdp.friendcircle.widget.ptrwidget.FriendCirclePtrListView;
 
@@ -26,13 +26,13 @@ public abstract class FriendCircleBaseActivity extends AppCompatActivity impleme
 
     protected FriendCirclePtrListView mListView;
     protected List<MomentsInfo> mMomentsInfos = new ArrayList<>();
-    protected BaseAdapter mAdapter;
+    protected FriendCircleAdapter mAdapter;
 
     @Subscribe
     protected void onEventMainThread(Events events) {
     }
 
-    public void bindListView(int listResId, View headerView, BaseAdapter adapter) {
+    public void bindListView(int listResId, View headerView, FriendCircleAdapter adapter) {
         this.mAdapter = adapter;
         mListView = (FriendCirclePtrListView) findViewById(listResId);
         mListView.setRotateIcon(bindRefreshIcon());
