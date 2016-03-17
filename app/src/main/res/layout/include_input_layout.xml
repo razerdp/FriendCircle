@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_input"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@color/color_f9f9f9"
+    android:visibility="gone">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/line_bg"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="9">
+
+        <EditText
+            android:id="@+id/ed_input"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="7"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="25dp"
+            android:background="@drawable/bg_input_edittext"
+            android:hint="评论"
+            android:textColorHint="@color/text_hint_color"
+            android:paddingLeft="10dp"/>
+
+        <ImageButton
+            android:id="@+id/btn_emoji"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_insert_emoticon"/>
+
+        <TextView
+            android:id="@+id/btn_send"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="2"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/bg_send_button"
+            android:text="发送"/>
+
+    </LinearLayout>
+</LinearLayout>

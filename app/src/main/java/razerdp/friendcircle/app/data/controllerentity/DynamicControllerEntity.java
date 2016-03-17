@@ -1,6 +1,6 @@
 package razerdp.friendcircle.app.data.controllerentity;
 
-import razerdp.friendcircle.app.data.entity.MomentsInfo;
+import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 
 /**
  * Created by 大灯泡 on 2016/3/10.

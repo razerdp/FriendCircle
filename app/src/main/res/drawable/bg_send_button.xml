@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="true"
+        android:state_focused="true"
+        android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <stroke android:color="@color/color_c6c6c6"
+                android:width="1dp"/>
+            <corners android:radius="3dp"/>
+            <solid android:color="@color/wechat_green_bg"/>
+        </shape>
+    </item>
+    <item android:state_enabled="true"
+        android:state_focused="false"
+        android:state_pressed="false">
+        <shape android:shape="rectangle">
+            <stroke android:color="@color/color_c6c6c6"
+                android:width="1dp"/>
+            <corners android:radius="3dp"/>
+            <solid android:color="@color/transparent"/>
+        </shape>
+    </item>
+
+</selector>

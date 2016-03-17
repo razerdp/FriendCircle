@@ -100,7 +100,7 @@ public class BaseResponse {
         this.hasMore = hasMore;
     }
 
-    public List<Object> getDatas() {
+    public List<?> getDatas() {
         return datas;
     }
 

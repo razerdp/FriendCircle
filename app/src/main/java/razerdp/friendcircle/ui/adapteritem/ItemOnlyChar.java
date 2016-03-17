@@ -5,7 +5,7 @@ import android.view.View;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.adapter.base.viewholder.BaseItemDelegate;
 import razerdp.friendcircle.app.config.DynamicType;
-import razerdp.friendcircle.app.data.entity.MomentsInfo;
+import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 
 /**
  * Created by 大灯泡 on 2016/2/25.
