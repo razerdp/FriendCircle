@@ -7,8 +7,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import razerdp.friendcircle.app.FriendCircleApp;
 import razerdp.friendcircle.app.data.controllerentity.DynamicControllerEntity;
-import razerdp.friendcircle.app.data.entity.MomentsInfo;
-import razerdp.friendcircle.app.data.entity.UserInfo;
+import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
+import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.https.base.BaseHttpRequestClient;
 import razerdp.friendcircle.app.https.base.BaseResponse;
 import razerdp.friendcircle.utils.JSONUtil;
@@ -22,18 +22,17 @@ public class DynamicCancelPraiseRequest extends BaseHttpRequestClient {
 
     public long userid;
     public long dynamicid;
-    private MomentsInfo mInfo;
+    public int currentDynamicPos;
 
-    public DynamicCancelPraiseRequest(MomentsInfo info) {
-        mInfo = info;
+    public DynamicCancelPraiseRequest() {
     }
 
-    public MomentsInfo getInfo() {
-        return mInfo;
+    public int getCurrentDynamicPos() {
+        return currentDynamicPos;
     }
 
-    public void setInfo(MomentsInfo info) {
-        mInfo = info;
+    public void setCurrentDynamicPos(int currentDynamicPos) {
+        this.currentDynamicPos = currentDynamicPos;
     }
 
     @Override
@@ -48,13 +47,11 @@ public class DynamicCancelPraiseRequest extends BaseHttpRequestClient {
     @Override
     public void parseResponse(BaseResponse response, JSONObject json, int start, boolean hasMore) throws JSONException {
         if (response.getStatus()==200){
-            DynamicControllerEntity<List<UserInfo>> entity=new DynamicControllerEntity();
-            entity.setMomentsInfo(mInfo);
             List<UserInfo> praiseList= JSONUtil.toList(json.optString("data"),new TypeToken<ArrayList<UserInfo>>(){}
                     .getType
                             ());
-            entity.setData(praiseList);
-            response.setData(entity);
+            response.setData(currentDynamicPos);
+            response.setDatas(praiseList);
         }
     }
 }

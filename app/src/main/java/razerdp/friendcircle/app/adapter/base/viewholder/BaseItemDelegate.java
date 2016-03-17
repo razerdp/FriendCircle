@@ -13,12 +13,10 @@ import java.util.List;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.config.CommonValue;
 import razerdp.friendcircle.app.config.DynamicType;
-import razerdp.friendcircle.app.config.LocalHostInfo;
-import razerdp.friendcircle.app.controller.BaseDynamicController;
-import razerdp.friendcircle.app.data.entity.CommentInfo;
-import razerdp.friendcircle.app.data.entity.DynamicInfo;
-import razerdp.friendcircle.app.data.entity.MomentsInfo;
-import razerdp.friendcircle.app.https.request.RequestType;
+import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.app.mvp.model.entity.DynamicInfo;
+import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
+import razerdp.friendcircle.app.mvp.presenter.DynamicPresenterImpl;
 import razerdp.friendcircle.utils.TimeUtil;
 import razerdp.friendcircle.widget.ClickShowMoreLayout;
 import razerdp.friendcircle.widget.SuperImageView;
@@ -53,8 +51,9 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
     //中间内容层
     protected RelativeLayout contentLayout;
 
-    private BaseDynamicController mDynamicController;
+    private DynamicPresenterImpl mPresenter;
     private MomentsInfo mInfo;
+    private int curPos;
 
     //评论区的view对象池
     private static final CommentPool COMMENT_TEXT_POOL = new CommentPool(20);
@@ -71,6 +70,7 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
     @Override
     public void onBindData(int position, @NonNull View v, @NonNull MomentsInfo data, final int dynamicType) {
         mInfo = data;
+        curPos=position;
         //初始化共用部分
         bindView(v);
         bindShareData(data);
@@ -213,15 +213,13 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
                 mCommentPopup.setOnCommentPopupClickListener(new CommentPopup.OnCommentPopupClickListener() {
                     @Override
                     public void onLikeClick(View v, DynamicInfo info) {
-                        if (mDynamicController != null) {
+                        if (mPresenter != null) {
                             switch (info.praiseState) {
                                 case CommonValue.NOT_PRAISE:
-                                    mDynamicController.addPraise(LocalHostInfo.INSTANCE.getHostId(), info.dynamicId,
-                                            mInfo, RequestType.ADD_PRAISE);
+                                    mPresenter.addPraise(curPos,info.dynamicId);
                                     break;
                                 case CommonValue.HAS_PRAISE:
-                                    mDynamicController.cancelPraise(LocalHostInfo.INSTANCE.getHostId(), info.dynamicId,
-                                            mInfo, RequestType.CANCEL_PRAISE);
+                                    mPresenter.cancelPraise(curPos,info.dynamicId);
                                     break;
                                 default:
                                     break;
@@ -231,7 +229,6 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
 
                     @Override
                     public void onCommentClick(View v, DynamicInfo info) {
-
                     }
                 });
                 mCommentPopup.showPopupWindow(commentImage);
@@ -272,13 +269,13 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
     }
 
     @Override
-    public void setController(BaseDynamicController controller) {
-        mDynamicController = controller;
+    public void setPresenter(DynamicPresenterImpl presenter) {
+        this.mPresenter=presenter;
     }
 
     @Override
-    public BaseDynamicController getController() {
-        return mDynamicController;
+    public DynamicPresenterImpl getPresenter() {
+        return mPresenter;
     }
 
     protected abstract void bindData(int position, @NonNull View v, @NonNull MomentsInfo data, final int dynamicType);

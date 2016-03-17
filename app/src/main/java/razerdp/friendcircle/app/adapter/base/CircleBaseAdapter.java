@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import java.util.HashMap;
 import java.util.List;
 import razerdp.friendcircle.app.adapter.base.viewholder.BaseItemView;
-import razerdp.friendcircle.app.controller.BaseDynamicController;
+import razerdp.friendcircle.app.mvp.presenter.DynamicPresenterImpl;
 
 /**
  * Created by 大灯泡 on 2016/2/16.
@@ -26,14 +26,14 @@ public abstract class CircleBaseAdapter<T> extends BaseAdapter {
     protected Activity context;
     protected LayoutInflater mInflater;
 
-    protected BaseDynamicController mDynamicController;
+    protected DynamicPresenterImpl mPresenter;
 
     public CircleBaseAdapter(Activity context, Builder<T> mBuilder) {
         this.context = context;
         mInflater = LayoutInflater.from(context);
         datas=mBuilder.datas;
         itemInfos = mBuilder.itemInfos;
-        mDynamicController=mBuilder.mDynamicController;
+        mPresenter=mBuilder.mPresenter;
     }
 
 
@@ -88,7 +88,7 @@ public abstract class CircleBaseAdapter<T> extends BaseAdapter {
         view.setActivityContext(context);
         view.onFindView(convertView);
         view.onBindData(position, convertView, getItem(position), dynamicType);
-        if (view.getController()==null)view.setController(mDynamicController);
+        if (view.getPresenter()==null)view.setPresenter(mPresenter);
 
         return convertView;
     }
@@ -97,7 +97,7 @@ public abstract class CircleBaseAdapter<T> extends BaseAdapter {
         private HashMap<Integer, Class<? extends BaseItemView<T>>> itemInfos;
         private Activity context;
         private List<T> datas;
-        private BaseDynamicController mDynamicController;
+        private DynamicPresenterImpl mPresenter;
 
         public Builder() {
             itemInfos = new HashMap<>();
@@ -113,8 +113,8 @@ public abstract class CircleBaseAdapter<T> extends BaseAdapter {
             return this;
         }
 
-        public Builder setController(BaseDynamicController controller){
-            this.mDynamicController=controller;
+        public Builder setPresenter(DynamicPresenterImpl presenter){
+            this.mPresenter=presenter;
             return this;
         }
 

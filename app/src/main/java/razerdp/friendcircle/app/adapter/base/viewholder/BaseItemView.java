@@ -3,7 +3,7 @@ package razerdp.friendcircle.app.adapter.base.viewholder;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.view.View;
-import razerdp.friendcircle.app.controller.BaseDynamicController;
+import razerdp.friendcircle.app.mvp.presenter.DynamicPresenterImpl;
 
 /**
  * Created by 大灯泡 on 2016/2/16.
@@ -15,7 +15,7 @@ public interface BaseItemView<T> {
     void onBindData(final int position, @NonNull View v, @NonNull T data,final int dynamicType);
     Activity getActivityContext();
     void setActivityContext(Activity context);
-    void setController(BaseDynamicController controller);
-    BaseDynamicController getController();
+    void setPresenter(DynamicPresenterImpl presenter);
+    DynamicPresenterImpl getPresenter();
 
 }

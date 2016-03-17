@@ -1,4 +1,4 @@
-package razerdp.friendcircle.app.data.entity;
+package razerdp.friendcircle.app.mvp.model.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;

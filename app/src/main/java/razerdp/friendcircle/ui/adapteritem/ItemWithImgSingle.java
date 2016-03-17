@@ -11,7 +11,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.adapter.base.viewholder.BaseItemDelegate;
 import razerdp.friendcircle.app.config.DynamicType;
-import razerdp.friendcircle.app.data.entity.MomentsInfo;
+import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.utils.UIHelper;
 
 /**

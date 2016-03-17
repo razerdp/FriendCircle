@@ -7,9 +7,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
@@ -18,7 +16,7 @@ import android.widget.TextView;
 import java.lang.ref.WeakReference;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.config.CommonValue;
-import razerdp.friendcircle.app.data.entity.DynamicInfo;
+import razerdp.friendcircle.app.mvp.model.entity.DynamicInfo;
 import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.popup.base.BasePopupWindow;
 
