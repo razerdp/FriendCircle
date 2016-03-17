@@ -12,9 +12,6 @@
     <!--刷新尾部-->
     <color name="ptr_footer_tx">#8e8e8e</color>
 
-
-    <color name="normal_font_color">#1A1A1A</color>
-
     <!--朋友圈色值-->
     <color name="nick">#517fae</color>
     <color name="item_bottom_text">#8e8e8e</color>
@@ -24,4 +21,11 @@
     <!--点赞popup色值-->
     <color name="comment_popup_bg">#4c5154</color>
     <color name="comment_popup_tx_bg">#c7c7c7</color>
+
+    <!--文字颜色-->
+    <color name="text_hint_color">#bababa</color>
+    <color name="normal_font_color">#1A1A1A</color>
+
+    <!--other-->
+    <color name="wechat_green_bg">#10d21c</color>
 </resources>

@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
-import razerdp.friendcircle.app.data.entity.UserInfo;
+import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.utils.UIHelper;
 
 /**
