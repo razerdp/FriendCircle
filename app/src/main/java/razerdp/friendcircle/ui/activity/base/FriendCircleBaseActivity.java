@@ -36,7 +36,7 @@ public abstract class FriendCircleBaseActivity extends AppCompatActivity impleme
         this.mAdapter = adapter;
         mListView = (FriendCirclePtrListView) findViewById(listResId);
         mListView.setRotateIcon(bindRefreshIcon());
-        mListView.addHeaderView(headerView);
+        if (headerView != null) mListView.addHeaderView(headerView);
         mListView.setAdapter(adapter);
 
         mListView.setOnPullDownRefreshListener(new OnPullDownRefreshListener() {
@@ -68,6 +68,9 @@ public abstract class FriendCircleBaseActivity extends AppCompatActivity impleme
         ToastUtils.ToastMessage(this, "网络出错。。。。");
         if (mListView != null) {
             mListView.refreshComplete();
+            if (mListView.getCurMode() == PullMode.FROM_BOTTOM) {
+                mListView.loadmoreCompelete();
+            }
         }
     }
 
@@ -77,16 +80,23 @@ public abstract class FriendCircleBaseActivity extends AppCompatActivity impleme
             if (response.getStatus() == 200) {
                 // FIXME: 2016/2/25 确保request没错。。。。
                 List<MomentsInfo> momentsInfos = (List<MomentsInfo>) response.getData();
-                if (mListView != null && mListView.getCurMode() == PullMode.FROM_START){
+                if (mListView != null && mListView.getCurMode() == PullMode.FROM_START) {
                     mMomentsInfos.clear();
                 }
                 mListView.setHasMore(response.getHasMore());
                 mMomentsInfos.addAll(momentsInfos);
+                if (mListView != null && mListView.getCurMode() == PullMode.FROM_BOTTOM) {
+                    mListView.loadmoreCompelete();
+                }
                 mListView.refreshComplete();
                 mAdapter.notifyDataSetChanged();
-            }else {
+            }
+            else {
                 mListView.refreshComplete();
-                ToastUtils.ToastMessage(this,response.getErrorMsg());
+                if (mListView != null && mListView.getCurMode() == PullMode.FROM_BOTTOM) {
+                    mListView.loadmoreCompelete();
+                }
+                ToastUtils.ToastMessage(this, response.getErrorMsg());
             }
         }
     }
