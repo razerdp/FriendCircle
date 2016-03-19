@@ -2,6 +2,7 @@ package razerdp.friendcircle.app.adapter.base.viewholder;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -187,6 +188,7 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
                     commentWidget.setLayoutParams(params);
                     commentWidget.setLineSpacing(4, 1);
                 }
+                Log.d("commentTextViewId"," *********         textview id ======  "+commentWidget.hashCode());
                 commentWidget.setOnClickListener(this);
                 commentWidget.setOnLongClickListener(this);
                 commentLayout.addView(commentWidget);

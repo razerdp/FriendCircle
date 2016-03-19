@@ -158,7 +158,7 @@ public abstract class BasePopupWindow implements BasePopup {
         //自动弹出键盘
         if (autoShowInputMethod && getInputView() != null) {
             getInputView().requestFocus();
-            InputMethodUtils.showInputMethod(getInputView(), 150);
+            InputMethodUtils.showInputMethodDelay(getInputView(), 150);
         }
     }
 
