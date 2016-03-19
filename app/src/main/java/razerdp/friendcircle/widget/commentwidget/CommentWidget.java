@@ -20,6 +20,7 @@ public class CommentWidget extends TextView {
     //用户名颜色
     private int textColor = 0xff517fae;
     private static final int textSize = 14;
+    SpannableStringBuilderAllVer mSpannableStringBuilderAllVer;
 
     public CommentWidget(Context context) {
         this(context, null);
@@ -56,7 +57,13 @@ public class CommentWidget extends TextView {
     }
 
     private void createCommentStringBuilder(@NonNull CommentInfo info) {
-        SpannableStringBuilderAllVer mSpannableStringBuilderAllVer = new SpannableStringBuilderAllVer();
+        if (mSpannableStringBuilderAllVer == null) {
+            mSpannableStringBuilderAllVer = new SpannableStringBuilderAllVer();
+        }
+        else {
+            mSpannableStringBuilderAllVer.clear();
+            mSpannableStringBuilderAllVer.clearSpans();
+        }
         String content = "： " + info.content + "\0";
         boolean isApply = (info.userB == null);
         // 用户B为空，证明是一条原创评论
