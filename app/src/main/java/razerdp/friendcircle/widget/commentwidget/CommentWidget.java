@@ -21,9 +21,6 @@ public class CommentWidget extends TextView {
     private int textColor = 0xff517fae;
     private static final int textSize = 14;
 
-    private int key;
-    private SpannableStringBuilderAllVer mSpannableStringBuilderAllVer;
-
     public CommentWidget(Context context) {
         this(context, null);
     }
@@ -49,50 +46,33 @@ public class CommentWidget extends TextView {
 
     public void setCommentText(CommentInfo info) {
         if (info == null) return;
-        boolean hasContent = false;
-        //根据hashCode判断内容是否一致
-        if (key == 0) {
-            key = info.hashCode();
-        }
-        else {
-            hasContent = (key == info.hashCode());
-        }
-        if (!hasContent) {
-            key = info.hashCode();
-            setText("");
+        try {
             setTag(info);
             createCommentStringBuilder(info);
-        }
-        else {
-            try {
-                setText(mSpannableStringBuilderAllVer);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-                Log.e(TAG, "虽然在下觉得不可能会有这个情况，但还是捕捉下吧，万一被打脸呢。。。");
-            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            Log.e(TAG, "虽然在下觉得不可能会有这个情况，但还是捕捉下吧，万一被打脸呢。。。");
         }
     }
 
     private void createCommentStringBuilder(@NonNull CommentInfo info) {
+        SpannableStringBuilderAllVer mSpannableStringBuilderAllVer = new SpannableStringBuilderAllVer();
         String content = "： " + info.content + "\0";
-        if (mSpannableStringBuilderAllVer == null) {
-            mSpannableStringBuilderAllVer = new SpannableStringBuilderAllVer();
-            boolean isApply = (info.userB == null);
-            // 用户B为空，证明是一条原创评论
-            if (info.userA != null && isApply) {
-                CommentClick userA = new CommentClick.Builder(getContext(), info.userA).setTextSize(textSize).build();
-                mSpannableStringBuilderAllVer.append(info.userA.nick, userA, 0);
-                mSpannableStringBuilderAllVer.append(content);
-            }
-            else if (info.userA != null && !isApply) {
-                //用户A，B不空，证明是回复评论
-                CommentClick userA = new CommentClick.Builder(getContext(), info.userA).setTextSize(textSize).build();
-                mSpannableStringBuilderAllVer.append(info.userA.nick, userA, 0);
-                mSpannableStringBuilderAllVer.append("回复");
-                CommentClick userB = new CommentClick.Builder(getContext(), info.userB).setTextSize(textSize).build();
-                mSpannableStringBuilderAllVer.append(info.userB.nick, userB, 0);
-                mSpannableStringBuilderAllVer.append(content);
-            }
+        boolean isApply = (info.userB == null);
+        // 用户B为空，证明是一条原创评论
+        if (info.userA != null && isApply) {
+            CommentClick userA = new CommentClick.Builder(getContext(), info.userA).setTextSize(textSize).build();
+            mSpannableStringBuilderAllVer.append(info.userA.nick, userA, 0);
+            mSpannableStringBuilderAllVer.append(content);
+        }
+        else if (info.userA != null && !isApply) {
+            //用户A，B不空，证明是回复评论
+            CommentClick userA = new CommentClick.Builder(getContext(), info.userA).setTextSize(textSize).build();
+            mSpannableStringBuilderAllVer.append(info.userA.nick, userA, 0);
+            mSpannableStringBuilderAllVer.append("回复");
+            CommentClick userB = new CommentClick.Builder(getContext(), info.userB).setTextSize(textSize).build();
+            mSpannableStringBuilderAllVer.append(info.userB.nick, userB, 0);
+            mSpannableStringBuilderAllVer.append(content);
         }
         setText(mSpannableStringBuilderAllVer);
     }

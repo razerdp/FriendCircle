@@ -6,8 +6,6 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 import razerdp.friendcircle.app.FriendCircleApp;
-import razerdp.friendcircle.app.data.controllerentity.DynamicControllerEntity;
-import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.https.base.BaseHttpRequestClient;
 import razerdp.friendcircle.app.https.base.BaseResponse;
