@@ -57,7 +57,7 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
     private int curPos;
 
     //评论区的view对象池
-    private static final CommentPool COMMENT_TEXT_POOL = new CommentPool(20);
+    private static final CommentPool COMMENT_TEXT_POOL = new CommentPool(35);
 
     public BaseItemDelegate() {
     }
