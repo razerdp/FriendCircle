@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import razerdp.friendcircle.app.config.LocalHostInfo;
 import razerdp.friendcircle.app.https.base.VolleyManager;
+import razerdp.friendcircle.utils.PreferenceUtils;
 
 /**
  * Created by 大灯泡 on 2016/2/24.
@@ -17,6 +18,7 @@ public class FriendCircleApp extends Application {
         super.onCreate();
         appContext = getApplicationContext();
         VolleyManager.INSTANCE.initQueue(10 * 1024 * 1024);
+        PreferenceUtils.INSTANCE.init(appContext,"Friendpref",MODE_PRIVATE);
 
         LocalHostInfo.INSTANCE.setHostId(1001);
         LocalHostInfo.INSTANCE.setHostNick("羽翼君");
