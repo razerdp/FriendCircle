@@ -18,6 +18,7 @@ import razerdp.friendcircle.app.https.base.BaseResponse;
 import razerdp.friendcircle.app.https.request.FriendCircleRequest;
 import razerdp.friendcircle.app.https.request.RequestType;
 import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.app.mvp.model.entity.DynamicInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.mvp.presenter.DynamicPresenterImpl;
@@ -171,14 +172,17 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity implement
             }
         }
         mAdapter.notifyDataSetChanged();
-
     }
 
     @Override
-    public void showInputBox(int currentDynamicPos, @CommonValue.CommentType int commentType, CommentInfo commentInfo) {
-        switch (commentType){
+    public void showInputBox(int currentDynamicPos, @CommonValue.CommentType
+    int commentType, DynamicInfo dynamicInfo, CommentInfo commentInfo) {
+        switch (commentType) {
             case CommonValue.COMMENT_FOR_DYNAMIC:
                 // 评论动态
+                mInputLayout.setVisibility(View.VISIBLE);
+                mListView.smoothScrollToPositionFromTop(currentDynamicPos, 0);
+                InputMethodUtils.showInputMethod(mInputBox);
                 break;
             case CommonValue.COMMENT_FOR_USER:
                 // 回复评论
@@ -186,7 +190,6 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity implement
             default:
                 break;
         }
-
     }
 }
 

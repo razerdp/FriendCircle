@@ -47,8 +47,11 @@ public class InputMethodUtils {
 
     /** 多少时间后显示软键盘 */
     public static void showInputMethodDelay(final View view, long delayMillis) {
+        if (view instanceof EditText) {
+            ((EditText) view).requestFocus();
+        }
         // 显示输入法
-        new Handler().postDelayed(new Runnable() {
+        view.postDelayed(new Runnable() {
 
             @Override
             public void run() {
