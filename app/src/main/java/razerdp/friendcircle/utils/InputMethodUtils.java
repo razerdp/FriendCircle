@@ -13,11 +13,15 @@ import android.widget.EditText;
 public class InputMethodUtils {
     /** 显示软键盘 */
     public static void showInputMethod(View view) {
-        if (view instanceof EditText) {
-            ((EditText) view).requestFocus();
+        view.requestFocus();
+        InputMethodManager imm = (InputMethodManager) view.getContext()
+                                                                   .getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            //showSoftInput无效原因：
+            // http://stackoverflow.com/questions/5520085/android-show-softkeyboard-with-showsoftinput-is-not-working
+            //imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
+            imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
         }
-        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
     }
 
     /** 显示软键盘 */
@@ -30,7 +34,8 @@ public class InputMethodUtils {
      * 隐藏软键盘
      */
     public static void hideInputMethod(View view) {
-        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) view.getContext()
+                                                                   .getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
