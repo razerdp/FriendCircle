@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -15,6 +16,7 @@ import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
 import in.srain.cube.views.ptr.PtrUIHandler;
+import in.srain.cube.views.ptr.util.PtrCLog;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.interfaces.OnLoadMoreRefreshListener;
 import razerdp.friendcircle.app.interfaces.OnPullDownRefreshListener;
@@ -39,6 +41,8 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
     private OnPullDownRefreshListener mOnPullDownRefreshListener;
     private OnLoadMoreRefreshListener mOnLoadMoreRefreshListener;
 
+    private OnDispatchTouchEventListener mDispatchTouchEventListener;
+
     //=============================================================status
     private PullState loadmoreState=PullState.NORMAL;
     private PullMode curMode;
@@ -47,6 +51,7 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
     //是否有下一页
     private boolean hasMore;
     private boolean canPull=true;
+
 
     public FriendCirclePtrListView(Context context) {
         this(context, null);
@@ -154,6 +159,12 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
         super.onFinishInflate();
     }
 
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent e) {
+        if (mDispatchTouchEventListener!=null)mDispatchTouchEventListener.OnDispatchTouchEvent(e);
+        return super.dispatchTouchEvent(e);
+    }
     @Override
     public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
         return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
@@ -190,6 +201,14 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
 
     public void setOnLoadMoreRefreshListener(OnLoadMoreRefreshListener onLoadMoreRefreshListener) {
         mOnLoadMoreRefreshListener = onLoadMoreRefreshListener;
+    }
+
+    public OnDispatchTouchEventListener getOnDispatchTouchEventListener() {
+        return mDispatchTouchEventListener;
+    }
+
+    public void setOnDispatchTouchEventListener(OnDispatchTouchEventListener dispatchTouchEventListener) {
+        mDispatchTouchEventListener = dispatchTouchEventListener;
     }
 
     public PullMode getCurMode() {
@@ -392,4 +411,10 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
     public View getEmptyView() {
         return mListView.getEmptyView();
     }
+
+    /**============================================================= InterFace*/
+    public interface OnDispatchTouchEventListener{
+        boolean OnDispatchTouchEvent(MotionEvent ev);
+    }
+
 }

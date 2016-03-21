@@ -3,6 +3,8 @@ package razerdp.friendcircle.ui.activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.text.method.Touch;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,6 +19,7 @@ import razerdp.friendcircle.app.config.CommonValue;
 import razerdp.friendcircle.app.https.base.BaseResponse;
 import razerdp.friendcircle.app.https.request.FriendCircleRequest;
 import razerdp.friendcircle.app.https.request.RequestType;
+import razerdp.friendcircle.app.interfaces.OnSoftKeyboardChangeListener;
 import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.app.mvp.model.entity.DynamicInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
@@ -26,12 +29,17 @@ import razerdp.friendcircle.app.mvp.view.DynamicView;
 import razerdp.friendcircle.ui.activity.base.FriendCircleBaseActivity;
 import razerdp.friendcircle.utils.FriendCircleAdapterUtil;
 import razerdp.friendcircle.utils.InputMethodUtils;
+import razerdp.friendcircle.utils.PreferenceUtils;
+import razerdp.friendcircle.utils.ToastUtils;
+import razerdp.friendcircle.utils.UIHelper;
+import razerdp.friendcircle.widget.ptrwidget.FriendCirclePtrListView;
 
 /**
  * Created by 大灯泡 on 2016/2/25.
  * 朋友圈demo窗口
  */
-public class FriendCircleDemoActivity extends FriendCircleBaseActivity implements DynamicView, View.OnClickListener {
+public class FriendCircleDemoActivity extends FriendCircleBaseActivity
+        implements DynamicView, View.OnClickListener, OnSoftKeyboardChangeListener {
     private FriendCircleRequest mCircleRequest;
     private DynamicPresenterImpl mPresenter;
 
@@ -61,6 +69,7 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity implement
         initView();
         initReq();
         //mListView.manualRefresh();
+        UIHelper.observeSoftKeyboard(this, this);
     }
 
     private void initView() {
@@ -71,14 +80,11 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity implement
         mInputBox = (EditText) findViewById(R.id.ed_input);
         mSend = (TextView) findViewById(R.id.btn_send);
 
-        mListView.setOnTouchListener(new View.OnTouchListener() {
+        mListView.setOnDispatchTouchEventListener(new FriendCirclePtrListView.OnDispatchTouchEventListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public boolean OnDispatchTouchEvent(MotionEvent ev) {
                 if (mInputLayout.getVisibility() == View.VISIBLE) {
-                    String curInputStr = mInputBox.getText().toString().trim();
-                    if (!TextUtils.isEmpty(curInputStr)) {
-                        draftStr = curInputStr;
-                    }
+                    draftStr = mInputBox.getText().toString().trim();
                     mInputLayout.setVisibility(View.GONE);
                     InputMethodUtils.hideInputMethod(mInputBox);
                     return true;
@@ -177,6 +183,10 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity implement
     @Override
     public void showInputBox(int currentDynamicPos, @CommonValue.CommentType
     int commentType, DynamicInfo dynamicInfo, CommentInfo commentInfo) {
+        if (!TextUtils.isEmpty(draftStr)) {
+            mInputBox.setText(draftStr);
+            mInputBox.setSelection(draftStr.length());
+        }
         switch (commentType) {
             case CommonValue.COMMENT_FOR_DYNAMIC:
                 // 评论动态
@@ -189,6 +199,15 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity implement
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onSoftKeyBoardChange(int softKeybardHeight, boolean visible) {
+        Log.d("keyboardheight", "" + softKeybardHeight);
+        // 保存软键盘高度
+        if ((int) PreferenceUtils.INSTANCE.getSharedPreferenceData("KeyBoardHeight", 0) < softKeybardHeight) {
+            PreferenceUtils.INSTANCE.setSharedPreferenceData("KeyBoardHeight", softKeybardHeight);
         }
     }
 }
