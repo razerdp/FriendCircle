@@ -370,6 +370,10 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
         return mListView.getCacheColorHint();
     }
 
+    public void smoothScrollBy(int distance, int duration){
+        mListView.smoothScrollBy(distance,duration);
+    }
+
     public void smoothScrollByOffset(int offset) {
         mListView.smoothScrollByOffset(offset);
     }
