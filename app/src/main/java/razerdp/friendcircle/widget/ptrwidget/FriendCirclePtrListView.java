@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -251,6 +252,7 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
         switch (curLoadMoreState) {
             case NORMAL:
                 footerHandler.onUIReset(this);
+                mFooter.setHasMore(hasMore);
                 break;
             case REFRESHING:
                 mHeader.setPullMode(curMode);
@@ -382,6 +384,9 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
 
     public void smoothScrollToPositionFromTop(int position, int offset) {
         mListView.smoothScrollToPositionFromTop(position, offset);
+    }
+    public void setSelectionFromTop(int position, int y){
+        mListView.setSelectionFromTop(position,y);
     }
 
     public boolean removeCallbacks(Runnable action) {

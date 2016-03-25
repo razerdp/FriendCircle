@@ -122,23 +122,27 @@ public class UIHelper {
      */
     public static void observeSoftKeyboard(Activity activity, final OnSoftKeyboardChangeListener listener) {
         final View decorView = activity.getWindow().getDecorView();
-            decorView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                int previousKeyboardHeight = -1;
+        decorView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            int previousKeyboardHeight = -1;
+            Rect rect = new Rect();
+            boolean lastVisibleState = false;
 
-                @Override
-                public void onGlobalLayout() {
-                    Rect rect = new Rect();
-                    decorView.getWindowVisibleDisplayFrame(rect);
-                    int displayHeight = rect.bottom - rect.top;
-                    int height = decorView.getHeight();
-                    int keyboardHeight = height - displayHeight;
-                    if (previousKeyboardHeight != keyboardHeight) {
-                        boolean hide = (double) displayHeight / height > 0.8;
+            @Override
+            public void onGlobalLayout() {
+                rect.setEmpty();
+                decorView.getWindowVisibleDisplayFrame(rect);
+                int displayHeight = rect.bottom - rect.top;
+                int height = decorView.getHeight();
+                int keyboardHeight = height - displayHeight;
+                if (previousKeyboardHeight != keyboardHeight) {
+                    boolean hide = (double) displayHeight / height > 0.8;
+                    if (hide!=lastVisibleState) {
                         listener.onSoftKeyBoardChange(keyboardHeight, !hide);
+                        lastVisibleState=hide;
                     }
-                    previousKeyboardHeight = height;
-
                 }
-            });
-        }
+                previousKeyboardHeight = height;
+            }
+        });
+    }
 }

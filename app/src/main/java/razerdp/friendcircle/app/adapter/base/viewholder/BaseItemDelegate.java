@@ -240,7 +240,7 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
         @Override
         public void onCommentClick(View v, DynamicInfo info) {
             if (mPresenter!=null){
-                mPresenter.showInputBox(curPos,CommonValue.COMMENT_FOR_DYNAMIC,info,null);
+                mPresenter.showInputBox(curPos,null,info);
             }
 
         }
