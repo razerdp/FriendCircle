@@ -89,6 +89,7 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
 
     public void setText(String str){
         mTextView.setText(str);
+        hasGetLineCount=false;
         mTextView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {

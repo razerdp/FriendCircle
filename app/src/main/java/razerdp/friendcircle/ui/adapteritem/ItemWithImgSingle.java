@@ -3,6 +3,7 @@ package razerdp.friendcircle.ui.adapteritem;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import com.bumptech.glide.Glide;
@@ -25,26 +26,26 @@ public class ItemWithImgSingle extends BaseItemDelegate {
     private int maxHeight;
     private ImageView mImageView;
     private float ratio;
-    int width=0;
+    int width = 0;
 
-    public ItemWithImgSingle(){}
+    public ItemWithImgSingle() {}
 
     @Override
     public void onFindView(@NonNull View parent) {
-        mImageView= (ImageView) parent.findViewById(R.id.img_single);
-        if (maxWidth==0){
-            maxWidth= UIHelper.getScreenPixWidth(context)-UIHelper.dipToPx(context,90f);
+        if (mImageView == null) mImageView = (ImageView) parent.findViewById(R.id.img_single);
+        if (maxWidth == 0) {
+            maxWidth = UIHelper.getScreenPixWidth(context) - UIHelper.dipToPx(context, 90f);
         }
-        if (maxHeight==0){
-            maxHeight=UIHelper.dipToPx(context,175f);
+        if (maxHeight == 0) {
+            maxHeight = UIHelper.dipToPx(context, 175f);
         }
-        ratio=maxWidth/maxHeight;
+        ratio = maxWidth / maxHeight;
     }
 
     @Override
-    protected void bindData(int position, @NonNull View v, @NonNull MomentsInfo data, int dynamicType) {
-        final String imgUrl=data.content.imgurl.get(0);
-        if (!TextUtils.isEmpty(imgUrl)){
+    protected void bindData(int position, @NonNull View v, @NonNull final MomentsInfo data, int dynamicType) {
+        final String imgUrl = data.content.imgurl.get(0);
+        if (!TextUtils.isEmpty(imgUrl)) {
             Glide.with(context).load(imgUrl).asBitmap().into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -59,10 +60,9 @@ public class ItemWithImgSingle extends BaseItemDelegate {
                          .load(imgUrl)
                          .dontAnimate()
                          .crossFade()
-                         .override(width,
-                                 (int) (width * ratio))
+                         .override(width, (int) (width * ratio))
                          .into(mImageView);
-
+                    Log.d("width",data.textField+"     width======  "+width);
                 }
             });
         }
@@ -72,5 +72,4 @@ public class ItemWithImgSingle extends BaseItemDelegate {
     public int getViewRes() {
         return R.layout.dynamic_item_with_img_single;
     }
-
 }
