@@ -3,9 +3,9 @@
 ##2016-03-25
 评论模块对齐完成（针对动态评论）</br>
 代码解析地址：</br>
- </br>
+http://www.jianshu.com/p/8d24f9b7a63a </br>
 图片预览：</br>
-
+![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-03-25_show_input_box.gif)
 
 ***
 
