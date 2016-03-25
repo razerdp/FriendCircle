@@ -7,6 +7,7 @@ import razerdp.friendcircle.app.https.request.RequestType;
 import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.app.mvp.model.entity.DynamicInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
+import razerdp.friendcircle.widget.commentwidget.CommentWidget;
 
 /**
  * Created by 大灯泡 on 2016/3/17.
@@ -25,5 +26,5 @@ public interface DynamicView {
 
     // 评论框展示
     void showInputBox(int currentDynamicPos,
-                      @CommonValue.CommentType int commentType, DynamicInfo dynamicInfo, CommentInfo commentInfo);
+                      CommentWidget commentWidget, DynamicInfo dynamicInfo);
 }

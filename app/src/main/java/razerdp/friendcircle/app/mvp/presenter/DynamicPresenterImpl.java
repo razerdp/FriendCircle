@@ -11,6 +11,7 @@ import razerdp.friendcircle.app.mvp.model.entity.DynamicInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.mvp.model.impl.DynamicModelImpl;
 import razerdp.friendcircle.app.mvp.view.DynamicView;
+import razerdp.friendcircle.widget.commentwidget.CommentWidget;
 
 /**
  * Created by 大灯泡 on 2016/3/17.
@@ -38,8 +39,8 @@ public class DynamicPresenterImpl implements DynamicResultCallBack {
 
     //=============================================================
     // 展示输入框
-    public void showInputBox(int currentDynamicPos, @CommonValue.CommentType int commentType, DynamicInfo dynamicInfo, CommentInfo commentInfo){
-        mView.showInputBox(currentDynamicPos,commentType,dynamicInfo,commentInfo);
+    public void showInputBox(int currentDynamicPos, CommentWidget commentWidget, DynamicInfo dynamicInfo){
+        mView.showInputBox(currentDynamicPos,commentWidget,dynamicInfo);
     }
 
     @Override
