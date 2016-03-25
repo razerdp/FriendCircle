@@ -1,9 +1,13 @@
 package razerdp.friendcircle.utils;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
+import razerdp.friendcircle.app.interfaces.OnSoftKeyboardChangeListener;
 
 /**
  * Created by 大灯泡 on 2016/2/9.
@@ -52,8 +56,7 @@ public class UIHelper {
      */
     public static int getStatusHeight(Context context) {
         int result = 0;
-        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen",
-                "android");
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
             result = context.getResources().getDimensionPixelSize(resourceId);
         }
@@ -64,8 +67,7 @@ public class UIHelper {
      * 隐藏软键盘
      */
     public static void hideInputMethod(View view) {
-        InputMethodManager imm = (InputMethodManager) view.getContext()
-                                                          .getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
@@ -84,8 +86,7 @@ public class UIHelper {
      * 显示软键盘
      */
     public static void showInputMethod(View view) {
-        InputMethodManager imm = (InputMethodManager) view.getContext()
-                                                          .getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
         }
@@ -95,8 +96,7 @@ public class UIHelper {
      * 显示软键盘
      */
     public static void showInputMethod(Context context) {
-        InputMethodManager imm = (InputMethodManager) context
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
@@ -112,5 +112,37 @@ public class UIHelper {
                 UIHelper.showInputMethod(view);
             }
         }, delayMillis);
+    }
+
+    /**
+     * 监听软键盘高度和状态
+     *
+     * source web link:
+     * http://blog.csdn.net/daguaio_o/article/details/47127993
+     */
+    public static void observeSoftKeyboard(Activity activity, final OnSoftKeyboardChangeListener listener) {
+        final View decorView = activity.getWindow().getDecorView();
+        decorView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            int previousKeyboardHeight = -1;
+            Rect rect = new Rect();
+            boolean lastVisibleState = false;
+
+            @Override
+            public void onGlobalLayout() {
+                rect.setEmpty();
+                decorView.getWindowVisibleDisplayFrame(rect);
+                int displayHeight = rect.bottom - rect.top;
+                int height = decorView.getHeight();
+                int keyboardHeight = height - displayHeight;
+                if (previousKeyboardHeight != keyboardHeight) {
+                    boolean hide = (double) displayHeight / height > 0.8;
+                    if (hide!=lastVisibleState) {
+                        listener.onSoftKeyBoardChange(keyboardHeight, !hide);
+                        lastVisibleState=hide;
+                    }
+                }
+                previousKeyboardHeight = height;
+            }
+        });
     }
 }

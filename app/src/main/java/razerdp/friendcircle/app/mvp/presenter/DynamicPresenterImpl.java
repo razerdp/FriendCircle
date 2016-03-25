@@ -6,9 +6,12 @@ import razerdp.friendcircle.app.config.LocalHostInfo;
 import razerdp.friendcircle.app.https.base.BaseResponse;
 import razerdp.friendcircle.app.https.request.RequestType;
 import razerdp.friendcircle.app.interfaces.DynamicResultCallBack;
+import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.app.mvp.model.entity.DynamicInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.mvp.model.impl.DynamicModelImpl;
 import razerdp.friendcircle.app.mvp.view.DynamicView;
+import razerdp.friendcircle.widget.commentwidget.CommentWidget;
 
 /**
  * Created by 大灯泡 on 2016/3/17.
@@ -32,6 +35,12 @@ public class DynamicPresenterImpl implements DynamicResultCallBack {
     // 取消赞
     public void cancelPraise(int curDynamicPos, long dynamicId) {
         mModel.cancelPraise(curDynamicPos, LocalHostInfo.INSTANCE.getHostId(), dynamicId);
+    }
+
+    //=============================================================
+    // 展示输入框
+    public void showInputBox(int currentDynamicPos, CommentWidget commentWidget, DynamicInfo dynamicInfo){
+        mView.showInputBox(currentDynamicPos,commentWidget,dynamicInfo);
     }
 
     @Override
