@@ -212,33 +212,39 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
             case R.id.comment_button:
                 if (mInfo == null) return;
                 mCommentPopup.setDynamicInfo(mInfo.dynamicInfo);
-                mCommentPopup.setOnCommentPopupClickListener(new CommentPopup.OnCommentPopupClickListener() {
-                    @Override
-                    public void onLikeClick(View v, DynamicInfo info) {
-                        if (mPresenter != null) {
-                            switch (info.praiseState) {
-                                case CommonValue.NOT_PRAISE:
-                                    mPresenter.addPraise(curPos,info.dynamicId);
-                                    break;
-                                case CommonValue.HAS_PRAISE:
-                                    mPresenter.cancelPraise(curPos,info.dynamicId);
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCommentClick(View v, DynamicInfo info) {
-                    }
-                });
+                mCommentPopup.setOnCommentPopupClickListener(mPopupClickListener);
                 mCommentPopup.showPopupWindow(commentImage);
                 break;
             default:
                 break;
         }
     }
+
+    private CommentPopup.OnCommentPopupClickListener mPopupClickListener=new CommentPopup.OnCommentPopupClickListener() {
+        @Override
+        public void onLikeClick(View v, DynamicInfo info) {
+            if (mPresenter != null) {
+                switch (info.praiseState) {
+                    case CommonValue.NOT_PRAISE:
+                        mPresenter.addPraise(curPos,info.dynamicId);
+                        break;
+                    case CommonValue.HAS_PRAISE:
+                        mPresenter.cancelPraise(curPos,info.dynamicId);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        @Override
+        public void onCommentClick(View v, DynamicInfo info) {
+            if (mPresenter!=null){
+                mPresenter.showInputBox(curPos,null,info);
+            }
+
+        }
+    };
 
     @Override
     public boolean onLongClick(View v) {

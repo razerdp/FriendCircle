@@ -2,22 +2,31 @@ package razerdp.friendcircle.ui.activity;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ScrollingView;
 import android.text.TextUtils;
+import android.text.method.Touch;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import java.io.File;
 import java.util.List;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.config.CommonValue;
 import razerdp.friendcircle.app.https.base.BaseResponse;
 import razerdp.friendcircle.app.https.request.FriendCircleRequest;
 import razerdp.friendcircle.app.https.request.RequestType;
+import razerdp.friendcircle.app.interfaces.OnSoftKeyboardChangeListener;
 import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.app.mvp.model.entity.DynamicInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.mvp.presenter.DynamicPresenterImpl;
@@ -25,14 +34,23 @@ import razerdp.friendcircle.app.mvp.view.DynamicView;
 import razerdp.friendcircle.ui.activity.base.FriendCircleBaseActivity;
 import razerdp.friendcircle.utils.FriendCircleAdapterUtil;
 import razerdp.friendcircle.utils.InputMethodUtils;
+import razerdp.friendcircle.utils.PreferenceUtils;
+import razerdp.friendcircle.utils.ToastUtils;
+import razerdp.friendcircle.utils.UIHelper;
+import razerdp.friendcircle.widget.commentwidget.CommentWidget;
+import razerdp.friendcircle.widget.ptrwidget.FriendCirclePtrListView;
 
 /**
  * Created by 大灯泡 on 2016/2/25.
  * 朋友圈demo窗口
  */
-public class FriendCircleDemoActivity extends FriendCircleBaseActivity implements DynamicView, View.OnClickListener {
+public class FriendCircleDemoActivity extends FriendCircleBaseActivity
+        implements DynamicView, View.OnClickListener, OnSoftKeyboardChangeListener {
     private FriendCircleRequest mCircleRequest;
     private DynamicPresenterImpl mPresenter;
+
+    private RelativeLayout titleBar;
+    private View friendCircleHeader;
 
     //input views
     private LinearLayout mInputLayout;
@@ -41,6 +59,10 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity implement
 
     //草稿
     private String draftStr;
+
+    //输入法可见状态下的偏移量
+    private int currentDynamicPos = 0;
+    private CommentWidget mCommentWidget;
 
     // 方案二，预留
  /*   @Override
@@ -60,24 +82,25 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity implement
         initView();
         initReq();
         //mListView.manualRefresh();
+        UIHelper.observeSoftKeyboard(this, this);
     }
 
     private void initView() {
-        View header = LayoutInflater.from(this).inflate(R.layout.item_header, null, false);
-        bindListView(R.id.listview, header, FriendCircleAdapterUtil.getAdapter(this, mMomentsInfos, mPresenter));
+        titleBar = (RelativeLayout) findViewById(R.id.action_bar);
+
+        friendCircleHeader = LayoutInflater.from(this).inflate(R.layout.item_header, null, false);
+        bindListView(R.id.listview, friendCircleHeader,
+                FriendCircleAdapterUtil.getAdapter(this, mMomentsInfos, mPresenter));
 
         mInputLayout = (LinearLayout) findViewById(R.id.ll_input);
         mInputBox = (EditText) findViewById(R.id.ed_input);
         mSend = (TextView) findViewById(R.id.btn_send);
 
-        mListView.setOnTouchListener(new View.OnTouchListener() {
+        mListView.setOnDispatchTouchEventListener(new FriendCirclePtrListView.OnDispatchTouchEventListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public boolean OnDispatchTouchEvent(MotionEvent ev) {
                 if (mInputLayout.getVisibility() == View.VISIBLE) {
-                    String curInputStr = mInputBox.getText().toString().trim();
-                    if (!TextUtils.isEmpty(curInputStr)) {
-                        draftStr = curInputStr;
-                    }
+                    draftStr = mInputBox.getText().toString().trim();
                     mInputLayout.setVisibility(View.GONE);
                     InputMethodUtils.hideInputMethod(mInputBox);
                     return true;
@@ -171,22 +194,85 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity implement
             }
         }
         mAdapter.notifyDataSetChanged();
-
     }
 
     @Override
-    public void showInputBox(int currentDynamicPos, @CommonValue.CommentType int commentType, CommentInfo commentInfo) {
-        switch (commentType){
-            case CommonValue.COMMENT_FOR_DYNAMIC:
-                // 评论动态
-                break;
-            case CommonValue.COMMENT_FOR_USER:
-                // 回复评论
-                break;
-            default:
-                break;
+    public void showInputBox(int currentDynamicPos, CommentWidget commentWidget, DynamicInfo dynamicInfo) {
+        this.currentDynamicPos = currentDynamicPos;
+        this.mCommentWidget = commentWidget;
+        if (!TextUtils.isEmpty(draftStr)) {
+            mInputBox.setText(draftStr);
+            mInputBox.setSelection(draftStr.length());
+        }
+        if (commentWidget == null) {
+            // 评论动态
+            mInputLayout.setVisibility(View.VISIBLE);
+            InputMethodUtils.showInputMethod(mInputBox);
+        }
+        else {
+            // 回复评论
+
+        }
+    }
+
+    //============================================================= tools method
+
+    @Override
+    public void onSoftKeyBoardChange(int softKeybardHeight, boolean visible) {
+        Log.d("keyboardheight", "" + softKeybardHeight + "         visible=     " + visible);
+        // 保存软键盘高度
+        if ((int) PreferenceUtils.INSTANCE.getSharedPreferenceData("KeyBoardHeight", 0) < softKeybardHeight) {
+            PreferenceUtils.INSTANCE.setSharedPreferenceData("KeyBoardHeight", softKeybardHeight);
         }
 
+        // listview偏移
+        final int offset = calculateListViewOffset(currentDynamicPos, mCommentWidget, softKeybardHeight);
+        Log.d("offset", "offset===========    " + offset);
+        // http://stackoverflow.com/questions/11431832/android-smoothscrolltoposition-not-working-correctly
+        final int pos = currentDynamicPos + 1;
+        mListView.smoothScrollToPositionFromTop(pos, offset);
+    }
+
+    private int screenHeight = 0;
+    private int statusBarHeight = 0;
+
+    private int calculateListViewOffset(int currentDynamicPos, CommentWidget commentWidget, int keyBoardHeight) {
+        int result = 0;
+        if (screenHeight == 0) screenHeight = UIHelper.getScreenPixHeight(this);
+        if (statusBarHeight == 0) statusBarHeight = UIHelper.getStatusHeight(this);
+
+        if (commentWidget == null) {
+            // 评论控件为空，证明回复的是整个动态
+            result = getOffsetOfDynamic(currentDynamicPos, keyBoardHeight);
+        }
+        else {
+            // 评论控件不空，证明回复的是评论
+        }
+        return result;
+    }
+
+    // 得到动态高度
+    private int getOffsetOfDynamic(int currentDynamicPos, int keyBoardHeight) {
+        int result = 0;
+        ListView contentListView = null;
+        if (mListView.getContentView() instanceof ListView) {
+            contentListView = (ListView) mListView.getContentView();
+        }
+
+        if (contentListView == null) return 0;
+
+        int firstItemPos = contentListView.getFirstVisiblePosition();
+        int dynamicItemHeight = 0;
+        View currentDynamicItem = contentListView.getChildAt(
+                currentDynamicPos - firstItemPos + contentListView.getHeaderViewsCount());
+        if (currentDynamicItem != null) {
+            dynamicItemHeight = currentDynamicItem.getHeight();
+            Log.d("dynamicItemHeight", "dynamicItemHeight=========    " + dynamicItemHeight);
+        }
+        int contentHeight = 0;
+        contentHeight = screenHeight - keyBoardHeight - mInputLayout.getHeight();
+        result = dynamicItemHeight - contentHeight;
+        return -result;
     }
 }
 
