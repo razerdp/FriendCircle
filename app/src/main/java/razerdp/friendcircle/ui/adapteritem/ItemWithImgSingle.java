@@ -13,6 +13,7 @@ import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.adapter.base.viewholder.BaseItemDelegate;
 import razerdp.friendcircle.app.config.DynamicType;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
+import razerdp.friendcircle.utils.ImgUtil;
 import razerdp.friendcircle.utils.UIHelper;
 
 /**
@@ -55,14 +56,19 @@ public class ItemWithImgSingle extends BaseItemDelegate {
                     else {
                         width = resource.getWidth();
                     }
-                    resource.recycle();
-                    Glide.with(context)
+                   /*  resource.recycle();
+                   Glide.with(context)
                          .load(imgUrl)
                          .dontAnimate()
                          .crossFade()
                          .override(width, (int) (width * ratio))
-                         .into(mImageView);
-                    Log.d("width",data.textField+"     width======  "+width);
+                         .into(mImageView);*/
+                    try {
+                        mImageView.setImageBitmap(ImgUtil.ScaleBitmap(resource, width, (int) (width * ratio)));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e("ItemWithImgSingle", "有可能是原图被回收了。该动态的nick=  " + data.userInfo.nick);
+                    }
                 }
             });
         }
