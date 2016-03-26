@@ -1,6 +1,7 @@
 package razerdp.friendcircle.widget.praisewidget;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
@@ -19,6 +20,8 @@ public class PraiseClick extends ClickableSpan {
     private Context mContext;
     private int textSize;
     private UserInfo mPraiseInfo;
+
+    private int clickBgColor= Color.TRANSPARENT;
 
     private PraiseClick() {}
 
@@ -46,8 +49,13 @@ public class PraiseClick extends ClickableSpan {
         else {
             ds.setColor(color);
         }
+        ds.bgColor=clickBgColor;
         ds.setTextSize(textSize);
         ds.setUnderlineText(false);
+    }
+
+    public void setClickBackgroundColor(int color){
+        this.clickBgColor=color;
     }
 
     public static class Builder {

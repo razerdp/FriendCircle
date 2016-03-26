@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingLeft="74dp"
     android:paddingRight="@dimen/item_padding"
     android:paddingBottom="16dp"
@@ -48,6 +49,7 @@
             android:paddingRight="5dp"
             android:lineSpacingExtra="2dp"
             android:lineSpacingMultiplier="1"
+            app:click_bg_color="@color/comment_click_bg"
             />
         <View
             android:id="@+id/divider"
