@@ -3,6 +3,7 @@ package razerdp.friendcircle.widget.praisewidget;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Build;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -66,8 +67,7 @@ public class PraiseWidget extends TextView {
         iconRes = a.getResourceId(R.styleable.PraiseWidget_like_icon, R.drawable.icon_like);
         a.recycle();
         //如果不设置，clickableSpan不能响应点击事件
-        this.setMovementMethod(LinkMovementMethod.getInstance());
-        this.setHighlightColor(clickBg);
+        this.setMovementMethod(PraiseMovementMethod.getInstance(clickBg, Color.TRANSPARENT));
         setTextSize(textSize);
     }
 
