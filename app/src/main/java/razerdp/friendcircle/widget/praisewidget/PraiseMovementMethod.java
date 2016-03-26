@@ -4,7 +4,6 @@ import android.text.Layout;
 import android.text.Selection;
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
@@ -12,11 +11,6 @@ import android.widget.TextView;
  * Created by 大灯泡 on 2016/3/26.
  * 针对点赞显示列表控件的点击事件
  */
-
-/*
-* SOF:
-* http://stackoverflow.com/questions/16792963/android-clickablespan-intercepts-the-click-event
-* */
 public class PraiseMovementMethod extends LinkMovementMethod {
     private static PraiseMovementMethod sInstance;
     private int color;
