@@ -156,7 +156,6 @@ public abstract class ClickableSpanEx extends ClickableSpan {
     public static class ClickableSpanSelector implements View.OnTouchListener {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            Log.d("ClickableSpanSelector",""+this.hashCode());
             return ClickableSpanEx.onTouch(v, event);
         }
     }
