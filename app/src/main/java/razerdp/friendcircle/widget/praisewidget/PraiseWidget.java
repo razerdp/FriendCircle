@@ -3,6 +3,7 @@ package razerdp.friendcircle.widget.praisewidget;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Build;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -10,12 +11,14 @@ import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.LruCache;
+import android.view.MotionEvent;
 import android.widget.TextView;
 import java.util.List;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.widget.CustomImageSpan;
 import razerdp.friendcircle.widget.SpannableStringBuilderAllVer;
+import razerdp.friendcircle.widget.span.ClickableSpanEx;
 
 /**
  * Created by 大灯泡 on 2016/2/21.
@@ -67,7 +70,7 @@ public class PraiseWidget extends TextView {
         a.recycle();
         //如果不设置，clickableSpan不能响应点击事件
         this.setMovementMethod(LinkMovementMethod.getInstance());
-        this.setHighlightColor(clickBg);
+        setOnTouchListener(new ClickableSpanEx.ClickableSpanSelector());
         setTextSize(textSize);
     }
 
@@ -101,6 +104,8 @@ public class PraiseWidget extends TextView {
             spanStrBuilder.append(" ");
             for (int i = 0; i < datas.size(); i++) {
                 PraiseClick praiseClick = new PraiseClick.Builder(getContext(), datas.get(i)).setTextSize(textSize)
+                                                                                             .setColor(textColor)
+                                                                                             .setClickEventColor(clickBg)
                                                                                              .build();
                 try {
                     spanStrBuilder.append(datas.get(i).nick, praiseClick, 0);
