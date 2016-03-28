@@ -86,7 +86,6 @@ public abstract class ClickableSpanEx extends ClickableSpan {
         int action = event.getAction();
         if (v instanceof TextView) {
             TextView widget = (TextView) v;
-            if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
                 int x = (int) event.getX();
                 int y = (int) event.getY();
 
@@ -118,6 +117,9 @@ public abstract class ClickableSpanEx extends ClickableSpan {
                     else if (action == MotionEvent.ACTION_DOWN) {
                         Selection.setSelection(buffer, buffer.getSpanStart(link[0]), buffer.getSpanEnd(link[0]));
                         link[0].setTransparent(false);
+                    }else {
+                        Selection.removeSelection(buffer);
+                        link[0].setTransparent(true);
                     }
                     return true;
                 }
@@ -125,7 +127,6 @@ public abstract class ClickableSpanEx extends ClickableSpan {
                     Selection.removeSelection(buffer);
                 }
             }
-        }
         else {
             Log.e(TAG, "ClickableSpanEx supports TextView only .");
         }
