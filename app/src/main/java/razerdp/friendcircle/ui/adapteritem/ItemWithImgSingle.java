@@ -56,13 +56,6 @@ public class ItemWithImgSingle extends BaseItemDelegate {
                     else {
                         width = resource.getWidth();
                     }
-                   /*  resource.recycle();
-                   Glide.with(context)
-                         .load(imgUrl)
-                         .dontAnimate()
-                         .crossFade()
-                         .override(width, (int) (width * ratio))
-                         .into(mImageView);*/
                     try {
                         mImageView.setImageBitmap(ImgUtil.ScaleBitmap(resource, width, (int) (width * ratio)));
                     } catch (Exception e) {

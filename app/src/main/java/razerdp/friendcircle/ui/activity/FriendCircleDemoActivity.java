@@ -64,15 +64,6 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
     private int currentDynamicPos = 0;
     private CommentWidget mCommentWidget;
 
-    // 方案二，预留
- /*   @Override
-    protected void onEventMainThread(Events events) {
-        if (events == null || events.getEvent() == null) return;
-        if (events.getEvent() instanceof Events.CallToRefresh) {
-            if (((Events.CallToRefresh) events.getEvent()).needRefresh) mCircleRequest.execute();
-        }
-    }*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -204,15 +195,8 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
             mInputBox.setText(draftStr);
             mInputBox.setSelection(draftStr.length());
         }
-        if (commentWidget == null) {
-            // 评论动态
-            mInputLayout.setVisibility(View.VISIBLE);
-            InputMethodUtils.showInputMethod(mInputBox);
-        }
-        else {
-            // 回复评论
-
-        }
+        mInputLayout.setVisibility(View.VISIBLE);
+        InputMethodUtils.showInputMethod(mInputBox);
     }
 
     //============================================================= tools method
@@ -229,7 +213,7 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
         final int offset = calculateListViewOffset(currentDynamicPos, mCommentWidget, softKeybardHeight);
         Log.d("offset", "offset===========    " + offset);
         // http://stackoverflow.com/questions/11431832/android-smoothscrolltoposition-not-working-correctly
-        final int pos = currentDynamicPos + 1;
+        final int pos = currentDynamicPos + mListView.getHeaderViewsCount();
         mListView.smoothScrollToPositionFromTop(pos, offset);
     }
 
@@ -237,7 +221,7 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
     private int statusBarHeight = 0;
 
     private int calculateListViewOffset(int currentDynamicPos, CommentWidget commentWidget, int keyBoardHeight) {
-        int result = 0;
+        int result;
         if (screenHeight == 0) screenHeight = UIHelper.getScreenPixHeight(this);
         if (statusBarHeight == 0) statusBarHeight = UIHelper.getStatusHeight(this);
 
@@ -247,11 +231,12 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
         }
         else {
             // 评论控件不空，证明回复的是评论
+            result = getOffsetOfComment(currentDynamicPos, commentWidget, keyBoardHeight);
         }
         return result;
     }
 
-    // 得到动态高度
+    // 得到动态偏移量
     private int getOffsetOfDynamic(int currentDynamicPos, int keyBoardHeight) {
         int result = 0;
         ListView contentListView = null;
@@ -272,6 +257,38 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
         int contentHeight = 0;
         contentHeight = screenHeight - keyBoardHeight - mInputLayout.getHeight();
         result = dynamicItemHeight - contentHeight;
+        return -result;
+    }
+
+    // 得到评论的偏移量
+    private int getOffsetOfComment(int currentDynamicPos, CommentWidget commentWidget, int keyBoardHeight) {
+        int result=0;
+        int contentHeight;
+        contentHeight = screenHeight - keyBoardHeight - mInputLayout.getHeight();
+        try {
+            //得到评论控件所在父控件（即评论的父控件）
+            final LinearLayout parent = (LinearLayout) commentWidget.getParent();
+            //得到评论和点赞的父控件
+            final LinearLayout praiseAndCommentParent = (LinearLayout) parent.getParent();
+            //得到评论和点赞的父控件的父控件
+            final RelativeLayout originParent = (RelativeLayout) praiseAndCommentParent.getParent();
+            //得到评论和点赞的父控件的父控件的top
+            final int originParentTop = originParent.getTop();
+            //得到评论和点赞的父控件的top
+            final int praiseAndCommentParentTop = praiseAndCommentParent.getTop();
+            //得到评论所在父控件的top
+            final int parentTop = parent.getTop();
+            //得到当前评论控件的底部（相对于LinearLayout）
+            final int currentCommentBottom = commentWidget.getBottom();
+            //则当前评论控件相对于item来说，其底部=父类LinearLayout.top+当前控件的底部
+            final int currentCommentOffset = originParentTop + praiseAndCommentParentTop + parentTop + currentCommentBottom;
+
+            //则偏移量等于offset-contentheight
+            result = currentCommentOffset - contentHeight;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("FriendCircleDemoAct","也许是空指针也许是cast错误哦");
+        }
         return -result;
     }
 }

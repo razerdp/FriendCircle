@@ -71,7 +71,7 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
     @Override
     public void onBindData(int position, @NonNull View v, @NonNull MomentsInfo data, final int dynamicType) {
         mInfo = data;
-        curPos=position;
+        curPos = position;
         //初始化共用部分
         bindView(v);
         bindShareData(data);
@@ -188,7 +188,9 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
                     commentWidget.setLayoutParams(params);
                     commentWidget.setLineSpacing(4, 1);
                 }
-                Log.d("commentTextViewId"," *********         textview id ======  "+commentWidget.hashCode());
+                Log.d("commentTextViewId", " *********         textview id ======  " + commentWidget.hashCode());
+                commentWidget.setBackgroundDrawable(
+                        context.getResources().getDrawable(R.drawable.selector_comment_widget));
                 commentWidget.setOnClickListener(this);
                 commentWidget.setOnLongClickListener(this);
                 commentLayout.addView(commentWidget);
@@ -218,18 +220,26 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
             default:
                 break;
         }
+
+        //评论的click
+        if (v instanceof CommentWidget) {
+            if (mPresenter != null) {
+                mPresenter.showInputBox(curPos, (CommentWidget) v, mInfo.dynamicInfo);
+            }
+        }
     }
 
-    private CommentPopup.OnCommentPopupClickListener mPopupClickListener=new CommentPopup.OnCommentPopupClickListener() {
+    private CommentPopup.OnCommentPopupClickListener mPopupClickListener
+            = new CommentPopup.OnCommentPopupClickListener() {
         @Override
         public void onLikeClick(View v, DynamicInfo info) {
             if (mPresenter != null) {
                 switch (info.praiseState) {
                     case CommonValue.NOT_PRAISE:
-                        mPresenter.addPraise(curPos,info.dynamicId);
+                        mPresenter.addPraise(curPos, info.dynamicId);
                         break;
                     case CommonValue.HAS_PRAISE:
-                        mPresenter.cancelPraise(curPos,info.dynamicId);
+                        mPresenter.cancelPraise(curPos, info.dynamicId);
                         break;
                     default:
                         break;
@@ -239,10 +249,9 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
 
         @Override
         public void onCommentClick(View v, DynamicInfo info) {
-            if (mPresenter!=null){
-                mPresenter.showInputBox(curPos,null,info);
+            if (mPresenter != null) {
+                mPresenter.showInputBox(curPos, null, info);
             }
-
         }
     };
 
@@ -278,7 +287,7 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
 
     @Override
     public void setPresenter(DynamicPresenterImpl presenter) {
-        this.mPresenter=presenter;
+        this.mPresenter = presenter;
     }
 
     @Override
