@@ -1,5 +1,14 @@
 # 更新日志
 
+##2016-04-04
+评论模块对齐完成（针对回复评论）</br>
+代码解析地址：</br>
+http://www.jianshu.com/p/513e2eccd7a8 </br>
+图片预览：</br>
+![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-04-04_comment_align_input_box.gif)
+
+***
+
 ##2016-03-26
 修复点赞列表展示的背景selector</br>
 代码解析地址：</br>
