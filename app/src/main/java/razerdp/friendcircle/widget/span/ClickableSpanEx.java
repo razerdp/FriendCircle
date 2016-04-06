@@ -86,47 +86,42 @@ public abstract class ClickableSpanEx extends ClickableSpan {
         int action = event.getAction();
         if (v instanceof TextView) {
             TextView widget = (TextView) v;
-                int x = (int) event.getX();
-                int y = (int) event.getY();
+            int x = (int) event.getX();
+            int y = (int) event.getY();
 
-                x -= widget.getTotalPaddingLeft();
-                y -= widget.getTotalPaddingTop();
+            x -= widget.getTotalPaddingLeft();
+            y -= widget.getTotalPaddingTop();
 
-                x += widget.getScrollX();
-                y += widget.getScrollY();
+            x += widget.getScrollX();
+            y += widget.getScrollY();
 
-                Layout layout = widget.getLayout();
-                int line = layout.getLineForVertical(y);
-                int off = layout.getOffsetForHorizontal(line, x);
+            Layout layout = widget.getLayout();
+            int line = layout.getLineForVertical(y);
+            int off = layout.getOffsetForHorizontal(line, x);
 
-                //* Return the text the TextView is displaying. If TextView.setText() was called with
-                // * an argument of BufferType.SPANNABLE or BufferType.EDITABLE, you can cast
-                // * the return value from this method to Spannable or Editable, respectively.
-                // *
-                //* Note: The content of the return value should not be modified. If you want
-                //* a modifiable one, you should make your own copy first.
-                Spannable buffer = (Spannable) widget.getText();
-                ClickableSpanEx[] link = buffer.getSpans(off, off, ClickableSpanEx.class);
+            //* Return the text the TextView is displaying. If TextView.setText() was called with
+            // * an argument of BufferType.SPANNABLE or BufferType.EDITABLE, you can cast
+            // * the return value from this method to Spannable or Editable, respectively.
+            // *
+            //* Note: The content of the return value should not be modified. If you want
+            //* a modifiable one, you should make your own copy first.
+            Spannable buffer = (Spannable) widget.getText();
+            ClickableSpanEx[] link = buffer.getSpans(off, off, ClickableSpanEx.class);
 
-                if (link.length != 0) {
-                    if (action == MotionEvent.ACTION_UP) {
-                        link[0].setTransparent(true);
-                        link[0].onClick(widget);
-                        Selection.removeSelection(buffer);
-                    }
-                    else if (action == MotionEvent.ACTION_DOWN) {
-                        Selection.setSelection(buffer, buffer.getSpanStart(link[0]), buffer.getSpanEnd(link[0]));
-                        link[0].setTransparent(false);
-                    }else {
-                        Selection.removeSelection(buffer);
-                        link[0].setTransparent(true);
-                    }
-                    return true;
+            if (link.length != 0) {
+                if (action == MotionEvent.ACTION_DOWN) {
+                    Selection.setSelection(buffer, buffer.getSpanStart(link[0]), buffer.getSpanEnd(link[0]));
+                    link[0].setTransparent(false);
                 }
                 else {
+                    if (action == MotionEvent.ACTION_UP) link[0].onClick(widget);
+                    link[0].setTransparent(true);
                     Selection.removeSelection(buffer);
                 }
+                return true;
             }
+
+        }
         else {
             Log.e(TAG, "ClickableSpanEx supports TextView only .");
         }
