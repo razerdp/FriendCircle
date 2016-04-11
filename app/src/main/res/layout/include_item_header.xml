@@ -26,6 +26,7 @@
         android:textSize="@dimen/normal_font"
         android:textColor="@color/nick"
         tools:text="羽翼君"/>
+
     <razerdp.friendcircle.widget.ClickShowMoreLayout
         android:id="@+id/item_text_field"
         android:layout_width="match_parent"
@@ -34,6 +35,5 @@
         android:layout_alignLeft="@id/nick"
         android:layout_marginTop="8dp"
         app:show_line="5"
-        app:text_color="@color/normal_font_color"
-        />
+        app:text_color="@color/normal_font_color"/>
 </RelativeLayout>
