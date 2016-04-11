@@ -75,4 +75,9 @@
         <attr name="civ_border_overlay" format="boolean" />
         <attr name="civ_fill_color" format="color" />
     </declare-styleable>
+
+    <!--ZoomImageView-->
+    <declare-styleable name="ZoomImageView">
+        <attr name="foregroundColor" format="reference|color"/>
+    </declare-styleable>
 </resources>
