@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
+import android.view.View;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.widget.SuperImageView;
 
@@ -16,7 +17,7 @@ import razerdp.friendcircle.widget.SuperImageView;
  * Created by 大灯泡 on 2016/4/11.
  * 朋友圈的imageview，包含缩放动画
  */
-public class ZoomImageView extends SuperImageView {
+public class ZoomImageView extends SuperImageView implements View.OnClickListener {
     //前景层
     private Drawable mForegroundDrawable;
     private Rect mCachedBounds = new Rect();
@@ -52,9 +53,8 @@ public class ZoomImageView extends SuperImageView {
             ((StateListDrawable) mForegroundDrawable).addState(new int[] { android.R.attr.state_enabled },
                     normalDrawable);
             ((StateListDrawable) mForegroundDrawable).addState(new int[] {}, normalDrawable);
-            mForegroundDrawable.mutate();
         }
-        mForegroundDrawable.setCallback(this);
+        if (mForegroundDrawable != null) mForegroundDrawable.setCallback(this);
         a.recycle();
     }
 
@@ -62,7 +62,7 @@ public class ZoomImageView extends SuperImageView {
     protected void drawableStateChanged() {
         super.drawableStateChanged();
 
-        if (mForegroundDrawable.isStateful()) {
+        if (mForegroundDrawable != null && mForegroundDrawable.isStateful()) {
             mForegroundDrawable.setState(getDrawableState());
         }
         invalidate();
@@ -72,14 +72,21 @@ public class ZoomImageView extends SuperImageView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        mForegroundDrawable.setBounds(mCachedBounds);
-        mForegroundDrawable.draw(canvas);
+        if (mForegroundDrawable != null) {
+            mForegroundDrawable.setBounds(mCachedBounds);
+            mForegroundDrawable.draw(canvas);
+        }
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        mCachedBounds.set(0, 0, w, h);
+        if (mForegroundDrawable != null) mCachedBounds.set(0, 0, w, h);
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 }

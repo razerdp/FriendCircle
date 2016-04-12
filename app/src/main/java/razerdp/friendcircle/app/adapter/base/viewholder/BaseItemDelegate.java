@@ -188,7 +188,6 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
                     commentWidget.setLayoutParams(params);
                     commentWidget.setLineSpacing(4, 1);
                 }
-                Log.d("commentTextViewId", " *********         textview id ======  " + commentWidget.hashCode());
                 commentWidget.setBackgroundDrawable(
                         context.getResources().getDrawable(R.drawable.selector_comment_widget));
                 commentWidget.setOnClickListener(this);

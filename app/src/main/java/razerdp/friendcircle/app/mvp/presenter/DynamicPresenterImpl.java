@@ -1,5 +1,8 @@
 package razerdp.friendcircle.app.mvp.presenter;
 
+import android.graphics.Rect;
+import android.support.annotation.NonNull;
+import java.util.ArrayList;
 import java.util.List;
 import razerdp.friendcircle.app.config.CommonValue;
 import razerdp.friendcircle.app.config.LocalHostInfo;
@@ -41,6 +44,13 @@ public class DynamicPresenterImpl implements DynamicResultCallBack {
     // 展示输入框
     public void showInputBox(int currentDynamicPos, CommentWidget commentWidget, DynamicInfo dynamicInfo){
         mView.showInputBox(currentDynamicPos,commentWidget,dynamicInfo);
+    }
+
+
+    // 跳转到图片展示
+    public void shoPhoto(@NonNull ArrayList<String> photoAddress, @NonNull ArrayList<Rect> originViewBounds, int
+            curSelectedPos){
+        mView.showPhoto(photoAddress,originViewBounds,curSelectedPos);
     }
 
     @Override
