@@ -37,6 +37,7 @@
                 android:text="朋友圈"
                 android:layout_centerInParent="true"/>
         </RelativeLayout>
+        <include layout="@layout/include_pager_photo"/>
     </FrameLayout>
 
     <include layout="@layout/include_input_layout"/>
