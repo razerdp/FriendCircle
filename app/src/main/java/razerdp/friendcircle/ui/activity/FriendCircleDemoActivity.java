@@ -1,18 +1,13 @@
 package razerdp.friendcircle.ui.activity;
 
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.v4.view.ScrollingView;
 import android.text.TextUtils;
-import android.text.method.Touch;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,11 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.adapter.PhotoBoswerPagerAdapter;
 import razerdp.friendcircle.app.config.CommonValue;
 import razerdp.friendcircle.app.https.base.BaseResponse;
 import razerdp.friendcircle.app.https.request.FriendCircleRequest;
@@ -41,7 +34,6 @@ import razerdp.friendcircle.utils.FriendCircleAdapterUtil;
 import razerdp.friendcircle.utils.InputMethodUtils;
 import razerdp.friendcircle.utils.PhotoPagerManager;
 import razerdp.friendcircle.utils.PreferenceUtils;
-import razerdp.friendcircle.utils.ToastUtils;
 import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.HackyViewPager;
 import razerdp.friendcircle.widget.commentwidget.CommentWidget;
@@ -161,6 +153,7 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
 
     @Override
     protected void onDestroy() {
+        mPhotoPagerManager.destroy();
         super.onDestroy();
     }
 

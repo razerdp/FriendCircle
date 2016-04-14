@@ -1,5 +1,23 @@
 # 更新日志
 
+##2016-04-14
+朋友圈图片浏览模块完成</br>
+代码解析地址：</br>
+ </br>
+图片预览：</br>
+![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-04-14_friend_circle_photo_gallery.gif)
+
+***
+
+##2016-04-13
+图片点击前景色</br>
+代码解析地址：</br>
+http://www.jianshu.com/p/8984efce40ae </br>
+图片预览：</br>
+![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-04-13_click_forceground_iv.gif)
+
+***
+
 ##2016-04-04
 评论模块对齐完成（针对回复评论）</br>
 代码解析地址：</br>

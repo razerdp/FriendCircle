@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="80dp"
     android:layout_height="80dp">
-    <razerdp.friendcircle.widget.imageview.ZoomImageView
+    <razerdp.friendcircle.widget.imageview.ForceClickImageView
         android:id="@+id/img"
         android:scaleType="centerCrop"
         android:layout_width="match_parent"
