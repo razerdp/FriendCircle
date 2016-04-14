@@ -17,7 +17,7 @@
         android:layout_marginRight="@dimen/item_padding"
         tools:background="@android:color/holo_red_light">
 
-        <razerdp.friendcircle.widget.imageview.ZoomImageView
+        <razerdp.friendcircle.widget.imageview.ForceClickImageView
             android:id="@+id/img_single"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -76,8 +76,8 @@
         <attr name="civ_fill_color" format="color" />
     </declare-styleable>
 
-    <!--ZoomImageView-->
-    <declare-styleable name="ZoomImageView">
+    <!--ForceClickImageView-->
+    <declare-styleable name="ForceClickImageView">
         <attr name="foregroundColor" format="reference|color"/>
     </declare-styleable>
 </resources>

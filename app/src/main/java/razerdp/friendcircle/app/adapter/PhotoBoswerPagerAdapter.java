@@ -6,7 +6,6 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import java.util.ArrayList;
-import razerdp.friendcircle.R;
-import uk.co.senab.photoview.PhotoView;
+import razerdp.friendcircle.widget.MPhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
@@ -25,6 +23,9 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  */
 public class PhotoBoswerPagerAdapter extends PagerAdapter {
     private static final String TAG = "PhotoBoswerPagerAdapter";
+
+    private static ArrayList<MPhotoView> sMPhotoViewPool;
+    private static final int sMPhotoViewPoolSize = 10;
 
     //=============================================================datas
     private ArrayList<String> photoAddress;
@@ -36,8 +37,6 @@ public class PhotoBoswerPagerAdapter extends PagerAdapter {
 
     private TextView mProgressTextView;
 
-    private int childCount=0;
-
     public PhotoBoswerPagerAdapter(Context context) {
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
@@ -45,8 +44,18 @@ public class PhotoBoswerPagerAdapter extends PagerAdapter {
         photoAddress = new ArrayList<>();
         originViewBounds = new ArrayList<>();
 
+        sMPhotoViewPool = new ArrayList<>();
         //buildProgressTV(context);
+        buildMPhotoViewPool(context);
+    }
 
+    private void buildMPhotoViewPool(Context context) {
+        for (int i = 0; i < sMPhotoViewPoolSize; i++) {
+            MPhotoView sPhotoView = new MPhotoView(context);
+            sPhotoView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+            sMPhotoViewPool.add(sPhotoView);
+        }
     }
 
     public void resetDatas(@NonNull ArrayList<String> newAddress, @NonNull ArrayList<Rect> newOriginViewBounds)
@@ -61,10 +70,6 @@ public class PhotoBoswerPagerAdapter extends PagerAdapter {
 
         photoAddress.addAll(newAddress);
         originViewBounds.addAll(newOriginViewBounds);
-
-        childCount=photoAddress.size();
-
-        notifyDataSetChanged();
     }
 
     //用于展示进度的textview，因为Glide要弄进度比较麻烦，所以暂时不启用
@@ -88,35 +93,43 @@ public class PhotoBoswerPagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public int getItemPosition(Object object) {
-        if (childCount>0){
-            childCount--;
-            return POSITION_NONE;
+    public Object instantiateItem(ViewGroup container, int position) {
+        MPhotoView mPhotoView = sMPhotoViewPool.get(position);
+        if (mPhotoView == null) {
+            mPhotoView = new MPhotoView(mContext);
+            mPhotoView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
         }
-        return super.getItemPosition(object);
+        Glide.with(mContext).load(photoAddress.get(position)).into(mPhotoView);
+        container.addView(mPhotoView);
+        return mPhotoView;
     }
 
+    int[] pos = new int[1];
+
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        final int curPos=position;
-        FrameLayout frameLayout = (FrameLayout) mLayoutInflater.inflate(R.layout.item_photo_boswer, container, false);
-        PhotoView photoView = (PhotoView) frameLayout.findViewById(R.id.item_photoview);
-        Glide.with(mContext).load(photoAddress.get(position)).into(photoView);
-        photoView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
-            @Override
-            public void onViewTap(View view, float x, float y) {
-                if (mOnPhotoViewClickListener != null) {
-                    Log.d("position",">>>> "+curPos);
-                    mOnPhotoViewClickListener.onPhotoViewClick(view, originViewBounds.get(curPos), curPos);
-                }
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        super.setPrimaryItem(container, position, object);
+        pos[0] = position;
+        if (object instanceof MPhotoView) {
+            MPhotoView photoView = (MPhotoView) object;
+            if (photoView.getOnViewTapListener() == null) {
+                photoView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
+                    @Override
+                    public void onViewTap(View view, float x, float y) {
+                        if (mOnPhotoViewClickListener != null) {
+                            mOnPhotoViewClickListener.onPhotoViewClick(view, originViewBounds.get(pos[0]), pos[0]);
+                        }
+                    }
+                });
             }
-        });
-        container.addView(frameLayout);
-        return frameLayout;
+        }
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
+        //push2ViewPool(new WeakReference<MPhotoView>((MPhotoView) object));
+        //((MPhotoView) object).setImageBitmap(null);
         container.removeView((View) object);
     }
 
@@ -139,5 +152,14 @@ public class PhotoBoswerPagerAdapter extends PagerAdapter {
 
     public interface OnPhotoViewClickListener {
         void onPhotoViewClick(View view, Rect originBound, int curPos);
+    }
+
+    //=============================================================destroy
+    public void destroy(){
+        for (MPhotoView photoView : sMPhotoViewPool) {
+            photoView.destroy();
+        }
+        sMPhotoViewPool.clear();
+        sMPhotoViewPool=null;
     }
 }

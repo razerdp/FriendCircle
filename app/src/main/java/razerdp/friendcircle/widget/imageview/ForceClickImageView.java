@@ -15,22 +15,22 @@ import razerdp.friendcircle.widget.SuperImageView;
 
 /**
  * Created by 大灯泡 on 2016/4/11.
- * 朋友圈的imageview，包含缩放动画
+ * 朋友圈的imageview，包含点击动作
  */
-public class ZoomImageView extends SuperImageView implements View.OnClickListener {
+public class ForceClickImageView extends SuperImageView {
     //前景层
     private Drawable mForegroundDrawable;
     private Rect mCachedBounds = new Rect();
 
-    public ZoomImageView(Context context) {
+    public ForceClickImageView(Context context) {
         this(context, null);
     }
 
-    public ZoomImageView(Context context, AttributeSet attrs) {
+    public ForceClickImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ZoomImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ForceClickImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
@@ -39,10 +39,10 @@ public class ZoomImageView extends SuperImageView implements View.OnClickListene
      * 初始化
      */
     private void init(Context context, AttributeSet attrs) {
-        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ZoomImageView);
-        mForegroundDrawable = a.getDrawable(R.styleable.ZoomImageView_foregroundColor);
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ForceClickImageView);
+        mForegroundDrawable = a.getDrawable(R.styleable.ForceClickImageView_foregroundColor);
         if (mForegroundDrawable instanceof ColorDrawable) {
-            int foreGroundColor = a.getColor(R.styleable.ZoomImageView_foregroundColor, 0x55c6c6c6);
+            int foreGroundColor = a.getColor(R.styleable.ForceClickImageView_foregroundColor, 0x55c6c6c6);
             mForegroundDrawable = new StateListDrawable();
             ColorDrawable forceDrawable = new ColorDrawable(foreGroundColor);
             ColorDrawable normalDrawable = new ColorDrawable(Color.TRANSPARENT);
@@ -83,10 +83,5 @@ public class ZoomImageView extends SuperImageView implements View.OnClickListene
         super.onSizeChanged(w, h, oldw, oldh);
 
         if (mForegroundDrawable != null) mCachedBounds.set(0, 0, w, h);
-    }
-
-    @Override
-    public void onClick(View v) {
-
     }
 }

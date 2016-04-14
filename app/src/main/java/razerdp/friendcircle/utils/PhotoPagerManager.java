@@ -12,11 +12,10 @@ import android.view.animation.DecelerateInterpolator;
 import java.util.ArrayList;
 import razerdp.friendcircle.app.adapter.PhotoBoswerPagerAdapter;
 import razerdp.friendcircle.widget.HackyViewPager;
-import uk.co.senab.photoview.PhotoView;
 
 /**
  * Created by 大灯泡 on 2016/4/12.
- * 相册展示的帮助类
+ * 相册展示的管理类
  */
 public class PhotoPagerManager implements PhotoBoswerPagerAdapter.OnPhotoViewClickListener {
 
@@ -50,12 +49,10 @@ public class PhotoPagerManager implements PhotoBoswerPagerAdapter.OnPhotoViewCli
 
     public void showPhoto(
             @NonNull ArrayList<String> photoAddress, @NonNull ArrayList<Rect> originViewBounds, int curSelectedPos) {
-        if (pager.getAdapter() == null) {
-            pager.setAdapter(adapter);
-        }
         adapter.resetDatas(photoAddress, originViewBounds);
+        pager.setAdapter(adapter);
         pager.setCurrentItem(curSelectedPos);
-        finalBounds.setEmpty();
+        pager.setLocked(photoAddress.size() == 1);
         container.getGlobalVisibleRect(finalBounds, globalOffset);
         showPhotoPager(originViewBounds, curSelectedPos);
     }
@@ -68,7 +65,7 @@ public class PhotoPagerManager implements PhotoBoswerPagerAdapter.OnPhotoViewCli
         startBounds.offset(-globalOffset.x, -globalOffset.y);
         finalBounds.offset(-globalOffset.x, -globalOffset.y);
 
-        float ratio=calculateRatio(startBounds,finalBounds);
+        float ratio = calculateRatio(startBounds, finalBounds);
 
         pager.setPivotX(0);
         pager.setPivotY(0);
@@ -113,23 +110,22 @@ public class PhotoPagerManager implements PhotoBoswerPagerAdapter.OnPhotoViewCli
         if (curAnimator != null) {
             curAnimator.cancel();
         }
-        Rect startBounds = originBound;
 
         container.getGlobalVisibleRect(finalBounds, globalOffset);
 
-        startBounds.offset(-globalOffset.x, -globalOffset.y);
+        originBound.offset(-globalOffset.x, -globalOffset.y);
         finalBounds.offset(-globalOffset.x, -globalOffset.y);
 
-        float ratio=calculateRatio(startBounds,finalBounds);
+        float ratio = calculateRatio(originBound, finalBounds);
 
         pager.setPivotX(0);
         pager.setPivotY(0);
 
         final AnimatorSet set = new AnimatorSet();
-        set.play(ObjectAnimator.ofFloat(pager, View.X, startBounds.left))
-           .with(ObjectAnimator.ofFloat(pager, View.Y, startBounds.top))
-           .with(ObjectAnimator.ofFloat(pager, View.SCALE_X, 1f,ratio))
-           .with(ObjectAnimator.ofFloat(pager, View.SCALE_Y, 1f,ratio))
+        set.play(ObjectAnimator.ofFloat(pager, View.X, originBound.left))
+           .with(ObjectAnimator.ofFloat(pager, View.Y, originBound.top))
+           .with(ObjectAnimator.ofFloat(pager, View.SCALE_X, 1f, ratio))
+           .with(ObjectAnimator.ofFloat(pager, View.SCALE_Y, 1f, ratio))
            .with(ObjectAnimator.ofFloat(container, View.ALPHA, 1.0f, 0.0f));
 
         set.setDuration(300);
@@ -162,8 +158,7 @@ public class PhotoPagerManager implements PhotoBoswerPagerAdapter.OnPhotoViewCli
         set.start();
     }
 
-
-    private float calculateRatio(Rect startBounds,Rect finalBounds){
+    private float calculateRatio(Rect startBounds, Rect finalBounds) {
         float ratio;
         if ((float) finalBounds.width() / finalBounds.height() > (float) startBounds.width() / startBounds.height()) {
             // Extend start bounds horizontally
@@ -182,5 +177,15 @@ public class PhotoPagerManager implements PhotoBoswerPagerAdapter.OnPhotoViewCli
             startBounds.bottom += deltaHeight;
         }
         return ratio;
+    }
+
+    public void destroy() {
+        adapter.destroy();
+        mContext = null;
+        adapter = null;
+        pager = null;
+        finalBounds = null;
+        globalOffset = null;
+        container = null;
     }
 }

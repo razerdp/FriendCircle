@@ -2,12 +2,10 @@ package razerdp.friendcircle.ui.adapteritem;
 
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -18,7 +16,7 @@ import razerdp.friendcircle.app.config.DynamicType;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.utils.ImgUtil;
 import razerdp.friendcircle.utils.UIHelper;
-import razerdp.friendcircle.widget.imageview.ZoomImageView;
+import razerdp.friendcircle.widget.imageview.ForceClickImageView;
 
 /**
  * Created by 大灯泡 on 2016/2/27.
@@ -29,7 +27,7 @@ public class ItemWithImgSingle extends BaseItemDelegate {
 
     private int maxWidth;
     private int maxHeight;
-    private ZoomImageView mImageView;
+    private ForceClickImageView mImageView;
     private float ratio;
     int width = 0;
 
@@ -40,7 +38,7 @@ public class ItemWithImgSingle extends BaseItemDelegate {
 
     @Override
     public void onFindView(@NonNull View parent) {
-        if (mImageView == null) mImageView = (ZoomImageView) parent.findViewById(R.id.img_single);
+        if (mImageView == null) mImageView = (ForceClickImageView) parent.findViewById(R.id.img_single);
         mImageView.setOnClickListener(this);
         if (maxWidth == 0) {
             maxWidth = UIHelper.getScreenPixWidth(context) - UIHelper.dipToPx(context, 90f);
