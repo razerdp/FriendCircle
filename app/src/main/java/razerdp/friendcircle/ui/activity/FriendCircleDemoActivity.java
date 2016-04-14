@@ -1,15 +1,13 @@
 package razerdp.friendcircle.ui.activity;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.view.ScrollingView;
 import android.text.TextUtils;
-import android.text.method.Touch;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.config.CommonValue;
@@ -34,9 +32,10 @@ import razerdp.friendcircle.app.mvp.view.DynamicView;
 import razerdp.friendcircle.ui.activity.base.FriendCircleBaseActivity;
 import razerdp.friendcircle.utils.FriendCircleAdapterUtil;
 import razerdp.friendcircle.utils.InputMethodUtils;
+import razerdp.friendcircle.utils.PhotoPagerManager;
 import razerdp.friendcircle.utils.PreferenceUtils;
-import razerdp.friendcircle.utils.ToastUtils;
 import razerdp.friendcircle.utils.UIHelper;
+import razerdp.friendcircle.widget.HackyViewPager;
 import razerdp.friendcircle.widget.commentwidget.CommentWidget;
 import razerdp.friendcircle.widget.ptrwidget.FriendCirclePtrListView;
 
@@ -63,6 +62,9 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
     //输入法可见状态下的偏移量
     private int currentDynamicPos = 0;
     private CommentWidget mCommentWidget;
+
+    //图片浏览的pager
+    private PhotoPagerManager mPhotoPagerManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +103,9 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
         });
 
         mSend.setOnClickListener(this);
+
+        mPhotoPagerManager = PhotoPagerManager.create(this, (HackyViewPager) findViewById(R.id.photo_pager),
+                findViewById(R.id.photo_container));
     }
 
     private void initReq() {
@@ -148,6 +153,7 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
 
     @Override
     protected void onDestroy() {
+        mPhotoPagerManager.destroy();
         super.onDestroy();
     }
 
@@ -199,7 +205,13 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
         InputMethodUtils.showInputMethod(mInputBox);
     }
 
-    //============================================================= tools method
+    @Override
+    public void showPhoto(
+            @NonNull ArrayList<String> photoAddress, @NonNull ArrayList<Rect> originViewBounds, int curSelectedPos) {
+        mPhotoPagerManager.showPhoto(photoAddress, originViewBounds, curSelectedPos);
+    }
+
+    //============================================================= 用于计算键盘弹出后listview的偏移量的方法↓↓↓
 
     @Override
     public void onSoftKeyBoardChange(int softKeybardHeight, boolean visible) {
@@ -262,7 +274,7 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
 
     // 得到评论的偏移量
     private int getOffsetOfComment(int currentDynamicPos, CommentWidget commentWidget, int keyBoardHeight) {
-        int result=0;
+        int result = 0;
         int contentHeight;
         contentHeight = screenHeight - keyBoardHeight - mInputLayout.getHeight();
         try {
@@ -281,13 +293,14 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
             //得到当前评论控件的底部（相对于LinearLayout）
             final int currentCommentBottom = commentWidget.getBottom();
             //则当前评论控件相对于item来说，其底部=父类LinearLayout.top+当前控件的底部
-            final int currentCommentOffset = originParentTop + praiseAndCommentParentTop + parentTop + currentCommentBottom;
+            final int currentCommentOffset = originParentTop + praiseAndCommentParentTop + parentTop +
+                    currentCommentBottom;
 
             //则偏移量等于offset-contentheight
             result = currentCommentOffset - contentHeight;
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("FriendCircleDemoAct","也许是空指针也许是cast错误哦");
+            Log.e("FriendCircleDemoAct", "也许是空指针也许是cast错误哦");
         }
         return -result;
     }

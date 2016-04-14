@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="80dp"
     android:layout_height="80dp">
-    <razerdp.friendcircle.widget.SuperImageView
+    <razerdp.friendcircle.widget.imageview.ForceClickImageView
         android:id="@+id/img"
         android:scaleType="centerCrop"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        app:foregroundColor="@color/img_foregroundColor"
+        />
 
 </FrameLayout>

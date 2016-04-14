@@ -1,6 +1,8 @@
 package razerdp.friendcircle.app.mvp.view;
 
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
+import java.util.ArrayList;
 import java.util.List;
 import razerdp.friendcircle.app.config.CommonValue;
 import razerdp.friendcircle.app.https.request.RequestType;
@@ -25,6 +27,9 @@ public interface DynamicView {
                             @RequestType.CommentRequestType int requestType, @NonNull List<CommentInfo> commentList);
 
     // 评论框展示
-    void showInputBox(int currentDynamicPos,
-                      CommentWidget commentWidget, DynamicInfo dynamicInfo);
+    void showInputBox(int currentDynamicPos, CommentWidget commentWidget, DynamicInfo dynamicInfo);
+
+    // 浏览图片
+    void showPhoto(@NonNull ArrayList<String> photoAddress, @NonNull ArrayList<Rect> originViewBounds, int
+            curSelectedPos);
 }

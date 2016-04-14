@@ -29,4 +29,7 @@
     <!--other-->
     <color name="wechat_green_bg">#10d21c</color>
     <color name="comment_click_bg">#c6c6c6</color>
+    
+    <!--图片点击颜色-->
+    <color name="img_foregroundColor">#85414141</color>
 </resources>

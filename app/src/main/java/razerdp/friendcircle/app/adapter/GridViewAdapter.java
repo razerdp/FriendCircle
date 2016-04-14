@@ -7,7 +7,7 @@ import java.util.List;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.adapter.base.MBaseAdapter;
 import razerdp.friendcircle.app.adapter.base.viewholder.MViewHolder;
-import razerdp.friendcircle.widget.SuperImageView;
+import razerdp.friendcircle.widget.imageview.ForceClickImageView;
 
 /**
  * Created by 大灯泡 on 2016/2/28.
@@ -43,11 +43,11 @@ public class GridViewAdapter extends MBaseAdapter<String,GridViewAdapter.ViewHol
     }
 
     class ViewHolder implements MViewHolder {
-        public SuperImageView mSuperImageView;
+        public ForceClickImageView mSuperImageView;
 
         @Override
         public void onInFlate(View v) {
-            mSuperImageView= (SuperImageView) v.findViewById(R.id.img);
+            mSuperImageView= (ForceClickImageView) v.findViewById(R.id.img);
         }
     }
 }
