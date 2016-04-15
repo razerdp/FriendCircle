@@ -3,7 +3,7 @@
 ##2016-04-14
 朋友圈图片浏览模块完成</br>
 代码解析地址：</br>
- </br>
+http://www.jianshu.com/p/4c5b5d7dc856 </br>
 图片预览：</br>
 ![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-04-14_friend_circle_photo_gallery.gif)
 
