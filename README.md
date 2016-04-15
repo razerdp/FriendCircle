@@ -3,19 +3,42 @@
 
 欢迎来到本项目，这个项目是一个尝试性项目，目的在于从无到有撸出一个微信朋友圈。</br>
 
-代码实现逻辑（简书合集）：http://www.jianshu.com/notebooks/3224048/latest </br>
-更新日志请点击：https://github.com/razerdp/FriendCircle/blob/main-dev/UPDATE_LOG.md
-</br>
+**本项目的一切实现思路以及逻辑都有记录，它们都有在我的简书文集记载：**
+
+[代码实现逻辑（简书合集）](http://www.jianshu.com/notebooks/3224048/latest)
+
+**每次更新的模块Gif预览都在另一个MD文件里，如果您对效果感兴趣，不妨去查看一下：**
+
+[更新日志](https://github.com/razerdp/FriendCircle/blob/main-dev/UPDATE_LOG.md)
+
+目前的最新进度：
+
+##2016-04-14
+朋友圈图片浏览模块完成
+
+代码解析地址：
+
+http://www.jianshu.com/p/4c5b5d7dc856
+
+图片预览：
+
+![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-04-14_friend_circle_photo_gallery.gif)
+
+***
+
 ###如果您有PR申请，请提交到dev分支，谢谢-V-
-</br>
+
+
 #####关于作者我:
 在下大四即将毕业小朋友一枚，工作（实习）半年，大三开始的Android开发，至今约一年。
 
 #####关于项目：
 本项目意在按照我的经验弄出一个微信朋友圈，也许无法完全实现，但高仿应该是没问题的，只是时间问题←_←。
-</br>
-本项目于2016/03/17 尝试性更改为mvp架构
-</br>
+
+
+本项目于2016/03/17 更改为mvp架构
+
+
 本项目在更新的同时也会同步发布经验心得（撸代码的过程），不过因为在下才学疏浅，有些地方肯定做的不好，所以衷心希望如果您有好的建议或优化方案，可以留下脚印。
 
 #####关于服务器：
