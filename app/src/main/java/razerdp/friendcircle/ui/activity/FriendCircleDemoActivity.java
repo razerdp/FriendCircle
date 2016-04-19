@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.config.CommonValue;
+import razerdp.friendcircle.app.config.LocalHostInfo;
 import razerdp.friendcircle.app.https.base.BaseResponse;
 import razerdp.friendcircle.app.https.request.FriendCircleRequest;
 import razerdp.friendcircle.app.https.request.RequestType;
@@ -34,6 +35,7 @@ import razerdp.friendcircle.utils.FriendCircleAdapterUtil;
 import razerdp.friendcircle.utils.InputMethodUtils;
 import razerdp.friendcircle.utils.PhotoPagerManager;
 import razerdp.friendcircle.utils.PreferenceUtils;
+import razerdp.friendcircle.utils.ToastUtils;
 import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.HackyViewPager;
 import razerdp.friendcircle.widget.commentwidget.CommentWidget;
@@ -135,10 +137,32 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
             case R.id.btn_send:
                 // 发送
 
+                //由于肯定是个人操作，所以userid永远都是自己的id
+                long userid = LocalHostInfo.INSTANCE.getHostId();
+                //回复评论的创建者id
+                long replyId = 0;
+                //动态id
+                long dynamicId = 0;
+                //内容
+                String content;
+                if (mCommentWidget != null) {
+                    CommentInfo info = mCommentWidget.getData();
+                    replyId = info.userA.userId;
+                }
+                dynamicId = mAdapter.getItem(currentDynamicPos).dynamicInfo.dynamicId;
+                content = mInputBox.getText().toString().trim();
+                if (!TextUtils.isEmpty(content)) {
+                    mPresenter.addComment(currentDynamicPos, dynamicId, userid, replyId, content);
+                }
+                else {
+                    ToastUtils.ToastMessage(this, "回复内容不能为空哦");
+                }
+                mCommentWidget = null;
                 break;
             case R.id.btn_emoji:
                 // TODO: 2016/3/17 如果能力足够- -希望能完成
                 // emoji表情
+                ToastUtils.ToastMessage(this,"啦啦啦，羽翼君还没有这个精力做emoji哦");
 
                 break;
             default:
@@ -177,9 +201,7 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
     }
 
     @Override
-    public void refreshCommentData(int currentDynamicPos,
-                                   @RequestType.CommentRequestType int requestType,
-                                   @NonNull List<CommentInfo> commentList) {
+    public void refreshCommentData(int currentDynamicPos, @NonNull List<CommentInfo> commentList) {
         MomentsInfo info = mAdapter.getItem(currentDynamicPos);
         if (info != null) {
             if (info.commentList != null) {
@@ -191,6 +213,11 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
             }
         }
         mAdapter.notifyDataSetChanged();
+        if (mInputLayout.getVisibility() == View.VISIBLE) {
+            mInputBox.setText("");
+            mInputLayout.setVisibility(View.GONE);
+            InputMethodUtils.hideInputMethod(mInputBox);
+        }
     }
 
     @Override

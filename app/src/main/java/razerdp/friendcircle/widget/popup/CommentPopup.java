@@ -149,7 +149,7 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
             case R.id.item_comment:
                 if (mOnCommentPopupClickListener != null) {
                     mOnCommentPopupClickListener.onCommentClick(v, mDynamicInfo);
-                    dismiss();
+                    mPopupWindow.dismiss();
                 }
                 break;
         }
