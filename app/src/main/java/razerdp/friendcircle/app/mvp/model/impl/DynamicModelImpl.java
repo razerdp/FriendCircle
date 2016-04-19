@@ -1,11 +1,13 @@
 package razerdp.friendcircle.app.mvp.model.impl;
 
 import razerdp.friendcircle.app.https.base.BaseResponse;
+import razerdp.friendcircle.app.https.request.DynamicAddCommentRequest;
 import razerdp.friendcircle.app.https.request.DynamicAddPraiseRequest;
 import razerdp.friendcircle.app.https.request.DynamicCancelPraiseRequest;
 import razerdp.friendcircle.app.https.request.RequestType;
 import razerdp.friendcircle.app.interfaces.BaseResponseListener;
 import razerdp.friendcircle.app.interfaces.DynamicResultCallBack;
+import razerdp.friendcircle.app.mvp.model.CommentModel;
 import razerdp.friendcircle.app.mvp.model.PraiseModel;
 
 /**
@@ -15,7 +17,7 @@ import razerdp.friendcircle.app.mvp.model.PraiseModel;
  *
  * 若过于复杂的操作，可能需要接口来松耦合
  */
-public class DynamicModelImpl implements BaseResponseListener, PraiseModel {
+public class DynamicModelImpl implements BaseResponseListener, PraiseModel,CommentModel {
     private DynamicResultCallBack callBack;
 
     public DynamicModelImpl(DynamicResultCallBack callBack) {
@@ -25,6 +27,8 @@ public class DynamicModelImpl implements BaseResponseListener, PraiseModel {
     //=============================================================request
     private DynamicAddPraiseRequest mDynamicAddPraiseRequest;
     private DynamicCancelPraiseRequest mDynamicCancelPraiseRequest;
+
+    private DynamicAddCommentRequest mDynamicAddCommentRequest;
 
     //=============================================================public methods
     @Override
@@ -51,6 +55,24 @@ public class DynamicModelImpl implements BaseResponseListener, PraiseModel {
         mDynamicCancelPraiseRequest.userid = userid;
         mDynamicCancelPraiseRequest.dynamicid = dynamicid;
         mDynamicCancelPraiseRequest.execute();
+    }
+
+
+    @Override
+    public void addComment(int currentDynamicPos, long dynamicid, long userid, long replyid, String content) {
+        if (mDynamicAddCommentRequest == null) {
+            mDynamicAddCommentRequest = new DynamicAddCommentRequest();
+            mDynamicAddCommentRequest.setOnResponseListener(this);
+            mDynamicAddCommentRequest.setRequestType(RequestType.ADD_COMMENT);
+        }
+        mDynamicAddCommentRequest.setCurrentDynamicPos(currentDynamicPos);
+        mDynamicAddCommentRequest.userid = userid;
+        mDynamicAddCommentRequest.dynamicid = dynamicid;
+        mDynamicAddCommentRequest.replyid=replyid;
+        mDynamicAddCommentRequest.content=content;
+
+        mDynamicAddCommentRequest.post();
+
     }
 
     //=============================================================request methods
