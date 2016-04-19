@@ -23,13 +23,12 @@ public interface DynamicView {
                            @CommonValue.PraiseState int praiseState, @NonNull List<UserInfo> praiseList);
 
     // 评论刷新
-    void refreshCommentData(int currentDynamicPos,
-                            @RequestType.CommentRequestType int requestType, @NonNull List<CommentInfo> commentList);
+    void refreshCommentData(int currentDynamicPos, @NonNull List<CommentInfo> commentList);
 
     // 评论框展示
     void showInputBox(int currentDynamicPos, CommentWidget commentWidget, DynamicInfo dynamicInfo);
 
     // 浏览图片
-    void showPhoto(@NonNull ArrayList<String> photoAddress, @NonNull ArrayList<Rect> originViewBounds, int
-            curSelectedPos);
+    void showPhoto(
+            @NonNull ArrayList<String> photoAddress, @NonNull ArrayList<Rect> originViewBounds, int curSelectedPos);
 }
