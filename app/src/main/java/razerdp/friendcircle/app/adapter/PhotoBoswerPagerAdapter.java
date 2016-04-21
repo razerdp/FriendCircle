@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -95,6 +96,7 @@ public class PhotoBoswerPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         MPhotoView mPhotoView = sMPhotoViewPool.get(position);
+        //Log.d("pos-init", "instantiateItem: "+position);
         if (mPhotoView == null) {
             mPhotoView = new MPhotoView(mContext);
             mPhotoView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -128,8 +130,7 @@ public class PhotoBoswerPagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        //push2ViewPool(new WeakReference<MPhotoView>((MPhotoView) object));
-        //((MPhotoView) object).setImageBitmap(null);
+        //Log.d("pos-destroy", "destroyItem: "+position);
         container.removeView((View) object);
     }
 
