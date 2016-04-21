@@ -1,5 +1,14 @@
 # 更新日志
 
+##2016-04-21
+朋友圈图片浏览指示器完成</br>
+代码解析地址：</br>
+http://www.jianshu.com/p/17c51bd5ba70 </br>
+图片预览：</br>
+![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-04-21_dot_indicator.gif)
+
+***
+
 ##2016-04-19
 评论功能与后台交互补充</br>
 
