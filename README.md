@@ -13,20 +13,20 @@
 
 目前的最新进度：
 
-##2016-04-14
-朋友圈图片浏览模块完成
+##2016-04-21
+朋友圈图片浏览指示器完成（评论后台交互完成）
 
 代码解析地址：
 
-http://www.jianshu.com/p/4c5b5d7dc856
+http://www.jianshu.com/p/17c51bd5ba70
 
 图片预览：
 
-![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-04-14_friend_circle_photo_gallery.gif)
+![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-04-21_dot_indicator.gif)
 
 ***
 
-###如果您有PR申请，请提交到dev分支，谢谢-V-
+###如果您有PR申请，请提交到dev分支，谢谢-V-（PS:由于我的gif图都放在工程下，所以工程可能比较大，目前好像在70M，给您带来困扰，非常抱歉）
 
 
 #####关于作者我:
