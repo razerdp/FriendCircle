@@ -37,6 +37,7 @@ import razerdp.friendcircle.utils.PhotoPagerManager;
 import razerdp.friendcircle.utils.PreferenceUtils;
 import razerdp.friendcircle.utils.ToastUtils;
 import razerdp.friendcircle.utils.UIHelper;
+import razerdp.friendcircle.widget.DotIndicator;
 import razerdp.friendcircle.widget.HackyViewPager;
 import razerdp.friendcircle.widget.commentwidget.CommentWidget;
 import razerdp.friendcircle.widget.ptrwidget.FriendCirclePtrListView;
@@ -107,7 +108,7 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
         mSend.setOnClickListener(this);
 
         mPhotoPagerManager = PhotoPagerManager.create(this, (HackyViewPager) findViewById(R.id.photo_pager),
-                findViewById(R.id.photo_container));
+                findViewById(R.id.photo_container), (DotIndicator) findViewById(R.id.dot_indicator));
     }
 
     private void initReq() {
