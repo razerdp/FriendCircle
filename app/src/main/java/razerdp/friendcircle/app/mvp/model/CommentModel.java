@@ -8,4 +8,7 @@ public interface CommentModel {
 
     //添加评论
     void addComment(int currentDynamicPos,long dynamicid,long userid,long replyid,String content);
+
+    //删除评论
+    void delComment(int currentDynamicPos,long dynamicid,long userid,long commentid);
 }

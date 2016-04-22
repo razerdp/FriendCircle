@@ -19,6 +19,7 @@ import razerdp.friendcircle.app.mvp.model.entity.DynamicInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.presenter.DynamicPresenterImpl;
 import razerdp.friendcircle.utils.TimeUtil;
+import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.ClickShowMoreLayout;
 import razerdp.friendcircle.widget.SuperImageView;
 import razerdp.friendcircle.widget.commentwidget.CommentWidget;
@@ -59,6 +60,8 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
     //评论区的view对象池
     private static final CommentPool COMMENT_TEXT_POOL = new CommentPool(35);
 
+    private int commentPaddintRight=0;
+
     public BaseItemDelegate() {
     }
 
@@ -70,6 +73,8 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
 
     @Override
     public void onBindData(int position, @NonNull View v, @NonNull MomentsInfo data, final int dynamicType) {
+        if (commentPaddintRight==0)commentPaddintRight=UIHelper.dipToPx(context,8f);
+
         mInfo = data;
         curPos = position;
         //初始化共用部分
@@ -186,6 +191,7 @@ public abstract class BaseItemDelegate implements BaseItemView<MomentsInfo>,
                     params.topMargin = 1;
                     params.bottomMargin = 1;
                     commentWidget.setLayoutParams(params);
+                    commentWidget.setPadding(0,0,commentPaddintRight,0);
                     commentWidget.setLineSpacing(4, 1);
                 }
                 commentWidget.setBackgroundDrawable(

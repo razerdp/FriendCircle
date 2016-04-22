@@ -15,7 +15,7 @@
     <!--朋友圈色值-->
     <color name="nick">#517fae</color>
     <color name="item_bottom_text">#8e8e8e</color>
-    <color name="item_showmore_click">#bc2adb86</color>
+    <color name="item_showmore_click">#c6c6c6</color>
     <color name="line_bg">#e5e5e5</color>
 
     <!--点赞popup色值-->
@@ -28,8 +28,12 @@
 
     <!--other-->
     <color name="wechat_green_bg">#10d21c</color>
-    <color name="comment_click_bg">#c6c6c6</color>
+    <color name="comment_click_bg">#CCD2DF</color>
+    <color name="delete_click_bg">#EAEAEA</color>
     
     <!--图片点击颜色-->
     <color name="img_foregroundColor">#85414141</color>
+
+    <!--popup背景蒙层-->
+    <color name="popup_background">#8e030303</color>
 </resources>

@@ -4,6 +4,7 @@ import razerdp.friendcircle.app.https.base.BaseResponse;
 import razerdp.friendcircle.app.https.request.DynamicAddCommentRequest;
 import razerdp.friendcircle.app.https.request.DynamicAddPraiseRequest;
 import razerdp.friendcircle.app.https.request.DynamicCancelPraiseRequest;
+import razerdp.friendcircle.app.https.request.DynamicDeleteCommentRequest;
 import razerdp.friendcircle.app.https.request.RequestType;
 import razerdp.friendcircle.app.interfaces.BaseResponseListener;
 import razerdp.friendcircle.app.interfaces.DynamicResultCallBack;
@@ -29,6 +30,7 @@ public class DynamicModelImpl implements BaseResponseListener, PraiseModel,Comme
     private DynamicCancelPraiseRequest mDynamicCancelPraiseRequest;
 
     private DynamicAddCommentRequest mDynamicAddCommentRequest;
+    private DynamicDeleteCommentRequest mDynamicDeleteCommentRequest;
 
     //=============================================================public methods
     @Override
@@ -73,6 +75,21 @@ public class DynamicModelImpl implements BaseResponseListener, PraiseModel,Comme
 
         mDynamicAddCommentRequest.post();
 
+    }
+
+    @Override
+    public void delComment(int currentDynamicPos, long dynamicid, long userid, long commentid) {
+        if (mDynamicDeleteCommentRequest == null) {
+            mDynamicDeleteCommentRequest = new DynamicDeleteCommentRequest();
+            mDynamicDeleteCommentRequest.setOnResponseListener(this);
+            mDynamicDeleteCommentRequest.setRequestType(RequestType.DEL_COMMENT);
+        }
+        mDynamicDeleteCommentRequest.setCurrentDynamicPos(currentDynamicPos);
+        mDynamicDeleteCommentRequest.userid = userid;
+        mDynamicDeleteCommentRequest.dynamicid = dynamicid;
+        mDynamicDeleteCommentRequest.commentid=commentid;
+
+        mDynamicDeleteCommentRequest.execute();
     }
 
     //=============================================================request methods
