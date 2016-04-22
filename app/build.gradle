@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "razerdp.friendcircle"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -29,4 +29,5 @@ dependencies {
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.commit451:PhotoView:1.2.5'
+    compile 'com.github.razerdp:BasePopup:v1.1.1'
 }
