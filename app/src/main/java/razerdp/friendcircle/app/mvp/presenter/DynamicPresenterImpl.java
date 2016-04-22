@@ -45,6 +45,10 @@ public class DynamicPresenterImpl implements DynamicResultCallBack {
         mModel.addComment(currentDynamicPos,dynamicid,userid,replyid,content);
     }
 
+    //删除评论
+    public void delComment(int currentDynamicPos,long dynamicid,long userid,long commentid){
+        mModel.delComment(currentDynamicPos,dynamicid,userid,commentid);
+    }
     //=============================================================
     // 展示输入框
     public void showInputBox(int currentDynamicPos, CommentWidget commentWidget, DynamicInfo dynamicInfo){
@@ -74,6 +78,12 @@ public class DynamicPresenterImpl implements DynamicResultCallBack {
                 case RequestType.ADD_COMMENT:
                     List<CommentInfo> commentInfos= (List<CommentInfo>) response.getDatas();
                     mView.refreshCommentData(curDynamicPos,commentInfos);
+                    break;
+                case RequestType.DEL_COMMENT:
+                    List<CommentInfo> commentInfos2= (List<CommentInfo>) response.getDatas();
+                    mView.refreshCommentData(curDynamicPos,commentInfos2);
+                    break;
+                default:
                     break;
             }
         }

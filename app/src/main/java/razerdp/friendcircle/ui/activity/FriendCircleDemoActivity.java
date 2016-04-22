@@ -40,6 +40,7 @@ import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.DotIndicator;
 import razerdp.friendcircle.widget.HackyViewPager;
 import razerdp.friendcircle.widget.commentwidget.CommentWidget;
+import razerdp.friendcircle.widget.popup.DeleteCommentPopup;
 import razerdp.friendcircle.widget.ptrwidget.FriendCirclePtrListView;
 
 /**
@@ -68,6 +69,9 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
 
     //图片浏览的pager
     private PhotoPagerManager mPhotoPagerManager;
+
+    //删除评论的popup
+    private DeleteCommentPopup mDeleteCommentPopup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +113,19 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
 
         mPhotoPagerManager = PhotoPagerManager.create(this, (HackyViewPager) findViewById(R.id.photo_pager),
                 findViewById(R.id.photo_container), (DotIndicator) findViewById(R.id.dot_indicator));
+
+        mDeleteCommentPopup=new DeleteCommentPopup(this);
+        mDeleteCommentPopup.setOnDeleteCommentClickListener(new DeleteCommentPopup.OnDeleteCommentClickListener() {
+            @Override
+            public void onDelClick(View v) {
+                if (mCommentWidget!=null) {
+                   CommentInfo info= mCommentWidget.getData();
+                    mPresenter.delComment(currentDynamicPos,mAdapter.getItem(currentDynamicPos).dynamicInfo
+                            .dynamicId,LocalHostInfo.INSTANCE.getHostId(),info.commentId);
+                    mDeleteCommentPopup.dismiss();
+                }
+            }
+        });
     }
 
     private void initReq() {
@@ -225,6 +242,14 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
     public void showInputBox(int currentDynamicPos, CommentWidget commentWidget, DynamicInfo dynamicInfo) {
         this.currentDynamicPos = currentDynamicPos;
         this.mCommentWidget = commentWidget;
+        // 如果点击评论，而评论的创建者为本人，则显示删除评论窗口
+        if (commentWidget!=null){
+            CommentInfo info=commentWidget.getData();
+            if (info.userA.userId==LocalHostInfo.INSTANCE.getHostId()){
+                mDeleteCommentPopup.showPopupWindow();
+                return;
+            }
+        }
         if (!TextUtils.isEmpty(draftStr)) {
             mInputBox.setText(draftStr);
             mInputBox.setSelection(draftStr.length());

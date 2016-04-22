@@ -14,11 +14,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.lang.ref.WeakReference;
+import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.config.CommonValue;
 import razerdp.friendcircle.app.mvp.model.entity.DynamicInfo;
 import razerdp.friendcircle.utils.UIHelper;
-import razerdp.friendcircle.widget.popup.base.BasePopupWindow;
 
 /**
  * Created by 大灯泡 on 2016/3/6.

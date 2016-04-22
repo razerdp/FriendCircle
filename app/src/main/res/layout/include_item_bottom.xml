@@ -45,7 +45,6 @@
             android:id="@+id/praise"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="8dp"
             android:paddingRight="5dp"
             android:lineSpacingExtra="2dp"
             android:lineSpacingMultiplier="1"
@@ -56,8 +55,6 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="@color/line_bg"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             android:layout_marginTop="5dp"
             />
 
@@ -66,8 +63,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
             android:orientation="vertical">
 
         </LinearLayout>
