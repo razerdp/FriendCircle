@@ -81,7 +81,7 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
         mPresenter = new DynamicPresenterImpl(this);
         initView();
         initReq();
-        //mListView.manualRefresh();
+//        mListView.manualRefresh();
         UIHelper.observeSoftKeyboard(this, this);
     }
 

@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
@@ -45,13 +46,13 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
     private OnDispatchTouchEventListener mDispatchTouchEventListener;
 
     //=============================================================status
-    private PullState loadmoreState=PullState.NORMAL;
+    private PullState loadmoreState = PullState.NORMAL;
     private PullMode curMode;
 
     //=============================================================参数
     //是否有下一页
     private boolean hasMore;
-    private boolean canPull=true;
+    private boolean canPull = true;
 
 
     public FriendCirclePtrListView(Context context) {
@@ -133,8 +134,7 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
                     mListView.setDividerHeight(dividerHeight);
                 }
             }
-        }
-        else {
+        } else {
             final int dividerHeight = a.getDimensionPixelSize(R.styleable.FriendCirclePtrListView_dividerHeight, 0);
             if (dividerHeight != 0) {
                 mListView.setDividerHeight(dividerHeight);
@@ -163,9 +163,10 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent e) {
-        if (mDispatchTouchEventListener!=null)mDispatchTouchEventListener.OnDispatchTouchEvent(e);
+        if (mDispatchTouchEventListener != null) mDispatchTouchEventListener.OnDispatchTouchEvent(e);
         return super.dispatchTouchEvent(e);
     }
+
     @Override
     public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
         return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
@@ -295,17 +296,23 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
     }
 
     public void manualRefresh() {
-        if (mHeader != null) mHeader.setAutoRefresh(true);
+
         //必须延迟，否则因为过快，还没measure完，也就是headerHeight=0就导致了自动刷新刷在了0位置
         postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (mHeader != null) {
+                    mHeader.setAutoRefresh(true);
+                    mHeader.setPullMode(PullMode.FROM_START);
+                }
                 autoRefresh();
             }
         }, 200);
     }
 
-    /** ============================================================= 下面是listview的方法，让ptrframe看起来就是一个listview */
+    /**
+     * ============================================================= 下面是listview的方法，让ptrframe看起来就是一个listview
+     */
     public void addHeaderView(View v) {
         mListView.addHeaderView(v);
     }
@@ -370,8 +377,8 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
         return mListView.getCacheColorHint();
     }
 
-    public void smoothScrollBy(int distance, int duration){
-        mListView.smoothScrollBy(distance,duration);
+    public void smoothScrollBy(int distance, int duration) {
+        mListView.smoothScrollBy(distance, duration);
     }
 
     public void smoothScrollByOffset(int offset) {
@@ -389,8 +396,9 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
     public void smoothScrollToPositionFromTop(int position, int offset) {
         mListView.smoothScrollToPositionFromTop(position, offset);
     }
-    public void setSelectionFromTop(int position, int y){
-        mListView.setSelectionFromTop(position,y);
+
+    public void setSelectionFromTop(int position, int y) {
+        mListView.setSelectionFromTop(position, y);
     }
 
     public boolean removeCallbacks(Runnable action) {
@@ -421,8 +429,10 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
         return mListView.getEmptyView();
     }
 
-    /**============================================================= InterFace*/
-    public interface OnDispatchTouchEventListener{
+    /**
+     * ============================================================= InterFace
+     */
+    public interface OnDispatchTouchEventListener {
         boolean OnDispatchTouchEvent(MotionEvent ev);
     }
 

@@ -1,5 +1,6 @@
 package razerdp.friendcircle.widget.ptrwidget;
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrUIHandler;
 import in.srain.cube.views.ptr.indicator.PtrIndicator;
@@ -31,6 +33,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
     private ImageView mRotateIcon;
     private View rootView;
     private boolean isAutoRefresh;
+    private boolean isFirstRefresh = false;
     private RotateAnimation rotateAnimation;
     private SmoothChangeThread mSmoothChangeThread;
     private ValueAnimator mValueAnimator;
@@ -100,6 +103,43 @@ public class FriendCirclePtrHeader extends RelativeLayout {
         public void onUIRefreshBegin(PtrFrameLayout frame) {
             mPullState = PullState.REFRESHING;
             if (null != mRotateIcon) {
+                if (isAutoRefresh && isFirstRefresh) {
+                    ValueAnimator autoRefreshAnimator = ValueAnimator.ofInt(0, frame.getOffsetToRefresh());
+                    autoRefreshAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            int result = (int) animation.getAnimatedValue();
+                            updateRotateAnima(result);
+                            mRotateIcon.setRotation(-(result << 1));
+                        }
+                    });
+                    autoRefreshAnimator.addListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            isFirstRefresh = false;
+
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+                            isFirstRefresh = false;
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+
+                        }
+                    });
+                    autoRefreshAnimator.setDuration(300);
+                    autoRefreshAnimator.start();
+                }
+
                 if (mRotateIcon.getAnimation() != null) {
                     mRotateIcon.clearAnimation();
                 }
@@ -150,8 +190,9 @@ public class FriendCirclePtrHeader extends RelativeLayout {
 
         /**位移更新重载*/
         @Override
-        public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte status, PtrIndicator ptrIndicator) {
-            if (mRotateIcon==null)return;
+        public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte status, PtrIndicator
+                ptrIndicator) {
+            if (mRotateIcon == null) return;
             final int mOffsetToRefresh = frame.getOffsetToRefresh();
             final int currentPos = ptrIndicator.getCurrentPosY();
             final int lastPos = ptrIndicator.getLastPosY();
@@ -162,8 +203,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
                     updateRotateAnima(currentPos);
                     mRotateIcon.setRotation(-(currentPos << 1));
                 }
-            }
-            else if (currentPos > mOffsetToRefresh) {
+            } else if (currentPos > mOffsetToRefresh) {
                 //到达或超过刷新线
                 if (isUnderTouch && status == PtrFrameLayout.PTR_STATUS_PREPARE && mRotateIcon != null) {
                     updateRotateAnima(mOffsetToRefresh);
@@ -197,6 +237,7 @@ public class FriendCirclePtrHeader extends RelativeLayout {
 
     public void setAutoRefresh(boolean autoRefresh) {
         isAutoRefresh = autoRefresh;
+        isFirstRefresh = autoRefresh;
     }
 
     public ImageView getRotateIcon() {
