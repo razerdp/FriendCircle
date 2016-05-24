@@ -1,6 +1,7 @@
 package razerdp.friendcircle.ui.activity.base;
 
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import in.srain.cube.views.ptr.PtrFrameLayout;

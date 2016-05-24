@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -213,8 +214,8 @@ public class FriendCirclePtrHeader extends RelativeLayout {
         }
     };
 
-    private void updateRotateAnima(int marginTop) {
-        //Log.d(TAG, "curMargin=========" + marginTop);
+    private void  updateRotateAnima(int marginTop) {
+//        Log.d(TAG, "curMargin=========" + marginTop);
         if (mRotateIcon == null) return;
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mRotateIcon.getLayoutParams();
         params.topMargin = marginTop;

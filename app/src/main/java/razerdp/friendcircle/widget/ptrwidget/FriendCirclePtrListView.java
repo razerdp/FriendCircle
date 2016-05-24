@@ -305,7 +305,7 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
                     mHeader.setAutoRefresh(true);
                     mHeader.setPullMode(PullMode.FROM_START);
                 }
-                autoRefresh();
+                autoRefresh(true);
             }
         }, 200);
     }

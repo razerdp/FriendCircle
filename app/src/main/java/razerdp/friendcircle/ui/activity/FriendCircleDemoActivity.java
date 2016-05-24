@@ -81,6 +81,22 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
         mPresenter = new DynamicPresenterImpl(this);
         initView();
         initReq();
+        /**
+         * 页面进来自动刷新
+         * 【请注意】
+         * 因为百万哥的库有些问题，导致刷新icon可能不会收回
+         * 原因在PtrFrameLayout.performRefreshComplete()方法
+         * 当scroller正在运行同时又是autoRefresh时，会导致直接return，因此无法通知header执行uiCompelete
+         *
+         * 另外因为autoRefresh会导致自动scroller,代码详看autoRefresh()
+         *
+         * 解决方法有几个：
+         * 1 - 手动执行header的uiRefreshCompelete
+         * 2 - 反射设置autoRefresh
+         * 3 - 将百万哥的库down下来，自行修改
+         *
+         * 在下推荐第三个方法
+         */
 //        mListView.manualRefresh();
         UIHelper.observeSoftKeyboard(this, this);
     }
