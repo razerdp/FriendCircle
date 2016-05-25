@@ -80,14 +80,13 @@ public class PhotoPagerManager implements PhotoBoswerPagerAdapter.OnPhotoViewCli
         pager.setPivotY(0);
 
         container.setVisibility(View.VISIBLE);
-        container.setAlpha(1.0f);
 
         final AnimatorSet set = new AnimatorSet();
         set.play(ObjectAnimator.ofFloat(pager, View.X, startBounds.left, finalBounds.left))
            .with(ObjectAnimator.ofFloat(pager, View.Y, startBounds.top, finalBounds.top))
            .with(ObjectAnimator.ofFloat(pager, View.SCALE_X, ratio, 1f))
            .with(ObjectAnimator.ofFloat(pager, View.SCALE_Y, ratio, 1f));
-        set.setDuration(300);
+        set.setDuration(400);
         set.setInterpolator(new DecelerateInterpolator());
         set.addListener(new Animator.AnimatorListener() {
             @Override
@@ -134,10 +133,9 @@ public class PhotoPagerManager implements PhotoBoswerPagerAdapter.OnPhotoViewCli
         set.play(ObjectAnimator.ofFloat(pager, View.X, originBound.left))
            .with(ObjectAnimator.ofFloat(pager, View.Y, originBound.top))
            .with(ObjectAnimator.ofFloat(pager, View.SCALE_X, 1f, ratio))
-           .with(ObjectAnimator.ofFloat(pager, View.SCALE_Y, 1f, ratio))
-           .with(ObjectAnimator.ofFloat(container, View.ALPHA, 1.0f, 0.0f));
+           .with(ObjectAnimator.ofFloat(pager, View.SCALE_Y, 1f, ratio));
 
-        set.setDuration(300);
+        set.setDuration(400);
         set.setInterpolator(new DecelerateInterpolator());
         set.addListener(new Animator.AnimatorListener() {
             @Override
