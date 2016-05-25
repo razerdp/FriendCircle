@@ -84,9 +84,9 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
         /**
          * 页面进来自动刷新
          * 【请注意】
-         * 因为百万哥的库有些问题，导致刷新icon可能不会收回
+         * 因为百万哥的库处理特点，导致刷新icon可能不会收回
          * 原因在PtrFrameLayout.performRefreshComplete()方法
-         * 当scroller正在运行同时又是autoRefresh时，会导致直接return，因此无法通知header执行uiCompelete
+         * 当scroller正在运行同时又是autoRefresh时，会导致直接return，因此无法通知header执行onUIRefreshComplete
          *
          * 另外因为autoRefresh会导致自动scroller,代码详看autoRefresh()
          *
@@ -103,6 +103,8 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
 
     private void initView() {
         titleBar = (RelativeLayout) findViewById(R.id.action_bar);
+        // 空点击事件，拦截点击titlebar事件，防止可以点到titlebar下面的view
+        titleBar.setOnClickListener(this);
 
         friendCircleHeader = LayoutInflater.from(this).inflate(R.layout.item_header, null, false);
         bindListView(R.id.listview, friendCircleHeader,
