@@ -11,7 +11,15 @@
 
 [更新日志](https://github.com/razerdp/FriendCircle/blob/main-dev/UPDATE_LOG.md)
 
-目前的最新进度：
+###如果您有PR申请，请提交到dev分支，谢谢-V-
+
+（PS:由于我的gif图都放在工程下，所以工程可能比较大，目前好像在70M，给您带来困扰，非常抱歉）
+
+如果您网络问题导致clone工程困难，您可以clone **[master-nopreivew](https://github.com/razerdp/FriendCircle/tree/master-nopreview)**分支，那个分支不含预览图
+
+
+
+###目前的最新进度：
 
 ##2016-04-21
 朋友圈图片浏览指示器完成（评论后台交互完成）
@@ -25,9 +33,6 @@ http://www.jianshu.com/p/17c51bd5ba70
 ![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-04-21_dot_indicator.gif)
 
 ***
-
-###如果您有PR申请，请提交到dev分支，谢谢-V-（PS:由于我的gif图都放在工程下，所以工程可能比较大，目前好像在70M，给您带来困扰，非常抱歉）
-
 
 #####关于作者我:
 在下大四即将毕业小朋友一枚，工作（实习）半年，大三开始的Android开发，至今约一年。
