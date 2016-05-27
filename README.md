@@ -28,6 +28,17 @@ http://www.jianshu.com/p/17c51bd5ba70
 
 ###如果您有PR申请，请提交到dev分支，谢谢-V-
 
+###如果您遇到[BasePopup](https://github.com/razerdp/BasePopup)的导入失败，请在工程的gradle（不是app的gradle哦）加上这句话：
+
+```xml
+	allprojects {
+		repositories {
+			...
+			maven { url "https://jitpack.io" }
+		}
+	}
+```
+
 
 #####关于作者我:
 在下大四即将毕业小朋友一枚，工作（实习）半年，大三开始的Android开发，至今约一年。
