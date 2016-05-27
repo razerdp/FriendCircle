@@ -22,7 +22,7 @@ http://www.jianshu.com/p/17c51bd5ba70
 
 图片预览：
 
-![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-04-21_dot_indicator.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2016-04-21_dot_indicator.gif)
 
 ***
 
