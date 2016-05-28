@@ -71,7 +71,7 @@ http://www.jianshu.com/p/17c51bd5ba70
 当然，我们不能只用库，本项目也会有很多自定义控件（其实这些控件很早就上传到我的github了，只是木有人star....）
 
 #####THANKS：
-感谢嘉辉同志(git:[wenjiahui](https://github.com/wenjiahui))，项目的adapter思想来源于他的idea。
+感谢嘉辉同志(git:[wenjiahui](https://github.com/wenjiahui))，在他star之后终于找到了他的git....，项目的adapter反射创建view思想来源于他的idea。
 
 其次感谢我的实习公司：微聚(他们的app是[超级俱乐部](https://ba.iweju.com))，在这里我成长很快，没有他们的培养就没有这个项目的实现。
 
