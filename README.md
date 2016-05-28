@@ -28,7 +28,7 @@ http://www.jianshu.com/p/17c51bd5ba70
 
 ###如果您有PR申请，请提交到dev分支，谢谢-V-
 
-###如果您遇到[BasePopup](https://github.com/razerdp/BasePopup)的导入失败，请在工程的gradle（不是app的gradle哦）加上这句话：
+###如果您遇到popup的导入失败，请在工程的gradle（不是app的gradle哦）加上这句话：
 
 ```xml
 	allprojects {
@@ -69,6 +69,13 @@ http://www.jianshu.com/p/17c51bd5ba70
 因为不制造重复的轮子这句名言，本项目将会使用一些库，这些库基本都是github上比较流行，热度比较高的，比如下拉刷新框架使用的是android ultra pull to refresh(https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh) 等
 
 当然，我们不能只用库，本项目也会有很多自定义控件（其实这些控件很早就上传到我的github了，只是木有人star....）
+
+#####THANKS：
+感谢嘉辉同志(git:[wenjiahui](https://github.com/wenjiahui))，项目的adapter思想来源于他的idea。
+
+其次感谢我的实习公司：微聚(他们的app是[超级俱乐部](https://ba.iweju.com))，在这里我成长很快，没有他们的培养就没有这个项目的实现。
+
+最后感谢开源库的开发者们，让我们可以快速实现业务功能。
 
 ##LICENSE：
 ***
