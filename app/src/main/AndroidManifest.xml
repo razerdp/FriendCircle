@@ -19,6 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <!--glide的配置内容-->
+        <meta-data
+            android:name="razerdp.friendcircle.app.glide.OkHttpProgressGlideModule"
+            android:value="GlideModule"/>
     </application>
 
 </manifest>
