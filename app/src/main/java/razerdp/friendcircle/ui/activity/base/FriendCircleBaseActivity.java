@@ -53,6 +53,26 @@ public abstract class FriendCircleBaseActivity extends AppCompatActivity impleme
             }
         });
     }
+    public void bindListView(FriendCirclePtrListView listView, View headerView, FriendCircleAdapter adapter) {
+        this.mAdapter = adapter;
+        mListView =listView;
+        mListView.setRotateIcon(bindRefreshIcon());
+        if (headerView != null) mListView.addHeaderView(headerView);
+        mListView.setAdapter(adapter);
+
+        mListView.setOnPullDownRefreshListener(new OnPullDownRefreshListener() {
+            @Override
+            public void onRefreshing(PtrFrameLayout frame) {
+                onPullDownRefresh();
+            }
+        });
+        mListView.setOnLoadMoreRefreshListener(new OnLoadMoreRefreshListener() {
+            @Override
+            public void onRefreshing(PtrFrameLayout frame) {
+                onLoadMore();
+            }
+        });
+    }
 
     @Override
     public void onStart(BaseResponse response) {

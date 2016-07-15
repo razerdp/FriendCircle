@@ -21,6 +21,7 @@ import com.waynell.videolist.visibility.scroll.ListViewItemPositionGetter;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.config.CommonValue;
 import razerdp.friendcircle.app.config.LocalHostInfo;
@@ -113,8 +114,9 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
         titleBar.setOnClickListener(this);
 
         friendCircleHeader = LayoutInflater.from(this).inflate(R.layout.item_header, null, false);
-        bindListView(R.id.listview, friendCircleHeader,
-                FriendCircleAdapterUtil.getAdapter(this, mMomentsInfos, mPresenter));
+        mListView = (FriendCirclePtrListView) findViewById(R.id.listview);
+        bindListView(mListView, friendCircleHeader,
+                FriendCircleAdapterUtil.getAdapter(this, mListView, mMomentsInfos, mPresenter));
         calculator = new SingleListViewItemActiveCalculator(mAdapter, new ListViewItemPositionGetter(mListView.getRefreshableView()));
 
         mInputLayout = (LinearLayout) findViewById(R.id.ll_input);
@@ -139,14 +141,14 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
         mPhotoPagerManager = PhotoPagerManager.create(this, (HackyViewPager) findViewById(R.id.photo_pager),
                 findViewById(R.id.photo_container), (DotIndicator) findViewById(R.id.dot_indicator));
 
-        mDeleteCommentPopup=new DeleteCommentPopup(this);
+        mDeleteCommentPopup = new DeleteCommentPopup(this);
         mDeleteCommentPopup.setOnDeleteCommentClickListener(new DeleteCommentPopup.OnDeleteCommentClickListener() {
             @Override
             public void onDelClick(View v) {
-                if (mCommentWidget!=null) {
-                   CommentInfo info= mCommentWidget.getData();
-                    mPresenter.delComment(currentDynamicPos,mAdapter.getItem(currentDynamicPos).dynamicInfo
-                            .dynamicId,LocalHostInfo.INSTANCE.getHostId(),info.commentId);
+                if (mCommentWidget != null) {
+                    CommentInfo info = mCommentWidget.getData();
+                    mPresenter.delComment(currentDynamicPos, mAdapter.getItem(currentDynamicPos).dynamicInfo
+                            .dynamicId, LocalHostInfo.INSTANCE.getHostId(), info.commentId);
                     mDeleteCommentPopup.dismiss();
                 }
             }
@@ -196,8 +198,7 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
                 content = mInputBox.getText().toString().trim();
                 if (!TextUtils.isEmpty(content)) {
                     mPresenter.addComment(currentDynamicPos, dynamicId, userid, replyId, content);
-                }
-                else {
+                } else {
                     ToastUtils.ToastMessage(this, "回复内容不能为空哦");
                 }
                 mCommentWidget = null;
@@ -205,7 +206,7 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
             case R.id.btn_emoji:
                 // TODO: 2016/3/17 如果能力足够- -希望能完成
                 // emoji表情
-                ToastUtils.ToastMessage(this,"啦啦啦，羽翼君还没有这个精力做emoji哦");
+                ToastUtils.ToastMessage(this, "啦啦啦，羽翼君还没有这个精力做emoji哦");
 
                 break;
             default:
@@ -235,8 +236,7 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
             if (info.praiseList != null) {
                 info.praiseList.clear();
                 info.praiseList.addAll(praiseList);
-            }
-            else {
+            } else {
                 info.praiseList = praiseList;
             }
         }
@@ -250,8 +250,7 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
             if (info.commentList != null) {
                 info.commentList.clear();
                 info.commentList.addAll(commentList);
-            }
-            else {
+            } else {
                 info.commentList = commentList;
             }
         }
@@ -268,9 +267,9 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
         this.currentDynamicPos = currentDynamicPos;
         this.mCommentWidget = commentWidget;
         // 如果点击评论，而评论的创建者为本人，则显示删除评论窗口
-        if (commentWidget!=null){
-            CommentInfo info=commentWidget.getData();
-            if (info.userA.userId==LocalHostInfo.INSTANCE.getHostId()){
+        if (commentWidget != null) {
+            CommentInfo info = commentWidget.getData();
+            if (info.userA.userId == LocalHostInfo.INSTANCE.getHostId()) {
                 mDeleteCommentPopup.showPopupWindow();
                 return;
             }
@@ -318,8 +317,7 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
         if (commentWidget == null) {
             // 评论控件为空，证明回复的是整个动态
             result = getOffsetOfDynamic(currentDynamicPos, keyBoardHeight);
-        }
-        else {
+        } else {
             // 评论控件不空，证明回复的是评论
             result = getOffsetOfComment(currentDynamicPos, commentWidget, keyBoardHeight);
         }
