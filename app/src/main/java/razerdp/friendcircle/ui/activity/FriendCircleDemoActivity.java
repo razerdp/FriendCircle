@@ -15,6 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.waynell.videolist.visibility.calculator.SingleListViewItemActiveCalculator;
+import com.waynell.videolist.visibility.scroll.ListViewItemPositionGetter;
+
 import java.util.ArrayList;
 import java.util.List;
 import razerdp.friendcircle.R;
@@ -73,6 +77,8 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
     //删除评论的popup
     private DeleteCommentPopup mDeleteCommentPopup;
 
+    private SingleListViewItemActiveCalculator calculator;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -109,6 +115,7 @@ public class FriendCircleDemoActivity extends FriendCircleBaseActivity
         friendCircleHeader = LayoutInflater.from(this).inflate(R.layout.item_header, null, false);
         bindListView(R.id.listview, friendCircleHeader,
                 FriendCircleAdapterUtil.getAdapter(this, mMomentsInfos, mPresenter));
+        calculator = new SingleListViewItemActiveCalculator(mAdapter, new ListViewItemPositionGetter(mListView.getRefreshableView()));
 
         mInputLayout = (LinearLayout) findViewById(R.id.ll_input);
         mInputBox = (EditText) findViewById(R.id.ed_input);

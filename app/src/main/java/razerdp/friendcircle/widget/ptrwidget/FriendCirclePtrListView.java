@@ -429,6 +429,10 @@ public class FriendCirclePtrListView extends PtrFrameLayout implements PtrHandle
         return mListView.getEmptyView();
     }
 
+    public ListView getRefreshableView(){
+        return mListView;
+    }
+
     /**
      * ============================================================= InterFace
      */
