@@ -31,9 +31,12 @@ public class FriendCircleAdapter extends CircleBaseAdapter<MomentsInfo> implemen
         return getItem(position).dynamicInfo.dynamicType;
     }
 
-    // FIXME: 2016/7/15 关于ListItem的获取方式
     @Override
     public ListItem getListItem(int i) {
+        Object object = listView.findViewHolderByPosition(i);
+        if (object != null && object instanceof ListItem) {
+            return (ListItem) object;
+        }
         return null;
     }
 
