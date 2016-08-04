@@ -13,7 +13,7 @@
 
 **因为在下的资金不足以支撑服务器的运行，因此不得不关闭服务器，不过我已经将数据库的文件转移出来了**
 
-**该sql文件处于本项目的db文件夹下，而服务器的源代码处于[](https://github.com/razerdp/MyServer)下（Intellij环境）**
+**该sql文件处于本项目的db文件夹下，而服务器的源代码处于![](https://github.com/razerdp/MyServer)下（Intellij环境）**
 
 **本项目不会停止开发，目前开发进度为小视频（50%），对glide封装和其他类的封装进行了一半，这个小视频基于该库：com.github.waynell:VideoListPlayer:1.2 ,其网址就是库名，非常感谢这位作者**
 
