@@ -12,6 +12,7 @@ import razerdp.friendcircle.ui.adapteritem.ItemOnlyChar;
 import razerdp.friendcircle.ui.adapteritem.ItemShareWeb;
 import razerdp.friendcircle.ui.adapteritem.ItemWithImg;
 import razerdp.friendcircle.ui.adapteritem.ItemWithImgSingle;
+import razerdp.friendcircle.widget.ptrwidget.FriendCirclePtrListView;
 
 /**
  * Created by 大灯泡 on 2016/2/25.
@@ -36,5 +37,15 @@ public class FriendCircleAdapterUtil {
                                                                                                  .addType(DynamicType.TYPE_IMG_SINGLE,ItemWithImgSingle.class)
                                                                                                  .build();
         return new FriendCircleAdapter(context, builder);
+    }
+    public static FriendCircleAdapter getAdapter(Activity context,@NonNull FriendCirclePtrListView listView, List<MomentsInfo> datas, @NonNull DynamicPresenterImpl
+            presenter) {
+        FriendCircleAdapter.Builder<MomentsInfo> builder = new CircleBaseAdapter.Builder<>(datas).setPresenter(presenter)
+                .addType(DynamicType.TYPE_ONLY_CHAR, ItemOnlyChar.class)
+                .addType(DynamicType.TYPE_WITH_IMG,ItemWithImg.class)
+                .addType(DynamicType.TYPE_SHARE_WEB,ItemShareWeb.class)
+                .addType(DynamicType.TYPE_IMG_SINGLE,ItemWithImgSingle.class)
+                .build();
+        return new FriendCircleAdapter(listView,context, builder);
     }
 }

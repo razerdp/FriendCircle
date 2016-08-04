@@ -6,15 +6,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
 import razerdp.friendcircle.app.adapter.base.viewholder.BaseItemView;
 import razerdp.friendcircle.app.mvp.presenter.DynamicPresenterImpl;
 
 /**
  * Created by 大灯泡 on 2016/2/16.
  * 适配器抽象
- *
+ * <p>
  * weblink:http://www.jianshu.com/p/720d5a7c75a7
  */
 public abstract class CircleBaseAdapter<T> extends BaseAdapter {
@@ -27,13 +31,14 @@ public abstract class CircleBaseAdapter<T> extends BaseAdapter {
     protected LayoutInflater mInflater;
 
     protected DynamicPresenterImpl mPresenter;
+    private int viewTypeCount = -1;
 
     public CircleBaseAdapter(Activity context, Builder<T> mBuilder) {
         this.context = context;
         mInflater = LayoutInflater.from(context);
-        datas=mBuilder.datas;
+        datas = mBuilder.datas;
         itemInfos = mBuilder.itemInfos;
-        mPresenter=mBuilder.mPresenter;
+        mPresenter = mBuilder.mPresenter;
     }
 
 
@@ -56,17 +61,38 @@ public abstract class CircleBaseAdapter<T> extends BaseAdapter {
     public abstract int getItemViewType(int position);
 
     @Override
-    public int getViewTypeCount() {return 15;}
+    public int getViewTypeCount() {
+        if (viewTypeCount == -1) {
+            viewTypeCount = getViewTypeCountFromItemInfos() + 1;
+        }
+        return viewTypeCount;
+    }
+
+    private int getViewTypeCountFromItemInfos() {
+        int viewTypeCount = 0;
+        if (itemInfos != null) {
+            Iterator iterator = itemInfos.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<Integer, Class<? extends BaseItemView<T>>> entry = (Map.Entry<Integer, Class<? extends BaseItemView<T>>>) iterator.next();
+                int type = entry.getKey();
+                if (type > viewTypeCount) {
+                    viewTypeCount = type;
+                }
+            }
+        }
+        return viewTypeCount;
+    }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final int dynamicType = getItemViewType(position);
-        BaseItemView view = null;
+        BaseItemView viewHolderProvider = null;
         if (convertView == null) {
             Class viewClass = itemInfos.get(dynamicType);
-            Log.d(TAG,""+viewClass);
+            Log.d(TAG, "" + viewClass);
             try {
-                view = (BaseItemView) viewClass.newInstance();
+                viewHolderProvider = (BaseItemView) viewClass.newInstance();
             } catch (InstantiationException e) {
                 Log.e(TAG, "反射创建失败！！！");
                 e.printStackTrace();
@@ -74,21 +100,19 @@ public abstract class CircleBaseAdapter<T> extends BaseAdapter {
                 Log.e(TAG, "反射创建失败！！！");
                 e.printStackTrace();
             }
-            if (view != null) {
-                convertView = mInflater.inflate(view.getViewRes(), parent, false);
-                convertView.setTag(view);
-            }
-            else {
+            if (viewHolderProvider != null) {
+                convertView = mInflater.inflate(viewHolderProvider.getViewRes(), parent, false);
+                convertView.setTag(viewHolderProvider);
+            } else {
                 throw new NullPointerException("view是空的哦~");
             }
+        } else {
+            viewHolderProvider = (BaseItemView) convertView.getTag();
         }
-        else {
-            view = (BaseItemView) convertView.getTag();
-        }
-        view.setActivityContext(context);
-        view.onFindView(convertView);
-        view.onBindData(position, convertView, getItem(position), dynamicType);
-        if (view.getPresenter()==null)view.setPresenter(mPresenter);
+        viewHolderProvider.setActivityContext(context);
+        viewHolderProvider.onFindView(convertView);
+        viewHolderProvider.onBindData(position, convertView, getItem(position), dynamicType);
+        if (viewHolderProvider.getPresenter() == null) viewHolderProvider.setPresenter(mPresenter);
 
         return convertView;
     }
@@ -113,8 +137,8 @@ public abstract class CircleBaseAdapter<T> extends BaseAdapter {
             return this;
         }
 
-        public Builder setPresenter(DynamicPresenterImpl presenter){
-            this.mPresenter=presenter;
+        public Builder setPresenter(DynamicPresenterImpl presenter) {
+            this.mPresenter = presenter;
             return this;
         }
 
@@ -123,6 +147,8 @@ public abstract class CircleBaseAdapter<T> extends BaseAdapter {
             return this;
         }
 
-        public Builder build() {return this;}
+        public Builder build() {
+            return this;
+        }
     }
 }

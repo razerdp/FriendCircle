@@ -15,4 +15,7 @@ public class ContentInfo implements Serializable {
     public String webTitle;
     public long dynamicid;
     public String webImg;
+
+    public String videoUrl;
+    public String videoCoverUrl;
 }

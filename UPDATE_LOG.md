@@ -1,11 +1,16 @@
 # 更新日志
+##2016-06-23
+这段时间有点忙，现在终于有点时间了，开始着手研究视频播放</br>
+这里是我目前的参考链接：http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2016/0130/3927.html</br>
+
+***
 
 ##2016-04-21
 朋友圈图片浏览指示器完成</br>
 代码解析地址：</br>
 http://www.jianshu.com/p/17c51bd5ba70 </br>
 图片预览：</br>
-![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-04-21_dot_indicator.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2016-04-21_dot_indicator.gif)
 
 ***
 
@@ -19,7 +24,7 @@ http://www.jianshu.com/p/17c51bd5ba70 </br>
 代码解析地址：</br>
 http://www.jianshu.com/p/4c5b5d7dc856 </br>
 图片预览：</br>
-![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-04-14_friend_circle_photo_gallery.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2016-04-14_friend_circle_photo_gallery.gif)
 
 ***
 
@@ -28,7 +33,7 @@ http://www.jianshu.com/p/4c5b5d7dc856 </br>
 代码解析地址：</br>
 http://www.jianshu.com/p/8984efce40ae </br>
 图片预览：</br>
-![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-04-13_click_forceground_iv.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2016-04-13_click_forceground_iv.gif)
 
 ***
 
@@ -37,7 +42,7 @@ http://www.jianshu.com/p/8984efce40ae </br>
 代码解析地址：</br>
 http://www.jianshu.com/p/513e2eccd7a8 </br>
 图片预览：</br>
-![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-04-04_comment_align_input_box.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2016-04-04_comment_align_input_box.gif)
 
 ***
 
@@ -52,7 +57,7 @@ http://www.jianshu.com/p/69b9a6a83373 </br>
 代码解析地址：</br>
 http://www.jianshu.com/p/8d24f9b7a63a </br>
 图片预览：</br>
-![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-03-25_show_input_box.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2016-03-25_show_input_box.gif)
 
 ***
 
@@ -70,7 +75,7 @@ http://www.jianshu.com/p/8d24f9b7a63a </br>
 代码解析地址：</br>
 http://www.jianshu.com/p/deda1849a084 </br>
 图片预览：</br>
-![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-03-11_praise.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2016-03-11_praise.gif)
 
 ***
 
@@ -79,7 +84,7 @@ http://www.jianshu.com/p/deda1849a084 </br>
 代码解析地址：</br>
 http://www.jianshu.com/p/15a9fe8f917f </br>
 图片预览：</br>
-![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-03-08_comment_popup.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2016-03-08_comment_popup.gif)
 
 ***
 
@@ -100,7 +105,7 @@ http://www.jianshu.com/p/3d0cc6882e1a </br>
 代码解析地址：</br>
 http://www.jianshu.com/p/885538a261ea </br>
 图片预览：</br>
-![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/single_image.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/single_image.gif)
 
 ***
 ##2016-02-26~27
@@ -108,7 +113,7 @@ http://www.jianshu.com/p/885538a261ea </br>
 代码解析地址：</br>
 http://www.jianshu.com/p/ff9788581fb0 </br>
 图片预览：</br>
-![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/comment_text_pool.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/comment_text_pool.gif)
 
 ***
 ##2016-02-25
@@ -116,7 +121,7 @@ http://www.jianshu.com/p/ff9788581fb0 </br>
 代码解析地址：</br>
 http://www.jianshu.com/p/4cc3f9c8a713 </br>
 图片预览：</br>
-![](https://github.com/razerdp/FriendCircle/blob/main-dev/img/2016-02-25_test.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2016-02-25_test.gif)
 
 ***
 ##2016-02-23
@@ -129,7 +134,7 @@ http://www.jianshu.com/p/4cc3f9c8a713 </br>
 代码解析地址：</br>
 http://www.jianshu.com/p/26dd3aad965a </br>
 图片预览：</br>
-![](https://github.com/razerdp/FriendCircle/blob/master/img/praise_widget.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/praise_widget.gif)
 
 ***
 ##2016-02-20
@@ -137,7 +142,7 @@ http://www.jianshu.com/p/26dd3aad965a </br>
 代码解析地址：</br>
 http://www.jianshu.com/p/80d7f34c5f08 </br>
 图片预览：</br>
-![](https://github.com/razerdp/FriendCircle/blob/master/img/click_to_show_more.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/click_to_show_more.gif)
 
 ***
 ##2016-02-19
@@ -166,7 +171,7 @@ http://www.jianshu.com/p/80d7f34c5f08 </br>
 代码解析地址：</br>
 下篇：http://www.jianshu.com/p/68e13214cde4 </br>
 图片预览：</br>
-![](https://github.com/razerdp/FriendCircle/blob/master/img/2016-02-10%20%E5%8A%A0%E8%BD%BD%E6%9B%B4%E5%A4%9A.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2016-02-10%20%E5%8A%A0%E8%BD%BD%E6%9B%B4%E5%A4%9A.gif)
 
 ***
 ##2016-02-10
@@ -175,5 +180,5 @@ http://www.jianshu.com/p/80d7f34c5f08 </br>
 上篇：http://www.jianshu.com/p/7fa237cfddbb </br>
 中篇：http://www.jianshu.com/p/94e1e267b3b3 </br>
 图片预览：</br>
-![](https://github.com/razerdp/FriendCircle/blob/master/img/2016-02-10%20%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2016-02-10%20%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0.gif)
 
