@@ -68,19 +68,19 @@ public class CircleProgressView extends View implements View.OnClickListener {
 
     private void init(Context context, AttributeSet attrs) {
         TypedArray a = context.getTheme()
-                              .obtainStyledAttributes(attrs,
-                                                      R.styleable.CircleProgressView,
-                                                      0,
-                                                      0);
+                .obtainStyledAttributes(attrs,
+                        R.styleable.CircleProgressView,
+                        0,
+                        0);
         circleSize = a.getDimensionPixelSize(R.styleable.CircleProgressView_inner_circle_size,
-                                             0);
+                0);
         textSize = a.getDimensionPixelSize(R.styleable.CircleProgressView_inner_text_size, 0);
         circleColor = a.getColor(R.styleable.CircleProgressView_inner_circle_color, 0);
         textColor = a.getColor(R.styleable.CircleProgressView_inner_text_color, 0);
         strokeWidth = a.getDimensionPixelSize(R.styleable.CircleProgressView_stroke_width, 0);
         strokeColor = a.getColor(R.styleable.CircleProgressView_stroke_color, 0);
         strokeMargin = a.getDimensionPixelSize(R.styleable.CircleProgressView_stroke_margin,
-                                               0);
+                0);
         currentPresent = a.getInt(R.styleable.CircleProgressView_current_progress, 0);
         a.recycle();
         initDefaultValueWhenEmpty(context);
@@ -89,13 +89,13 @@ public class CircleProgressView extends View implements View.OnClickListener {
     }
 
     private void initDefaultValueWhenEmpty(Context context) {
-        if (circleSize == 0) circleSize = UIHelper.dipToPx(context, 30f);
+        if (circleSize == 0) circleSize = UIHelper.dipToPx(30f);
         if (textSize == 0) textSize = 16;
         if (circleColor == 0) circleColor = 0xafffffff;
         if (textColor == 0) textColor = Color.WHITE;
-        if (strokeWidth == 0) strokeWidth = UIHelper.dipToPx(context, 2f);
+        if (strokeWidth == 0) strokeWidth = UIHelper.dipToPx(2f);
         if (strokeColor == 0) strokeColor = 0xafffffff;
-        if (strokeMargin == 0) strokeMargin = UIHelper.dipToPx(context, 5f);
+        if (strokeMargin == 0) strokeMargin = UIHelper.dipToPx(5f);
     }
 
     private void buildAnimation() {
@@ -208,9 +208,9 @@ public class CircleProgressView extends View implements View.OnClickListener {
             //画线
             int radius = (int) Math.max(circleRect.width() / 2, circleRect.height() / 2);
             canvas.drawCircle(circleRect.centerX(),
-                              circleRect.centerY(),
-                              radius + strokeMargin,
-                              strokePaint);
+                    circleRect.centerY(),
+                    radius + strokeMargin,
+                    strokePaint);
 
             //文字，保证文字居中
             Paint.FontMetricsInt fontMetrics = textPaint.getFontMetricsInt();
@@ -291,8 +291,8 @@ public class CircleProgressView extends View implements View.OnClickListener {
                 lastThreadId = 0;
                 if (getAnimation() != null) clearAnimation();
                 if (defaultWidth != 0) {
-                    getLayoutParams().width = defaultWidth * 3 >= UIHelper.getScreenPixWidth(
-                            getContext()) ? UIHelper.getScreenPixWidth(getContext()) : defaultWidth * 3;
+                    getLayoutParams().width = defaultWidth * 3 >= UIHelper.getScreenWidthPix(
+                            getContext()) ? UIHelper.getScreenWidthPix(getContext()) : defaultWidth * 3;
                     setLayoutParams(getLayoutParams());
                 }
                 textPaint.setTextSize(30);
@@ -404,10 +404,10 @@ public class CircleProgressView extends View implements View.OnClickListener {
     public synchronized void setCurrentPresent(int currentPresent) {
         if (lastThreadId == 0) {
             lastThreadId = Thread.currentThread()
-                                 .getId();
+                    .getId();
         }
         long currentThreadId = Thread.currentThread()
-                                     .getId();
+                .getId();
         if (currentThreadId == lastThreadId) {
             if (currentPresent < 0) currentPresent = 0;
             if (currentPresent > 100) currentPresent = 100;
