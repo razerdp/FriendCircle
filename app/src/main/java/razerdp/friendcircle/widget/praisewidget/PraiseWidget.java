@@ -1,30 +1,11 @@
 package razerdp.friendcircle.widget.praisewidget;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.os.Build;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.util.LruCache;
-import android.view.MotionEvent;
-import android.widget.TextView;
-import java.util.List;
-import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.widget.CustomImageSpan;
-import razerdp.friendcircle.widget.SpannableStringBuilderAllVer;
-import razerdp.friendcircle.widget.span.ClickableSpanEx;
-
 /**
  * Created by 大灯泡 on 2016/2/21.
  * 点赞显示控件
  */
-public class PraiseWidget extends TextView {
+public class PraiseWidget{}
+/*public class PraiseWidget extends TextView {
     private static final String TAG = "PraiseWidget";
 
     //点赞名字展示的默认颜色
@@ -129,4 +110,4 @@ public class PraiseWidget extends TextView {
             Log.d(TAG, "clear cache success!");
         }
     }
-}
+}*/

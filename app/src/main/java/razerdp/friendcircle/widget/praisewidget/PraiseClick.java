@@ -1,21 +1,11 @@
 package razerdp.friendcircle.widget.praisewidget;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.text.TextPaint;
-import android.text.style.ClickableSpan;
-import android.view.View;
-import android.widget.Toast;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.utils.UIHelper;
-import razerdp.friendcircle.widget.span.ClickableSpanEx;
-
 /**
  * Created by 大灯泡 on 2016/2/21.
  * 点击事件
  */
-public class PraiseClick extends ClickableSpanEx {
+public class PraiseClick{}
+/*public class PraiseClick extends ClickableSpanEx {
     private static final int DEFAULT_COLOR = 0xff517fae;
     private int color;
     private Context mContext;
@@ -76,4 +66,4 @@ public class PraiseClick extends ClickableSpanEx {
             return new PraiseClick(this);
         }
     }
-}
+}*/

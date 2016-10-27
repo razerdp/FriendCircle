@@ -23,7 +23,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'in.srain.cube:ultra-ptr:1.0.11'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.commit451:PhotoView:1.2.5'
     compile 'com.github.razerdp:BasePopup:v1.1.9'

@@ -67,7 +67,7 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
 
         LinearLayout.LayoutParams params= new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.topMargin= UIHelper.dipToPx(context,10f);
+        params.topMargin= UIHelper.dipToPx(10f);
         mClickToShow.setLayoutParams(params);
         mClickToShow.setOnClickListener(this);
 

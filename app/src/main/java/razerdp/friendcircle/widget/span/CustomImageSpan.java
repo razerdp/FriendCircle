@@ -1,4 +1,4 @@
-package razerdp.friendcircle.widget.ptrwidget;
+package razerdp.friendcircle.widget.span;
 
 import android.content.Context;
 import android.graphics.Canvas;

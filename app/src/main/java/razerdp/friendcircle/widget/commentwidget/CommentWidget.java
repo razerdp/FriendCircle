@@ -1,23 +1,11 @@
 package razerdp.friendcircle.widget.commentwidget;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.graphics.Color;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import android.text.method.LinkMovementMethod;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.widget.TextView;
-import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
-import razerdp.friendcircle.widget.SpannableStringBuilderAllVer;
-import razerdp.friendcircle.widget.span.ClickableSpanEx;
-
 /**
  * Created by 大灯泡 on 2016/2/23.
  * 评论控件
  */
-public class CommentWidget extends TextView {
+public class CommentWidget{}
+/*public class CommentWidget extends TextView {
     private static final String TAG = "CommentWidget";
     //用户名颜色
     private int textColor = 0xff517fae;
@@ -99,4 +87,4 @@ public class CommentWidget extends TextView {
     public CommentInfo getData() throws ClassCastException {
         return (CommentInfo) getTag();
     }
-}
+}*/

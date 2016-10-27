@@ -1,30 +1,11 @@
 package razerdp.friendcircle.widget.popup;
 
-import android.app.Activity;
-import android.content.Context;
-import android.os.Handler;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.ScaleAnimation;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import java.lang.ref.WeakReference;
-import razerdp.basepopup.BasePopupWindow;
-import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.config.CommonValue;
-import razerdp.friendcircle.app.mvp.model.entity.DynamicInfo;
-import razerdp.friendcircle.utils.UIHelper;
-
 /**
  * Created by 大灯泡 on 2016/3/6.
  * 朋友圈点赞
  */
-public class CommentPopup extends BasePopupWindow implements View.OnClickListener {
+public class CommentPopup{}
+/*public class CommentPopup extends BasePopupWindow implements View.OnClickListener {
     private static final String TAG = "CommentPopup";
 
     private ImageView mLikeView;
@@ -201,4 +182,4 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
             return (float) Math.sin(input*Math.PI);
         }
     }
-}
+}*/

@@ -1,20 +1,11 @@
 package razerdp.friendcircle.widget.commentwidget;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.text.TextPaint;
-import android.text.style.ClickableSpan;
-import android.view.View;
-import android.widget.Toast;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.utils.UIHelper;
-import razerdp.friendcircle.widget.span.ClickableSpanEx;
-
 /**
  * Created by 大灯泡 on 2016/2/23.
  * 评论点击事件
  */
-public class CommentClick extends ClickableSpanEx {
+public class CommentClick{}
+/*public class CommentClick extends ClickableSpanEx {
     private Context mContext;
     private int textSize;
     private UserInfo mUserInfo;
@@ -72,4 +63,4 @@ public class CommentClick extends ClickableSpanEx {
             return new CommentClick(this);
         }
     }
-}
+}*/

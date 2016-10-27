@@ -7,6 +7,7 @@ import com.socks.library.KLog;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
+import razerdp.friendcircle.config.Define;
 
 /**
  * Created by 大灯泡 on 2016/10/26.
@@ -32,7 +33,7 @@ public class FriendCircleApp extends Application {
     private void initBmob() {
         BmobConfig config = new BmobConfig.Builder(this)
                 //设置appkey
-                .setApplicationId("7fc6618e5572b09c6055ef4d53d0017a")
+                .setApplicationId(Define.BMOB_APPID)
                 //请求超时时间（单位为秒）：默认15s
                 .setConnectTimeout(15)
                 //文件分片上传时每片的大小（单位字节），默认512*1024
