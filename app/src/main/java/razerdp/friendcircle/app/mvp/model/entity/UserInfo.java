@@ -5,6 +5,8 @@ import razerdp.friendcircle.utils.EncryUtil;
 
 /**
  * Created by 大灯泡 on 2016/10/27.
+ *
+ * 用户
  */
 
 public class UserInfo extends BmobObject {

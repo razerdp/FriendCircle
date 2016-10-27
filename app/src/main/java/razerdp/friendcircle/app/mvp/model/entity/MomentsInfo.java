@@ -7,13 +7,17 @@ import cn.bmob.v3.datatype.BmobRelation;
 
 /**
  * Created by 大灯泡 on 2016/10/27.
+ *
+ * 朋友圈动态
  */
 
 public class MomentsInfo extends BmobObject {
     private UserInfo author;
     private long momentid;
     private UserInfo hostinfo;
-    private List<UserInfo> likes;
+    private BmobRelation likes;
+    private List<UserInfo> likesList;
+    private List<CommentInfo> commentList;
 
 
     public MomentsInfo() {
@@ -43,11 +47,23 @@ public class MomentsInfo extends BmobObject {
         this.hostinfo = hostinfo;
     }
 
-    public List<UserInfo> getLikes() {
-        return likes;
+    public void setLikesBmobRelation(BmobRelation likes) {
+        this.likes = likes;
     }
 
-    public void setLikes(List<UserInfo> likes) {
-        this.likes = likes;
+    public List<UserInfo> getLikesList() {
+        return likesList;
+    }
+
+    public void setLikesList(List<UserInfo> likesList) {
+        this.likesList = likesList;
+    }
+
+    public List<CommentInfo> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<CommentInfo> commentList) {
+        this.commentList = commentList;
     }
 }
