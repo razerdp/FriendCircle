@@ -5,14 +5,21 @@ import razerdp.friendcircle.utils.EncryUtil;
 
 /**
  * Created by 大灯泡 on 2016/10/27.
- *
+ * <p>
  * 用户
  */
 
 public class UserInfo extends BmobObject {
 
+    public interface UserFields {
+        String USERNAME = "username";
+        String PASSWORD = "password";
+        String NICK = "nick";
+        String AUTHOR_USER = "author";
+        String AVATAR = "avatar";
+    }
+
     private String username;
-    private String userid;
     private String password;
     private String nick;
     private String avatar;
@@ -29,11 +36,7 @@ public class UserInfo extends BmobObject {
     }
 
     public String getUserid() {
-        return userid;
-    }
-
-    public void setUserid(String userid) {
-        this.userid = userid;
+        return getObjectId();
     }
 
     public String getPassword() {

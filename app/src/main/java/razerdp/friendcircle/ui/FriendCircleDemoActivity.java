@@ -1,4 +1,4 @@
-package razerdp.friendcircle.activity;
+package razerdp.friendcircle.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -45,5 +45,16 @@ public class FriendCircleDemoActivity extends AppCompatActivity {
             }
         });
         momentsRequest.execute();
+
+        //添加动态
+     /*   final BmobInitHelper helper=new BmobInitHelper();
+        helper.initUser(new SimpleResponseListener() {
+            @Override
+            public void onSuccess(Object response, int requestType) {
+                KLog.d(response);
+                helper.addMoments();
+            }
+        });*/
+
     }
 }

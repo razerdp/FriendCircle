@@ -149,7 +149,7 @@ public class UIHelper {
      * Toast封装
      */
     public static void ToastMessage(String msg) {
-        Toast.makeText(FriendCircleApp.getAppContext(),msg,Toast.LENGTH_LONG).show();
+        Toast.makeText(FriendCircleApp.getAppContext(), msg, Toast.LENGTH_LONG).show();
     }
 
     /**

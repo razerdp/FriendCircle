@@ -1,11 +1,20 @@
 package razerdp.friendcircle.widget.praisewidget;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.text.TextPaint;
+import android.view.View;
+import android.widget.Toast;
+
+import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
+import razerdp.friendcircle.utils.UIHelper;
+import razerdp.friendcircle.widget.span.ClickableSpanEx;
+
 /**
  * Created by 大灯泡 on 2016/2/21.
  * 点击事件
  */
-public class PraiseClick{}
-/*public class PraiseClick extends ClickableSpanEx {
+public class PraiseClick extends ClickableSpanEx {
     private static final int DEFAULT_COLOR = 0xff517fae;
     private int color;
     private Context mContext;
@@ -24,8 +33,7 @@ public class PraiseClick{}
     @Override
     public void onClick(View widget) {
         if (mPraiseInfo!=null)
-        Toast.makeText(mContext, "当前用户名是： " + mPraiseInfo.nick + "   它的ID是： " + mPraiseInfo.userId,
-                Toast.LENGTH_SHORT).show();
+            UIHelper.ToastMessage("当前用户名是： " + mPraiseInfo.getNick() + "   它的ID是： " + mPraiseInfo.getUserid());
     }
 
     @Override
@@ -48,7 +56,7 @@ public class PraiseClick{}
         }
 
         public Builder setTextSize(int textSize) {
-            this.textSize = UIHelper.sp2px(mContext,textSize);
+            this.textSize = UIHelper.sp2px(textSize);
             return this;
         }
 
@@ -66,4 +74,4 @@ public class PraiseClick{}
             return new PraiseClick(this);
         }
     }
-}*/
+}

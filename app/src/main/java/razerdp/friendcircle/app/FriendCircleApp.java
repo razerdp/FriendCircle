@@ -8,6 +8,7 @@ import com.socks.library.KLog;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
 import razerdp.friendcircle.config.Define;
+import razerdp.friendcircle.utils.PreferenceHelper;
 
 /**
  * Created by 大灯泡 on 2016/10/26.
@@ -23,7 +24,8 @@ public class FriendCircleApp extends Application {
         super.onCreate();
         CONTEXT = getAppContext();
         initBmob();
-        KLog.init(true,"FriendCircle");
+        PreferenceHelper.INSTANCE.init(this);
+        KLog.init(true, "FriendCircle");
     }
 
     public static Context getAppContext() {

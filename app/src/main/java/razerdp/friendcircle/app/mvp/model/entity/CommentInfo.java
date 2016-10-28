@@ -1,18 +1,28 @@
 package razerdp.friendcircle.app.mvp.model.entity;
 
+import android.text.TextUtils;
+
 import cn.bmob.v3.BmobObject;
+import razerdp.friendcircle.app.manager.LocalHostManager;
 
 /**
  * Created by 大灯泡 on 2016/10/27.
- *
+ * <p>
  * 评论
  */
 
 public class CommentInfo extends BmobObject {
 
+    public interface CommentFields {
+        String REPLY_USER = "reply";
+        String MOMENT = "moment";
+        String CONTENT = "content";
+        String AUTHOR_USER = "author";
+    }
+
+
     private MomentsInfo moment;
     private String content;
-    private long commentid;
     private UserInfo author;
     private UserInfo reply;
 
@@ -32,12 +42,8 @@ public class CommentInfo extends BmobObject {
         this.content = content;
     }
 
-    public long getCommentid() {
-        return commentid;
-    }
-
-    public void setCommentid(long commentid) {
-        this.commentid = commentid;
+    public String getCommentid() {
+        return getObjectId();
     }
 
     public UserInfo getAuthor() {
@@ -54,5 +60,9 @@ public class CommentInfo extends BmobObject {
 
     public void setReply(UserInfo reply) {
         this.reply = reply;
+    }
+
+    public boolean canDelete() {
+        return author != null && TextUtils.equals(author.getUserid(), LocalHostManager.INSTANCE.getUserid());
     }
 }
