@@ -6,9 +6,7 @@
               android:orientation="vertical"
               tools:context=".ui.FriendCircleDemoActivity">
 
-    <TextView
+    <razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="111"/>
+        android:layout_height="match_parent"/>
 </LinearLayout>

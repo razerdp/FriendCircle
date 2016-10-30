@@ -25,7 +25,7 @@ public class FriendCircleDemoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MomentsRequest momentsRequest=new MomentsRequest();
+      /*  MomentsRequest momentsRequest=new MomentsRequest();
         momentsRequest.setOnResponseListener(new OnResponseListener<List<MomentsInfo>>() {
             @Override
             public void onStart(int requestType) {
@@ -44,7 +44,7 @@ public class FriendCircleDemoActivity extends AppCompatActivity {
 
             }
         });
-        momentsRequest.execute();
+        momentsRequest.execute();*/
 
         //添加动态
      /*   final BmobInitHelper helper=new BmobInitHelper();
