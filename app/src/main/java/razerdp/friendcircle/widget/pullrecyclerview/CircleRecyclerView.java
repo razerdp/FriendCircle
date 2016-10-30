@@ -1,29 +1,42 @@
 package razerdp.friendcircle.widget.pullrecyclerview;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.PointF;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.IntDef;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewConfiguration;
-import android.widget.LinearLayout;
-
-import com.socks.library.KLog;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.logging.Logger;
 
-import razerdp.friendcircle.widget.pullrecyclerview.interfaces.CirclePtrRefreshView;
+import me.everything.android.ui.overscroll.IOverScrollDecor;
+import me.everything.android.ui.overscroll.IOverScrollStateListener;
+import me.everything.android.ui.overscroll.IOverScrollUpdateListener;
+import me.everything.android.ui.overscroll.VerticalOverScrollBounceEffectDecorator;
+import me.everything.android.ui.overscroll.adapters.RecyclerViewOverScrollDecorAdapter;
+import razerdp.friendcircle.R;
+import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.pullrecyclerview.interfaces.OnRefreshListener2;
-import razerdp.friendcircle.widget.pullrecyclerview.interfaces.PtrState;
 
-import static razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView.Status.*;
+import static android.R.attr.duration;
+import static me.everything.android.ui.overscroll.IOverScrollState.STATE_BOUNCE_BACK;
+import static me.everything.android.ui.overscroll.IOverScrollState.STATE_DRAG_END_SIDE;
+import static me.everything.android.ui.overscroll.IOverScrollState.STATE_DRAG_START_SIDE;
+import static me.everything.android.ui.overscroll.IOverScrollState.STATE_IDLE;
+import static razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView.Status.DEFAULT;
+import static razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView.Status.REFRESHING;
 
 
 /**
@@ -40,42 +53,39 @@ import static razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView.St
  * 目标：
  * 【基本要求】因为相当于定制，只为本项目服务，因此不考虑通用性，更多考虑扩展性
  * <p>
+ * <p>
  * 1 - 下拉和上拉支持回调
  * 2 - 跟iOS朋友圈下拉头部一样，支持头部在刷新时的回弹
  * 3 - 滑动到底部自动加载更多
  * 4 - addHeaderView。
+ * <p>
+ * 使用的库：overscroll-decor(https://github.com/EverythingMe/overscroll-decor)
  */
 
-public class CircleRecyclerView extends LinearLayout {
+public class CircleRecyclerView extends FrameLayout {
     public static boolean DEBUG = true;
     private static final String TAG = "CircleRecyclerView";
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({DEFAULT, PULL_TO_REFRESH, REFRESHING})
+    @IntDef({DEFAULT, REFRESHING})
     @interface Status {
         int DEFAULT = 0;
-        int PULL_TO_REFRESH = 1;
-        int REFRESHING = 2;
+        int REFRESHING = 1;
     }
 
     @Status
     private int currentStatus;
 
     //observer
-    private InnerRefreshViewObserver refreshViewObserver;
-    private InnerMotionEventObserver motionEventObserver;
+    private InnerRefreshIconObserver iconObserver;
 
     //callback
     private OnRefreshListener2 onRefreshListener;
 
-    //view
-    private CirclePtrRefreshView mPtrHeaderView;
-    private CirclePtrRefreshView mPtrFooterView;
     private RecyclerView recyclerView;
+    private ImageView refreshIcon;
 
-    //options
-    private int positionForRefresh;
-    private boolean canPull = true;
+    private int refreshPosition;
 
 
     public CircleRecyclerView(Context context) {
@@ -92,141 +102,51 @@ public class CircleRecyclerView extends LinearLayout {
     }
 
     private void init(Context context) {
-        setOrientation(VERTICAL);
-        setBackgroundColor(Color.TRANSPARENT);
+        GradientDrawable background = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0xff323232, 0xff323232, 0xffffffff, 0xffffffff});
+//        setBackgroundColor(0xff323232);
+        setBackground(background);
 
-        refreshViewObserver = new InnerRefreshViewObserver();
-        motionEventObserver = new InnerMotionEventObserver(context);
-
-        if (mPtrHeaderView == null) {
-            mPtrHeaderView = new CirclePtrHeaderView(context);
-        }
-        if (mPtrFooterView == null) {
-            mPtrFooterView = new CirclePtrFooterView(context);
-        }
         if (recyclerView == null) {
             recyclerView = new RecyclerView(context);
-            recyclerView.setLayoutManager(new LinearLayoutManager(context, VERTICAL, false));
+            recyclerView.setBackgroundColor(Color.WHITE);
+            recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         }
-        addView((View) mPtrHeaderView);
-        addView(recyclerView);
+
+        if (refreshIcon == null) {
+            refreshIcon = new ImageView(context);
+            refreshIcon.setBackgroundColor(Color.TRANSPARENT);
+            refreshIcon.setImageResource(R.drawable.rotate_icon);
+        }
+        FrameLayout.LayoutParams iconParam = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        iconParam.leftMargin = UIHelper.dipToPx(12);
+
+        addView(recyclerView, RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT);
+        addView(refreshIcon, iconParam);
+
+        refreshPosition = UIHelper.dipToPx(90);
+
+        iconObserver = new InnerRefreshIconObserver(refreshIcon, refreshPosition);
+
     }
 
     @Override
     protected void onFinishInflate() {
         if (getChildCount() > 2) {
-            throw new IllegalStateException("超过了两个子view哦");
+            throw new IllegalStateException("咳咳，不能超过两个view哦");
         }
         super.onFinishInflate();
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        checkRefreshViewValided();
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        if (mPtrHeaderView != null) {
-            measureChildWithMargins((View) mPtrHeaderView, widthMeasureSpec, 0, heightMeasureSpec, 0);
-            MarginLayoutParams ptrHeaderLayoutParams = (MarginLayoutParams) ((View) mPtrHeaderView).getLayoutParams();
-            int ptrHeaderWidth = ((View) mPtrHeaderView).getMeasuredWidth() + ptrHeaderLayoutParams.leftMargin + ptrHeaderLayoutParams.rightMargin;
-            int ptrHeaderHeight = ((View) mPtrHeaderView).getMeasuredHeight() + ptrHeaderLayoutParams.topMargin + ptrHeaderLayoutParams.bottomMargin;
-            refreshViewObserver.setPtrHeaderWidth(ptrHeaderWidth);
-            refreshViewObserver.setPtrHeaderHeight(ptrHeaderHeight);
-        }
-
-      /*  if (mPtrFooterView != null) {
-            measureChildWithMargins((View) mPtrFooterView, widthMeasureSpec, 0, heightMeasureSpec, 0);
-            MarginLayoutParams ptrFooterLayoutParams = (MarginLayoutParams) ((View) mPtrFooterView).getLayoutParams();
-            int ptrFooterWidth = ((View) mPtrFooterView).getMeasuredWidth() + ptrFooterLayoutParams.leftMargin + ptrFooterLayoutParams.rightMargin;
-            int ptrFooterHeight = ((View) mPtrFooterView).getMeasuredHeight() + ptrFooterLayoutParams.topMargin + ptrFooterLayoutParams.bottomMargin;
-            refreshViewObserver.setPtrFooterWidth(ptrFooterWidth);
-            refreshViewObserver.setPtrFooterHeight(ptrFooterHeight);
-        }*/
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        if (mPtrHeaderView != null) {
-            final int left = 0;
-            final int top = -refreshViewObserver.getPtrHeaderHeight() + motionEventObserver.getCurrentY();
-            final int right = left + refreshViewObserver.getPtrHeaderWidth();
-            final int bottom = top + refreshViewObserver.getPtrHeaderHeight();
-            //摆放header的位置，受滑动距离影响，设为负值让其隐藏
-            ((View) mPtrHeaderView).layout(left, top, right, bottom);
-        }
-        super.onLayout(changed, l, t, r, b);
-
-    }
-
     private void setCurrentStatus(@Status int status) {
         this.currentStatus = status;
-
     }
 
-    private void checkRefreshViewValided() {
-        if (mPtrHeaderView != null && !(mPtrHeaderView instanceof View)) {
-            throw new IllegalStateException("诶多。。。那个。。。接口都有个View字哦，请给一个View来-V-");
+    public void compelete() {
+        Log.i(TAG, "status switch to refresh");
+        setCurrentStatus(DEFAULT);
+        if (iconObserver != null) {
+            iconObserver.catchResetEvent();
         }
-        if (mPtrFooterView != null && !(mPtrFooterView instanceof View)) {
-            throw new IllegalStateException("诶多。。。那个。。。接口都有个View字哦，请给一个View来-V-");
-        }
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (!isCanPull()) {
-            return super.dispatchTouchEvent(ev);
-        } else {
-            switch (ev.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    motionEventObserver.catchTouchDown(ev.getX(), ev.getY());
-                    super.dispatchTouchEvent(ev);
-                    return true;
-                case MotionEvent.ACTION_MOVE:
-                    motionEventObserver.catchTouchMove(ev.getX(), ev.getY());
-                    float offsetX = motionEventObserver.getOffsetX();
-                    float offsetY = motionEventObserver.getOffsetY();
-                    //横向移动比纵向大，则传递下去
-                    if (Math.abs(offsetX) > Math.abs(offsetY * 2)) {
-                        if (DEBUG) {
-                            Log.d(TAG, "横向移动，取消事件");
-                        }
-                        return super.dispatchTouchEvent(ev);
-                    }
-
-                    if (motionEventObserver.isDrag()) {
-                        if (motionEventObserver.isValidTouchSlop(offsetY)) {
-                            doMove(ev);
-                            return true;
-                        }
-                    }
-                    break;
-            }
-        }
-        return super.dispatchTouchEvent(ev);
-    }
-
-    /**
-     * 处理移动事件
-     */
-    private void doMove(MotionEvent ev) {
-
-        //如果是下拉
-        if (motionEventObserver.isFromTop()) {
-            mPtrHeaderView.onStart(PtrState.START_TO_PULL, positionForRefresh);
-        }
-        //刷新位置
-        int currentY = (int) (motionEventObserver.getCurrentY() + motionEventObserver.getOffsetY());
-        Log.i(TAG, ">>>isPullDown:   " + motionEventObserver.isPullDown() + "<<<  currentY  =  " + currentY);
-        motionEventObserver.setCurrentY(currentY);
-        if (currentY < positionForRefresh) {
-            mPtrHeaderView.onMoved(PtrState.PULL_TO_REFRESH, positionForRefresh, (int) motionEventObserver.getOffsetY());
-        } else {
-            mPtrHeaderView.onMoved(PtrState.RELEASE_TO_REFRESH, positionForRefresh, (int) motionEventObserver.getOffsetY());
-        }
-        ((View) mPtrHeaderView).offsetTopAndBottom((int) motionEventObserver.getOffsetY());
-        recyclerView.offsetTopAndBottom((int) motionEventObserver.getOffsetY());
-
     }
 
     //------------------------------------------get/set-----------------------------------------------
@@ -239,161 +159,157 @@ public class CircleRecyclerView extends LinearLayout {
         this.onRefreshListener = onRefreshListener;
     }
 
-    public boolean isCanPull() {
-        return canPull;
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
     }
 
-    public void setCanPull(boolean canPull) {
-        this.canPull = canPull;
+    public void setAdapter(RecyclerView.Adapter adapter) {
+        recyclerView.setAdapter(adapter);
+        initOverScroll();
     }
 
-    /**
-     * ============分割线===============
-     * 各种状态的观察
-     * ============分割线===============
-     */
-
-    /**
-     * 刷新View的观察者
-     */
-    private static class InnerRefreshViewObserver {
-        private static final String INNERTAG = "InnerRefreshViewObserve";
-        private int ptrHeaderWidth;
-        private int ptrHeaderHeight;
-        private int ptrFooterWidth;
-        private int ptrFooterHeight;
-
-        InnerRefreshViewObserver() {
-        }
-
-        int getPtrHeaderWidth() {
-            return ptrHeaderWidth;
-        }
-
-        void setPtrHeaderWidth(int ptrHeaderWidth) {
-            this.ptrHeaderWidth = ptrHeaderWidth;
-            if (DEBUG) {
-                Log.i(INNERTAG, "ptrHeaderWidth   >>>   " + ptrHeaderWidth);
+    private void initOverScroll() {
+        IOverScrollDecor decor = new VerticalOverScrollBounceEffectDecorator(new RecyclerViewOverScrollDecorAdapter(recyclerView), 2f, 1f, 1f);
+        decor.setOverScrollStateListener(new IOverScrollStateListener() {
+            @Override
+            public void onOverScrollStateChange(IOverScrollDecor decor, int oldState, int newState) {
+                switch (newState) {
+                    case STATE_IDLE:
+                        // No over-scroll is in effect.
+                        break;
+                    case STATE_DRAG_START_SIDE:
+                        // Dragging started at the left-end.
+                        break;
+                    case STATE_DRAG_END_SIDE:
+                        // Dragging started at the right-end.
+                        break;
+                    case STATE_BOUNCE_BACK:
+                        if (oldState == STATE_DRAG_START_SIDE) {
+                            // Dragging stopped -- view is starting to bounce back from the *left-end* onto natural position.
+                        } else { // i.e. (oldState == STATE_DRAG_END_SIDE)
+                            // View is starting to bounce back from the *right-end*.
+                        }
+                        break;
+                }
             }
-        }
+        });
 
-        int getPtrHeaderHeight() {
-            return ptrHeaderHeight;
-        }
-
-        void setPtrHeaderHeight(int ptrHeaderHeight) {
-            this.ptrHeaderHeight = ptrHeaderHeight;
-            if (DEBUG) {
-                Log.i(INNERTAG, "ptrHeaderHeight   >>>   " + ptrHeaderWidth);
+        decor.setOverScrollUpdateListener(new IOverScrollUpdateListener() {
+            @Override
+            public void onOverScrollUpdate(IOverScrollDecor decor, int state, float offset) {
+                if (offset > 0) {
+                    if (currentStatus == REFRESHING) return;
+                    iconObserver.catchPullDownEvent(offset);
+                    if (offset >= refreshPosition && state == STATE_BOUNCE_BACK) {
+                        if (currentStatus != REFRESHING) {
+                            setCurrentStatus(REFRESHING);
+                            if (onRefreshListener != null) {
+                                Log.i(TAG, "status switch to refresh");
+                                onRefreshListener.onRefresh();
+                            }
+                            iconObserver.catchRefreshEvent();
+                        }
+                    }
+                } else if (offset < 0) {
+                    iconObserver.catchPullUpEvent(offset);
+                    // 'view' is currently being over-scrolled from the bottom.
+                } else {
+                    // No over-scroll is in-effect.
+                    // This is synonymous with having (state == STATE_IDLE).
+                }
             }
-        }
-
-        int getPtrFooterWidth() {
-            return ptrFooterWidth;
-        }
-
-        void setPtrFooterWidth(int ptrFooterWidth) {
-            this.ptrFooterWidth = ptrFooterWidth;
-            if (DEBUG) {
-                Log.i(INNERTAG, "ptrFooterWidth   >>>   " + ptrHeaderWidth);
-            }
-        }
-
-        int getPtrFooterHeight() {
-            return ptrFooterHeight;
-        }
-
-        void setPtrFooterHeight(int ptrFooterHeight) {
-            this.ptrFooterHeight = ptrFooterHeight;
-            if (DEBUG) {
-                Log.i(INNERTAG, "ptrFooterHeight   >>>   " + ptrHeaderWidth);
-            }
-        }
+        });
     }
 
+
     /**
-     * 手势动作的观察者
+     * 刷新Icon的动作
      */
-    private static class InnerMotionEventObserver {
-        //是否正在拖动拖动
-        private boolean isDrag;
-        //是否从初始状态拖动
-        private boolean isFirstDrag;
-        //是否到达顶部
-        private boolean returnToTop;
-        //上一次的位置
-        private PointF lastPos;
 
-        private int currentY;
+    private static class InnerRefreshIconObserver {
+        private ImageView refreshIcon;
+        private final int refreshPosition;
+        private float lastOffset = 0.0f;
+        private RotateAnimation rotateAnimation;
+        private ValueAnimator mValueAnimator;
 
-        //位移量
-        private float offsetX;
-        private float offsetY;
+        public InnerRefreshIconObserver(ImageView refreshIcon, int refreshPosition) {
+            this.refreshIcon = refreshIcon;
+            this.refreshPosition = refreshPosition;
 
-        //最小滑动判定值
-        private int minTouchSlop;
+            rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+                                                  0.5f);
+            rotateAnimation.setDuration(600);
+            rotateAnimation.setInterpolator(new LinearInterpolator());
+            rotateAnimation.setRepeatCount(Animation.INFINITE);
 
-        InnerMotionEventObserver(Context context) {
-            lastPos = new PointF();
-            ViewConfiguration conf = ViewConfiguration.get(context);
-            minTouchSlop = conf.getScaledTouchSlop();
         }
 
-        void catchTouchDown(float x, float y) {
-            isDrag = true;
-            lastPos.set(x, y);
+        public void catchPullDownEvent(float offset) {
+            if (checkHacIcon()) {
+                refreshIcon.setRotation(offset * 2);
+                if (offset >= refreshPosition) {
+                    offset = refreshPosition;
+                }
+                int resultOffset = (int) (offset - lastOffset);
+                refreshIcon.offsetTopAndBottom(resultOffset);
+                Log.d(TAG, "down  >>  " + offset + "  resultOffset   >>>   " + resultOffset);
+                adjustRefreshIconPosition();
+                lastOffset = offset;
+            }
+
         }
 
-        void catchTouchMove(float x, float y) {
-            this.offsetX = x - lastPos.x;
-            //阻尼1.2
-            this.offsetY = (y - lastPos.y) / 1.2f;
-            lastPos.set(x, y);
+        public void catchPullUpEvent(float offset) {
+            if (checkHacIcon()) {
+                refreshIcon.setRotation(offset * 2);
+                int resultOffset = (int) (offset - lastOffset);
+                refreshIcon.offsetTopAndBottom(resultOffset);
+                Log.d(TAG, "up  >>>  " + offset + "  resultOffset   >>>   " + resultOffset);
+                adjustRefreshIconPosition();
+                lastOffset = offset;
+            }
+
         }
 
-        boolean isDrag() {
-            return isDrag;
+        /**
+         * 调整icon的位置界限
+         */
+        private void adjustRefreshIconPosition() {
+            if (refreshIcon.getTop() < 0) {
+                refreshIcon.offsetTopAndBottom(Math.abs(refreshIcon.getTop()));
+            } else if (refreshIcon.getTop() > refreshPosition) {
+                refreshIcon.offsetTopAndBottom(-(refreshIcon.getTop() - refreshPosition));
+            }
         }
 
-        void setDrag(boolean drag) {
-            isDrag = drag;
+        public void catchRefreshEvent() {
+            if (checkHacIcon()) {
+                refreshIcon.clearAnimation();
+                refreshIcon.startAnimation(rotateAnimation);
+            }
+
         }
 
-        boolean isFirstDrag() {
-            return isFirstDrag;
+        public void catchResetEvent() {
+            refreshIcon.clearAnimation();
+            if (mValueAnimator == null) {
+                mValueAnimator = ValueAnimator.ofFloat(refreshPosition, 0);
+                mValueAnimator.setInterpolator(new DecelerateInterpolator());
+                mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        float result = (float) animation.getAnimatedValue();
+                        catchPullUpEvent(result);
+                    }
+                });
+                mValueAnimator.setDuration(300);
+            }
+            mValueAnimator.start();
         }
 
-        void setFirstDrag(boolean firstDrag) {
-            isFirstDrag = firstDrag;
-        }
-
-        float getOffsetX() {
-            return offsetX;
-        }
-
-        float getOffsetY() {
-            return offsetY;
-        }
-
-        int getCurrentY() {
-            return currentY < 0 ? 0 : currentY;
-        }
-
-        void setCurrentY(int currentY) {
-            this.currentY = currentY;
-            returnToTop = currentY <= 0;
-        }
-
-        boolean isValidTouchSlop(float offset) {
-            return Math.abs(offset) >= minTouchSlop;
-        }
-
-        boolean isPullDown() {
-            return offsetY > 0;
-        }
-
-        boolean isFromTop() {
-            return currentY == 0;
+        private boolean checkHacIcon() {
+            return refreshIcon != null;
         }
     }
 }

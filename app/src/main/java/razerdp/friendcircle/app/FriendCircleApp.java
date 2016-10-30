@@ -22,7 +22,7 @@ public class FriendCircleApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        CONTEXT = getAppContext();
+        FriendCircleApp.CONTEXT = getApplicationContext();
         initBmob();
         PreferenceHelper.INSTANCE.init(this);
         KLog.init(true, "FriendCircle");

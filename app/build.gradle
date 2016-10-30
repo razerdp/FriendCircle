@@ -37,4 +37,7 @@ dependencies {
     compile 'cn.bmob.android:bmob-sdk:3.5.0'
     //log
     compile 'com.github.zhaokaiqiang.klog:library:1.5.0'
+    //over scroller helper
+    compile 'me.everything:overscroll-decor-android:1.0.3'
+
 }
