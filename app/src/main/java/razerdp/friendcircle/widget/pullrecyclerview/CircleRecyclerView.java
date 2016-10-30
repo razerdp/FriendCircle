@@ -19,7 +19,6 @@ import android.widget.ImageView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.logging.Logger;
 
 import me.everything.android.ui.overscroll.IOverScrollDecor;
 import me.everything.android.ui.overscroll.IOverScrollStateListener;
@@ -30,7 +29,6 @@ import razerdp.friendcircle.R;
 import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.pullrecyclerview.interfaces.OnRefreshListener2;
 
-import static android.R.attr.duration;
 import static me.everything.android.ui.overscroll.IOverScrollState.STATE_BOUNCE_BACK;
 import static me.everything.android.ui.overscroll.IOverScrollState.STATE_DRAG_END_SIDE;
 import static me.everything.android.ui.overscroll.IOverScrollState.STATE_DRAG_START_SIDE;
@@ -142,7 +140,7 @@ public class CircleRecyclerView extends FrameLayout {
     }
 
     public void compelete() {
-        Log.i(TAG, "status switch to refresh");
+        Log.i(TAG, "compelete");
         setCurrentStatus(DEFAULT);
         if (iconObserver != null) {
             iconObserver.catchResetEvent();
@@ -169,7 +167,7 @@ public class CircleRecyclerView extends FrameLayout {
     }
 
     private void initOverScroll() {
-        IOverScrollDecor decor = new VerticalOverScrollBounceEffectDecorator(new RecyclerViewOverScrollDecorAdapter(recyclerView), 2f, 1f, 1f);
+        IOverScrollDecor decor = new VerticalOverScrollBounceEffectDecorator(new RecyclerViewOverScrollDecorAdapter(recyclerView), 2f, 1f, 2f);
         decor.setOverScrollStateListener(new IOverScrollStateListener() {
             @Override
             public void onOverScrollStateChange(IOverScrollDecor decor, int oldState, int newState) {
@@ -199,23 +197,19 @@ public class CircleRecyclerView extends FrameLayout {
             public void onOverScrollUpdate(IOverScrollDecor decor, int state, float offset) {
                 if (offset > 0) {
                     if (currentStatus == REFRESHING) return;
-                    iconObserver.catchPullDownEvent(offset);
+                    iconObserver.catchPullEvent(offset);
                     if (offset >= refreshPosition && state == STATE_BOUNCE_BACK) {
                         if (currentStatus != REFRESHING) {
                             setCurrentStatus(REFRESHING);
                             if (onRefreshListener != null) {
-                                Log.i(TAG, "status switch to refresh");
+                                Log.i(TAG, "refresh");
                                 onRefreshListener.onRefresh();
                             }
                             iconObserver.catchRefreshEvent();
                         }
                     }
                 } else if (offset < 0) {
-                    iconObserver.catchPullUpEvent(offset);
-                    // 'view' is currently being over-scrolled from the bottom.
-                } else {
-                    // No over-scroll is in-effect.
-                    // This is synonymous with having (state == STATE_IDLE).
+                    //底部的overscroll
                 }
             }
         });
@@ -245,7 +239,7 @@ public class CircleRecyclerView extends FrameLayout {
 
         }
 
-        public void catchPullDownEvent(float offset) {
+        public void catchPullEvent(float offset) {
             if (checkHacIcon()) {
                 refreshIcon.setRotation(offset * 2);
                 if (offset >= refreshPosition) {
@@ -253,19 +247,7 @@ public class CircleRecyclerView extends FrameLayout {
                 }
                 int resultOffset = (int) (offset - lastOffset);
                 refreshIcon.offsetTopAndBottom(resultOffset);
-                Log.d(TAG, "down  >>  " + offset + "  resultOffset   >>>   " + resultOffset);
-                adjustRefreshIconPosition();
-                lastOffset = offset;
-            }
-
-        }
-
-        public void catchPullUpEvent(float offset) {
-            if (checkHacIcon()) {
-                refreshIcon.setRotation(offset * 2);
-                int resultOffset = (int) (offset - lastOffset);
-                refreshIcon.offsetTopAndBottom(resultOffset);
-                Log.d(TAG, "up  >>>  " + offset + "  resultOffset   >>>   " + resultOffset);
+                Log.d(TAG, "pull  >>  " + offset + "  resultOffset   >>>   " + resultOffset);
                 adjustRefreshIconPosition();
                 lastOffset = offset;
             }
@@ -288,7 +270,6 @@ public class CircleRecyclerView extends FrameLayout {
                 refreshIcon.clearAnimation();
                 refreshIcon.startAnimation(rotateAnimation);
             }
-
         }
 
         public void catchResetEvent() {
@@ -300,7 +281,7 @@ public class CircleRecyclerView extends FrameLayout {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         float result = (float) animation.getAnimatedValue();
-                        catchPullUpEvent(result);
+                        catchPullEvent(result);
                     }
                 });
                 mValueAnimator.setDuration(300);
