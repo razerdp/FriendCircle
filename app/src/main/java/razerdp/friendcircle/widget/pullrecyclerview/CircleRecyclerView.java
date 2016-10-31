@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
@@ -19,6 +20,10 @@ import android.widget.ImageView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 import me.everything.android.ui.overscroll.IOverScrollDecor;
 import me.everything.android.ui.overscroll.IOverScrollStateListener;
@@ -100,14 +105,20 @@ public class CircleRecyclerView extends FrameLayout {
     }
 
     private void init(Context context) {
-        GradientDrawable background = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0xff323232, 0xff323232, 0xffffffff, 0xffffffff});
+        GradientDrawable background = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+                                                           new int[]{0xff323232,
+                                                                     0xff323232,
+                                                                     0xffffffff,
+                                                                     0xffffffff});
 //        setBackgroundColor(0xff323232);
         setBackground(background);
 
         if (recyclerView == null) {
             recyclerView = new RecyclerView(context);
             recyclerView.setBackgroundColor(Color.WHITE);
-            recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+            recyclerView.setLayoutManager(new LinearLayoutManager(context,
+                                                                  LinearLayoutManager.VERTICAL,
+                                                                  false));
         }
 
         if (refreshIcon == null) {
@@ -115,10 +126,13 @@ public class CircleRecyclerView extends FrameLayout {
             refreshIcon.setBackgroundColor(Color.TRANSPARENT);
             refreshIcon.setImageResource(R.drawable.rotate_icon);
         }
-        FrameLayout.LayoutParams iconParam = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams iconParam = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                                          ViewGroup.LayoutParams.WRAP_CONTENT);
         iconParam.leftMargin = UIHelper.dipToPx(12);
 
-        addView(recyclerView, RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT);
+        addView(recyclerView,
+                RecyclerView.LayoutParams.MATCH_PARENT,
+                RecyclerView.LayoutParams.MATCH_PARENT);
         addView(refreshIcon, iconParam);
 
         refreshPosition = UIHelper.dipToPx(90);
@@ -162,15 +176,22 @@ public class CircleRecyclerView extends FrameLayout {
     }
 
     public void setAdapter(RecyclerView.Adapter adapter) {
-        recyclerView.setAdapter(adapter);
+        if (adapter != null && !(adapter instanceof InnerWrapperHeaderViewRecyclerAdapter)) {
+            recyclerView.setAdapter(new InnerWrapperHeaderViewRecyclerAdapter(adapter));
+        } else {
+            recyclerView.setAdapter(adapter);
+        }
         initOverScroll();
     }
 
     private void initOverScroll() {
-        IOverScrollDecor decor = new VerticalOverScrollBounceEffectDecorator(new RecyclerViewOverScrollDecorAdapter(recyclerView), 2f, 1f, 2f);
+        IOverScrollDecor decor = new VerticalOverScrollBounceEffectDecorator(new RecyclerViewOverScrollDecorAdapter(
+                recyclerView), 2f, 1f, 2f);
         decor.setOverScrollStateListener(new IOverScrollStateListener() {
             @Override
-            public void onOverScrollStateChange(IOverScrollDecor decor, int oldState, int newState) {
+            public void onOverScrollStateChange(IOverScrollDecor decor,
+                                                int oldState,
+                                                int newState) {
                 switch (newState) {
                     case STATE_IDLE:
                         // No over-scroll is in effect.
@@ -217,7 +238,7 @@ public class CircleRecyclerView extends FrameLayout {
 
 
     /**
-     * 刷新Icon的动作
+     * 刷新Icon的动作观察者
      */
 
     private static class InnerRefreshIconObserver {
@@ -231,7 +252,11 @@ public class CircleRecyclerView extends FrameLayout {
             this.refreshIcon = refreshIcon;
             this.refreshPosition = refreshPosition;
 
-            rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+            rotateAnimation = new RotateAnimation(0,
+                                                  360,
+                                                  Animation.RELATIVE_TO_SELF,
+                                                  0.5f,
+                                                  Animation.RELATIVE_TO_SELF,
                                                   0.5f);
             rotateAnimation.setDuration(600);
             rotateAnimation.setInterpolator(new LinearInterpolator());
@@ -293,4 +318,163 @@ public class CircleRecyclerView extends FrameLayout {
             return refreshIcon != null;
         }
     }
+
+
+    //------------------------------------------分割线-----------------------------------------------
+    //------------------------------------------分割线-----------------------------------------------
+    //------------------------------------------分割线-----------------------------------------------
+
+    /**
+     * 以下为recyclerview 的headeradapter实现方案
+     * <p>
+     * 以Listview的headerView和footerView为模板做出的recyclerview的header和footer
+     */
+    private LinkedList<FixedViewInfo> mHeaderViewInfos = new LinkedList<>();
+    private LinkedList<FixedViewInfo> mFooterViewInfos = new LinkedList<>();
+
+    /**
+     * 不完美解决方法：添加一个header，则从-2开始减1
+     * header:-2~-98
+     */
+    private static final int ITEM_VIEW_TYPE_HEADER_START = -2;
+    /**
+     * 不完美解决方法：添加一个header，则从-99开始减1
+     * footer:-99~-无穷
+     */
+    private static final int ITEM_VIEW_TYPE_FOOTER_START = -99;
+
+    public void addHeaderView(View headerView) {
+        final FixedViewInfo info = new FixedViewInfo();
+        if (mHeaderViewInfos.size() == Math.abs(ITEM_VIEW_TYPE_FOOTER_START - ITEM_VIEW_TYPE_HEADER_START)) {
+            mHeaderViewInfos.removeLast();
+        }
+        info.view = headerView;
+        info.itemViewType = ITEM_VIEW_TYPE_HEADER_START - mHeaderViewInfos.size();
+        mHeaderViewInfos.add(info);
+    }
+
+    public void addFooterView(View footerView) {
+        final FixedViewInfo info = new FixedViewInfo();
+        info.view = footerView;
+        info.itemViewType = ITEM_VIEW_TYPE_FOOTER_START - mFooterViewInfos.size();
+        mFooterViewInfos.add(info);
+    }
+
+
+    private class FixedViewInfo {
+        /**
+         * The view to add to the list
+         */
+        public View view;
+        /**
+         * 因为onCreateViewHolder不包含位置信息，所以itemViewType需要包含位置信息
+         * <p>
+         * 位置信息方法：将位置添加到高位
+         */
+        public int itemViewType;
+    }
+
+    private final class InnerWrapperHeaderViewRecyclerAdapter extends RecyclerView.Adapter {
+        private final RecyclerView.Adapter mAdapter;
+
+        public InnerWrapperHeaderViewRecyclerAdapter(RecyclerView.Adapter mAdapter) {
+            this.mAdapter = mAdapter;
+        }
+
+        public int getHeadersCount() {
+            return mHeaderViewInfos.size();
+        }
+
+        public int getFootersCount() {
+            return mFooterViewInfos.size();
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            //header
+            if (onCreateHeaderViewHolder(viewType)) {
+                final int headerPosition = getHeaderPosition(viewType);
+                View headerView = mHeaderViewInfos.get(headerPosition).view;
+                return new HeaderOrFooterViewHolder(headerView);
+            } else if (onCreateFooterViewHolder(viewType)) {
+                //footer
+                final int footerPosition = getFooterPosition(viewType);
+                View footerView = mFooterViewInfos.get(footerPosition).view;
+                return new HeaderOrFooterViewHolder(footerView);
+            }
+            return mAdapter.onCreateViewHolder(parent, viewType);
+
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            int numHeaders = getHeadersCount();
+            int adapterCount = mAdapter.getItemCount();
+            if (position < numHeaders) {
+                return;
+            } else if (position > (numHeaders + adapterCount)) {
+                return;
+            } else {
+                int adjustPosition = position - numHeaders;
+                if (adjustPosition < adapterCount) {
+                    mAdapter.onBindViewHolder(holder, position);
+                }
+            }
+
+        }
+
+        @Override
+        public int getItemCount() {
+            if (mAdapter != null) {
+                return getHeadersCount() + getFootersCount() + mAdapter.getItemCount();
+            } else {
+                return getHeadersCount() + getFootersCount();
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            int numHeaders = getHeadersCount();
+            if (mAdapter == null) return -1;
+            //header之后的view，返回adapter的itemType
+            int adjustPos = position - numHeaders;
+            int adapterItemCount = mAdapter.getItemCount();
+            if (position >= numHeaders) {
+                if (adjustPos < adapterItemCount) {
+                    //如果是adapter返回的范围内，则取adapter的itemviewtype
+                    return mAdapter.getItemViewType(adjustPos);
+                }
+            } else if (position < numHeaders) {
+                return mHeaderViewInfos.get(position).itemViewType;
+            }
+            return mFooterViewInfos.get(position - adapterItemCount - numHeaders).itemViewType;
+        }
+
+
+        private boolean onCreateHeaderViewHolder(int viewType) {
+            return mHeaderViewInfos.size() > 0 && viewType <= ITEM_VIEW_TYPE_HEADER_START && viewType > ITEM_VIEW_TYPE_FOOTER_START;
+        }
+
+        private boolean onCreateFooterViewHolder(int viewType) {
+            return mFooterViewInfos.size() > 0 && viewType <= ITEM_VIEW_TYPE_FOOTER_START;
+        }
+
+        private int getHeaderPosition(int viewType) {
+            return Math.abs(viewType) - Math.abs(ITEM_VIEW_TYPE_HEADER_START);
+        }
+
+        private int getFooterPosition(int viewType) {
+            return Math.abs(viewType) - Math.abs(ITEM_VIEW_TYPE_FOOTER_START);
+        }
+
+
+        private final class HeaderOrFooterViewHolder extends RecyclerView.ViewHolder {
+
+            public HeaderOrFooterViewHolder(View itemView) {
+                super(itemView);
+            }
+        }
+    }
+
+
 }

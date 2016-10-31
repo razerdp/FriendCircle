@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -77,6 +78,11 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
     private void initView() {
         circle_recyclervew = (CircleRecyclerView) findViewById(R.id.recycler);
         circle_recyclervew.setOnRefreshListener(this);
+
+        //测试添加头布局和尾布局
+        circle_recyclervew.addHeaderView(LayoutInflater.from(this).inflate(R.layout.item_header,null));
+        circle_recyclervew.addFooterView(LayoutInflater.from(this).inflate(R.layout.item_header,null));
+
         circle_recyclervew.setAdapter(new RecyclerView.Adapter() {
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
