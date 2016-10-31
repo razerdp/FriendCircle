@@ -243,13 +243,8 @@ public class CircleRecyclerView extends FrameLayout {
             this.refreshIcon = refreshIcon;
             this.refreshPosition = refreshPosition;
 
-            rotateAnimation = new RotateAnimation(0,
-                                                  360,
-                                                  Animation.RELATIVE_TO_SELF,
-                                                  0.5f,
-                                                  Animation.RELATIVE_TO_SELF,
-                                                  0.5f);
-            rotateAnimation.setDuration(600);
+            rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            rotateAnimation.setDuration(1000);
             rotateAnimation.setInterpolator(new LinearInterpolator());
             rotateAnimation.setRepeatCount(Animation.INFINITE);
 
@@ -257,7 +252,7 @@ public class CircleRecyclerView extends FrameLayout {
 
         public void catchPullEvent(float offset) {
             if (checkHacIcon()) {
-                refreshIcon.setRotation(offset * 2);
+                refreshIcon.setRotation(-offset * 2);
                 if (offset >= refreshPosition) {
                     offset = refreshPosition;
                 }
@@ -300,7 +295,7 @@ public class CircleRecyclerView extends FrameLayout {
                         catchPullEvent(result);
                     }
                 });
-                mValueAnimator.setDuration(300);
+                mValueAnimator.setDuration(500);
             }
             mValueAnimator.start();
         }

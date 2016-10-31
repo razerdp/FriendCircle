@@ -79,7 +79,7 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
         circle_recyclervew = (CircleRecyclerView) findViewById(R.id.recycler);
         circle_recyclervew.setOnRefreshListener(this);
 
-        //测试添加头布局和尾布局
+//        测试添加头布局和尾布局
         circle_recyclervew.addHeaderView(LayoutInflater.from(this).inflate(R.layout.item_header,null));
         circle_recyclervew.addFooterView(LayoutInflater.from(this).inflate(R.layout.item_header,null));
 
