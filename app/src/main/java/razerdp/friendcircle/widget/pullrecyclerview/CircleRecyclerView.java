@@ -105,20 +105,14 @@ public class CircleRecyclerView extends FrameLayout {
     }
 
     private void init(Context context) {
-        GradientDrawable background = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
-                                                           new int[]{0xff323232,
-                                                                     0xff323232,
-                                                                     0xffffffff,
-                                                                     0xffffffff});
+        GradientDrawable background = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0xff323232, 0xff323232, 0xffffffff, 0xffffffff});
 //        setBackgroundColor(0xff323232);
         setBackground(background);
 
         if (recyclerView == null) {
             recyclerView = new RecyclerView(context);
             recyclerView.setBackgroundColor(Color.WHITE);
-            recyclerView.setLayoutManager(new LinearLayoutManager(context,
-                                                                  LinearLayoutManager.VERTICAL,
-                                                                  false));
+            recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         }
 
         if (refreshIcon == null) {
@@ -126,13 +120,10 @@ public class CircleRecyclerView extends FrameLayout {
             refreshIcon.setBackgroundColor(Color.TRANSPARENT);
             refreshIcon.setImageResource(R.drawable.rotate_icon);
         }
-        FrameLayout.LayoutParams iconParam = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                                                                          ViewGroup.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams iconParam = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         iconParam.leftMargin = UIHelper.dipToPx(12);
 
-        addView(recyclerView,
-                RecyclerView.LayoutParams.MATCH_PARENT,
-                RecyclerView.LayoutParams.MATCH_PARENT);
+        addView(recyclerView, RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT);
         addView(refreshIcon, iconParam);
 
         refreshPosition = UIHelper.dipToPx(90);
