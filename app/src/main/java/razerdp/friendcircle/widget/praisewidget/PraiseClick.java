@@ -4,9 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.view.View;
-import android.widget.Toast;
 
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
+import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.span.ClickableSpanEx;
 

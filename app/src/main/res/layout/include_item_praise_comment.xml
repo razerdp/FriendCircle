@@ -19,7 +19,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentRight="true">
         <ImageView
-            android:id="@+id/comment_press"
+            android:id="@+id/menu_img"
             android:layout_width="25dp"
             android:layout_height="15dp"
             android:src="@drawable/bg_comment_pressed"

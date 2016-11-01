@@ -2,26 +2,20 @@ package razerdp.friendcircle.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.socks.library.KLog;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.exception.BmobException;
-import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
+import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.net.OnResponseListener;
 import razerdp.friendcircle.app.net.request.MomentsRequest;
 import razerdp.friendcircle.utils.bmob.BmobTestDatasHelper;

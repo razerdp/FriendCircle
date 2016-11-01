@@ -24,6 +24,10 @@
             </intent-filter>
         </activity>
 
+        <!--glide-->
+        <meta-data
+            android:name="razerdp.friendcircle.app.glide.GlobalGlideConfiguration"
+            android:value="GlideModule" />
     </application>
 
 </manifest>

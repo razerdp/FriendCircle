@@ -6,16 +6,16 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
-import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
-import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo.MomentsFields;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
+import razerdp.friendcircle.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
+import razerdp.friendcircle.mvp.model.entity.MomentsInfo.MomentsFields;
+import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.net.base.BaseRequestClient;
 import razerdp.friendcircle.utils.ToolUtil;
 
-import static razerdp.friendcircle.app.mvp.model.entity.CommentInfo.CommentFields.AUTHOR_USER;
-import static razerdp.friendcircle.app.mvp.model.entity.CommentInfo.CommentFields.MOMENT;
-import static razerdp.friendcircle.app.mvp.model.entity.CommentInfo.CommentFields.REPLY_USER;
+import static razerdp.friendcircle.mvp.model.entity.CommentInfo.CommentFields.AUTHOR_USER;
+import static razerdp.friendcircle.mvp.model.entity.CommentInfo.CommentFields.MOMENT;
+import static razerdp.friendcircle.mvp.model.entity.CommentInfo.CommentFields.REPLY_USER;
 
 /**
  * Created by 大灯泡 on 2016/10/27.

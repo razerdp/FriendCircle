@@ -1,4 +1,4 @@
-package razerdp.friendcircle.app.mvp.model.entity;
+package razerdp.friendcircle.mvp.model.entity;
 
 import com.socks.library.KLog;
 

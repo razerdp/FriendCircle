@@ -1,4 +1,6 @@
 # 更新日志
+##2016-11-1 recyclerView的baseadapter和viewholder基类
+
 ##2016-10-31 recyclerView添加头布局和尾布局方法
 
 ##2016-10-30 recyclerview下拉刷新完成，icon联动实现

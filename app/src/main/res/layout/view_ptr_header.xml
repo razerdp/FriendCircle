@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
-             android:layout_height="@dimen/ptr_header_height"
-             android:background="@color/ptr_header_bg"
-             android:orientation="vertical">
+             android:layout_height="300dp">
 
-</FrameLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/ptr_header_bg"/>
+</RelativeLayout>

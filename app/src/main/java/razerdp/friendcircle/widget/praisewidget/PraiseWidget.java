@@ -1,11 +1,30 @@
 package razerdp.friendcircle.widget.praisewidget;
 
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.os.Build;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.util.LruCache;
+import android.widget.TextView;
+
+import java.util.List;
+
+import razerdp.friendcircle.R;
+import razerdp.friendcircle.mvp.model.entity.UserInfo;
+import razerdp.friendcircle.widget.CustomImageSpan;
+import razerdp.friendcircle.widget.SpannableStringBuilderAllVer;
+import razerdp.friendcircle.widget.span.ClickableSpanEx;
+
 /**
  * Created by 大灯泡 on 2016/2/21.
  * 点赞显示控件
  */
-public class PraiseWidget{}
-/*public class PraiseWidget extends TextView {
+public class PraiseWidget extends TextView {
     private static final String TAG = "PraiseWidget";
 
     //点赞名字展示的默认颜色
@@ -89,10 +108,10 @@ public class PraiseWidget{}
                                                                                              .setClickEventColor(clickBg)
                                                                                              .build();
                 try {
-                    spanStrBuilder.append(datas.get(i).nick, praiseClick, 0);
+                    spanStrBuilder.append(datas.get(i).getNick(), praiseClick, 0);
                 }catch (NullPointerException e){
                     e.printStackTrace();
-                    Log.e(TAG,"praiseUserInfo是空的哦");
+                    Log.e(TAG, "praiseUserInfo是空的哦");
                 }
                 if (i != datas.size() - 1) spanStrBuilder.append(", ");
                 else spanStrBuilder.append("\0");
@@ -110,4 +129,4 @@ public class PraiseWidget{}
             Log.d(TAG, "clear cache success!");
         }
     }
-}*/
+}

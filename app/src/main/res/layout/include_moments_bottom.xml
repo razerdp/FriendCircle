@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingLeft="74dp"
-    android:paddingRight="@dimen/item_padding"
-    android:paddingBottom="16dp"
-    android:layout_marginTop="5dp">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:paddingBottom="16dp"
+                android:paddingLeft="74dp"
+                android:paddingRight="@dimen/item_padding">
 
     <TextView
         android:id="@+id/create_time"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:textSize="@dimen/small_font"
         android:gravity="center_vertical"
         android:textColor="@color/item_bottom_text"
+        android:textSize="@dimen/small_font"
         tools:text="3小时前"/>
 
     <FrameLayout
-        android:id="@+id/comment_button"
+        android:id="@+id/menu_button"
         android:layout_width="60dp"
         android:layout_height="30dp"
         android:layout_alignParentRight="true">
 
         <ImageView
-            android:id="@+id/comment_press"
+            android:id="@+id/menu_img"
             android:layout_width="25dp"
             android:layout_height="15dp"
-            android:src="@drawable/bg_comment_pressed"
-            android:layout_gravity="center_vertical|right"/>
+            android:layout_gravity="center_vertical|right"
+            android:src="@drawable/bg_comment_pressed"/>
     </FrameLayout>
 
     <!--praise && comment-->
@@ -37,25 +37,26 @@
         android:id="@+id/comment_praise_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/comment_button"
-        android:background="@drawable/comment_praise">
+        android:layout_below="@id/menu_button"
+        android:background="@drawable/comment_praise"
+        android:orientation="vertical">
 
         <razerdp.friendcircle.widget.praisewidget.PraiseWidget
             android:id="@+id/praise"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingRight="5dp"
             android:lineSpacingExtra="2dp"
             android:lineSpacingMultiplier="1"
+            android:paddingRight="5dp"
             app:click_bg_color="@color/comment_click_bg"
             />
+
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/line_bg"
             android:layout_marginTop="5dp"
+            android:background="@color/line_bg"
             />
 
         <LinearLayout

@@ -6,9 +6,9 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
-import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
-import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
+import razerdp.friendcircle.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
+import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.net.base.BaseRequestClient;
 import razerdp.friendcircle.utils.StringUtil;
 

@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.TextView;
 
-import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.widget.SpannableStringBuilderAllVer;
 import razerdp.friendcircle.widget.span.ClickableSpanEx;
 

@@ -1,7 +1,6 @@
 package razerdp.friendcircle.app.manager;
 
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.utils.EncryUtil;
+import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.utils.PreferenceHelper;
 
 import static razerdp.friendcircle.utils.PreferenceHelper.Keys.*;
