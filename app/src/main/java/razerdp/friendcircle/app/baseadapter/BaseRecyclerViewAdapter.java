@@ -45,9 +45,9 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
         BaseRecyclerViewHolder holder = null;
         if (getLayoutResId(viewType) != 0) {
             View rootView = mInflater.inflate(getLayoutResId(viewType), parent, false);
-            holder = getViewHolder(rootView, viewType);
+            holder = getViewHolder(parent,rootView, viewType);
         } else {
-            holder = getViewHolder(null, viewType);
+            holder = getViewHolder(parent,null, viewType);
         }
         setUpItemEvent(holder);
         return holder;
@@ -125,7 +125,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
 
     protected abstract int getLayoutResId(int viewType);
 
-    protected abstract BaseRecyclerViewHolder getViewHolder(View rootView, int viewType);
+    protected abstract BaseRecyclerViewHolder getViewHolder(ViewGroup parent,View inflatedView, int viewType);
 
     protected void onBindData(BaseRecyclerViewHolder<T> holder, T data, int position) {
 

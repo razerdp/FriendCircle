@@ -53,7 +53,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
     protected RelativeLayout contentLayout;
 
     //评论区的view对象池
-    private static final SimpleObjectPool<CommentWidget> COMMENT_TEXT_POOL = new SimpleObjectPool(35);
+    private static final SimpleObjectPool<CommentWidget> COMMENT_TEXT_POOL = new SimpleObjectPool<CommentWidget>(35);
 
     public CircleBaseViewHolder(Context context, ViewGroup viewGroup, int layoutResId) {
         super(context, viewGroup, layoutResId);
