@@ -274,7 +274,7 @@ public class CircleRecyclerView extends FrameLayout {
                 }
                 int resultOffset = (int) (offset - lastOffset);
                 refreshIcon.offsetTopAndBottom(resultOffset);
-                Log.d(TAG, "pull  >>  " + offset + "  resultOffset   >>>   " + resultOffset);
+                Log.d(TAG, "pull  >>  " + offset + "  resultOffset   >>>   " + resultOffset+"   lastOffset   >>>   "+lastOffset);
                 adjustRefreshIconPosition();
                 lastOffset = offset;
             }
@@ -295,6 +295,9 @@ public class CircleRecyclerView extends FrameLayout {
         public void catchRefreshEvent() {
             if (checkHacIcon()) {
                 refreshIcon.clearAnimation();
+                if (refreshIcon.getTop()==0){
+                    refreshIcon.offsetTopAndBottom(refreshPosition);
+                }
                 refreshIcon.startAnimation(rotateAnimation);
             }
         }
