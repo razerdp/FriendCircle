@@ -49,10 +49,10 @@ public class CircleMomentsAdapter extends BaseRecyclerViewAdapter<MomentsInfo> {
     }
 
     @Override
-    protected CircleBaseViewHolder getViewHolder(ViewGroup parent,View rootView, int viewType) {
-        ViewHoldernfo viewHoldernfo=viewHolderKeyArray.get(viewType);
-        if (viewHoldernfo!=null){
-            return createCircleViewHolder(context,parent,viewHoldernfo);
+    protected CircleBaseViewHolder getViewHolder(ViewGroup parent, View rootView, int viewType) {
+        ViewHoldernfo viewHoldernfo = viewHolderKeyArray.get(viewType);
+        if (viewHoldernfo != null) {
+            return createCircleViewHolder(context, parent, viewHoldernfo);
         }
         return null;
     }
@@ -100,29 +100,28 @@ public class CircleMomentsAdapter extends BaseRecyclerViewAdapter<MomentsInfo> {
         public int layoutResID;
     }
 
-    private CircleBaseViewHolder createCircleViewHolder(Context context,
-                                                        ViewGroup viewGroup,
-                                                        ViewHoldernfo viewHoldernfo) {
+    private CircleBaseViewHolder createCircleViewHolder(Context context, ViewGroup viewGroup, ViewHoldernfo viewHoldernfo) {
         if (viewHoldernfo == null) {
             throw new NullPointerException("木有这个viewholder信息哦");
         }
         Class<? extends CircleBaseViewHolder> className = viewHoldernfo.holderClass;
-        Class[] paramClass = {};
-
+        KLog.i("class  >>>  "+className);
         Constructor constructor = null;
         try {
-            constructor = className.getConstructor(Context.class, ViewGroup.class, Integer.class);
-            return (CircleBaseViewHolder) constructor.newInstance(context,
-                                                                  viewGroup,
-                                                                  viewHoldernfo.layoutResID);
+            constructor = className.getConstructor(Context.class, ViewGroup.class, int.class);
+            return (CircleBaseViewHolder) constructor.newInstance(context, viewGroup, viewHoldernfo.layoutResID);
         } catch (NoSuchMethodException e) {
             KLog.e("木有找到该方法。。。。");
+            KLog.e(e);
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }catch (NullPointerException e){
+            KLog.e("構造器為空哦。。。。。");
             e.printStackTrace();
         }
         return null;

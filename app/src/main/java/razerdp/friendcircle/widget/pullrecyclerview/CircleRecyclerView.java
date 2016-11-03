@@ -18,6 +18,8 @@ import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.socks.library.KLog;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -362,9 +364,38 @@ public class CircleRecyclerView extends FrameLayout {
 
     private final class InnerWrapperHeaderViewRecyclerAdapter extends RecyclerView.Adapter {
         private final RecyclerView.Adapter mAdapter;
+        private RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {
+
+            @Override
+            public void onChanged() {
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount) {
+                notifyItemRangeChanged(positionStart + getHeadersCount(), itemCount);
+            }
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                notifyItemRangeInserted(positionStart + getHeadersCount(), itemCount);
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                notifyItemRangeRemoved(positionStart + getHeadersCount(), itemCount);
+            }
+
+            @Override
+            public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+                int headerViewsCountCount = getHeadersCount();
+                notifyItemRangeChanged(fromPosition + headerViewsCountCount, toPosition + headerViewsCountCount + itemCount);
+            }
+        };
 
         public InnerWrapperHeaderViewRecyclerAdapter(RecyclerView.Adapter mAdapter) {
             this.mAdapter = mAdapter;
+            this.mAdapter.registerAdapterDataObserver(mDataObserver);
         }
 
         public int getHeadersCount() {
@@ -402,8 +433,9 @@ public class CircleRecyclerView extends FrameLayout {
                 return;
             } else {
                 int adjustPosition = position - numHeaders;
+                KLog.i("holderPos", numHeaders, adapterCount, position, adjustPosition);
                 if (adjustPosition < adapterCount) {
-                    mAdapter.onBindViewHolder(holder, position);
+                    mAdapter.onBindViewHolder(holder, adjustPosition);
                 }
             }
 

@@ -58,6 +58,22 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
     public CircleBaseViewHolder(Context context, ViewGroup viewGroup, int layoutResId) {
         super(context, viewGroup, layoutResId);
         onFindView(itemView);
+
+        //header
+        avatar = (ImageView) findView(avatar, R.id.avatar);
+        nick = (TextView) findView(nick, R.id.nick);
+        userText = (ClickShowMoreLayout) findView(userText, R.id.item_text_field);
+
+        //bottom
+        createTime = (TextView) findView(createTime, R.id.create_time);
+        commentImage = (ImageView) findView(commentImage, R.id.menu_img);
+        menuButton = (FrameLayout) findView(menuButton, R.id.menu_button);
+        commentAndPraiseLayout = (LinearLayout) findView(commentAndPraiseLayout, R.id.comment_praise_layout);
+        praiseWidget = (PraiseWidget) findView(praiseWidget, R.id.praise);
+        line = findView(line, R.id.divider);
+        commentLayout = (LinearLayout) findView(commentLayout, R.id.comment_layout);
+        //content
+        contentLayout = (RelativeLayout) findView(contentLayout, R.id.content);
     }
 
     @Override
@@ -69,24 +85,8 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
             return;
         }
 
-        //header
-        findView(avatar, R.id.avatar);
-        findView(nick, R.id.nick);
-        findView(userText, R.id.item_text_field);
-
-        //bottom
-        findView(createTime, R.id.create_time);
-        findView(commentImage, R.id.menu_img);
-        findView(menuButton, R.id.menu_button);
-        findView(commentAndPraiseLayout, R.id.comment_praise_layout);
-        findView(praiseWidget, R.id.praise);
-        findView(line, R.id.divider);
-        findView(commentLayout, R.id.comment_layout);
-        //content
-        findView(contentLayout, R.id.content);
         //数据绑定
         applyData(data);
-
         //点击事件
         menuButton.setOnClickListener(onMenuButtonClickListener);
         //传递到子类
@@ -206,7 +206,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         }
     };
 
-    private View.OnClickListener onMenuButtonClickListener=new View.OnClickListener() {
+    private View.OnClickListener onMenuButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
 
@@ -214,14 +214,15 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
     };
 
     /**
-     *  ============  tools method block
+     * ============  tools method block
      */
 
 
-    protected final void findView(View view, int resid) {
+    protected final View findView(View view, int resid) {
         if (resid > 0 && itemView != null && view == null) {
-            view = itemView.findViewById(resid);
+            return itemView.findViewById(resid);
         }
+        return view;
     }
 
 

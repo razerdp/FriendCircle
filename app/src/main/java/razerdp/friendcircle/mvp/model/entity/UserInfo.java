@@ -17,12 +17,14 @@ public class UserInfo extends BmobObject {
         String NICK = "nick";
         String AUTHOR_USER = "author";
         String AVATAR = "avatar";
+        String COVER="cover";
     }
 
     private String username;
     private String password;
     private String nick;
     private String avatar;
+    private String cover;
 
     public UserInfo() {
     }
@@ -61,5 +63,13 @@ public class UserInfo extends BmobObject {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 }

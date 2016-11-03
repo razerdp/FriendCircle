@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+import com.socks.library.KLog;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,6 +98,11 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
 
     public void updateData(List<T> datas) {
         this.datas.clear();
+        this.datas.addAll(datas);
+        notifyDataSetChanged();
+    }
+
+    public void addMore(List<T> datas){
         this.datas.addAll(datas);
         notifyDataSetChanged();
     }
