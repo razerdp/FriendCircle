@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="430dp"
-    android:background="@color/white"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="430dp"
+                android:background="@color/white"
     >
 
     <ImageView
@@ -17,22 +17,22 @@
         android:id="@+id/friend_avatar"
         android:layout_width="67dp"
         android:layout_height="67dp"
-        android:padding="3dp"
-        android:background="@drawable/avatar_bg"
-        android:scaleType="centerCrop"
-        android:src="@drawable/test_avatar"
         android:layout_alignBottom="@id/friend_wall_pic"
         android:layout_alignParentRight="true"
+        android:layout_marginBottom="-28dp"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="-28dp"/>
+        android:background="@drawable/avatar_bg"
+        android:padding="3dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/test_avatar"/>
 
     <RelativeLayout
         android:layout_width="200dp"
         android:layout_height="40dp"
-        android:background="@drawable/message_bg"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/friend_avatar"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
+        android:background="@drawable/message_bg"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:visibility="invisible"
@@ -49,17 +49,17 @@
             android:id="@+id/message_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/white"
             android:layout_centerInParent="true"
-            android:text="1条新消息"/>
+            android:text="1条新消息"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:src="@drawable/arrow"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:src="@drawable/arrow"/>
     </RelativeLayout>
 
 </RelativeLayout>

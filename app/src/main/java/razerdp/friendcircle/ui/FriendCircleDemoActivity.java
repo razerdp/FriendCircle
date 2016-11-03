@@ -64,29 +64,7 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
         momentsInfoList = new ArrayList<>();
         momentsRequest = new MomentsRequest();
         initView();
-
-      /*  MomentsRequest momentsRequest=new MomentsRequest();
-        momentsRequest.setOnResponseListener(new OnResponseListener<List<MomentsInfo>>() {
-            @Override
-            public void onStart(int requestType) {
-
-            }
-
-            @Override
-            public void onSuccess(List<MomentsInfo> response, int requestType) {
-                KLog.d();
-
-            }
-
-            @Override
-            public void onError(BmobException e, int requestType) {
-                KLog.d();
-
-            }
-        });
-        momentsRequest.execute();*/
-
-        //添加动态
+        //添加动态,伪造数据用的哦~轻易不要取消注释哦
      /*   final BmobInitHelper helper=new BmobInitHelper();
         helper.initUser(new SimpleResponseListener() {
             @Override
@@ -121,6 +99,7 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
     public void onRefresh() {
         momentsRequest.setOnResponseListener(momentsRequestCallBack);
         momentsRequest.setRequestType(REQUEST_REFRESH);
+        momentsRequest.setCurPage(0);
         momentsRequest.execute();
     }
 

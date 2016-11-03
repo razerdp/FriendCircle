@@ -40,6 +40,8 @@ import static me.everything.android.ui.overscroll.IOverScrollState.STATE_BOUNCE_
 import static me.everything.android.ui.overscroll.IOverScrollState.STATE_DRAG_END_SIDE;
 import static me.everything.android.ui.overscroll.IOverScrollState.STATE_DRAG_START_SIDE;
 import static me.everything.android.ui.overscroll.IOverScrollState.STATE_IDLE;
+import static razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView.Mode.FROM_BOTTOM;
+import static razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView.Mode.FROM_START;
 import static razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView.Status.DEFAULT;
 import static razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView.Status.REFRESHING;
 
@@ -78,8 +80,19 @@ public class CircleRecyclerView extends FrameLayout {
         int REFRESHING = 1;
     }
 
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({FROM_START, FROM_BOTTOM})
+    @interface Mode {
+        int FROM_START = 0;
+        int FROM_BOTTOM = 1;
+    }
+
     @Status
     private int currentStatus;
+
+    @Mode
+    private int pullMode;
+
 
     //observer
     private InnerRefreshIconObserver iconObserver;
@@ -148,10 +161,10 @@ public class CircleRecyclerView extends FrameLayout {
 
     public void compelete() {
         Log.i(TAG, "compelete");
-        setCurrentStatus(DEFAULT);
-        if (iconObserver != null) {
+        if (pullMode == FROM_START && iconObserver != null) {
             iconObserver.catchResetEvent();
         }
+        setCurrentStatus(DEFAULT);
     }
 
     //------------------------------------------get/set-----------------------------------------------
@@ -219,6 +232,7 @@ public class CircleRecyclerView extends FrameLayout {
                                 Log.i(TAG, "refresh");
                                 onRefreshListener.onRefresh();
                             }
+                            pullMode = FROM_START;
                             iconObserver.catchRefreshEvent();
                         }
                     }
