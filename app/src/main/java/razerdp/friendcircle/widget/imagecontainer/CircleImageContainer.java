@@ -67,7 +67,6 @@ public class CircleImageContainer extends ViewGroup {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         int containerWidth = MeasureSpec.getSize(widthMeasureSpec) - getPaddingLeft() - getPaddingRight();
-        int containerHeight;
 
         //直接定死子控件的宽度,中间两条分割线
         maxChildWidth = containerWidth / 3 - defaultLTRBDivier * 2;
@@ -98,8 +97,8 @@ public class CircleImageContainer extends ViewGroup {
             Log.i(TAG, "测量单张");
         } else if (mItemCount == 4) {
             //四张图片
-            parentWidth = maxChildWidth * 2 + defaultLTRBDivier;
-            parentHeight = parentWidth;
+            parentWidth = maxChildWidth * 3 + defaultLTRBDivier * 2;
+            parentHeight = (maxChildWidth+defaultLTRBDivier) * 2 ;
             Log.i(TAG, "测量4张");
         } else {
             //其他数量图片
@@ -155,6 +154,8 @@ public class CircleImageContainer extends ViewGroup {
                 KLog.d("childCount  >>>   " + childCount + "   position  =  " + i + "  left  =  " + left + "  top  =  " + top + "  right  =  " + right + "  bottom  =  " + bottom);
             }
         }
+
+        mDataChanged = false;
     }
 
     private void makeAndAddView() {
@@ -191,7 +192,7 @@ public class CircleImageContainer extends ViewGroup {
             params = generateDefaultLayoutParams();
         }
         if (needToMeasure) {
-            addViewInLayout(childView, position, params);
+            addViewInLayout(childView, position, params, true);
         } else {
             attachViewToParent(childView, position, params);
         }

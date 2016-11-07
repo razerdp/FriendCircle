@@ -37,7 +37,9 @@ public class TestActivity extends AppCompatActivity implements OnRefreshListener
 
     //request
     private MomentsRequest momentsRequest;
-    private CircleImageContainer circle_image_container;
+    private CircleImageContainer circle_image_container_four;
+    private CircleImageContainer circle_image_container_multi;
+    private CircleImageContainer circle_image_container_single;
 
 
     @Override
@@ -60,7 +62,9 @@ public class TestActivity extends AppCompatActivity implements OnRefreshListener
 
     private void initView() {
         onRefresh();
-        circle_image_container = (CircleImageContainer) findViewById(R.id.circle_image_container);
+        circle_image_container_four = (CircleImageContainer) findViewById(R.id.circle_image_container_four);
+        circle_image_container_multi = (CircleImageContainer) findViewById(R.id.circle_image_container_multi);
+        circle_image_container_single = (CircleImageContainer) findViewById(R.id.circle_image_container_single);
     }
 
     @Override
@@ -87,8 +91,15 @@ public class TestActivity extends AppCompatActivity implements OnRefreshListener
             switch (requestType) {
                 case REQUEST_REFRESH:
                     if (!ToolUtil.isListEmpty(response)) {
-                        InnerTestAdapter adapter=new InnerTestAdapter(TestActivity.this,response.get(4).getContent().getPics());
-                        circle_image_container.setAdapter(adapter);
+                        InnerTestAdapter four_adapter = new InnerTestAdapter(TestActivity.this, response.get(2).getContent().getPics());
+                        circle_image_container_four.setAdapter(four_adapter);
+
+                        InnerTestAdapter multi_adapter = new InnerTestAdapter(TestActivity.this, response.get(4).getContent().getPics());
+                        circle_image_container_multi.setAdapter(multi_adapter);
+
+                        InnerTestAdapter single_adapter = new InnerTestAdapter(TestActivity.this, response.get(0).getContent().getPics());
+                        circle_image_container_single.setAdapter(single_adapter);
+
                     }
                     break;
                 case REQUEST_LOADMORE:
@@ -103,7 +114,7 @@ public class TestActivity extends AppCompatActivity implements OnRefreshListener
     };
 
 
-    private static class InnerTestAdapter extends BaseCircleImageAdapter{
+    private static class InnerTestAdapter extends BaseCircleImageAdapter {
 
         private List<String> pics;
         private Context context;
@@ -116,11 +127,11 @@ public class TestActivity extends AppCompatActivity implements OnRefreshListener
 
         @Override
         public ImageView getView(ImageView convertView, ViewGroup parent, int position) {
-            if (convertView==null){
-                convertView=new ImageView(context);
+            if (convertView == null) {
+                convertView = new ImageView(context);
                 convertView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
-            ImageLoadMnanger.INSTANCE.loadImage(convertView,pics.get(position));
+            ImageLoadMnanger.INSTANCE.loadImage(convertView, pics.get(position));
             return convertView;
         }
 

@@ -1,14 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              tools:context=".ui.FriendCircleDemoActivity">
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <razerdp.friendcircle.widget.imagecontainer.CircleImageContainer
-        android:id="@+id/circle_image_container"
-        android:layout_width="300dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-      />
-</RelativeLayout>
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="四张图片"/>
+
+        <razerdp.friendcircle.widget.imagecontainer.CircleImageContainer
+            android:id="@+id/circle_image_container_four"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="多张图片"/>
+
+        <razerdp.friendcircle.widget.imagecontainer.CircleImageContainer
+            android:id="@+id/circle_image_container_multi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="单张图片"/>
+
+        <razerdp.friendcircle.widget.imagecontainer.CircleImageContainer
+            android:id="@+id/circle_image_container_single"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+</ScrollView>
