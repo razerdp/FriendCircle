@@ -19,8 +19,8 @@
 #####本项目具体结构如下：
 
  - **app**:
-	+ `adapter`：存放封装后的adapter，包括朋友圈专用的adapter和一般AdapterView使用的adapter
-		* adapter.viewholder：存放朋友圈专用的接口化的item（实质上就是viewholder）和一般AdapterView使用viewholder封装
+	+ `mAdapter`：存放封装后的adapter，包括朋友圈专用的adapter和一般AdapterView使用的adapter
+		* mAdapter.viewholder：存放朋友圈专用的接口化的item（实质上就是viewholder）和一般AdapterView使用viewholder封装
 
 	+ `config`：存放配置常量，基本账号信息，EventBus所使用的方法类等
 		* config.ptrwidget：存放朋友圈下拉刷新控件的模式/状态配置

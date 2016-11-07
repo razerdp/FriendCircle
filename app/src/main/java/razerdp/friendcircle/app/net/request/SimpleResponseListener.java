@@ -1,5 +1,7 @@
 package razerdp.friendcircle.app.net.request;
 
+import android.util.Log;
+
 import cn.bmob.v3.exception.BmobException;
 import razerdp.friendcircle.app.net.OnResponseListener;
 import razerdp.friendcircle.utils.UIHelper;
@@ -18,5 +20,6 @@ public abstract class SimpleResponseListener<T> implements OnResponseListener<T>
     @Override
     public void onError(BmobException e, int requestType) {
         UIHelper.ToastMessage(e.getMessage());
+        e.printStackTrace();
     }
 }

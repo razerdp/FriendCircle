@@ -17,6 +17,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.socks.library.KLog;
 
@@ -274,7 +275,7 @@ public class CircleRecyclerView extends FrameLayout {
                 }
                 int resultOffset = (int) (offset - lastOffset);
                 refreshIcon.offsetTopAndBottom(resultOffset);
-                Log.d(TAG, "pull  >>  " + offset + "  resultOffset   >>>   " + resultOffset+"   lastOffset   >>>   "+lastOffset);
+                Log.d(TAG, "pull  >>  " + offset + "  resultOffset   >>>   " + resultOffset + "   lastOffset   >>>   " + lastOffset);
                 adjustRefreshIconPosition();
                 lastOffset = offset;
             }
@@ -295,7 +296,7 @@ public class CircleRecyclerView extends FrameLayout {
         public void catchRefreshEvent() {
             if (checkHacIcon()) {
                 refreshIcon.clearAnimation();
-                if (refreshIcon.getTop()==0){
+                if (refreshIcon.getTop() == 0) {
                     refreshIcon.offsetTopAndBottom(refreshPosition);
                 }
                 refreshIcon.startAnimation(rotateAnimation);
@@ -484,7 +485,6 @@ public class CircleRecyclerView extends FrameLayout {
             }
             return mFooterViewInfos.get(position - adapterItemCount - numHeaders).itemViewType;
         }
-
 
         private boolean onCreateHeaderViewHolder(int viewType) {
             return mHeaderViewInfos.size() > 0 && viewType <= ITEM_VIEW_TYPE_HEADER_START && viewType > ITEM_VIEW_TYPE_FOOTER_START;

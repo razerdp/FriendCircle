@@ -36,4 +36,10 @@
 
     <!--popup背景蒙层-->
     <color name="popup_background">#8e030303</color>
+
+    <!--分割线-->
+    <color name="gray_divider">#d7dce1</color>
+    <color name="dark_gray_divider">#bbc2ca</color>
+    <color name="timeline_background">#f4f6f8</color>
+
 </resources>
