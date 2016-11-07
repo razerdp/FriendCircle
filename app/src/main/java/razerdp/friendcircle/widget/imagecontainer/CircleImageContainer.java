@@ -3,6 +3,7 @@ package razerdp.friendcircle.widget.imagecontainer;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -34,6 +35,11 @@ public class CircleImageContainer extends ViewGroup {
 
     private int mItemCount;
 
+    private int rowNum;
+    private int columnNum;
+
+    private boolean mDataChanged;
+
 
     public CircleImageContainer(Context context) {
         super(context);
@@ -63,74 +69,63 @@ public class CircleImageContainer extends ViewGroup {
         int containerWidth = MeasureSpec.getSize(widthMeasureSpec) - getPaddingLeft() - getPaddingRight();
         int containerHeight;
 
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-
-        int singleChildMaxWidth = 0;
-        int singleChildHeight = 0;
-
-        final int childCount = getChildCount();
-
         //直接定死子控件的宽度,中间两条分割线
         maxChildWidth = containerWidth / 3 - defaultLTRBDivier * 2;
 
-        if (childCount != 1) {
-            for (int i = 0; i < childCount; i++) {
-                View childView = getChildAt(i);
-                childView.measure(MeasureSpec.makeMeasureSpec(maxChildWidth, widthMode), MeasureSpec.makeMeasureSpec(maxChildWidth, heightMode));
-                childView.setOnClickListener(onViewClickListener);
-            }
-            KLog.i("测量多个子控件");
-        } else {
-            //单图做宽高最大限制
-            View childView = getChildAt(0);
-            childView.setOnClickListener(onViewClickListener);
-            childView.measure(widthMeasureSpec,heightMeasureSpec);
-            int childWidth = childView.getMeasuredWidth();
-            int childHeight = childView.getMeasuredHeight();
-            float ratio = childWidth * 1.0f / childHeight * 1.0f;
-            if (ratio != 0) {
-                singleChildMaxWidth = Math.min(childWidth, containerWidth);
-                singleChildHeight = (int) (singleChildMaxWidth / ratio);
-                childView.measure(MeasureSpec.makeMeasureSpec(singleChildMaxWidth, widthMode), MeasureSpec.makeMeasureSpec(singleChildHeight, heightMode));
-            }
-            KLog.i("测量单个控件");
+        final int wantedChildCount = mItemCount;
+        /**
+         * row 1~3 = 1
+         * row 4~6 = 2
+         * row 7~9 = 3
+         *
+         * 如上，1~9张按照每个三张可以分成三组，行数实际上是由每组可以整除3的那个决定
+         * 其余则是除以3+1决定
+         */
+        rowNum = wantedChildCount % 3 == 0 ? wantedChildCount / 3 : (wantedChildCount / 3) + 1;
+        /**
+         * column 1~3 = 1,2,3
+         * column 4~9 = 3 (4虽然只有两列，但因为它的两列需要保持跟三列一样的大小，所以取三列)
+         *
+         * 因此小于散的取本身，大于三的取3
+         */
+        columnNum = Math.min(wantedChildCount, 3);
 
-        }
+        int parentWidth = 0;
+        int parentHeight = 0;
 
-        //针对一张图，4张图的处理
-        if (childCount == 4) {
-            containerWidth = maxChildWidth * 2 + defaultLTRBDivier;
-            containerHeight = containerWidth;
-        } else if (childCount == 1) {
-            containerWidth = singleChildMaxWidth == 0 ? getChildAt(0).getMeasuredWidth() : singleChildMaxWidth;
-            containerHeight = singleChildHeight == 0 ? getChildAt(0).getMeasuredHeight() : singleChildHeight;
+        if (mItemCount == 1) {
+            //单张图片
+            Log.i(TAG, "测量单张");
+        } else if (mItemCount == 4) {
+            //四张图片
+            parentWidth = maxChildWidth * 2 + defaultLTRBDivier;
+            parentHeight = parentWidth;
+            Log.i(TAG, "测量4张");
         } else {
-            int rowNum = childCount % 3 == 0 ? childCount / 3 : (childCount / 3) + 1;
-            int columnNum = Math.min(childCount, 3);
-            containerWidth = maxChildWidth * columnNum + defaultLTRBDivier * (columnNum - 1);
-            containerHeight = rowNum * maxChildWidth + (rowNum - 1) * defaultLTRBDivier;
+            //其他数量图片
+            parentWidth = maxChildWidth * columnNum + defaultLTRBDivier * (columnNum - 1);
+            parentHeight = maxChildWidth * rowNum + (rowNum - 1) * defaultLTRBDivier;
+            Log.i(TAG, "测量多张");
         }
-        setMeasuredDimension(containerWidth, containerHeight);
+        setMeasuredDimension(parentWidth, parentHeight);
+
     }
 
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        int rowNum;
-        int columnNum;
-
-        final int childCount = mAdapter == null ? 0 : mAdapter.getCount();
-        if (childCount == 1) {
-            rowNum = 1;
-            columnNum = 1;
-        } else {
-            rowNum = childCount % 3 == 0 ? childCount / 3 : (childCount / 3) + 1;
-            columnNum = Math.min(childCount, 3);
+        invalidate();
+        if (mAdapter == null) {
+            resetContainer();
+            return;
         }
+        makeAndAddView();
+
+        final int childCount = getChildCount();
 
         if (childCount == 1) {
             View view = getChildAt(0);
+            view.setOnClickListener(onViewClickListener);
             int left = getPaddingLeft();
             int top = getPaddingTop();
             int right = left + view.getMeasuredWidth();
@@ -140,6 +135,7 @@ public class CircleImageContainer extends ViewGroup {
         } else if (childCount == 4) {
             for (int i = 0; i < 4; i++) {
                 View view = getChildAt(i);
+                view.setOnClickListener(onViewClickListener);
                 int left = (maxChildWidth + defaultLTRBDivier) * (i % 2) + getPaddingLeft();
                 int top = (maxChildWidth + defaultLTRBDivier) * (i / 2) + defaultLTRBDivier + getPaddingTop();
                 int right = left + maxChildWidth - getPaddingRight();
@@ -150,6 +146,7 @@ public class CircleImageContainer extends ViewGroup {
         } else {
             for (int i = 0; i < childCount; i++) {
                 View view = getChildAt(i);
+                view.setOnClickListener(onViewClickListener);
                 int left = (maxChildWidth + defaultLTRBDivier) * (i % columnNum) + getPaddingLeft();
                 int top = (maxChildWidth + defaultLTRBDivier) * (i / rowNum) + getPaddingTop();
                 int right = left + maxChildWidth - getPaddingRight();
@@ -160,6 +157,50 @@ public class CircleImageContainer extends ViewGroup {
         }
     }
 
+    private void makeAndAddView() {
+        final int childCount = getChildCount();
+
+        if (childCount == mItemCount && !mDataChanged) {
+            for (int i = 0; i < childCount; i++) {
+                mAdapter.getView((ImageView) getChildAt(i), this, i);
+            }
+        } else {
+            if (childCount == 0) {
+                for (int i = 0; i < mItemCount; i++) {
+                    addInternalViewOnLayout(i);
+                }
+            } else {
+                for (int i = 0; i < childCount; i++) {
+                    mAdapter.getView((ImageView) getChildAt(i), this, i);
+                }
+                int diff = mItemCount - childCount;
+                for (int i = childCount; i < diff; i++) {
+                    addInternalViewOnLayout(i);
+                }
+            }
+        }
+    }
+
+    private void addInternalViewOnLayout(int position) {
+        boolean needToMeasure;
+        ImageView cachedView = obtainView();
+        needToMeasure = cachedView != null && cachedView.isLayoutRequested();
+        View childView = mAdapter.getView(cachedView, this, position);
+        LayoutParams params = childView.getLayoutParams();
+        if (params == null) {
+            params = generateDefaultLayoutParams();
+        }
+        if (needToMeasure) {
+            addViewInLayout(childView, position, params);
+        } else {
+            attachViewToParent(childView, position, params);
+        }
+    }
+
+    @Override
+    protected LayoutParams generateDefaultLayoutParams() {
+        return new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+    }
 
     public void setAdapter(BaseCircleImageAdapter adapter) {
         if (mAdapter != null) {
@@ -222,7 +263,7 @@ public class CircleImageContainer extends ViewGroup {
                     if (child instanceof ImageView) {
                         mInnerViewCacher.put((ImageView) child);
                     }
-                    removeViewInLayout(child);
+                    detachViewFromParent(child);
                 }
             }
             return needToCacheCount;
@@ -258,40 +299,9 @@ public class CircleImageContainer extends ViewGroup {
             super.onChanged();
             updateItemCount();
             //做了缓存的话意味着原来的view的数量比新的多，已经进行过remove，所以是可以直接使用
-            boolean hasCached = checkAndCacheView();
-            final int childCount = getChildCount();
-            if (hasCached) {
-                for (int i = 0; i < childCount; i++) {
-                    mAdapter.getView((ImageView) getChildAt(i), CircleImageContainer.this, i);
-                }
-            } else {
-                //没有缓存成功意味着要么没有数据，要么本来的比新来的少，需要补充
-                if (childCount == 0) {
-                    for (int i = 0; i < mItemCount; i++) {
-                        ImageView childImageView = mAdapter.getView(obtainView(), CircleImageContainer.this, i);
-                        if (childImageView.getLayoutParams() == null) {
-                            addViewInLayout(childImageView, i, generateDefaultLayoutParams(), true);
-                        } else {
-                            addViewInLayout(childImageView, i, childImageView.getLayoutParams(), true);
-                        }
-                    }
-                } else {
-                    int diff = mItemCount - childCount;
-                    for (int i = 0; i < childCount; i++) {
-                        mAdapter.getView((ImageView) getChildAt(i), CircleImageContainer.this, i);
-                    }
-                    for (int i = childCount + 1; i < childCount + diff; i++) {
-                        ImageView childImageView = mAdapter.getView(obtainView(), CircleImageContainer.this, i);
-                        if (childImageView.getLayoutParams() == null) {
-                            addViewInLayout(childImageView, i, generateDefaultLayoutParams(), true);
-                        } else {
-                            addViewInLayout(childImageView, i, childImageView.getLayoutParams(), true);
-                        }
-                    }
-                }
-            }
-            KLog.d();
-            CircleImageContainer.this.requestLayout();
+            checkAndCacheView();
+            mDataChanged = true;
+            requestLayout();
         }
 
         @Override

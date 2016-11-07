@@ -87,7 +87,7 @@ public class TestActivity extends AppCompatActivity implements OnRefreshListener
             switch (requestType) {
                 case REQUEST_REFRESH:
                     if (!ToolUtil.isListEmpty(response)) {
-                        InnerTestAdapter adapter=new InnerTestAdapter(TestActivity.this,response.get(0).getContent().getPics());
+                        InnerTestAdapter adapter=new InnerTestAdapter(TestActivity.this,response.get(4).getContent().getPics());
                         circle_image_container.setAdapter(adapter);
                     }
                     break;
