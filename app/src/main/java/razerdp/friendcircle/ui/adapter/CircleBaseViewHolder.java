@@ -106,6 +106,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         praiseWidget.setVisibility(needPraiseData ? View.VISIBLE : View.GONE);
         commentLayout.setVisibility(needCommentData ? View.VISIBLE : View.GONE);
         line.setVisibility(needPraiseData && needCommentData ? View.VISIBLE : View.GONE);
+        commentAndPraiseLayout.setVisibility(needCommentData || needPraiseData ? View.VISIBLE : View.GONE);
 
     }
 

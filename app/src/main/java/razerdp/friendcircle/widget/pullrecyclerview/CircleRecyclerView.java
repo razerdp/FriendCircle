@@ -451,7 +451,6 @@ public class CircleRecyclerView extends FrameLayout {
                 return;
             } else {
                 int adjustPosition = position - numHeaders;
-                KLog.i("holderPos", numHeaders, adapterCount, position, adjustPosition);
                 if (adjustPosition < adapterCount) {
                     mAdapter.onBindViewHolder(holder, adjustPosition);
                 }
