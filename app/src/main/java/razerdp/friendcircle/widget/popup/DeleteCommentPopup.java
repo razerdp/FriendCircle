@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.TextView;
+
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
 
@@ -11,7 +12,7 @@ import razerdp.friendcircle.R;
  * Created by 大灯泡 on 2016/4/22.
  * 删除评论的popup
  */
-public class DeleteCommentPopup extends BasePopupWindow implements View.OnClickListener{
+public class DeleteCommentPopup extends BasePopupWindow implements View.OnClickListener {
 
     private TextView mDel;
     private TextView mCancel;
@@ -19,42 +20,43 @@ public class DeleteCommentPopup extends BasePopupWindow implements View.OnClickL
     public DeleteCommentPopup(Activity context) {
         super(context);
 
-        mDel= (TextView) findViewById(R.id.delete);
-        mCancel= (TextView) findViewById(R.id.cancel);
+        mDel = (TextView) findViewById(R.id.delete);
+        mCancel = (TextView) findViewById(R.id.cancel);
 
-        setViewClickListener(this,mDel,mCancel);
+        setViewClickListener(this, mDel, mCancel);
     }
 
     @Override
-    protected Animation getShowAnimation() {
-        return getTranslateAnimation(300,0,300);
+    protected Animation initShowAnimation() {
+        return getTranslateAnimation(300, 0, 300);
     }
 
     @Override
     public Animation getExitAnimation() {
-        return getTranslateAnimation(0,300,300);
+        return getTranslateAnimation(0, 300, 300);
     }
 
     @Override
-    protected View getClickToDismissView() {
-        return mPopupView;
+    public View onCreatePopupView() {
+        return createPopupById(R.layout.popup_delete_comment);
     }
 
     @Override
-    public View getPopupView() {
-        return getPopupViewById(R.layout.popup_delete_comment);
+    public View initAnimaView() {
+        return findViewById(R.id.popup_container);
     }
 
     @Override
-    public View getAnimaView() {
-        return mPopupView.findViewById(R.id.popup_container);
+    public View getClickToDismissView() {
+        return getPopupWindowView();
     }
+
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.delete:
-                if (mDeleteCommentClickListener!=null)
+                if (mDeleteCommentClickListener != null)
                     mDeleteCommentClickListener.onDelClick(v);
                 break;
             case R.id.cancel:
@@ -70,11 +72,12 @@ public class DeleteCommentPopup extends BasePopupWindow implements View.OnClickL
     public OnDeleteCommentClickListener getOnDeleteCommentClickListener() {
         return mDeleteCommentClickListener;
     }
+
     public void setOnDeleteCommentClickListener(OnDeleteCommentClickListener deleteCommentClickListener) {
         mDeleteCommentClickListener = deleteCommentClickListener;
     }
 
-    public interface OnDeleteCommentClickListener{
+    public interface OnDeleteCommentClickListener {
         void onDelClick(View v);
     }
 }

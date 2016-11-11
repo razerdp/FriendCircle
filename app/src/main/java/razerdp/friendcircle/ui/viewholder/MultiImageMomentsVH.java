@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import com.socks.library.KLog;
+
 import java.util.List;
 
 import razerdp.friendcircle.R;
@@ -48,6 +50,7 @@ public class MultiImageMomentsVH extends CircleBaseViewHolder implements Adapter
             adapter = new InnerGridVieAdapter(getContext(), data.getContent().getPics());
             noScrollGridView.setAdapter(adapter);
         }
+        KLog.i("update image" + data.getAuthor().getNick()+"     :  " + data.getContent().getPics().size());
         adapter.updateData(data.getContent().getPics());
         if (data.getContent().getPics().size() == 4) {
             noScrollGridView.setNumColumns(2);
@@ -65,7 +68,7 @@ public class MultiImageMomentsVH extends CircleBaseViewHolder implements Adapter
     private static class InnerGridVieAdapter extends BaseAbsViewAdapter<String, InnerGridVieAdapter.InnerGridViewHolder> {
 
 
-         InnerGridVieAdapter(Context context, List<String> datas) {
+        InnerGridVieAdapter(Context context, List<String> datas) {
             super(context, datas);
         }
 
