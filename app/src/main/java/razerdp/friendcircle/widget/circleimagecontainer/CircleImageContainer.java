@@ -202,6 +202,7 @@ public class CircleImageContainer extends GridLayout {
         LayoutParams p = new CircleImageContainer.LayoutParams(multiChildSize, multiChildSize);
         p.leftMargin = defaultDividerWidth >> 1;
         p.topMargin = defaultDividerWidth >> 1;
+
         p.rightMargin = defaultDividerWidth >> 1;
         p.bottomMargin = defaultDividerWidth >> 1;
         return p;
