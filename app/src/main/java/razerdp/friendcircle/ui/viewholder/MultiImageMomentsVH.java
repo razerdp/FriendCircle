@@ -1,23 +1,25 @@
 package razerdp.friendcircle.ui.viewholder;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 
 import com.socks.library.KLog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.baseadapter.BaseAbsViewAdapter;
-import razerdp.friendcircle.app.baseadapter.BaseAbsViewHolder;
 import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.ui.adapter.CircleBaseViewHolder;
-import razerdp.friendcircle.utils.StringUtil;
 import razerdp.friendcircle.widget.NoScrollGridView;
+import razerdp.friendcircle.widget.circleimagecontainer.CircleImageContainer;
+import razerdp.friendcircle.widget.circleimagecontainer.adapter.CircleBaseImageAdapter;
 import razerdp.friendcircle.widget.imageview.ForceClickImageView;
 
 /**
@@ -28,11 +30,11 @@ import razerdp.friendcircle.widget.imageview.ForceClickImageView;
  * @see razerdp.friendcircle.config.MomentsType
  */
 
-public class MultiImageMomentsVH extends CircleBaseViewHolder implements AdapterView.OnItemClickListener {
+public class MultiImageMomentsVH extends CircleBaseViewHolder {
 
 
-    private NoScrollGridView noScrollGridView;
-    private InnerGridVieAdapter adapter;
+    private CircleImageContainer imageContainer;
+    private InnerContainerAdapter adapter;
 
     public MultiImageMomentsVH(Context context, ViewGroup viewGroup, int layoutResId) {
         super(context, viewGroup, layoutResId);
@@ -40,63 +42,62 @@ public class MultiImageMomentsVH extends CircleBaseViewHolder implements Adapter
 
     @Override
     public void onFindView(@NonNull View rootView) {
-        noScrollGridView = (NoScrollGridView) findView(noScrollGridView, R.id.item_grid);
-        noScrollGridView.setOnItemClickListener(this);
+        imageContainer = (CircleImageContainer) findView(imageContainer, R.id.circle_image_container);
     }
 
     @Override
     public void onBindDataToView(@NonNull MomentsInfo data, int position, int viewType) {
         if (adapter == null) {
-            adapter = new InnerGridVieAdapter(getContext(), data.getContent().getPics());
-            noScrollGridView.setAdapter(adapter);
-        }
-        KLog.i("update image" + data.getAuthor().getNick()+"     :  " + data.getContent().getPics().size());
-        adapter.updateData(data.getContent().getPics());
-        if (data.getContent().getPics().size() == 4) {
-            noScrollGridView.setNumColumns(2);
+            adapter = new InnerContainerAdapter(getContext(), data.getContent().getPics());
+            imageContainer.setAdapter(adapter);
         } else {
-            noScrollGridView.setNumColumns(3);
+            KLog.i("update image" + data.getAuthor().getNick() + "     :  " + data.getContent().getPics().size());
+            adapter.updateData(data.getContent().getPics());
         }
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // TODO: 2016/11/9 图片展示
-    }
+
+    private static class InnerContainerAdapter extends CircleBaseImageAdapter {
 
 
-    private static class InnerGridVieAdapter extends BaseAbsViewAdapter<String, InnerGridVieAdapter.InnerGridViewHolder> {
+        private Context context;
+        private List<String> datas;
 
-
-        InnerGridVieAdapter(Context context, List<String> datas) {
-            super(context, datas);
+        InnerContainerAdapter(Context context, List<String> datas) {
+            this.context = context;
+            this.datas = new ArrayList<>();
+            this.datas.addAll(datas);
         }
 
         @Override
-        public int getLayoutRes() {
-            return R.layout.item_grid_image;
-        }
-
-        @Override
-        public InnerGridViewHolder initViewHolder() {
-            return new InnerGridViewHolder();
-        }
-
-        @Override
-        public void onBindData(int position, String data, InnerGridViewHolder holder) {
-            if (StringUtil.noEmpty(data)) {
-                ImageLoadMnanger.INSTANCE.loadImage(holder.mSuperImageView, data);
+        public ImageView onCreateView(ImageView convertView, ViewGroup parent, int position) {
+            if (convertView == null) {
+                convertView = new ForceClickImageView(context);
+                convertView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                KLog.e("newInstance");
             }
+            return convertView;
         }
 
-        static class InnerGridViewHolder implements BaseAbsViewHolder {
+        @Override
+        public void onBindData(int position, @NonNull ImageView convertView) {
+            ImageLoadMnanger.INSTANCE.loadImage(convertView, datas.get(position));
+        }
 
-            ForceClickImageView mSuperImageView;
+        @Override
+        public int getCount() {
+            return datas.size();
+        }
 
-            @Override
-            public void onInFlate(View v) {
-                mSuperImageView = (ForceClickImageView) v.findViewById(R.id.img);
-            }
+        public void updateData(List<String> datas) {
+            this.datas.clear();
+            this.datas.addAll(datas);
+            notifyDataChanged();
+        }
+
+        @Override
+        public void onItemClick(View convertView, int position, Rect visibleRect, Rect[] allItemRects) {
+
         }
     }
 }

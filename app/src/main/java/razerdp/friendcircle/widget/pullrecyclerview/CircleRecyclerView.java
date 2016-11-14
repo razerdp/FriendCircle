@@ -71,7 +71,6 @@ import static razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView.St
  */
 
 public class CircleRecyclerView extends FrameLayout {
-    public static boolean DEBUG = true;
     private static final String TAG = "CircleRecyclerView";
 
     @Retention(RetentionPolicy.SOURCE)
@@ -275,7 +274,6 @@ public class CircleRecyclerView extends FrameLayout {
                 }
                 int resultOffset = (int) (offset - lastOffset);
                 refreshIcon.offsetTopAndBottom(resultOffset);
-                Log.d(TAG, "pull  >>  " + offset + "  resultOffset   >>>   " + resultOffset + "   lastOffset   >>>   " + lastOffset);
                 adjustRefreshIconPosition();
                 lastOffset = offset;
             }

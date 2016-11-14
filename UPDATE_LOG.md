@@ -1,4 +1,6 @@
 # 更新日志
+##2016-11-14 九宫格自定义控件实现
+
 ##2016-11-3 朋友圈的adapter实现，viewholder的反射构造。。。果然我还是喜欢反射- -
 
 ##2016-11-1 recyclerView的baseadapter和viewholder基类

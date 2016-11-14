@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/item_padding"
-    android:paddingLeft="@dimen/item_padding"
-    android:paddingRight="@dimen/item_padding"
-    android:paddingBottom="8dp">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingLeft="@dimen/item_padding"
+                android:paddingRight="@dimen/item_padding"
+                android:paddingTop="@dimen/item_padding">
 
     <ImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/item_avatar"
         android:layout_height="@dimen/item_avatar"
+        android:scaleType="centerCrop"
         tools:src="@drawable/test_avatar"/>
 
     <TextView
@@ -20,19 +21,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/avatar"
-        android:layout_toRightOf="@id/avatar"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="4dp"
-        android:textSize="@dimen/normal_font"
+        android:layout_toRightOf="@id/avatar"
         android:textColor="@color/nick"
+        android:textSize="@dimen/normal_font"
         tools:text="羽翼君"/>
 
     <razerdp.friendcircle.widget.ClickShowMoreLayout
         android:id="@+id/item_text_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/nick"
         android:layout_alignLeft="@id/nick"
+        android:layout_below="@id/nick"
         android:layout_marginTop="8dp"
         app:show_line="5"
         app:text_color="@color/normal_font_color"/>
