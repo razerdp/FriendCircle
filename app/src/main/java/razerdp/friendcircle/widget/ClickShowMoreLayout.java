@@ -28,7 +28,7 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({State.CLOSE, State.OPEN})
-    @interface State {
+    public @interface State {
         int CLOSE = 0;
         int OPEN = 1;
     }
@@ -101,16 +101,16 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
     }
 
 
-    private void setState(@State int state) {
+    public void setState(@State int state) {
         switch (state) {
             case State.CLOSE:
-                mTextView.setMaxLines(Integer.MAX_VALUE);
-                mClickToShow.setText("收起");
+                mTextView.setMaxLines(showLine);
+                mClickToShow.setText(clickText);
                 preState = State.CLOSE;
                 break;
             case State.OPEN:
-                mTextView.setMaxLines(showLine);
-                mClickToShow.setText(clickText);
+                mTextView.setMaxLines(Integer.MAX_VALUE);
+                mClickToShow.setText("收起");
                 preState = State.OPEN;
                 break;
         }
@@ -118,9 +118,13 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
 
     public void setText(String str) {
         if (hasGetLineCount) {
-            restoreState();
+            //如果长文字一样，才恢复
+            if (TextUtils.equals(getText().toString(),str)) {
+                restoreState();
+            }
             mTextView.setText(str);
         } else {
+            mTextView.setText(str);
             mTextView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
@@ -133,6 +137,7 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
                     return true;
                 }
             });
+            setState(State.CLOSE);
         }
     }
 
@@ -143,4 +148,5 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
     public CharSequence getText() {
         return mTextView.getText();
     }
+
 }
