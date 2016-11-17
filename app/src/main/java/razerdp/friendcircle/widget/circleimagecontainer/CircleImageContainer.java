@@ -228,7 +228,7 @@ public class CircleImageContainer extends GridLayout {
 
 
     private class InnerRecyclerHelper {
-        private SparseArray<CachedViewInfo> mCachedViews;
+        private SparseArray<ImageView> mCachedViews;
         private SimpleObjectPool<Space> emptyViews;
 
         InnerRecyclerHelper() {
@@ -237,19 +237,16 @@ public class CircleImageContainer extends GridLayout {
         }
 
         ImageView getCachedView(int position) {
-            CachedViewInfo info = mCachedViews.get(position);
-            if (info != null) {
+            final ImageView imageView = mCachedViews.get(position);
+            if (imageView != null) {
                 mCachedViews.remove(position);
-                return info.isCached ? info.imageView : null;
+                return imageView;
             }
             return null;
         }
 
         void addCachedView(int position, ImageView view) {
-            CachedViewInfo info = new CachedViewInfo();
-            info.imageView = view;
-            info.isCached = true;
-            mCachedViews.put(position, info);
+            mCachedViews.put(position, view);
         }
 
         Space getEmptyHolderView() {
@@ -265,11 +262,6 @@ public class CircleImageContainer extends GridLayout {
             mCachedViews.clear();
         }
 
-    }
-
-    private class CachedViewInfo {
-        public ImageView imageView;
-        public boolean isCached;
     }
 
     private class CircleImageAdapterObserver extends CircleBaseDataObserver {
