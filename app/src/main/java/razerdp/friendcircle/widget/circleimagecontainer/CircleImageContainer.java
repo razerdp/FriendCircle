@@ -56,6 +56,7 @@ public class CircleImageContainer extends GridLayout {
         defaultDividerWidth = dp2Px(8f);
         recycler = new InnerRecyclerHelper();
         setOrientation(HORIZONTAL);
+        setUseDefaultMargins(true);
         setColumnCount(3);
         setRowCount(3);
     }
@@ -94,6 +95,7 @@ public class CircleImageContainer extends GridLayout {
         updateItemCount();
         //清除旧的view
         detachAllViewsFromParent();
+
         int newChildCount = mItemCount;
         if (newChildCount > 1) {
             fillView(newChildCount);

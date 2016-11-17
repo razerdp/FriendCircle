@@ -1,19 +1,19 @@
 package razerdp.friendcircle.widget;
 
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.res.TypedArray;
-import android.support.annotation.IntDef;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.SparseArray;
+import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.lang.ref.WeakReference;
 
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.utils.UIHelper;
@@ -26,14 +26,9 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
     private static final String TAG = "ClickShowMoreLayout";
 
 
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({State.CLOSE, State.OPEN})
-    public @interface State {
-        int CLOSE = 0;
-        int OPEN = 1;
-    }
+    public static final int CLOSE = 0;
+    public static final int OPEN = 1;
 
-    @State
     private int preState;
 
     private TextView mTextView;
@@ -47,6 +42,9 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
 
     private boolean hasMore;
     private boolean hasGetLineCount = false;
+
+
+    private static final SparseIntArray TEXT_STATE = new SparseIntArray();
 
     public ClickShowMoreLayout(Context context) {
         this(context, null);
@@ -97,31 +95,27 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
     @Override
     public void onClick(View v) {
         boolean needOpen = TextUtils.equals(((TextView) v).getText().toString(), clickText);
-        setState(needOpen ? State.OPEN : State.CLOSE);
+        setState(needOpen ? OPEN : CLOSE);
     }
 
 
-    public void setState(@State int state) {
+    public void setState(int state) {
         switch (state) {
-            case State.CLOSE:
+            case CLOSE:
                 mTextView.setMaxLines(showLine);
                 mClickToShow.setText(clickText);
-                preState = State.CLOSE;
                 break;
-            case State.OPEN:
+            case OPEN:
                 mTextView.setMaxLines(Integer.MAX_VALUE);
                 mClickToShow.setText("收起");
-                preState = State.OPEN;
                 break;
         }
+        TEXT_STATE.put(getText().toString().hashCode(), state);
     }
 
     public void setText(String str) {
         if (hasGetLineCount) {
-            //如果长文字一样，才恢复
-            if (TextUtils.equals(getText().toString(),str)) {
-                restoreState();
-            }
+            restoreState(str);
             mTextView.setText(str);
         } else {
             mTextView.setText(str);
@@ -137,12 +131,20 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
                     return true;
                 }
             });
-            setState(State.CLOSE);
+            setState(CLOSE);
         }
     }
 
-    private void restoreState() {
-        setState(preState);
+    private void restoreState(String str) {
+        int state = CLOSE;
+        int holderState = TEXT_STATE.get(str.hashCode(), -1);
+        if (holderState == -1) {
+            TEXT_STATE.put(str.hashCode(), state);
+        } else {
+            state = holderState;
+        }
+        Log.i(TAG, "" + state);
+        setState(state);
     }
 
     public CharSequence getText() {
