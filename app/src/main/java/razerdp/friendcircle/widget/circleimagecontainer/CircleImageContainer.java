@@ -114,7 +114,6 @@ public class CircleImageContainer extends FlowLayout {
         for (int i = 0; i < 4; i++) {
             final ImageView child = obtainView(i);
             if (i == 2) {
-                KLog.d("执行到4，换行。。。");
                 setupViewAndAddView(i, child, true);
             } else {
                 setupViewAndAddView(i, child, false);
