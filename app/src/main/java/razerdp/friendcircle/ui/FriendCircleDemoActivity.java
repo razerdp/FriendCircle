@@ -6,8 +6,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.socks.library.KLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +30,7 @@ import razerdp.friendcircle.ui.viewholder.SingleImageMomentsVH;
 import razerdp.friendcircle.ui.viewholder.TextOnlyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.WebMomentsVH;
 import razerdp.friendcircle.utils.ToolUtil;
+import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView;
 import razerdp.friendcircle.widget.pullrecyclerview.interfaces.OnRefreshListener2;
 
@@ -118,6 +122,7 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
                     }
                     break;
                 case REQUEST_LOADMORE:
+                    KLog.i("loadmore compelete");
                     adapter.addMore(response);
                     break;
             }

@@ -18,6 +18,8 @@ import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.socks.library.KLog;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.LinkedList;
@@ -28,6 +30,7 @@ import me.everything.android.ui.overscroll.IOverScrollUpdateListener;
 import me.everything.android.ui.overscroll.VerticalOverScrollBounceEffectDecorator;
 import me.everything.android.ui.overscroll.adapters.RecyclerViewOverScrollDecorAdapter;
 import razerdp.friendcircle.R;
+import razerdp.friendcircle.app.baseadapter.BaseRecyclerViewHolder;
 import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.pullrecyclerview.interfaces.OnRefreshListener2;
 
@@ -98,6 +101,7 @@ public class CircleRecyclerView extends FrameLayout {
     private ImageView refreshIcon;
 
     private int refreshPosition;
+    private PullRefreshFooter footerView;
 
 
     public CircleRecyclerView(Context context) {
@@ -139,6 +143,11 @@ public class CircleRecyclerView extends FrameLayout {
 
         iconObserver = new InnerRefreshIconObserver(refreshIcon, refreshPosition);
 
+        footerView = new PullRefreshFooter(getContext());
+
+        addFooterView(footerView);
+
+        recyclerView.addOnScrollListener(onScrollListener);
     }
 
     @Override
@@ -157,6 +166,9 @@ public class CircleRecyclerView extends FrameLayout {
         Log.i(TAG, "compelete");
         if (pullMode == FROM_START && iconObserver != null) {
             iconObserver.catchResetEvent();
+        }
+        if (pullMode == FROM_BOTTOM && footerView != null) {
+            footerView.onFinish();
         }
         setCurrentStatus(DEFAULT);
     }
@@ -236,6 +248,34 @@ public class CircleRecyclerView extends FrameLayout {
             }
         });
     }
+
+
+    /**
+     * scroll listener
+     */
+    private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+            if (!(layoutManager instanceof LinearLayoutManager)) return;
+            if (currentStatus == REFRESHING) return;
+            if (onRefreshListener == null) return;
+
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                int lastItemPos = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
+                int itemCount = layoutManager.getItemCount();
+                KLog.i("" + lastItemPos + "  ,  " + itemCount);
+                if (lastItemPos == itemCount - 1 && currentStatus != REFRESHING) {
+                    onRefreshListener.onLoadMore();
+                    KLog.i("loadmore");
+                    pullMode = FROM_BOTTOM;
+                    setCurrentStatus(REFRESHING);
+                    footerView.onRefreshing();
+                }
+            }
+        }
+    };
 
 
     /**
@@ -422,11 +462,13 @@ public class CircleRecyclerView extends FrameLayout {
             if (onCreateHeaderViewHolder(viewType)) {
                 final int headerPosition = getHeaderPosition(viewType);
                 View headerView = mHeaderViewInfos.get(headerPosition).view;
+                checkAndSetRecyclerViewLayoutParams(headerView);
                 return new HeaderOrFooterViewHolder(headerView);
             } else if (onCreateFooterViewHolder(viewType)) {
                 //footer
                 final int footerPosition = getFooterPosition(viewType);
                 View footerView = mFooterViewInfos.get(footerPosition).view;
+                checkAndSetRecyclerViewLayoutParams(footerView);
                 return new HeaderOrFooterViewHolder(footerView);
             }
             return mAdapter.onCreateViewHolder(parent, viewType);
@@ -438,8 +480,10 @@ public class CircleRecyclerView extends FrameLayout {
             int numHeaders = getHeadersCount();
             int adapterCount = mAdapter.getItemCount();
             if (position < numHeaders) {
+                //header
                 return;
-            } else if (position > (numHeaders + adapterCount)) {
+            } else if (position > (numHeaders + adapterCount - 1)) {
+                //footer
                 return;
             } else {
                 int adjustPosition = position - numHeaders;
@@ -447,6 +491,22 @@ public class CircleRecyclerView extends FrameLayout {
                     mAdapter.onBindViewHolder(holder, adjustPosition);
                 }
             }
+
+        }
+
+        private void checkAndSetRecyclerViewLayoutParams(View child) {
+            if (child == null) return;
+            ViewGroup.LayoutParams p = child.getLayoutParams();
+            RecyclerView.LayoutParams params = null;
+            if (p == null) {
+                params = new RecyclerView.LayoutParams(new MarginLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                                                                                         ViewGroup.LayoutParams.WRAP_CONTENT)));
+            } else {
+                if (!(p instanceof RecyclerView.LayoutParams)) {
+                    params = recyclerView.getLayoutManager().generateLayoutParams(p);
+                }
+            }
+            child.setLayoutParams(params);
 
         }
 
