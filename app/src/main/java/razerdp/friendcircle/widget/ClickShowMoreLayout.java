@@ -143,7 +143,6 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
         } else {
             state = holderState;
         }
-        Log.i(TAG, "" + state);
         setState(state);
     }
 

@@ -2,15 +2,16 @@ package razerdp.friendcircle.widget.circleimagecontainer;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.widget.Space;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 
-import razerdp.friendcircle.utils.SimpleObjectPool;
+import com.socks.library.KLog;
+
+import org.apmem.tools.layouts.FlowLayout;
+
 import razerdp.friendcircle.widget.circleimagecontainer.adapter.CircleBaseImageAdapter;
 import razerdp.friendcircle.widget.circleimagecontainer.adapter.observer.CircleBaseDataObserver;
 
@@ -21,7 +22,7 @@ import razerdp.friendcircle.widget.circleimagecontainer.adapter.observer.CircleB
  * 适用于朋友圈的九宫格图片显示(用于listview等)
  */
 
-public class CircleImageContainer extends GridLayout {
+public class CircleImageContainer extends FlowLayout {
 
     private CircleBaseImageAdapter mAdapter;
     private CircleImageAdapterObserver mAdapterObserver = new CircleImageAdapterObserver();
@@ -32,7 +33,7 @@ public class CircleImageContainer extends GridLayout {
 
     private boolean mDataChanged;
 
-    private int defaultDividerWidth;
+    private int itemMargin;
 
     private int multiChildSize;
 
@@ -53,12 +54,10 @@ public class CircleImageContainer extends GridLayout {
     }
 
     private void init(Context context) {
-        defaultDividerWidth = dp2Px(8f);
+        itemMargin = dp2Px(4f);
         recycler = new InnerRecyclerHelper();
         setOrientation(HORIZONTAL);
-        setUseDefaultMargins(true);
-        setColumnCount(3);
-        setRowCount(3);
+        setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
     }
 
 
@@ -67,7 +66,7 @@ public class CircleImageContainer extends GridLayout {
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int childRestWidth = widthSize - getPaddingLeft() - getPaddingRight();
         updateItemCount();
-        multiChildSize = childRestWidth / 3 - defaultDividerWidth * 2;
+        multiChildSize = childRestWidth / 3 - itemMargin * 2;
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -84,11 +83,7 @@ public class CircleImageContainer extends GridLayout {
             for (int i = 0; i < oldChildCount; i++) {
                 View v = getChildAt(i);
                 v.forceLayout();
-                if (v instanceof Space) {
-                    recycler.addEmptyHolderView((Space) v);
-                } else if (v instanceof ImageView) {
-                    recycler.addCachedView(i, (ImageView) v);
-                }
+                recycler.addCachedView(i, (ImageView) v);
             }
         }
 
@@ -97,7 +92,7 @@ public class CircleImageContainer extends GridLayout {
         detachAllViewsFromParent();
 
         int newChildCount = mItemCount;
-        if (newChildCount > 1) {
+        if (newChildCount > 0) {
             fillView(newChildCount);
         }
         super.onLayout(changed, l, t, r, b);
@@ -110,54 +105,45 @@ public class CircleImageContainer extends GridLayout {
         } else {
             for (int i = 0; i < childCount; i++) {
                 final ImageView child = obtainView(i);
-                setupViewAndAddView(i, child);
+                setupViewAndAddView(i, child, false);
             }
         }
     }
 
     private void fillFourViews() {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
+            final ImageView child = obtainView(i);
             if (i == 2) {
-                Space space = recycler.getEmptyHolderView();
-                if (space == null) {
-                    space = new Space(getContext());
-                    recycler.addEmptyHolderView(space);
-                }
-                setupViewAndAddView(i, space);
+                KLog.d("执行到4，换行。。。");
+                setupViewAndAddView(i, child, true);
             } else {
-                final ImageView child = obtainView(i);
-                setupViewAndAddView(i, child);
+                setupViewAndAddView(i, child, false);
             }
         }
     }
 
 
-    private void setupViewAndAddView(int position, @NonNull View v) {
-        int childPosition = position;
-        if (mItemCount == 4) {
-            childPosition = childPosition > 1 ? childPosition - 1 : childPosition;
-        }
-        setItemLayoutParams(v);
+    private void setupViewAndAddView(int position, @NonNull View v, boolean newLine) {
+        setItemLayoutParams(v, newLine);
         if (v.isLayoutRequested()) {
-            if (v instanceof ImageView) {
-                mAdapter.onBindData(childPosition, (ImageView) v);
-            }
+            mAdapter.onBindData(position, (ImageView) v);
             attachViewToParent(v, position, v.getLayoutParams());
         } else {
-            if (v instanceof ImageView) {
-                mAdapter.onBindData(childPosition, (ImageView) v);
-            }
+            mAdapter.onBindData(position, (ImageView) v);
             addViewInLayout(v, position, v.getLayoutParams(), true);
         }
 
     }
 
 
-    private void setItemLayoutParams(@NonNull View v) {
+    private void setItemLayoutParams(@NonNull View v, boolean needLine) {
         ViewGroup.LayoutParams p = v.getLayoutParams();
         if (p == null || !(p instanceof LayoutParams)) {
             LayoutParams childLP = generateDefaultMultiLayoutParams();
+            childLP.setNewLine(needLine);
             v.setLayoutParams(childLP);
+        } else {
+            ((LayoutParams) p).setNewLine(needLine);
         }
     }
 
@@ -194,7 +180,7 @@ public class CircleImageContainer extends GridLayout {
         final ImageView cachedView = recycler.getCachedView(position);
         final ImageView child = mAdapter.onCreateView(cachedView, this, position);
         if (child != cachedView) {
-            setItemLayoutParams(child);
+            setItemLayoutParams(child, false);
             recycler.addCachedView(position, child);
         }
         return child;
@@ -202,11 +188,8 @@ public class CircleImageContainer extends GridLayout {
 
     protected LayoutParams generateDefaultMultiLayoutParams() {
         LayoutParams p = new CircleImageContainer.LayoutParams(multiChildSize, multiChildSize);
-        p.leftMargin = defaultDividerWidth >> 1;
-        p.topMargin = defaultDividerWidth >> 1;
-
-        p.rightMargin = defaultDividerWidth >> 1;
-        p.bottomMargin = defaultDividerWidth >> 1;
+        p.rightMargin = itemMargin;
+        p.bottomMargin = itemMargin;
         return p;
     }
 
@@ -215,7 +198,7 @@ public class CircleImageContainer extends GridLayout {
         return (int) (dp * getContext().getResources().getDisplayMetrics().density + 0.5f);
     }
 
-    public static class LayoutParams extends GridLayout.LayoutParams {
+    public static class LayoutParams extends FlowLayout.LayoutParams {
 
         public LayoutParams(int width, int height) {
             this(new ViewGroup.LayoutParams(width, height));
@@ -229,11 +212,9 @@ public class CircleImageContainer extends GridLayout {
 
     private class InnerRecyclerHelper {
         private SparseArray<ImageView> mCachedViews;
-        private SimpleObjectPool<Space> emptyViews;
 
         InnerRecyclerHelper() {
             mCachedViews = new SparseArray<>();
-            emptyViews = new SimpleObjectPool<>(4);
         }
 
         ImageView getCachedView(int position) {
@@ -248,15 +229,6 @@ public class CircleImageContainer extends GridLayout {
         void addCachedView(int position, ImageView view) {
             mCachedViews.put(position, view);
         }
-
-        Space getEmptyHolderView() {
-            return emptyViews.get();
-        }
-
-        void addEmptyHolderView(Space emptyView) {
-            emptyViews.put(emptyView);
-        }
-
 
         void clearCache() {
             mCachedViews.clear();
