@@ -127,9 +127,11 @@ public class CircleImageContainer extends FlowLayout {
         if (v.isLayoutRequested()) {
             mAdapter.onBindData(position, (ImageView) v);
             attachViewToParent(v, position, v.getLayoutParams());
+            KLog.d("attachViewToParent");
         } else {
             mAdapter.onBindData(position, (ImageView) v);
             addViewInLayout(v, position, v.getLayoutParams(), true);
+            KLog.d("addViewInLayout");
         }
 
     }
