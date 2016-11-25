@@ -1,10 +1,10 @@
-package razerdp.friendcircle.widget.circleimagecontainer.adapter.observer;
+package razerdp.friendcircle.widget.photoscontents.adapter.observer;
 
 /**
  * Created by 大灯泡 on 2016/11/9.
  */
 
-public class CircleAdapterObservable extends CircleImageObservable<CircleBaseDataObserver> {
+public class PhotoAdapterObservable extends PhotoImageObservable<PhotoBaseDataObserver> {
 
     public void notifyChanged() {
         synchronized (mObservers) {

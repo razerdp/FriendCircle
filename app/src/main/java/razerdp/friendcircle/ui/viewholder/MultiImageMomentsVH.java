@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 
 import com.socks.library.KLog;
@@ -17,9 +16,8 @@ import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.ui.adapter.CircleBaseViewHolder;
-import razerdp.friendcircle.widget.NoScrollGridView;
-import razerdp.friendcircle.widget.circleimagecontainer.CircleImageContainer;
-import razerdp.friendcircle.widget.circleimagecontainer.adapter.CircleBaseImageAdapter;
+import razerdp.friendcircle.widget.photoscontents.PhotoContents;
+import razerdp.friendcircle.widget.photoscontents.adapter.PhotoContentsBaseAdapter;
 import razerdp.friendcircle.widget.imageview.ForceClickImageView;
 
 /**
@@ -33,7 +31,7 @@ import razerdp.friendcircle.widget.imageview.ForceClickImageView;
 public class MultiImageMomentsVH extends CircleBaseViewHolder {
 
 
-    private CircleImageContainer imageContainer;
+    private PhotoContents imageContainer;
     private InnerContainerAdapter adapter;
 
     public MultiImageMomentsVH(Context context, ViewGroup viewGroup, int layoutResId) {
@@ -42,7 +40,7 @@ public class MultiImageMomentsVH extends CircleBaseViewHolder {
 
     @Override
     public void onFindView(@NonNull View rootView) {
-        imageContainer = (CircleImageContainer) findView(imageContainer, R.id.circle_image_container);
+        imageContainer = (PhotoContents) findView(imageContainer, R.id.circle_image_container);
     }
 
     @Override
@@ -57,7 +55,7 @@ public class MultiImageMomentsVH extends CircleBaseViewHolder {
     }
 
 
-    private static class InnerContainerAdapter extends CircleBaseImageAdapter {
+    private static class InnerContainerAdapter extends PhotoContentsBaseAdapter {
 
 
         private Context context;
@@ -81,6 +79,7 @@ public class MultiImageMomentsVH extends CircleBaseViewHolder {
 
         @Override
         public void onBindData(int position, @NonNull ImageView convertView) {
+            KLog.i(datas.get(position));
             ImageLoadMnanger.INSTANCE.loadImage(convertView, datas.get(position));
         }
 

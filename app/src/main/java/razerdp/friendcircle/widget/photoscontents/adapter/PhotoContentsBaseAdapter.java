@@ -1,4 +1,4 @@
-package razerdp.friendcircle.widget.circleimagecontainer.adapter;
+package razerdp.friendcircle.widget.photoscontents.adapter;
 
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
@@ -6,26 +6,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import razerdp.friendcircle.widget.circleimagecontainer.adapter.observer.CircleAdapterObservable;
-import razerdp.friendcircle.widget.circleimagecontainer.adapter.observer.CircleBaseDataObserver;
+import razerdp.friendcircle.widget.photoscontents.adapter.observer.PhotoAdapterObservable;
+import razerdp.friendcircle.widget.photoscontents.adapter.observer.PhotoBaseDataObserver;
 
 
 /**
  * Created by 大灯泡 on 2016/11/9.
  */
 
-public abstract class CircleBaseImageAdapter {
+public abstract class PhotoContentsBaseAdapter {
 
 
-    private CircleAdapterObservable mObservable = new CircleAdapterObservable();
+    private PhotoAdapterObservable mObservable = new PhotoAdapterObservable();
 
 
-    public void registerDataSetObserver(CircleBaseDataObserver observer) {
+    public void registerDataSetObserver(PhotoBaseDataObserver observer) {
         mObservable.registerObserver(observer);
 
     }
 
-    public void unregisterDataSetObserver(CircleBaseDataObserver observer) {
+    public void unregisterDataSetObserver(PhotoBaseDataObserver observer) {
         mObservable.unregisterObserver(observer);
     }
 

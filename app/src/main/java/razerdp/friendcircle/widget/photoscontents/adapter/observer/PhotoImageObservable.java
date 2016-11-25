@@ -1,4 +1,4 @@
-package razerdp.friendcircle.widget.circleimagecontainer.adapter.observer;
+package razerdp.friendcircle.widget.photoscontents.adapter.observer;
 
 import java.util.ArrayList;
 
@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * 观察者
  */
 
-public abstract class CircleImageObservable<T> {
+public abstract class PhotoImageObservable<T> {
 
     protected final ArrayList<T> mObservers = new ArrayList<T>();
 

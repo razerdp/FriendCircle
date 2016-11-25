@@ -1,4 +1,4 @@
-package razerdp.friendcircle.widget.circleimagecontainer.adapter.observer;
+package razerdp.friendcircle.widget.photoscontents.adapter.observer;
 
 import android.database.DataSetObserver;
 
@@ -6,7 +6,7 @@ import android.database.DataSetObserver;
  * Created by 大灯泡 on 2016/11/9.
  */
 
-public class CircleBaseDataObserver extends DataSetObserver {
+public class PhotoBaseDataObserver extends DataSetObserver {
     @Override
     public void onChanged() {
         super.onChanged();

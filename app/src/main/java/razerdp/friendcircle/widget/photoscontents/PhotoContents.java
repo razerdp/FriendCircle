@@ -1,4 +1,4 @@
-package razerdp.friendcircle.widget.circleimagecontainer;
+package razerdp.friendcircle.widget.photoscontents;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -12,8 +12,8 @@ import com.socks.library.KLog;
 
 import org.apmem.tools.layouts.FlowLayout;
 
-import razerdp.friendcircle.widget.circleimagecontainer.adapter.CircleBaseImageAdapter;
-import razerdp.friendcircle.widget.circleimagecontainer.adapter.observer.CircleBaseDataObserver;
+import razerdp.friendcircle.widget.photoscontents.adapter.PhotoContentsBaseAdapter;
+import razerdp.friendcircle.widget.photoscontents.adapter.observer.PhotoBaseDataObserver;
 
 
 /**
@@ -22,10 +22,10 @@ import razerdp.friendcircle.widget.circleimagecontainer.adapter.observer.CircleB
  * 适用于朋友圈的九宫格图片显示(用于listview等)
  */
 
-public class CircleImageContainer extends FlowLayout {
+public class PhotoContents extends FlowLayout {
 
-    private CircleBaseImageAdapter mAdapter;
-    private CircleImageAdapterObserver mAdapterObserver = new CircleImageAdapterObserver();
+    private PhotoContentsBaseAdapter mAdapter;
+    private PhotoImageAdapterObserver mAdapterObserver = new PhotoImageAdapterObserver();
 
     private InnerRecyclerHelper recycler;
 
@@ -38,17 +38,17 @@ public class CircleImageContainer extends FlowLayout {
     private int multiChildSize;
 
 
-    public CircleImageContainer(Context context) {
+    public PhotoContents(Context context) {
         super(context);
         init(context);
     }
 
-    public CircleImageContainer(Context context, AttributeSet attrs) {
+    public PhotoContents(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public CircleImageContainer(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PhotoContents(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
@@ -72,17 +72,15 @@ public class CircleImageContainer extends FlowLayout {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        invalidate();
-        final int childCount = getChildCount();
         if (mAdapter == null || mItemCount == 0) {
             resetContainer();
             return;
         }
+        final int childCount = getChildCount();
         final int oldChildCount = childCount;
         if (oldChildCount > 0) {
             for (int i = 0; i < oldChildCount; i++) {
                 View v = getChildAt(i);
-                v.forceLayout();
                 recycler.addCachedView(i, (ImageView) v);
             }
         }
@@ -124,12 +122,11 @@ public class CircleImageContainer extends FlowLayout {
 
     private void setupViewAndAddView(int position, @NonNull View v, boolean newLine) {
         setItemLayoutParams(v, newLine);
+        mAdapter.onBindData(position, (ImageView) v);
         if (v.isLayoutRequested()) {
-            mAdapter.onBindData(position, (ImageView) v);
             attachViewToParent(v, position, v.getLayoutParams());
             KLog.d("attachViewToParent");
         } else {
-            mAdapter.onBindData(position, (ImageView) v);
             addViewInLayout(v, position, v.getLayoutParams(), true);
             KLog.d("addViewInLayout");
         }
@@ -149,7 +146,7 @@ public class CircleImageContainer extends FlowLayout {
     }
 
 
-    public void setAdapter(CircleBaseImageAdapter adapter) {
+    public void setAdapter(PhotoContentsBaseAdapter adapter) {
         if (mAdapter != null && mAdapterObserver != null) {
             mAdapter.unregisterDataSetObserver(mAdapterObserver);
         }
@@ -157,12 +154,12 @@ public class CircleImageContainer extends FlowLayout {
         resetContainer();
 
         mAdapter = adapter;
-        mAdapterObserver = new CircleImageAdapterObserver();
+        mAdapterObserver = new PhotoImageAdapterObserver();
         mAdapter.registerDataSetObserver(mAdapterObserver);
         requestLayout();
     }
 
-    public CircleBaseImageAdapter getAdapter() {
+    public PhotoContentsBaseAdapter getAdapter() {
         return mAdapter;
     }
 
@@ -181,14 +178,13 @@ public class CircleImageContainer extends FlowLayout {
         final ImageView cachedView = recycler.getCachedView(position);
         final ImageView child = mAdapter.onCreateView(cachedView, this, position);
         if (child != cachedView) {
-            setItemLayoutParams(child, false);
             recycler.addCachedView(position, child);
         }
         return child;
     }
 
     protected LayoutParams generateDefaultMultiLayoutParams() {
-        LayoutParams p = new CircleImageContainer.LayoutParams(multiChildSize, multiChildSize);
+        LayoutParams p = new PhotoContents.LayoutParams(multiChildSize, multiChildSize);
         p.rightMargin = itemMargin;
         p.bottomMargin = itemMargin;
         return p;
@@ -237,7 +233,7 @@ public class CircleImageContainer extends FlowLayout {
 
     }
 
-    private class CircleImageAdapterObserver extends CircleBaseDataObserver {
+    private class PhotoImageAdapterObserver extends PhotoBaseDataObserver {
 
         @Override
         public void onChanged() {
