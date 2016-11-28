@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,11 +25,9 @@ import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.ui.adapter.CircleMomentsAdapter;
 import razerdp.friendcircle.ui.viewholder.EmptyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.MultiImageMomentsVH;
-import razerdp.friendcircle.ui.viewholder.SingleImageMomentsVH;
 import razerdp.friendcircle.ui.viewholder.TextOnlyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.WebMomentsVH;
 import razerdp.friendcircle.utils.ToolUtil;
-import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView;
 import razerdp.friendcircle.widget.pullrecyclerview.interfaces.OnRefreshListener2;
 
@@ -82,7 +79,6 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
         CircleMomentsAdapter.Builder<MomentsInfo> builder = new CircleMomentsAdapter.Builder<>(this);
         builder.addType(EmptyMomentsVH.class, MomentsType.EMPTY_CONTENT, R.layout.moments_empty_content)
                .addType(MultiImageMomentsVH.class, MomentsType.MULTI_IMAGES, R.layout.moments_multi_image)
-               .addType(SingleImageMomentsVH.class, MomentsType.SINGLE_IMAGE, R.layout.moments_single_image)
                .addType(TextOnlyMomentsVH.class, MomentsType.TEXT_ONLY, R.layout.moments_only_text)
                .addType(WebMomentsVH.class, MomentsType.WEB, R.layout.moments_web)
                .setData(momentsInfoList);

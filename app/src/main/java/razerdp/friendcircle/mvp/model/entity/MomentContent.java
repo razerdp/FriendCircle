@@ -10,6 +10,8 @@ import razerdp.friendcircle.config.MomentsType;
 import razerdp.friendcircle.utils.StringUtil;
 import razerdp.friendcircle.utils.ToolUtil;
 
+import static android.R.attr.type;
+
 /**
  * Created by 大灯泡 on 2016/10/28.
  * <p>
@@ -88,11 +90,7 @@ public class MomentContent implements Serializable {
                 type = MomentsType.TEXT_ONLY;
             }
         } else {
-            if (pics.size() == 1) {
-                type = MomentsType.SINGLE_IMAGE;
-            } else {
-                type = MomentsType.MULTI_IMAGES;
-            }
+            type = MomentsType.MULTI_IMAGES;
         }
         return type;
     }
