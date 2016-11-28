@@ -67,11 +67,7 @@ public class PhotoContents extends FlowLayout {
         int childRestWidth = widthSize - getPaddingLeft() - getPaddingRight();
         updateItemCount();
         multiChildSize = childRestWidth / 3 - itemMargin * 2;
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
 
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         if (mAdapter == null || mItemCount == 0) {
             resetContainer();
             return;
@@ -93,6 +89,11 @@ public class PhotoContents extends FlowLayout {
         if (newChildCount > 0) {
             fillView(newChildCount);
         }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
     }
 
