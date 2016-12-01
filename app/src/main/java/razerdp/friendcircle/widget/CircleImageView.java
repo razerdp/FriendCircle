@@ -18,6 +18,8 @@ import android.net.Uri;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
+import android.widget.ImageView;
+
 import razerdp.friendcircle.R;
 
 /**
@@ -35,7 +37,7 @@ import razerdp.friendcircle.R;
  * app:border_color="#FF000000"/>
  */
 
-public class CircleImageView extends SuperImageView {
+public class CircleImageView extends ImageView {
 
     private static final ScaleType SCALE_TYPE = ScaleType.CENTER_CROP;
 

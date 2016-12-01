@@ -9,15 +9,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
-import android.view.View;
+import android.widget.ImageView;
+
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.widget.SuperImageView;
 
 /**
  * Created by 大灯泡 on 2016/4/11.
  * 朋友圈的imageview，包含点击动作
  */
-public class ForceClickImageView extends SuperImageView {
+public class ForceClickImageView extends ImageView {
     //前景层
     private Drawable mForegroundDrawable;
     private Rect mCachedBounds = new Rect();

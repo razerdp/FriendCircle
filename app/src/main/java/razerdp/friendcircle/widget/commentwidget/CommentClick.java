@@ -3,10 +3,10 @@ package razerdp.friendcircle.widget.commentwidget;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextPaint;
-import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.Toast;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
+
+import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.span.ClickableSpanEx;
 
@@ -19,10 +19,11 @@ public class CommentClick extends ClickableSpanEx {
     private int textSize;
     private UserInfo mUserInfo;
 
-    private CommentClick() {}
+    private CommentClick() {
+    }
 
     private CommentClick(Builder builder) {
-        super(builder.color,builder.clickEventColor);
+        super(builder.color, builder.clickEventColor);
         mContext = builder.mContext;
         mUserInfo = builder.mUserInfo;
         this.textSize = builder.textSize;
@@ -30,8 +31,8 @@ public class CommentClick extends ClickableSpanEx {
 
     @Override
     public void onClick(View widget) {
-        if (mUserInfo!=null)
-            Toast.makeText(mContext, "当前用户名是： " + mUserInfo.nick + "   它的ID是： " + mUserInfo.userId,
+        if (mUserInfo != null)
+            Toast.makeText(mContext, "当前用户名是： " + mUserInfo.getNick() + "   它的ID是： " + mUserInfo.getUserid(),
                     Toast.LENGTH_SHORT).show();
     }
 
@@ -44,17 +45,17 @@ public class CommentClick extends ClickableSpanEx {
     public static class Builder {
         private int color;
         private Context mContext;
-        private int textSize=16;
+        private int textSize = 16;
         private UserInfo mUserInfo;
         private int clickEventColor;
 
         public Builder(Context context, @NonNull UserInfo info) {
             mContext = context;
-            mUserInfo=info;
+            mUserInfo = info;
         }
 
         public Builder setTextSize(int textSize) {
-            this.textSize = UIHelper.sp2px(mContext,textSize);
+            this.textSize = UIHelper.sp2px(textSize);
             return this;
         }
 
@@ -63,8 +64,8 @@ public class CommentClick extends ClickableSpanEx {
             return this;
         }
 
-        public Builder setClickEventColor(int color){
-            this.clickEventColor=color;
+        public Builder setClickEventColor(int color) {
+            this.clickEventColor = color;
             return this;
         }
 

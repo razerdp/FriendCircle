@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="title_bar_view" type="id" />
+    <item name="recycler_view_tag" type="id" />
+    <item type="id" name="glide_tag_id"/>
+</resources>

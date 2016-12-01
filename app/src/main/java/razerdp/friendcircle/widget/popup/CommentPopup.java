@@ -1,30 +1,11 @@
 package razerdp.friendcircle.widget.popup;
 
-import android.app.Activity;
-import android.content.Context;
-import android.os.Handler;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.ScaleAnimation;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import java.lang.ref.WeakReference;
-import razerdp.basepopup.BasePopupWindow;
-import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.config.CommonValue;
-import razerdp.friendcircle.app.mvp.model.entity.DynamicInfo;
-import razerdp.friendcircle.utils.UIHelper;
-
 /**
  * Created by 大灯泡 on 2016/3/6.
  * 朋友圈点赞
  */
-public class CommentPopup extends BasePopupWindow implements View.OnClickListener {
+public class CommentPopup{}
+/*public class CommentPopup extends BasePopupWindow implements View.OnClickListener {
     private static final String TAG = "CommentPopup";
 
     private ImageView mLikeView;
@@ -33,7 +14,7 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
     private RelativeLayout mLikeClikcLayout;
     private RelativeLayout mCommentClickLayout;
 
-    private DynamicInfo mDynamicInfo;
+    private MomentsInfo mDynamicInfo;
 
     private int[] viewLocation;
 
@@ -46,7 +27,7 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
         super(context, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         viewLocation = new int[2];
-        handler = new WeakHandler(context);
+        handler = new WeakHandler();
 
         mLikeView = (ImageView) mPopupView.findViewById(R.id.iv_like);
         mLikeText = (TextView) mPopupView.findViewById(R.id.tv_like);
@@ -182,14 +163,6 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
         void onCommentClick(View v, DynamicInfo info);
     }
 
-    static class WeakHandler extends Handler {
-        private final WeakReference<Context> contenxt;
-
-        public WeakHandler(Context contenxt) {
-            this.contenxt = new WeakReference<Context>(contenxt);
-        }
-    }
-
     static class SpringInterPolator extends LinearInterpolator {
 
         public SpringInterPolator() {
@@ -201,4 +174,4 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
             return (float) Math.sin(input*Math.PI);
         }
     }
-}
+}*/

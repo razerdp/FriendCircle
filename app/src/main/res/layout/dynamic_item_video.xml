@@ -7,7 +7,7 @@
               android:background="@color/white"
               android:orientation="vertical">
 
-    <include layout="@layout/include_item_header"/>
+    <include layout="@layout/include_moments_header"/>
 
     <RelativeLayout
         android:id="@+id/content"
@@ -24,7 +24,7 @@
 
     </RelativeLayout>
 
-    <include layout="@layout/include_item_bottom"/>
+    <include layout="@layout/include_moments_bottom"/>
     <!--点赞控件/评论控件-->
 
 </LinearLayout>

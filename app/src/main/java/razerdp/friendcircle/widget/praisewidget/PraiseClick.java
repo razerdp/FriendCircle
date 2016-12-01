@@ -1,13 +1,11 @@
 package razerdp.friendcircle.widget.praisewidget;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.text.TextPaint;
-import android.text.style.ClickableSpan;
 import android.view.View;
-import android.widget.Toast;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
+
+import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.span.ClickableSpanEx;
 
@@ -34,8 +32,7 @@ public class PraiseClick extends ClickableSpanEx {
     @Override
     public void onClick(View widget) {
         if (mPraiseInfo!=null)
-        Toast.makeText(mContext, "当前用户名是： " + mPraiseInfo.nick + "   它的ID是： " + mPraiseInfo.userId,
-                Toast.LENGTH_SHORT).show();
+            UIHelper.ToastMessage("当前用户名是： " + mPraiseInfo.getNick() + "   它的ID是： " + mPraiseInfo.getUserid());
     }
 
     @Override
@@ -58,7 +55,7 @@ public class PraiseClick extends ClickableSpanEx {
         }
 
         public Builder setTextSize(int textSize) {
-            this.textSize = UIHelper.sp2px(mContext,textSize);
+            this.textSize = UIHelper.sp2px(textSize);
             return this;
         }
 

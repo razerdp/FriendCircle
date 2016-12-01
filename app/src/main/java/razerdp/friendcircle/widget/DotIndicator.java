@@ -5,8 +5,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.LinearLayout;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import razerdp.friendcircle.utils.UIHelper;
 
 /**
@@ -23,11 +25,11 @@ public class DotIndicator extends LinearLayout {
     private int mDotsNum = 9;
 
     public DotIndicator(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public DotIndicator(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public DotIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -44,6 +46,7 @@ public class DotIndicator extends LinearLayout {
 
     /**
      * 初始化dotview
+     *
      * @param context
      */
     private void buildDotView(Context context) {
@@ -51,21 +54,21 @@ public class DotIndicator extends LinearLayout {
         for (int i = 0; i < 9; i++) {
             DotView dotView = new DotView(context);
             dotView.setSelected(false);
-            LinearLayout.LayoutParams params = new LayoutParams(UIHelper.dipToPx(context, 10f),
-                    UIHelper.dipToPx(context, 10f));
+            LinearLayout.LayoutParams params = new LayoutParams(UIHelper.dipToPx(10f),
+                    UIHelper.dipToPx(10f));
             if (i == 0) {
                 params.leftMargin = 0;
+            } else {
+                params.leftMargin = UIHelper.dipToPx(6f);
             }
-            else {
-                params.leftMargin = UIHelper.dipToPx(context, 6f);
-            }
-            addView(dotView,params);
+            addView(dotView, params);
             mDotViews.add(dotView);
         }
     }
 
     /**
      * 当前选中的dotview
+     *
      * @param selection
      */
     public void setCurrentSelection(int selection) {
@@ -75,8 +78,7 @@ public class DotIndicator extends LinearLayout {
         }
         if (selection >= 0 && selection < mDotViews.size()) {
             mDotViews.get(selection).setSelected(true);
-        }
-        else {
+        } else {
             Log.e(TAG, "the selection can not over dotViews size");
         }
     }
@@ -87,6 +89,7 @@ public class DotIndicator extends LinearLayout {
 
     /**
      * 当前需要展示的dotview数量
+     *
      * @param num
      */
     public void setDotViewNum(int num) {
@@ -116,7 +119,7 @@ public class DotIndicator extends LinearLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mDotViews.clear();
-        mDotViews=null;
+        mDotViews = null;
         Log.d(TAG, "清除dotview引用");
     }
 }
