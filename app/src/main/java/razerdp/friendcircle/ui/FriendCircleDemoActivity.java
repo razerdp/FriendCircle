@@ -84,7 +84,7 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
                .setData(momentsInfoList);
         adapter = builder.build();
         circleRecyclerView.setAdapter(adapter);
-        onRefresh();
+        circleRecyclerView.autoRefresh();
 
     }
 

@@ -1,5 +1,6 @@
 package razerdp.friendcircle.widget.pullrecyclerview;
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
@@ -173,6 +174,26 @@ public class CircleRecyclerView extends FrameLayout {
         setCurrentStatus(DEFAULT);
     }
 
+    public void autoRefresh() {
+        if (currentStatus == REFRESHING || pullMode == FROM_BOTTOM || iconObserver == null || onRefreshListener == null) return;
+        pullMode = FROM_START;
+        setCurrentStatus(REFRESHING);
+        iconObserver.autoRefresh();
+        onRefreshListener.onRefresh();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        Log.e(TAG, "onMeasure() called with: widthMeasureSpec = [" + widthMeasureSpec + "], heightMeasureSpec = [" + heightMeasureSpec + "]");
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        Log.e(TAG, "onLayout: ");
+    }
+
     //------------------------------------------get/set-----------------------------------------------
 
     public OnRefreshListener2 getOnRefreshListener() {
@@ -285,11 +306,10 @@ public class CircleRecyclerView extends FrameLayout {
     private static class InnerRefreshIconObserver {
         private ImageView refreshIcon;
         private final int refreshPosition;
-        private float lastOffset = 0.0f;
         private RotateAnimation rotateAnimation;
         private ValueAnimator mValueAnimator;
 
-        public InnerRefreshIconObserver(ImageView refreshIcon, int refreshPosition) {
+        InnerRefreshIconObserver(ImageView refreshIcon, int refreshPosition) {
             this.refreshIcon = refreshIcon;
             this.refreshPosition = refreshPosition;
 
@@ -300,32 +320,29 @@ public class CircleRecyclerView extends FrameLayout {
 
         }
 
-        public void catchPullEvent(float offset) {
+        void catchPullEvent(float offset) {
             if (checkHacIcon()) {
                 refreshIcon.setRotation(-offset * 2);
                 if (offset >= refreshPosition) {
                     offset = refreshPosition;
                 }
-                int resultOffset = (int) (offset - lastOffset);
-                refreshIcon.offsetTopAndBottom(resultOffset);
+                refreshIcon.layout(refreshIcon.getLeft(), (int) Math.abs(offset), refreshIcon.getRight(), (int) (Math.abs(offset) + refreshIcon.getHeight()));
                 adjustRefreshIconPosition();
-                lastOffset = offset;
             }
-
         }
 
         /**
          * 调整icon的位置界限
          */
         private void adjustRefreshIconPosition() {
-            if (refreshIcon.getTop() < 0) {
+            if (refreshIcon.getY() < 0) {
                 refreshIcon.offsetTopAndBottom(Math.abs(refreshIcon.getTop()));
-            } else if (refreshIcon.getTop() > refreshPosition) {
+            } else if (refreshIcon.getY() > refreshPosition) {
                 refreshIcon.offsetTopAndBottom(-(refreshIcon.getTop() - refreshPosition));
             }
         }
 
-        public void catchRefreshEvent() {
+        void catchRefreshEvent() {
             if (checkHacIcon()) {
                 refreshIcon.clearAnimation();
                 if (refreshIcon.getTop() == 0) {
@@ -335,11 +352,12 @@ public class CircleRecyclerView extends FrameLayout {
             }
         }
 
-        public void catchResetEvent() {
+        void catchResetEvent() {
+            rotateAnimation.cancel();
             refreshIcon.clearAnimation();
             if (mValueAnimator == null) {
                 mValueAnimator = ValueAnimator.ofFloat(refreshPosition, 0);
-                mValueAnimator.setInterpolator(new DecelerateInterpolator());
+                mValueAnimator.setInterpolator(new LinearInterpolator());
                 mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
@@ -347,13 +365,48 @@ public class CircleRecyclerView extends FrameLayout {
                         catchPullEvent(result);
                     }
                 });
-                mValueAnimator.setDuration(500);
+                mValueAnimator.setDuration(540);
             }
             mValueAnimator.start();
         }
 
         private boolean checkHacIcon() {
             return refreshIcon != null;
+        }
+
+        void autoRefresh() {
+            ValueAnimator animator = ValueAnimator.ofFloat(0, refreshPosition);
+            animator.setInterpolator(new LinearInterpolator());
+            animator.setDuration(540);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float result = (float) animation.getAnimatedValue();
+                    catchPullEvent(result);
+                }
+            });
+            animator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    catchRefreshEvent();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            animator.start();
         }
     }
 

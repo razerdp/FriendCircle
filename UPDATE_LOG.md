@@ -1,4 +1,6 @@
 # 更新日志
+##2016-12-1 刷新的icon放弃使用offsetTopAndBottom，使用layout
+
 ##2016-11-22 加载更多，同时修复wrapperAdapter的layourparams问题
 
 ##2016-11-14 九宫格自定义控件实现
