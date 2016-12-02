@@ -16,9 +16,9 @@ import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.ui.adapter.CircleBaseViewHolder;
-import razerdp.friendcircle.widget.photoscontents.PhotoContents;
-import razerdp.friendcircle.widget.photoscontents.adapter.PhotoContentsBaseAdapter;
 import razerdp.friendcircle.widget.imageview.ForceClickImageView;
+import razerdp.github.com.widget.PhotoContents;
+import razerdp.github.com.widget.adapter.PhotoContentsBaseAdapter;
 
 /**
  * Created by 大灯泡 on 2016/11/3.
