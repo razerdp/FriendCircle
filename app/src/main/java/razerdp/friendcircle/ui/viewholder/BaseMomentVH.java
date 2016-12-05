@@ -1,4 +1,4 @@
-package razerdp.friendcircle.ui.adapter;
+package razerdp.friendcircle.ui.viewholder;
 
 import android.support.annotation.NonNull;
 import android.view.View;

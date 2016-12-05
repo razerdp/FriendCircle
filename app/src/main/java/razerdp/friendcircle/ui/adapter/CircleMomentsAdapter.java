@@ -15,6 +15,7 @@ import java.util.List;
 
 import razerdp.friendcircle.app.baseadapter.BaseRecyclerViewAdapter;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
+import razerdp.friendcircle.ui.viewholder.CircleBaseViewHolder;
 
 /**
  * Created by 大灯泡 on 2016/11/1.

@@ -1,5 +1,6 @@
-package razerdp.friendcircle.ui.adapter;
+package razerdp.friendcircle.ui.viewholder;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import razerdp.friendcircle.utils.ToolUtil;
 import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.ClickShowMoreLayout;
 import razerdp.friendcircle.widget.commentwidget.CommentWidget;
+import razerdp.friendcircle.widget.popup.CommentPopup;
 import razerdp.friendcircle.widget.praisewidget.PraiseWidget;
 
 /**
@@ -55,6 +57,9 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
     //评论区的view对象池
     private static final SimpleObjectPool<CommentWidget> COMMENT_TEXT_POOL = new SimpleObjectPool<CommentWidget>(35);
 
+    private CommentPopup commentPopup;
+
+
     public CircleBaseViewHolder(Context context, ViewGroup viewGroup, int layoutResId) {
         super(context, viewGroup, layoutResId);
         onFindView(itemView);
@@ -74,6 +79,10 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         commentLayout = (LinearLayout) findView(commentLayout, R.id.comment_layout);
         //content
         contentLayout = (RelativeLayout) findView(contentLayout, R.id.content);
+
+        if (commentPopup==null){
+            commentPopup=new CommentPopup((Activity) getContext());
+        }
     }
 
     @Override
@@ -85,15 +94,15 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
             return;
         }
 
-        //数据绑定
-        applyData(data);
+        //通用数据绑定
+        onBindMutualDataToViews(data);
         //点击事件
         menuButton.setOnClickListener(onMenuButtonClickListener);
         //传递到子类
         onBindDataToView(data, position, getViewType());
     }
 
-    private void applyData(MomentsInfo data) {
+    private void onBindMutualDataToViews(MomentsInfo data) {
         //header
         ImageLoadMnanger.INSTANCE.loadImage(avatar, data.getAuthor().getAvatar());
         nick.setText(data.getAuthor().getNick());
@@ -210,7 +219,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
     private View.OnClickListener onMenuButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            commentPopup.showPopupWindow(commentImage);
         }
     };
 

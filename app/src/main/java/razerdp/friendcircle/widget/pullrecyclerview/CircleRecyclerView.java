@@ -119,6 +119,7 @@ public class CircleRecyclerView extends FrameLayout {
     }
 
     private void init(Context context) {
+        if (isInEditMode())return;
         GradientDrawable background = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0xff323232, 0xff323232, 0xffffffff, 0xffffffff});
 //        setBackgroundColor(0xff323232);
         setBackground(background);

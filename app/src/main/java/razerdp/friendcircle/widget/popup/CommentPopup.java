@@ -1,11 +1,26 @@
 package razerdp.friendcircle.widget.popup;
 
+import android.app.Activity;
+import android.support.annotation.NonNull;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.ScaleAnimation;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import razerdp.basepopup.BasePopupWindow;
+import razerdp.friendcircle.R;
+import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
+import razerdp.friendcircle.thirdpart.weakhandler.WeakHandler;
+
 /**
  * Created by 大灯泡 on 2016/3/6.
  * 朋友圈点赞
  */
-public class CommentPopup{}
-/*public class CommentPopup extends BasePopupWindow implements View.OnClickListener {
+public class CommentPopup extends BasePopupWindow implements View.OnClickListener {
     private static final String TAG = "CommentPopup";
 
     private ImageView mLikeView;
@@ -16,8 +31,6 @@ public class CommentPopup{}
 
     private MomentsInfo mDynamicInfo;
 
-    private int[] viewLocation;
-
     private WeakHandler handler;
     private ScaleAnimation mScaleAnimation;
 
@@ -25,15 +38,15 @@ public class CommentPopup{}
 
     public CommentPopup(Activity context) {
         super(context, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        setNeedPopupFade(false);
 
-        viewLocation = new int[2];
         handler = new WeakHandler();
 
-        mLikeView = (ImageView) mPopupView.findViewById(R.id.iv_like);
-        mLikeText = (TextView) mPopupView.findViewById(R.id.tv_like);
+        mLikeView = (ImageView) findViewById(R.id.iv_like);
+        mLikeText = (TextView) findViewById(R.id.tv_like);
 
-        mLikeClikcLayout = (RelativeLayout) mPopupView.findViewById(R.id.item_like);
-        mCommentClickLayout = (RelativeLayout) mPopupView.findViewById(R.id.item_comment);
+        mLikeClikcLayout = (RelativeLayout) findViewById(R.id.item_like);
+        mCommentClickLayout = (RelativeLayout) findViewById(R.id.item_comment);
 
         mLikeClikcLayout.setOnClickListener(this);
         mCommentClickLayout.setOnClickListener(this);
@@ -41,9 +54,19 @@ public class CommentPopup{}
         buildAnima();
     }
 
+    @Override
+    protected Animation initShowAnimation() {
+        return getScaleAnimation(0.0f, 1.0f, 1.0f, 1.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+    }
+
+    @Override
+    protected Animation initExitAnimation() {
+        return getScaleAnimation(1.0f, 0.0f, 1.0f, 1.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+    }
+
     private void buildAnima() {
         mScaleAnimation = new ScaleAnimation(1f, 2.5f, 1f, 2.5f, Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF, 0.5f);
+                                             Animation.RELATIVE_TO_SELF, 0.5f);
         mScaleAnimation.setDuration(300);
         mScaleAnimation.setInterpolator(new SpringInterPolator());
         mScaleAnimation.setFillAfter(false);
@@ -72,54 +95,34 @@ public class CommentPopup{}
     }
 
     @Override
-    protected Animation getShowAnimation() {
-        return getScaleAnimation(0.0f, 1.0f, 1.0f, 1.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF,
-                0.0f);
-    }
-
-    @Override
-    public Animation getExitAnimation() {
-        return getScaleAnimation(1.0f, 0.0f, 1.0f, 1.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF,
-                0.0f);
-    }
-
-    @Override
-    protected View getClickToDismissView() {
+    public View getClickToDismissView() {
         return null;
     }
 
     @Override
-    public View getPopupView() {
-        return getPopupViewById(R.layout.popup_comment);
+    public View onCreatePopupView() {
+        return createPopupById(R.layout.popup_comment);
     }
 
     @Override
-    public View getAnimaView() {
-        return mPopupView.findViewById(R.id.comment_popup_contianer);
+    public View initAnimaView() {
+        return findViewById(R.id.comment_popup_contianer);
     }
 
     @Override
     public void showPopupWindow(View v) {
-        try {
-            //得到v的位置
-            v.getLocationOnScreen(viewLocation);
-            //展示位置：
-            //参照点为view的右上角，偏移值为：x方向距离参照view的一定倍数距离
-            //垂直方向自身减去popup自身高度的一半（确保在中间）
-            mPopupWindow.showAtLocation(v, Gravity.RIGHT | Gravity.TOP, (int) (v.getWidth() * 1.8),
-                    viewLocation[1] - UIHelper.dipToPx(mContext, 10f));
-
-            if (getShowAnimation() != null && getAnimaView() != null) {
-                getAnimaView().startAnimation(getShowAnimation());
-            }
-        } catch (Exception e) {
-            Log.w("error", "error");
-        }
+        setRelativeToAnchorView(true);
+        setRelativePivot(RelativePivot.RIGHT | RelativePivot.CENTER_Y);
+        setOffsetY(v.getHeight() >> 1);
+        setOffsetX(v.getWidth() >> 1);
+        super.showPopupWindow(v);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
+        dismiss();
+        // TODO: 2016/12/5 评论/赞
+        /*switch (v.getId()) {
             case R.id.item_like:
                 if (mOnCommentPopupClickListener != null) {
                     mOnCommentPopupClickListener.onLikeClick(v, mDynamicInfo);
@@ -133,7 +136,7 @@ public class CommentPopup{}
                     mPopupWindow.dismiss();
                 }
                 break;
-        }
+        }*/
     }
     //=============================================================Getter/Setter
 
@@ -145,22 +148,17 @@ public class CommentPopup{}
         mOnCommentPopupClickListener = onCommentPopupClickListener;
     }
 
-    public void setDynamicInfo(DynamicInfo info) {
-        if (info == null) return;
-        mDynamicInfo = info;
-        if (info.praiseState == CommonValue.HAS_PRAISE) {
-            mLikeText.setText("取消");
-        }
-        else {
-            mLikeText.setText("赞  ");
-        }
+
+    public void setMomentInfo(@NonNull MomentsInfo info) {
+
+
     }
 
     //=============================================================InterFace
     public interface OnCommentPopupClickListener {
-        void onLikeClick(View v, DynamicInfo info);
+        void onLikeClick(View v, @NonNull MomentsInfo info);
 
-        void onCommentClick(View v, DynamicInfo info);
+        void onCommentClick(View v, @NonNull MomentsInfo info);
     }
 
     static class SpringInterPolator extends LinearInterpolator {
@@ -171,7 +169,7 @@ public class CommentPopup{}
 
         @Override
         public float getInterpolation(float input) {
-            return (float) Math.sin(input*Math.PI);
+            return (float) Math.sin(input * Math.PI);
         }
     }
-}*/
+}

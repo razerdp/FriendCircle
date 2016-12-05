@@ -31,4 +31,10 @@
                 android:textSize="18sp"/>
         </RelativeLayout>
     </FrameLayout>
+
+    <include
+        android:id="@+id/widget_comment"
+        layout="@layout/include_comment_box"
+        android:visibility="gone"
+        />
 </LinearLayout>
