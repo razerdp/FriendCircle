@@ -2,6 +2,7 @@ package razerdp.friendcircle.widget.popup;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -13,8 +14,11 @@ import android.widget.TextView;
 
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
+import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
+import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.thirdpart.weakhandler.WeakHandler;
+import razerdp.friendcircle.utils.ToolUtil;
 
 /**
  * Created by 大灯泡 on 2016/3/6.
@@ -29,7 +33,7 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
     private RelativeLayout mLikeClikcLayout;
     private RelativeLayout mCommentClickLayout;
 
-    private MomentsInfo mDynamicInfo;
+    private MomentsInfo mMomentsInfo;
 
     private WeakHandler handler;
     private ScaleAnimation mScaleAnimation;
@@ -120,23 +124,21 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        dismiss();
-        // TODO: 2016/12/5 评论/赞
-        /*switch (v.getId()) {
+        switch (v.getId()) {
             case R.id.item_like:
                 if (mOnCommentPopupClickListener != null) {
-                    mOnCommentPopupClickListener.onLikeClick(v, mDynamicInfo);
+                    mOnCommentPopupClickListener.onLikeClick(v, mMomentsInfo);
                     mLikeView.clearAnimation();
                     mLikeView.startAnimation(mScaleAnimation);
                 }
                 break;
             case R.id.item_comment:
                 if (mOnCommentPopupClickListener != null) {
-                    mOnCommentPopupClickListener.onCommentClick(v, mDynamicInfo);
+                    mOnCommentPopupClickListener.onCommentClick(v, mMomentsInfo);
                     mPopupWindow.dismiss();
                 }
                 break;
-        }*/
+        }
     }
     //=============================================================Getter/Setter
 
@@ -149,8 +151,18 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
     }
 
 
-    public void setMomentInfo(@NonNull MomentsInfo info) {
-
+    public void updateMomentInfo(@NonNull MomentsInfo info) {
+        this.mMomentsInfo = info;
+        boolean hasLiked = false;
+        if (!ToolUtil.isListEmpty(info.getLikesList())) {
+            for (UserInfo userInfo : info.getLikesList()) {
+                if (TextUtils.equals(userInfo.getObjectId(), LocalHostManager.INSTANCE.getUserid())) {
+                    hasLiked = true;
+                    break;
+                }
+            }
+        }
+        mLikeText.setText(hasLiked ? "取消" : "赞");
 
     }
 

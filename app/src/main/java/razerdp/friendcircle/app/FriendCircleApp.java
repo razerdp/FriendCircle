@@ -7,6 +7,7 @@ import com.socks.library.KLog;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
+import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.config.Define;
 import razerdp.friendcircle.utils.PreferenceHelper;
 
@@ -24,7 +25,7 @@ public class FriendCircleApp extends Application {
         super.onCreate();
         FriendCircleApp.CONTEXT = getApplicationContext();
         initBmob();
-        PreferenceHelper.INSTANCE.init(this);
+        initLocalHostInfo();
         KLog.init(true, "FriendCircle");
     }
 
@@ -44,5 +45,9 @@ public class FriendCircleApp extends Application {
                 .setFileExpiration(1800)
                 .build();
         Bmob.initialize(config);
+    }
+
+    private void initLocalHostInfo() {
+        LocalHostManager.INSTANCE.init();
     }
 }

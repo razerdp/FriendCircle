@@ -2,6 +2,7 @@ package razerdp.friendcircle.ui.viewholder;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -14,9 +15,13 @@ import com.socks.library.KLog;
 
 import java.util.List;
 
+import cn.bmob.v3.exception.BmobException;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.baseadapter.BaseRecyclerViewHolder;
 import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
+import razerdp.friendcircle.app.manager.LocalHostManager;
+import razerdp.friendcircle.app.net.OnResponseListener;
+import razerdp.friendcircle.app.net.request.AddLikeRequest;
 import razerdp.friendcircle.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
@@ -80,8 +85,9 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         //content
         contentLayout = (RelativeLayout) findView(contentLayout, R.id.content);
 
-        if (commentPopup==null){
-            commentPopup=new CommentPopup((Activity) getContext());
+        if (commentPopup == null) {
+            commentPopup = new CommentPopup((Activity) getContext());
+            commentPopup.setOnCommentPopupClickListener(onCommentPopupClickListener);
         }
     }
 
@@ -98,6 +104,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         onBindMutualDataToViews(data);
         //点击事件
         menuButton.setOnClickListener(onMenuButtonClickListener);
+        menuButton.setTag(R.id.momentinfo_data_tag_id, data);
         //传递到子类
         onBindDataToView(data, position, getViewType());
     }
@@ -165,8 +172,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
                     commentWidget.setPadding(0, 0, commentPaddintRight, 0);
                     commentWidget.setLineSpacing(4, 1);
                 }
-                commentWidget.setBackgroundDrawable(getContext().getResources()
-                                                                .getDrawable(R.drawable.selector_comment_widget));
+                commentWidget.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.selector_comment_widget));
                 commentWidget.setOnClickListener(onCommentClickListener);
                 commentWidget.setOnLongClickListener(onCommentLongClickListener);
                 commentLayout.addView(commentWidget);
@@ -219,7 +225,24 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
     private View.OnClickListener onMenuButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            commentPopup.showPopupWindow(commentImage);
+            MomentsInfo info = (MomentsInfo) v.getTag(R.id.momentinfo_data_tag_id);
+            if (info != null) {
+                commentPopup.updateMomentInfo(info);
+                commentPopup.showPopupWindow(commentImage);
+            }
+        }
+    };
+
+
+    private CommentPopup.OnCommentPopupClickListener onCommentPopupClickListener=new CommentPopup.OnCommentPopupClickListener() {
+        @Override
+        public void onLikeClick(View v, @NonNull MomentsInfo info) {
+
+        }
+
+        @Override
+        public void onCommentClick(View v, @NonNull MomentsInfo info) {
+
         }
     };
 
