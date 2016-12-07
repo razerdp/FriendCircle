@@ -8,7 +8,7 @@
 
  - 本项目将会从2016/10/26起全面重构，届时服务器将会采用Bmob，列表使用RecyclerView，并且去掉以前冗余的代码。
 
-更多日志请看 → [更新日志](https://github.com/razerdp/FriendCircle/blob/main-dev/UPDATE_LOG.md)
+更多日志请看 → [更新日志](https://github.com/razerdp/FriendCircle/blob/master/UPDATE_LOG.md)
 
 **本项目的一切实现思路以及逻辑都有记录，它们都有在我的简书文集记载：**
 
@@ -16,7 +16,7 @@
 
 **每次更新的模块Gif预览都在另一个MD文件里，如果您对效果感兴趣，不妨去查看一下：**
 
-[更新日志](https://github.com/razerdp/FriendCircle/blob/main-dev/UPDATE_LOG.md)
+[更新日志](https://github.com/razerdp/FriendCircle/blob/master/UPDATE_LOG.md)
 
 
 直至目前为止，原版的最新进度(重构版未到该进度，但会努力跟上)：
