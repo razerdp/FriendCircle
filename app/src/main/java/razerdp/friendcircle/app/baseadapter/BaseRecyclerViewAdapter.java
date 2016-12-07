@@ -3,6 +3,7 @@ package razerdp.friendcircle.app.baseadapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import razerdp.friendcircle.R;
  */
 
 public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<BaseRecyclerViewHolder<T>> {
+    private static final String TAG = "BaseRecyclerViewAdapter";
 
     protected Context context;
     protected List<T> datas;
@@ -47,9 +49,9 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
         BaseRecyclerViewHolder holder = null;
         if (getLayoutResId(viewType) != 0) {
             View rootView = mInflater.inflate(getLayoutResId(viewType), parent, false);
-            holder = getViewHolder(parent,rootView, viewType);
+            holder = getViewHolder(parent, rootView, viewType);
         } else {
-            holder = getViewHolder(parent,null, viewType);
+            holder = getViewHolder(parent, null, viewType);
         }
         setUpItemEvent(holder);
         return holder;
@@ -102,7 +104,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
         notifyDataSetChanged();
     }
 
-    public void addMore(List<T> datas){
+    public void addMore(List<T> datas) {
         this.datas.addAll(datas);
         notifyDataSetChanged();
     }
@@ -128,11 +130,19 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
         }
     }
 
+    public T findData(int pos) {
+        if (pos < 0 || pos > datas.size()) {
+            Log.e(TAG, "这个position他喵咪的太强大了，我hold不住");
+            return null;
+        }
+        return datas.get(pos);
+    }
+
     protected abstract int getViewType(int position, @NonNull T data);
 
     protected abstract int getLayoutResId(int viewType);
 
-    protected abstract BaseRecyclerViewHolder getViewHolder(ViewGroup parent,View inflatedView, int viewType);
+    protected abstract BaseRecyclerViewHolder getViewHolder(ViewGroup parent, View inflatedView, int viewType);
 
     protected void onBindData(BaseRecyclerViewHolder<T> holder, T data, int position) {
 

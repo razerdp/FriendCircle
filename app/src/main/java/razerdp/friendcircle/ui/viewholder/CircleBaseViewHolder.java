@@ -25,6 +25,7 @@ import razerdp.friendcircle.app.net.request.AddLikeRequest;
 import razerdp.friendcircle.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
+import razerdp.friendcircle.mvp.presenter.MomentPresenter;
 import razerdp.friendcircle.utils.SimpleObjectPool;
 import razerdp.friendcircle.utils.TimeUtil;
 import razerdp.friendcircle.utils.ToolUtil;
@@ -64,6 +65,10 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
 
     private CommentPopup commentPopup;
 
+    private MomentPresenter momentPresenter;
+
+    private int pos;
+
 
     public CircleBaseViewHolder(Context context, ViewGroup viewGroup, int layoutResId) {
         super(context, viewGroup, layoutResId);
@@ -91,6 +96,14 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         }
     }
 
+    public void setPresenter(MomentPresenter momentPresenter) {
+        this.momentPresenter = momentPresenter;
+    }
+
+    public MomentPresenter getPresenter() {
+        return momentPresenter;
+    }
+
     @Override
     public void onBindData(MomentsInfo data, int position) {
         if (data == null) {
@@ -100,6 +113,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
             return;
         }
 
+        this.pos = position;
         //通用数据绑定
         onBindMutualDataToViews(data);
         //点击事件
@@ -234,9 +248,12 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
     };
 
 
-    private CommentPopup.OnCommentPopupClickListener onCommentPopupClickListener=new CommentPopup.OnCommentPopupClickListener() {
+    private CommentPopup.OnCommentPopupClickListener onCommentPopupClickListener = new CommentPopup.OnCommentPopupClickListener() {
         @Override
         public void onLikeClick(View v, @NonNull MomentsInfo info) {
+            if (momentPresenter != null) {
+                momentPresenter.addLike(pos, info.getMomentid(), info.getLikesList());
+            }
 
         }
 

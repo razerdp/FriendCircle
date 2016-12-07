@@ -70,6 +70,10 @@ public class MomentsRequest extends BaseRequestClient<List<MomentsInfo>> {
             final MomentsInfo momentsInfo = momentsList.get(i);
             BmobQuery<UserInfo> likesQuery = new BmobQuery<>();
             likesQuery.addWhereRelatedTo("likes", new BmobPointer(momentsInfo));
+            //根据更新时间降序
+            //文档:http://docs.bmob.cn/data/Android/b_developdoc/doc/index.html#查询数据
+            //排序子目录
+            likesQuery.order("-updatedAt");
             likesQuery.findObjects(new FindListener<UserInfo>() {
                 @Override
                 public void done(List<UserInfo> list, BmobException e) {

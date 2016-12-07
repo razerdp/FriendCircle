@@ -18,8 +18,9 @@ public enum LocalHostManager {
     private UserInfo localHostInfo = new UserInfo();
 
     public boolean init() {
-        if (!PreferenceHelper.INSTANCE.containsKey(HAS_LOGIN) || PreferenceHelper.INSTANCE.containsKey(HOST_ID))
-            return false;
+        // FIXME: 2016/12/7 暂时强制使用开发者ID
+       /* if (!PreferenceHelper.INSTANCE.containsKey(HAS_LOGIN) || PreferenceHelper.INSTANCE.containsKey(HOST_ID))
+            return false;*/
         localHostInfo.setUsername((String) PreferenceHelper.INSTANCE.getData(HOST_NAME, "razerdp"));
         localHostInfo.setAvatar((String) PreferenceHelper.INSTANCE.getData(HOST_AVATAR, "http://upload.jianshu.io/users/upload_avatars/684042/bd1b2f796e3a.jpg?imageMogr/thumbnail/90x90/quality/100"));
         localHostInfo.setNick((String) PreferenceHelper.INSTANCE.getData(HOST_NICK, "羽翼君"));
@@ -53,6 +54,10 @@ public enum LocalHostManager {
 
     public void setAvatar(String avatar) {
         localHostInfo.setAvatar(avatar);
+    }
+
+    public UserInfo getLocalHostUser(){
+        return localHostInfo;
     }
 
 

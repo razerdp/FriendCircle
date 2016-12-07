@@ -22,6 +22,8 @@ import razerdp.friendcircle.app.net.request.SimpleResponseListener;
 import razerdp.friendcircle.config.MomentsType;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
+import razerdp.friendcircle.mvp.presenter.MomentPresenter;
+import razerdp.friendcircle.mvp.view.IMomentView;
 import razerdp.friendcircle.ui.adapter.CircleMomentsAdapter;
 import razerdp.friendcircle.ui.viewholder.EmptyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.MultiImageMomentsVH;
@@ -37,7 +39,7 @@ import razerdp.friendcircle.widget.pullrecyclerview.interfaces.OnRefreshListener
  * 朋友圈主界面
  */
 
-public class FriendCircleDemoActivity extends AppCompatActivity implements OnRefreshListener2 {
+public class FriendCircleDemoActivity extends AppCompatActivity implements OnRefreshListener2, IMomentView {
 
     private static final int REQUEST_REFRESH = 0x10;
     private static final int REQUEST_LOADMORE = 0x11;
@@ -50,6 +52,8 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
     //request
     private MomentsRequest momentsRequest;
 
+    private MomentPresenter presenter;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,19 +62,12 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
         momentsInfoList = new ArrayList<>();
         momentsRequest = new MomentsRequest();
         initView();
-        //添加动态,伪造数据用的哦~轻易不要取消注释哦
-     /*   final BmobInitHelper helper=new BmobInitHelper();
-        helper.initUser(new SimpleResponseListener() {
-            @Override
-            public void onSuccess(Object response, int requestType) {
-                KLog.d(response);
-                helper.addMoments();
-            }
-        });*/
 
     }
 
     private void initView() {
+        presenter = new MomentPresenter(this);
+
         hostViewHolder = new HostViewHolder(this);
         circleRecyclerView = (CircleRecyclerView) findViewById(R.id.recycler);
         circleRecyclerView.setOnRefreshListener(this);
@@ -81,7 +78,8 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
                .addType(MultiImageMomentsVH.class, MomentsType.MULTI_IMAGES, R.layout.moments_multi_image)
                .addType(TextOnlyMomentsVH.class, MomentsType.TEXT_ONLY, R.layout.moments_only_text)
                .addType(WebMomentsVH.class, MomentsType.WEB, R.layout.moments_web)
-               .setData(momentsInfoList);
+               .setData(momentsInfoList)
+               .setPresenter(presenter);
         adapter = builder.build();
         circleRecyclerView.setAdapter(adapter);
         circleRecyclerView.autoRefresh();
@@ -130,6 +128,17 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
             circleRecyclerView.compelete();
         }
     };
+
+
+    //=============================================================View's method
+    @Override
+    public void onLikeChange(int itemPos, List<UserInfo> likeUserList) {
+        MomentsInfo momentsInfo = adapter.findData(itemPos);
+        if (momentsInfo != null) {
+            momentsInfo.setLikesList(likeUserList);
+            adapter.notifyItemChanged(itemPos);
+        }
+    }
 
 
     private static class HostViewHolder {
