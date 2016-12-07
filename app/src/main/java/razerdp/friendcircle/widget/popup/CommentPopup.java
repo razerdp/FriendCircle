@@ -6,8 +6,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.thirdpart.weakhandler.WeakHandler;
 import razerdp.friendcircle.utils.ToolUtil;
+import razerdp.friendcircle.utils.UIHelper;
 
 /**
  * Created by 大灯泡 on 2016/3/6.
@@ -43,7 +46,7 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
     public CommentPopup(Activity context) {
         super(context, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         setNeedPopupFade(false);
-
+        setRelativeToAnchorView(true);
         handler = new WeakHandler();
 
         mLikeView = (ImageView) findViewById(R.id.iv_like);
@@ -60,12 +63,20 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
 
     @Override
     protected Animation initShowAnimation() {
-        return getScaleAnimation(0.0f, 1.0f, 1.0f, 1.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+        TranslateAnimation showAnima = new TranslateAnimation(UIHelper.dipToPx(180f), 0, 0, 0);
+        showAnima.setInterpolator(new DecelerateInterpolator());
+        showAnima.setDuration(250);
+        showAnima.setFillAfter(true);
+        return showAnima;
     }
 
     @Override
     protected Animation initExitAnimation() {
-        return getScaleAnimation(1.0f, 0.0f, 1.0f, 1.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+        TranslateAnimation exitAnima = new TranslateAnimation(0, UIHelper.dipToPx(180f), 0, 0);
+        exitAnima.setInterpolator(new DecelerateInterpolator());
+        exitAnima.setDuration(250);
+        exitAnima.setFillAfter(true);
+        return exitAnima;
     }
 
     private void buildAnima() {
@@ -115,10 +126,8 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
 
     @Override
     public void showPopupWindow(View v) {
-        setRelativeToAnchorView(true);
-        setRelativePivot(RelativePivot.RIGHT | RelativePivot.CENTER_Y);
-        setOffsetY(v.getHeight() >> 1);
-        setOffsetX(v.getWidth() >> 1);
+        setOffsetX(-getPopupViewWidth() - 10);
+        setOffsetY(-v.getHeight());
         super.showPopupWindow(v);
     }
 
@@ -135,7 +144,7 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
             case R.id.item_comment:
                 if (mOnCommentPopupClickListener != null) {
                     mOnCommentPopupClickListener.onCommentClick(v, mMomentsInfo);
-                    mPopupWindow.dismiss();
+                    dismissWithOutAnima();
                 }
                 break;
         }

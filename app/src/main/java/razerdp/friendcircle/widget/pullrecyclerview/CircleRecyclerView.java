@@ -354,7 +354,6 @@ public class CircleRecyclerView extends FrameLayout {
         }
 
         void catchResetEvent() {
-            rotateAnimation.cancel();
             refreshIcon.clearAnimation();
             if (mValueAnimator == null) {
                 mValueAnimator = ValueAnimator.ofFloat(refreshPosition, 0);

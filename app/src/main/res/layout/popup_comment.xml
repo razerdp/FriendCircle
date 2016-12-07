@@ -10,7 +10,7 @@
         android:id="@+id/comment_popup_contianer"
         android:layout_width="180dp"
         android:orientation="horizontal"
-        android:layout_height="35dp"
+        android:layout_height="45dp"
         android:background="@drawable/bg_comment_popup"
         android:weightSum="2"
         android:clipChildren="false"
@@ -30,7 +30,7 @@
                 android:text="赞  "
                 android:layout_centerInParent="true"
                 android:textColor="@color/comment_popup_tx_bg"
-                android:textSize="12sp"
+                android:textSize="16sp"
                 android:drawablePadding="5dp"
                 />
             <ImageView
@@ -47,8 +47,10 @@
             android:id="@+id/v_line"
             android:layout_width="0.5dp"
             android:layout_gravity="center_vertical"
-            android:layout_height="15dp"
-            android:background="#6c6c6c"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="#3B3F42"
             />
         <RelativeLayout
             android:id="@+id/item_comment"
@@ -63,7 +65,7 @@
                 android:text="评论"
                 android:drawableLeft="@drawable/ic_comment"
                 android:textColor="@color/comment_popup_tx_bg"
-                android:textSize="12sp"
+                android:textSize="16sp"
                 android:drawablePadding="5dp"
                 android:layout_centerInParent="true"
                 />
