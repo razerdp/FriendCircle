@@ -46,6 +46,7 @@ public class MomentPresenter implements IMomentPresenter {
         return this;
     }
 
+    //=============================================================动作控制
     @Override
     public void addLike(final int viewHolderPos, String momentid, final List<UserInfo> currentLikeUserList) {
         likeModel.addLike(momentid, new OnLikeChangeCallback() {
@@ -96,6 +97,13 @@ public class MomentPresenter implements IMomentPresenter {
             }
 
         });
+    }
+
+
+    public void showCommentBox() {
+        if (momentView != null) {
+            momentView.showCommentBox();
+        }
     }
 
 

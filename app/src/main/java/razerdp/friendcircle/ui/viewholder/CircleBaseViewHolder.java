@@ -262,6 +262,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
 
         @Override
         public void onCommentClick(View v, @NonNull MomentsInfo info) {
+            momentPresenter.showCommentBox();
 
         }
     };

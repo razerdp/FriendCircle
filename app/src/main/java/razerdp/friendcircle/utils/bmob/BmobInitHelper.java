@@ -125,4 +125,13 @@ public class BmobInitHelper {
     }
 
 
+    /**
+     * 建立评论伪数据
+     */
+    // TODO: 2016/12/8 搭建伪数据
+    public void addComments(){
+
+    }
+
+
 }

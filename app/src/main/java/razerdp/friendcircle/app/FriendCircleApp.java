@@ -26,7 +26,6 @@ public class FriendCircleApp extends Application {
         FriendCircleApp.CONTEXT = getApplicationContext();
         initBmob();
         initLocalHostInfo();
-        KLog.init(true, "FriendCircle");
     }
 
     public static Context getAppContext() {

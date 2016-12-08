@@ -5,11 +5,13 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.SystemClock;
 import android.support.annotation.IntDef;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -119,7 +121,7 @@ public class CircleRecyclerView extends FrameLayout {
     }
 
     private void init(Context context) {
-        if (isInEditMode())return;
+        if (isInEditMode()) return;
         GradientDrawable background = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0xff323232, 0xff323232, 0xffffffff, 0xffffffff});
         setBackground(background);
 
@@ -196,6 +198,14 @@ public class CircleRecyclerView extends FrameLayout {
         Log.e(TAG, "onLayout: ");
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (onPreDispatchTouchListener!=null){
+            onPreDispatchTouchListener.onTouch(ev);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
     //------------------------------------------get/set-----------------------------------------------
 
     public OnRefreshListener2 getOnRefreshListener() {
@@ -204,6 +214,14 @@ public class CircleRecyclerView extends FrameLayout {
 
     public void setOnRefreshListener(OnRefreshListener2 onRefreshListener) {
         this.onRefreshListener = onRefreshListener;
+    }
+
+    public OnPreDispatchTouchListener getOnPreDispatchTouchListener() {
+        return onPreDispatchTouchListener;
+    }
+
+    public void setOnPreDispatchTouchListener(OnPreDispatchTouchListener onPreDispatchTouchListener) {
+        this.onPreDispatchTouchListener = onPreDispatchTouchListener;
     }
 
     public RecyclerView getRecyclerView() {
@@ -236,6 +254,8 @@ public class CircleRecyclerView extends FrameLayout {
                         break;
                     case STATE_DRAG_END_SIDE:
                         // Dragging started at the right-end.
+                        KLog.i("refreshState", "current state  >>>   " + currentStatus + "   refresh mode  >>>   " + pullMode);
+
                         break;
                     case STATE_BOUNCE_BACK:
                         if (oldState == STATE_DRAG_START_SIDE) {
@@ -288,10 +308,10 @@ public class CircleRecyclerView extends FrameLayout {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 int lastItemPos = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
                 int itemCount = layoutManager.getItemCount();
-                KLog.i("" + lastItemPos + "  ,  " + itemCount);
+                KLog.i("loadmoretag", "lastItemPos  >>>   " + lastItemPos + "  ,  itemCount   >>>  " + itemCount);
                 if (lastItemPos == itemCount - 1 && currentStatus != REFRESHING) {
                     onRefreshListener.onLoadMore();
-                    KLog.i("loadmore");
+                    KLog.i("loadmoretag", "loadmore");
                     pullMode = FROM_BOTTOM;
                     setCurrentStatus(REFRESHING);
                     footerView.onRefreshing();
@@ -614,6 +634,13 @@ public class CircleRecyclerView extends FrameLayout {
                 super(itemView);
             }
         }
+    }
+
+
+    //------------------------------------------interface-----------------------------------------------
+    private OnPreDispatchTouchListener onPreDispatchTouchListener;
+    public interface OnPreDispatchTouchListener{
+        boolean onTouch(MotionEvent ev);
     }
 
 
