@@ -111,6 +111,7 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
             switch (requestType) {
                 case REQUEST_REFRESH:
                     if (!ToolUtil.isListEmpty(response)) {
+                        KLog.i("firstMomentid", "第一条动态ID   >>>   " + response.get(0).getMomentid());
                         hostViewHolder.loadHostData(response.get(0).getHostinfo());
                         adapter.updateData(response);
                     }

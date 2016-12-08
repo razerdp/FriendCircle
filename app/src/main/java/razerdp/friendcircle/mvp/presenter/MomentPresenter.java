@@ -50,41 +50,73 @@ public class MomentPresenter implements IMomentPresenter {
     public void addLike(final int viewHolderPos, String momentid, final List<UserInfo> currentLikeUserList) {
         likeModel.addLike(momentid, new OnLikeChangeCallback() {
             @Override
-            public void onLikeChange(@Define.LikeState int likeStae) {
+            public void onLike() {
                 List<UserInfo> resultLikeList = new ArrayList<UserInfo>();
                 if (!ToolUtil.isListEmpty(currentLikeUserList)) {
                     resultLikeList.addAll(currentLikeUserList);
                 }
-                boolean hasLocalLiked = false;
-                int localHostPos = -1;
-                for (int i = 0; i < resultLikeList.size(); i++) {
-                    UserInfo userinfo = resultLikeList.get(i);
-                    if (TextUtils.equals(userinfo.getUserid(), LocalHostManager.INSTANCE.getUserid())) {
-                        hasLocalLiked = true;
-                        localHostPos = i;
-                        break;
-                    }
-
-                }
-                if (likeStae == Define.LikeState.LIKE) {
-                    if (!hasLocalLiked) {
-                        resultLikeList.add(0, LocalHostManager.INSTANCE.getLocalHostUser());
-                    }
-                } else {
-                    if (hasLocalLiked) {
-                        resultLikeList.remove(localHostPos);
-                    }
+                boolean hasLocalLiked = findPosByUserid(resultLikeList, LocalHostManager.INSTANCE.getUserid()) > -1;
+                if (!hasLocalLiked) {
+                    resultLikeList.add(0, LocalHostManager.INSTANCE.getLocalHostUser());
                 }
                 if (momentView != null) {
                     momentView.onLikeChange(viewHolderPos, resultLikeList);
                 }
             }
+
+            @Override
+            public void onUnLike() {
+
+            }
+
         });
     }
 
     @Override
-    public void unLike(int viewHolderPos, String momentid, List<UserInfo> currentLikeUserList) {
+    public void unLike(final int viewHolderPos, String momentid, final List<UserInfo> currentLikeUserList) {
+        likeModel.unLike(momentid, new OnLikeChangeCallback() {
+            @Override
+            public void onLike() {
 
+            }
+
+            @Override
+            public void onUnLike() {
+                List<UserInfo> resultLikeList = new ArrayList<UserInfo>();
+                if (!ToolUtil.isListEmpty(currentLikeUserList)) {
+                    resultLikeList.addAll(currentLikeUserList);
+                }
+                final int localLikePos = findPosByUserid(resultLikeList, LocalHostManager.INSTANCE.getUserid());
+                if (localLikePos > -1) {
+                    resultLikeList.remove(localLikePos);
+                }
+                if (momentView != null) {
+                    momentView.onLikeChange(viewHolderPos, resultLikeList);
+                }
+            }
+
+        });
+    }
+
+
+    /**
+     * 从用户列表寻找符合userid的对象的index
+     *
+     * @param userInfoList
+     * @param userid
+     * @return -1:找不到
+     */
+    private int findPosByUserid(List<UserInfo> userInfoList, String userid) {
+        int result = -1;
+        if (ToolUtil.isListEmpty(userInfoList)) return result;
+        for (int i = 0; i < userInfoList.size(); i++) {
+            UserInfo userinfo = userInfoList.get(i);
+            if (TextUtils.equals(userinfo.getUserid(), userid)) {
+                result = i;
+                break;
+            }
+        }
+        return result;
     }
 
 

@@ -250,8 +250,11 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
 
     private CommentPopup.OnCommentPopupClickListener onCommentPopupClickListener = new CommentPopup.OnCommentPopupClickListener() {
         @Override
-        public void onLikeClick(View v, @NonNull MomentsInfo info) {
-            if (momentPresenter != null) {
+        public void onLikeClick(View v, @NonNull MomentsInfo info, boolean hasLiked) {
+            if (hasLiked) {
+                momentPresenter.unLike(pos, info.getMomentid(), info.getLikesList());
+
+            } else {
                 momentPresenter.addLike(pos, info.getMomentid(), info.getLikesList());
             }
 

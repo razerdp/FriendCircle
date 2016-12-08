@@ -43,6 +43,9 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
 
     private OnCommentPopupClickListener mOnCommentPopupClickListener;
 
+    //是否已经点赞
+    private boolean hasLiked;
+
     public CommentPopup(Activity context) {
         super(context, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         setNeedPopupFade(false);
@@ -136,7 +139,7 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
         switch (v.getId()) {
             case R.id.item_like:
                 if (mOnCommentPopupClickListener != null) {
-                    mOnCommentPopupClickListener.onLikeClick(v, mMomentsInfo);
+                    mOnCommentPopupClickListener.onLikeClick(v, mMomentsInfo, hasLiked);
                     mLikeView.clearAnimation();
                     mLikeView.startAnimation(mScaleAnimation);
                 }
@@ -162,7 +165,7 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
 
     public void updateMomentInfo(@NonNull MomentsInfo info) {
         this.mMomentsInfo = info;
-        boolean hasLiked = false;
+        hasLiked = false;
         if (!ToolUtil.isListEmpty(info.getLikesList())) {
             for (UserInfo userInfo : info.getLikesList()) {
                 if (TextUtils.equals(userInfo.getObjectId(), LocalHostManager.INSTANCE.getUserid())) {
@@ -177,7 +180,7 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
 
     //=============================================================InterFace
     public interface OnCommentPopupClickListener {
-        void onLikeClick(View v, @NonNull MomentsInfo info);
+        void onLikeClick(View v, @NonNull MomentsInfo info, boolean hasLiked);
 
         void onCommentClick(View v, @NonNull MomentsInfo info);
     }

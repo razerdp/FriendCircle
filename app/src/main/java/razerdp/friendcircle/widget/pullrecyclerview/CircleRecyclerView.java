@@ -121,7 +121,6 @@ public class CircleRecyclerView extends FrameLayout {
     private void init(Context context) {
         if (isInEditMode())return;
         GradientDrawable background = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0xff323232, 0xff323232, 0xffffffff, 0xffffffff});
-//        setBackgroundColor(0xff323232);
         setBackground(background);
 
         if (recyclerView == null) {
@@ -129,6 +128,8 @@ public class CircleRecyclerView extends FrameLayout {
             recyclerView.setBackgroundColor(Color.WHITE);
             recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         }
+        //取消默认item变更动画
+        recyclerView.setItemAnimator(null);
 
         if (refreshIcon == null) {
             refreshIcon = new ImageView(context);

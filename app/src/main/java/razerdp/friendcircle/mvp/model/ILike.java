@@ -17,5 +17,5 @@ public interface ILike {
     /**
      * 移除点赞
      */
-    void unLike();
+    void unLike(String momentid, OnLikeChangeCallback onLikeChangeCallback);
 }
