@@ -93,8 +93,8 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
             commentPopup.setOnCommentPopupClickListener(onCommentPopupClickListener);
         }
 
-        if (deleteCommentPopup==null){
-            deleteCommentPopup=new DeleteCommentPopup((Activity) getContext());
+        if (deleteCommentPopup == null) {
+            deleteCommentPopup = new DeleteCommentPopup((Activity) getContext());
         }
     }
 
@@ -158,7 +158,8 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
     }
 
 
-    private int commentPaddintRight = UIHelper.dipToPx(8f);
+    private int commentLeftAndPaddintRight = UIHelper.dipToPx(8f);
+    private int commentTopAndPaddintBottom = UIHelper.dipToPx(3f);
 
     /**
      * 添加评论
@@ -166,13 +167,11 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
      * @param commentList
      * @return ture=显示评论，false=不显示评论
      */
-    // FIXME: 2016/12/9 点击的selector无法填满的问题
     private boolean addComment(List<CommentInfo> commentList) {
         if (ToolUtil.isListEmpty(commentList)) {
             return false;
         }
         final int childCount = commentLayout.getChildCount();
-        commentLayout.setOnHierarchyChangeListener(this);
         if (childCount < commentList.size()) {
             //当前的view少于list的长度，则补充相差的view
             int subCount = commentList.size() - childCount;
@@ -180,13 +179,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
                 CommentWidget commentWidget = COMMENT_TEXT_POOL.get();
                 if (commentWidget == null) {
                     commentWidget = new CommentWidget(getContext());
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params.topMargin = 1;
-                    params.bottomMargin = 1;
-                    commentWidget.setLayoutParams(params);
-                    commentWidget.setPadding(0, 0, commentPaddintRight, 0);
+                    commentWidget.setPadding(commentLeftAndPaddintRight, commentTopAndPaddintBottom, commentLeftAndPaddintRight, commentTopAndPaddintBottom);
                     commentWidget.setLineSpacing(4, 1);
                 }
                 commentWidget.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.selector_comment_widget));
@@ -231,9 +224,9 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
             if (!(v instanceof CommentWidget)) return;
             CommentInfo commentInfo = ((CommentWidget) v).getData();
             if (commentInfo == null) return;
-            if (commentInfo.canDelete()){
+            if (commentInfo.canDelete()) {
                 deleteCommentPopup.showPopupWindow();
-            }else {
+            } else {
                 momentPresenter.showCommentBox(itemPosition, commentInfo.getMoment().getMomentid(), (CommentWidget) v);
             }
         }
