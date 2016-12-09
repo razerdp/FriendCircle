@@ -166,6 +166,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
      * @param commentList
      * @return ture=显示评论，false=不显示评论
      */
+    // FIXME: 2016/12/9 点击的selector无法填满的问题
     private boolean addComment(List<CommentInfo> commentList) {
         if (ToolUtil.isListEmpty(commentList)) {
             return false;

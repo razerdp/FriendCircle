@@ -67,7 +67,7 @@ public class CommentWidget extends TextView {
             mSpannableStringBuilderAllVer.clear();
             mSpannableStringBuilderAllVer.clearSpans();
         }
-        String content = "： " + info.getContent() + "\0";
+        String content = ": " + info.getContent() + "\0";
         boolean isApply = (info.getReply() == null);
         // 用户B为空，证明是一条原创评论
         if (info.getAuthor() != null && isApply) {
@@ -85,7 +85,7 @@ public class CommentWidget extends TextView {
                                                                                    .setTextSize(textSize)
                                                                                    .build();
             mSpannableStringBuilderAllVer.append(info.getAuthor().getNick(), userA, 0);
-            mSpannableStringBuilderAllVer.append("回复");
+            mSpannableStringBuilderAllVer.append(" 回复 ");
             CommentClick userB = new CommentClick.Builder(getContext(), info.getReply()).setColor(0xff517fae)
                                                                                    .setClickEventColor(0xffc6c6c6)
                                                                                    .setTextSize(textSize)
