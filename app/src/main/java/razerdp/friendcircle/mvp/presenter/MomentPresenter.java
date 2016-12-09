@@ -1,18 +1,24 @@
 package razerdp.friendcircle.mvp.presenter;
 
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+
+import com.socks.library.KLog;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bmob.v3.BmobObject;
 import razerdp.friendcircle.app.manager.LocalHostManager;
-import razerdp.friendcircle.config.Define;
+import razerdp.friendcircle.mvp.callback.OnCommentChangeCallback;
 import razerdp.friendcircle.mvp.callback.OnLikeChangeCallback;
 import razerdp.friendcircle.mvp.model.CommentImpl;
 import razerdp.friendcircle.mvp.model.LikeImpl;
+import razerdp.friendcircle.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.mvp.view.IMomentView;
 import razerdp.friendcircle.utils.ToolUtil;
+import razerdp.friendcircle.widget.commentwidget.CommentWidget;
 
 /**
  * Created by 大灯泡 on 2016/12/7.
@@ -56,7 +62,7 @@ public class MomentPresenter implements IMomentPresenter {
                 if (!ToolUtil.isListEmpty(currentLikeUserList)) {
                     resultLikeList.addAll(currentLikeUserList);
                 }
-                boolean hasLocalLiked = findPosByUserid(resultLikeList, LocalHostManager.INSTANCE.getUserid()) > -1;
+                boolean hasLocalLiked = findPosByObjid(resultLikeList, LocalHostManager.INSTANCE.getUserid()) > -1;
                 if (!hasLocalLiked) {
                     resultLikeList.add(0, LocalHostManager.INSTANCE.getLocalHostUser());
                 }
@@ -87,7 +93,7 @@ public class MomentPresenter implements IMomentPresenter {
                 if (!ToolUtil.isListEmpty(currentLikeUserList)) {
                     resultLikeList.addAll(currentLikeUserList);
                 }
-                final int localLikePos = findPosByUserid(resultLikeList, LocalHostManager.INSTANCE.getUserid());
+                final int localLikePos = findPosByObjid(resultLikeList, LocalHostManager.INSTANCE.getUserid());
                 if (localLikePos > -1) {
                     resultLikeList.remove(localLikePos);
                 }
@@ -99,27 +105,54 @@ public class MomentPresenter implements IMomentPresenter {
         });
     }
 
+    @Override
+    public void addComment(final int viewHolderPos, String momentid, String replyUserid, String commentContent, final List<CommentInfo> currentCommentList) {
+        commentModel.addComment(momentid, LocalHostManager.INSTANCE.getUserid(), replyUserid, commentContent, new OnCommentChangeCallback() {
+            @Override
+            public void onAddComment(CommentInfo response) {
+                List<CommentInfo> resultLikeList = new ArrayList<CommentInfo>();
+                if (!ToolUtil.isListEmpty(currentCommentList)) {
+                    resultLikeList.addAll(currentCommentList);
+                }
+                resultLikeList.add(response);
+                KLog.i("comment","评论成功 >>>  "+response.toString());
+                if (momentView != null) {
+                    momentView.onCommentChange(viewHolderPos, resultLikeList);
+                }
 
-    public void showCommentBox() {
+            }
+
+            @Override
+            public void onRemoveComment(CommentInfo response) {
+
+            }
+        });
+    }
+
+    @Override
+    public void removeComment(int viewHolderPos, String commentid, List<CommentInfo> currentCommentList) {
+
+    }
+
+
+    public void showCommentBox(int itemPos, String momentid, @Nullable CommentWidget commentWidget) {
         if (momentView != null) {
-            momentView.showCommentBox();
+            momentView.showCommentBox(itemPos, momentid, commentWidget);
         }
     }
 
 
     /**
-     * 从用户列表寻找符合userid的对象的index
+     * 从bmobobj列表寻找符合id的位置
      *
-     * @param userInfoList
-     * @param userid
      * @return -1:找不到
      */
-    private int findPosByUserid(List<UserInfo> userInfoList, String userid) {
+    private int findPosByObjid(List<? extends BmobObject> objectList, String id) {
         int result = -1;
-        if (ToolUtil.isListEmpty(userInfoList)) return result;
-        for (int i = 0; i < userInfoList.size(); i++) {
-            UserInfo userinfo = userInfoList.get(i);
-            if (TextUtils.equals(userinfo.getUserid(), userid)) {
+        if (ToolUtil.isListEmpty(objectList)) return result;
+        for (int i = 0; i < objectList.size(); i++) {
+            BmobObject object = objectList.get(i);
+            if (TextUtils.equals(object.getObjectId(), id)) {
                 result = i;
                 break;
             }

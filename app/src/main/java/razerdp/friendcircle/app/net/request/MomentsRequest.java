@@ -83,6 +83,7 @@ public class MomentsRequest extends BaseRequestClient<List<MomentsInfo>> {
                     BmobQuery<CommentInfo> commentQuery = new BmobQuery<>();
                     commentQuery.include(MOMENT + "," + REPLY_USER + "," + AUTHOR_USER);
                     commentQuery.addWhereEqualTo("moment", momentsInfo);
+                    commentQuery.order("updatedAt");
                     commentQuery.findObjects(new FindListener<CommentInfo>() {
                         @Override
                         public void done(List<CommentInfo> list, BmobException e) {

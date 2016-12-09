@@ -27,23 +27,23 @@ public class DeleteCommentPopup extends BasePopupWindow implements View.OnClickL
     }
 
     @Override
+    public View initAnimaView() {
+        return findViewById(R.id.popup_container);
+    }
+
+    @Override
     protected Animation initShowAnimation() {
         return getTranslateAnimation(300, 0, 300);
     }
 
     @Override
-    public Animation getExitAnimation() {
+    protected Animation initExitAnimation() {
         return getTranslateAnimation(0, 300, 300);
     }
 
     @Override
     public View onCreatePopupView() {
         return createPopupById(R.layout.popup_delete_comment);
-    }
-
-    @Override
-    public View initAnimaView() {
-        return findViewById(R.id.popup_container);
     }
 
     @Override

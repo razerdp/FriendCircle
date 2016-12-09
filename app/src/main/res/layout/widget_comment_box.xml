@@ -47,7 +47,7 @@
             android:hint="评论"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:textColor="@color/text_hint_color"
+            android:textColor="@color/normal_font_color"
             android:textSize="14sp"
             tools:background="@android:color/holo_red_dark"
             tools:text="测试测试测试测试"/>

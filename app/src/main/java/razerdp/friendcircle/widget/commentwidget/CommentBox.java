@@ -1,6 +1,9 @@
 package razerdp.friendcircle.widget.commentwidget;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
@@ -8,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import razerdp.friendcircle.R;
+import razerdp.friendcircle.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.utils.StringUtil;
 import razerdp.friendcircle.utils.UIHelper;
 
@@ -21,12 +25,16 @@ public class CommentBox extends FrameLayout {
 
     private EditText mInputContent;
     private TextView mSend;
-    private OnSendClickListener onSendClickListener;
+    private OnCommentSendClickListener onCommentSendClickListener;
 
     private boolean isShowing;
 
     //草稿
     private String draftString;
+
+    private CommentInfo commentInfo;
+    private String momentid;
+    private int dataPos;
 
 
     public CommentBox(Context context) {
@@ -49,34 +57,64 @@ public class CommentBox extends FrameLayout {
         mSend.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onSendClickListener != null) onSendClickListener.onSendClick(v);
+                if (onCommentSendClickListener != null)
+                    onCommentSendClickListener.onCommentSendClick(v,
+                                                                  momentid,
+                                                                  commentInfo == null ? null : commentInfo.getAuthor().getUserid(),
+                                                                  mInputContent.getText().toString().trim());
             }
         });
         setVisibility(GONE);
     }
 
 
-    // TODO: 2016/12/8 考虑回复评论的情况
-    public void showCommentBox() {
+    public void showCommentBox(@NonNull String momentid, @Nullable CommentInfo commentInfo) {
+        if (TextUtils.isEmpty(momentid)) return;
         if (isShowing) return;
         this.isShowing = true;
+        this.commentInfo = commentInfo;
+        //对不同的回复动作执行不同的
+        if (this.commentInfo != null) {
+            mInputContent.setHint("回复 " + commentInfo.getAuthor().getNick() + ":");
+        } else {
+            mInputContent.setHint("评论");
+        }
+        //对于同一条动态恢复草稿，否则不恢复
+        if (TextUtils.equals(momentid, this.momentid) && StringUtil.noEmpty(draftString)) {
+            mInputContent.setText(draftString);
+            mInputContent.setSelection(draftString.length());
+        } else {
+            mInputContent.setText(null);
+        }
+        setMomentid(momentid);
         setVisibility(VISIBLE);
-        // TODO: 2016/12/8 如果有多窗口，则需要考虑草稿的问题.
         UIHelper.showInputMethod(mInputContent, 150);
     }
 
-    public void dismissCommentBox() {
+    public void dismissCommentBox(boolean clearDraft) {
         if (!isShowing) return;
         this.isShowing = false;
+        if (!clearDraft) {
+            this.draftString = mInputContent.getText().toString().trim();
+        } else {
+            clearDraft();
+        }
         UIHelper.hideInputMethod(mInputContent);
         setVisibility(GONE);
     }
 
-    public void toggleCommentBox() {
+    /**
+     * 切换评论框的状态
+     *
+     * @param momentid
+     * @param commentInfo
+     * @param clearDraft  是否清除草稿
+     */
+    public void toggleCommentBox(@NonNull String momentid, @Nullable CommentInfo commentInfo, boolean clearDraft) {
         if (isShowing) {
-            dismissCommentBox();
+            dismissCommentBox(clearDraft);
         } else {
-            showCommentBox();
+            showCommentBox(momentid, commentInfo);
         }
     }
 
@@ -89,21 +127,49 @@ public class CommentBox extends FrameLayout {
     }
 
 
+    public String getMomentid() {
+        return momentid;
+    }
+
+    public void setMomentid(String momentid) {
+        this.momentid = momentid;
+    }
+
+    public CommentInfo getCommentInfo() {
+        return commentInfo;
+    }
+
+    public void setCommentInfo(CommentInfo commentInfo) {
+        this.commentInfo = commentInfo;
+    }
+
+    public boolean isReply() {
+        return commentInfo != null;
+    }
+
+    public int getDataPos() {
+        return dataPos;
+    }
+
+    public void setDataPos(int dataPos) {
+        this.dataPos = dataPos;
+    }
+
     @Override
     protected void onDetachedFromWindow() {
+        dismissCommentBox(true);
         super.onDetachedFromWindow();
-        dismissCommentBox();
     }
 
-    public OnSendClickListener getOnSendClickListener() {
-        return onSendClickListener;
+    public OnCommentSendClickListener getOnCommentSendClickListener() {
+        return onCommentSendClickListener;
     }
 
-    public void setOnSendClickListener(OnSendClickListener onSendClickListener) {
-        this.onSendClickListener = onSendClickListener;
+    public void setOnCommentSendClickListener(OnCommentSendClickListener onCommentSendClickListener) {
+        this.onCommentSendClickListener = onCommentSendClickListener;
     }
 
-    public interface OnSendClickListener {
-        void onSendClick(View v);
+    public interface OnCommentSendClickListener {
+        void onCommentSendClick(View v, String momentid, String commentAuthorId, String commentContent);
     }
 }

@@ -15,13 +15,9 @@ import com.socks.library.KLog;
 
 import java.util.List;
 
-import cn.bmob.v3.exception.BmobException;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.baseadapter.BaseRecyclerViewHolder;
 import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
-import razerdp.friendcircle.app.manager.LocalHostManager;
-import razerdp.friendcircle.app.net.OnResponseListener;
-import razerdp.friendcircle.app.net.request.AddLikeRequest;
 import razerdp.friendcircle.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
@@ -33,6 +29,7 @@ import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.widget.ClickShowMoreLayout;
 import razerdp.friendcircle.widget.commentwidget.CommentWidget;
 import razerdp.friendcircle.widget.popup.CommentPopup;
+import razerdp.friendcircle.widget.popup.DeleteCommentPopup;
 import razerdp.friendcircle.widget.praisewidget.PraiseWidget;
 
 /**
@@ -64,10 +61,11 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
     private static final SimpleObjectPool<CommentWidget> COMMENT_TEXT_POOL = new SimpleObjectPool<CommentWidget>(35);
 
     private CommentPopup commentPopup;
+    private DeleteCommentPopup deleteCommentPopup;
 
     private MomentPresenter momentPresenter;
 
-    private int pos;
+    private int itemPosition;
 
 
     public CircleBaseViewHolder(Context context, ViewGroup viewGroup, int layoutResId) {
@@ -94,6 +92,10 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
             commentPopup = new CommentPopup((Activity) getContext());
             commentPopup.setOnCommentPopupClickListener(onCommentPopupClickListener);
         }
+
+        if (deleteCommentPopup==null){
+            deleteCommentPopup=new DeleteCommentPopup((Activity) getContext());
+        }
     }
 
     public void setPresenter(MomentPresenter momentPresenter) {
@@ -113,7 +115,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
             return;
         }
 
-        this.pos = position;
+        this.itemPosition = position;
         //通用数据绑定
         onBindMutualDataToViews(data);
         //点击事件
@@ -187,7 +189,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
                     commentWidget.setLineSpacing(4, 1);
                 }
                 commentWidget.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.selector_comment_widget));
-                commentWidget.setOnClickListener(onCommentClickListener);
+                commentWidget.setOnClickListener(onCommentWidgetClickListener);
                 commentWidget.setOnLongClickListener(onCommentLongClickListener);
                 commentLayout.addView(commentWidget);
             }
@@ -222,10 +224,17 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
      * ==================  click listener block
      */
 
-    private View.OnClickListener onCommentClickListener = new View.OnClickListener() {
+    private View.OnClickListener onCommentWidgetClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            if (!(v instanceof CommentWidget)) return;
+            CommentInfo commentInfo = ((CommentWidget) v).getData();
+            if (commentInfo == null) return;
+            if (commentInfo.canDelete()){
+                deleteCommentPopup.showPopupWindow();
+            }else {
+                momentPresenter.showCommentBox(itemPosition, commentInfo.getMoment().getMomentid(), (CommentWidget) v);
+            }
         }
     };
 
@@ -252,18 +261,16 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         @Override
         public void onLikeClick(View v, @NonNull MomentsInfo info, boolean hasLiked) {
             if (hasLiked) {
-                momentPresenter.unLike(pos, info.getMomentid(), info.getLikesList());
-
+                momentPresenter.unLike(itemPosition, info.getMomentid(), info.getLikesList());
             } else {
-                momentPresenter.addLike(pos, info.getMomentid(), info.getLikesList());
+                momentPresenter.addLike(itemPosition, info.getMomentid(), info.getLikesList());
             }
 
         }
 
         @Override
         public void onCommentClick(View v, @NonNull MomentsInfo info) {
-            momentPresenter.showCommentBox();
-
+            momentPresenter.showCommentBox(itemPosition, info.getMomentid(), null);
         }
     };
 

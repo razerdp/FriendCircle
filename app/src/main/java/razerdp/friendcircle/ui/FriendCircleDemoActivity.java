@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.socks.library.KLog;
@@ -19,10 +18,10 @@ import java.util.List;
 import cn.bmob.v3.exception.BmobException;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
-import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.app.net.request.MomentsRequest;
 import razerdp.friendcircle.app.net.request.SimpleResponseListener;
 import razerdp.friendcircle.config.MomentsType;
+import razerdp.friendcircle.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.mvp.presenter.MomentPresenter;
@@ -33,9 +32,8 @@ import razerdp.friendcircle.ui.viewholder.MultiImageMomentsVH;
 import razerdp.friendcircle.ui.viewholder.TextOnlyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.WebMomentsVH;
 import razerdp.friendcircle.utils.ToolUtil;
-import razerdp.friendcircle.utils.UIHelper;
-import razerdp.friendcircle.utils.bmob.BmobInitHelper;
 import razerdp.friendcircle.widget.commentwidget.CommentBox;
+import razerdp.friendcircle.widget.commentwidget.CommentWidget;
 import razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView;
 import razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView.OnPreDispatchTouchListener;
 import razerdp.friendcircle.widget.pullrecyclerview.interfaces.OnRefreshListener2;
@@ -46,7 +44,7 @@ import razerdp.friendcircle.widget.pullrecyclerview.interfaces.OnRefreshListener
  * 朋友圈主界面
  */
 
-public class FriendCircleDemoActivity extends AppCompatActivity implements OnRefreshListener2, IMomentView,OnPreDispatchTouchListener {
+public class FriendCircleDemoActivity extends AppCompatActivity implements OnRefreshListener2, IMomentView, OnPreDispatchTouchListener {
 
     private static final int REQUEST_REFRESH = 0x10;
     private static final int REQUEST_LOADMORE = 0x11;
@@ -60,8 +58,6 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
     //request
     private MomentsRequest momentsRequest;
     private MomentPresenter presenter;
-
-
 
 
     @Override
@@ -83,7 +79,8 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
         circleRecyclerView.setOnPreDispatchTouchListener(this);
         circleRecyclerView.addHeaderView(hostViewHolder.getView());
 
-        commentBox= (CommentBox) findViewById(R.id.widget_comment);
+        commentBox = (CommentBox) findViewById(R.id.widget_comment);
+        commentBox.setOnCommentSendClickListener(onCommentSendClickListener);
 
         CircleMomentsAdapter.Builder<MomentsInfo> builder = new CircleMomentsAdapter.Builder<>(this);
         builder.addType(EmptyMomentsVH.class, MomentsType.EMPTY_CONTENT, R.layout.moments_empty_content)
@@ -153,20 +150,43 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
         }
     }
 
-    // FIXME: 2016/12/8 具体功能待补充
     @Override
-    public void showCommentBox() {
-       commentBox.toggleCommentBox();
+    public void onCommentChange(int itemPos, List<CommentInfo> commentInfoList) {
+        MomentsInfo momentsInfo = adapter.findData(itemPos);
+        if (momentsInfo != null) {
+            momentsInfo.setCommentList(commentInfoList);
+            adapter.notifyItemChanged(itemPos);
+        }
+    }
+
+    @Override
+    public void showCommentBox(int itemPos, String momentid, CommentWidget commentWidget) {
+        commentBox.setDataPos(itemPos);
+        commentBox.toggleCommentBox(momentid, commentWidget == null ? null : commentWidget.getData(), false);
     }
 
     @Override
     public boolean onTouch(MotionEvent ev) {
-        if (commentBox!=null&&commentBox.isShowing()){
-            commentBox.dismissCommentBox();
+        if (commentBox != null && commentBox.isShowing()) {
+            commentBox.dismissCommentBox(false);
             return true;
         }
         return false;
     }
+
+
+    //=============================================================call back
+    private CommentBox.OnCommentSendClickListener onCommentSendClickListener = new CommentBox.OnCommentSendClickListener() {
+        @Override
+        public void onCommentSendClick(View v, String momentid, String commentAuthorId, String commentContent) {
+            int itemPos = commentBox.getDataPos();
+            if (itemPos < 0 || itemPos > adapter.getItemCount()) return;
+            List<CommentInfo> commentInfos = adapter.findData(itemPos).getCommentList();
+            presenter.addComment(itemPos, momentid, commentAuthorId, commentContent, commentInfos);
+            commentBox.clearDraft();
+            commentBox.dismissCommentBox(true);
+        }
+    };
 
 
     private static class HostViewHolder {

@@ -7,6 +7,7 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
 import razerdp.friendcircle.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.mvp.model.entity.CommentInfo.CommentFields;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.net.base.BaseRequestClient;
@@ -14,7 +15,7 @@ import razerdp.friendcircle.utils.StringUtil;
 
 /**
  * Created by 大灯泡 on 2016/10/28.
- *
+ * <p>
  * 添加评论
  */
 
@@ -73,6 +74,7 @@ public class AddCommentRequest extends BaseRequestClient<CommentInfo> {
             public void done(String s, BmobException e) {
                 if (e == null) {
                     BmobQuery<CommentInfo> commentQuery = new BmobQuery<CommentInfo>();
+                    commentQuery.include(CommentFields.AUTHOR_USER + "," + CommentFields.REPLY_USER + "," + CommentFields.MOMENT);
                     commentQuery.getObject(s, new QueryListener<CommentInfo>() {
                         @Override
                         public void done(CommentInfo commentInfo, BmobException e) {

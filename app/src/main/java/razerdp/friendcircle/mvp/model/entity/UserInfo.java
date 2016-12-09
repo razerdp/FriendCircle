@@ -72,4 +72,15 @@ public class UserInfo extends BmobObject {
     public void setCover(String cover) {
         this.cover = cover;
     }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", nick='" + nick + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", cover='" + cover + '\'' +
+                '}';
+    }
 }
