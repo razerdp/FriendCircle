@@ -101,6 +101,7 @@ public class CircleRecyclerView extends FrameLayout {
     private OnRefreshListener2 onRefreshListener;
 
     private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager;
     private ImageView refreshIcon;
 
     private int refreshPosition;
@@ -128,7 +129,8 @@ public class CircleRecyclerView extends FrameLayout {
         if (recyclerView == null) {
             recyclerView = new RecyclerView(context);
             recyclerView.setBackgroundColor(Color.WHITE);
-            recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+            linearLayoutManager=new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+            recyclerView.setLayoutManager(linearLayoutManager);
         }
         //取消默认item变更动画
         recyclerView.setItemAnimator(null);
@@ -200,7 +202,7 @@ public class CircleRecyclerView extends FrameLayout {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (onPreDispatchTouchListener!=null){
+        if (onPreDispatchTouchListener != null) {
             onPreDispatchTouchListener.onTouch(ev);
         }
         return super.dispatchTouchEvent(ev);
@@ -292,6 +294,16 @@ public class CircleRecyclerView extends FrameLayout {
         });
     }
 
+    /**
+     * 判断recyclerview是否滑到底部
+     *
+     * 原理：判断滑过的距离加上屏幕上的显示的区域是否比整个控件高度高
+     * @return
+     */
+    public boolean isScrollToBottom() {
+        return recyclerView != null && recyclerView.computeVerticalScrollExtent() + recyclerView.computeVerticalScrollOffset() >= recyclerView.computeVerticalScrollRange();
+    }
+
 
     /**
      * scroll listener
@@ -306,10 +318,7 @@ public class CircleRecyclerView extends FrameLayout {
             if (onRefreshListener == null) return;
 
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                int lastItemPos = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
-                int itemCount = layoutManager.getItemCount();
-                KLog.i("loadmoretag", "lastItemPos  >>>   " + lastItemPos + "  ,  itemCount   >>>  " + itemCount);
-                if (lastItemPos == itemCount - 1 && currentStatus != REFRESHING) {
+                if (isScrollToBottom()&&currentStatus != REFRESHING){
                     onRefreshListener.onLoadMore();
                     KLog.i("loadmoretag", "loadmore");
                     pullMode = FROM_BOTTOM;
@@ -470,6 +479,14 @@ public class CircleRecyclerView extends FrameLayout {
         info.view = footerView;
         info.itemViewType = ITEM_VIEW_TYPE_FOOTER_START - mFooterViewInfos.size();
         mFooterViewInfos.add(info);
+    }
+
+    public int getHeaderViewCount() {
+        return mHeaderViewInfos.size();
+    }
+
+    public int getFooterViewCount() {
+        return mFooterViewInfos.size();
     }
 
 
@@ -639,7 +656,8 @@ public class CircleRecyclerView extends FrameLayout {
 
     //------------------------------------------interface-----------------------------------------------
     private OnPreDispatchTouchListener onPreDispatchTouchListener;
-    public interface OnPreDispatchTouchListener{
+
+    public interface OnPreDispatchTouchListener {
         boolean onTouch(MotionEvent ev);
     }
 

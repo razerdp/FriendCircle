@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -163,6 +165,9 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
     public void showCommentBox(int itemPos, String momentid, CommentWidget commentWidget) {
         commentBox.setDataPos(itemPos);
         commentBox.toggleCommentBox(momentid, commentWidget == null ? null : commentWidget.getData(), false);
+        //向下滑动
+        //circleRecyclerView.getRecyclerView().smoothScrollBy(0,50);
+
     }
 
     @Override
