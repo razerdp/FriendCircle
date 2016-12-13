@@ -28,7 +28,7 @@
         android:textSize="@dimen/normal_font"
         tools:text="羽翼君"/>
 
-    <razerdp.friendcircle.widget.ClickShowMoreLayout
+    <razerdp.friendcircle.ui.widget.ClickShowMoreLayout
         android:id="@+id/item_text_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

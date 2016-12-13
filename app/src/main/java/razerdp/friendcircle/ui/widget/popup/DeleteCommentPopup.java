@@ -1,4 +1,4 @@
-package razerdp.friendcircle.widget.popup;
+package razerdp.friendcircle.ui.widget.popup;
 
 import android.app.Activity;
 import android.view.View;

@@ -1,7 +1,6 @@
-package razerdp.friendcircle.widget.pullrecyclerview;
+package razerdp.friendcircle.ui.widget.pullrecyclerview;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;

@@ -17,7 +17,7 @@
         android:layout_marginRight="@dimen/item_padding"
         tools:background="@android:color/holo_red_light">
 
-        <razerdp.friendcircle.widget.CircleVideoLayout
+        <razerdp.friendcircle.ui.widget.CircleVideoLayout
             android:id="@+id/video_layout"
             android:layout_width="match_parent"
             android:layout_height="250dp"/>

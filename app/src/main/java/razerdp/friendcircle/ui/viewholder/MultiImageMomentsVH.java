@@ -15,7 +15,7 @@ import java.util.List;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
-import razerdp.friendcircle.widget.imageview.ForceClickImageView;
+import razerdp.friendcircle.ui.widget.imageview.ForceClickImageView;
 import razerdp.github.com.widget.PhotoContents;
 import razerdp.github.com.widget.adapter.PhotoContentsBaseAdapter;
 

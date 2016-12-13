@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView
+        <razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView
             android:id="@+id/recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
@@ -32,7 +32,7 @@
         </RelativeLayout>
     </FrameLayout>
 
-    <razerdp.friendcircle.widget.commentwidget.CommentBox
+    <razerdp.friendcircle.ui.widget.commentwidget.CommentBox
         android:id="@+id/widget_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

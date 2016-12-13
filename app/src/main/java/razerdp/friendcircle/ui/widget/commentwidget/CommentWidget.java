@@ -1,4 +1,4 @@
-package razerdp.friendcircle.widget.commentwidget;
+package razerdp.friendcircle.ui.widget.commentwidget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -10,8 +10,8 @@ import android.util.Log;
 import android.widget.TextView;
 
 import razerdp.friendcircle.mvp.model.entity.CommentInfo;
-import razerdp.friendcircle.widget.SpannableStringBuilderAllVer;
-import razerdp.friendcircle.widget.span.ClickableSpanEx;
+import razerdp.friendcircle.ui.widget.SpannableStringBuilderAllVer;
+import razerdp.friendcircle.ui.widget.span.ClickableSpanEx;
 
 /**
  * Created by 大灯泡 on 2016/2/23.

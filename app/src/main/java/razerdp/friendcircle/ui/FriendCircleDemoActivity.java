@@ -32,11 +32,11 @@ import razerdp.friendcircle.ui.viewholder.MultiImageMomentsVH;
 import razerdp.friendcircle.ui.viewholder.TextOnlyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.WebMomentsVH;
 import razerdp.friendcircle.utils.ToolUtil;
-import razerdp.friendcircle.widget.commentwidget.CommentBox;
-import razerdp.friendcircle.widget.commentwidget.CommentWidget;
-import razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView;
-import razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView.OnPreDispatchTouchListener;
-import razerdp.friendcircle.widget.pullrecyclerview.interfaces.OnRefreshListener2;
+import razerdp.friendcircle.ui.widget.commentwidget.CommentBox;
+import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
+import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView;
+import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView.OnPreDispatchTouchListener;
+import razerdp.friendcircle.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
 
 /**
  * Created by 大灯泡 on 2016/10/26.

@@ -3,9 +3,8 @@ package razerdp.friendcircle.mvp.view;
 import java.util.List;
 
 import razerdp.friendcircle.mvp.model.entity.CommentInfo;
-import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.widget.commentwidget.CommentWidget;
+import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
 
 /**
  * Created by 大灯泡 on 2016/12/7.

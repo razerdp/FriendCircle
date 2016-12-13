@@ -1,4 +1,4 @@
-package razerdp.friendcircle.widget.praisewidget;
+package razerdp.friendcircle.ui.widget.praisewidget;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,7 +7,7 @@ import android.view.View;
 
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.utils.UIHelper;
-import razerdp.friendcircle.widget.span.ClickableSpanEx;
+import razerdp.friendcircle.ui.widget.span.ClickableSpanEx;
 
 /**
  * Created by 大灯泡 on 2016/2/21.

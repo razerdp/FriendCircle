@@ -49,7 +49,7 @@
         android:background="@drawable/comment_praise"
         android:orientation="vertical">
 
-        <razerdp.friendcircle.widget.praisewidget.PraiseWidget
+        <razerdp.friendcircle.ui.widget.praisewidget.PraiseWidget
             android:id="@+id/praise"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

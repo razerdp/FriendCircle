@@ -1,4 +1,4 @@
-package razerdp.friendcircle.widget.commentwidget;
+package razerdp.friendcircle.ui.widget.commentwidget;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

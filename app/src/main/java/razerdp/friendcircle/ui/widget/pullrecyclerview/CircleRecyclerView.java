@@ -1,11 +1,10 @@
-package razerdp.friendcircle.widget.pullrecyclerview;
+package razerdp.friendcircle.ui.widget.pullrecyclerview;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.os.SystemClock;
 import android.support.annotation.IntDef;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +14,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
@@ -33,18 +31,17 @@ import me.everything.android.ui.overscroll.IOverScrollUpdateListener;
 import me.everything.android.ui.overscroll.VerticalOverScrollBounceEffectDecorator;
 import me.everything.android.ui.overscroll.adapters.RecyclerViewOverScrollDecorAdapter;
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.baseadapter.BaseRecyclerViewHolder;
 import razerdp.friendcircle.utils.UIHelper;
-import razerdp.friendcircle.widget.pullrecyclerview.interfaces.OnRefreshListener2;
+import razerdp.friendcircle.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
 
 import static me.everything.android.ui.overscroll.IOverScrollState.STATE_BOUNCE_BACK;
 import static me.everything.android.ui.overscroll.IOverScrollState.STATE_DRAG_END_SIDE;
 import static me.everything.android.ui.overscroll.IOverScrollState.STATE_DRAG_START_SIDE;
 import static me.everything.android.ui.overscroll.IOverScrollState.STATE_IDLE;
-import static razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView.Mode.FROM_BOTTOM;
-import static razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView.Mode.FROM_START;
-import static razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView.Status.DEFAULT;
-import static razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView.Status.REFRESHING;
+import static razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView.Mode.FROM_BOTTOM;
+import static razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView.Mode.FROM_START;
+import static razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView.Status.DEFAULT;
+import static razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView.Status.REFRESHING;
 
 
 /**

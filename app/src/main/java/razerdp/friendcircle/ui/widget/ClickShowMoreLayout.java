@@ -1,19 +1,15 @@
-package razerdp.friendcircle.widget;
+package razerdp.friendcircle.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import java.lang.ref.WeakReference;
 
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.utils.UIHelper;

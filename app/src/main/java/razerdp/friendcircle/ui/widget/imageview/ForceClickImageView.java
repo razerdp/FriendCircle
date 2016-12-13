@@ -1,4 +1,4 @@
-package razerdp.friendcircle.widget.imageview;
+package razerdp.friendcircle.ui.widget.imageview;
 
 import android.content.Context;
 import android.content.res.TypedArray;

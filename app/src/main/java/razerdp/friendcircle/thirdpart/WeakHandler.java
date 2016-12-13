@@ -22,7 +22,7 @@
  * shared by Android Open Source Project and used according to terms described in the
  * Apache License, Version 2.0
  */
-package razerdp.friendcircle.thirdpart.weakhandler;
+package razerdp.friendcircle.thirdpart;
 
 import android.os.Handler;
 import android.os.Looper;

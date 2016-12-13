@@ -26,11 +26,11 @@ import razerdp.friendcircle.utils.SimpleObjectPool;
 import razerdp.friendcircle.utils.TimeUtil;
 import razerdp.friendcircle.utils.ToolUtil;
 import razerdp.friendcircle.utils.UIHelper;
-import razerdp.friendcircle.widget.ClickShowMoreLayout;
-import razerdp.friendcircle.widget.commentwidget.CommentWidget;
-import razerdp.friendcircle.widget.popup.CommentPopup;
-import razerdp.friendcircle.widget.popup.DeleteCommentPopup;
-import razerdp.friendcircle.widget.praisewidget.PraiseWidget;
+import razerdp.friendcircle.ui.widget.ClickShowMoreLayout;
+import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
+import razerdp.friendcircle.ui.widget.popup.CommentPopup;
+import razerdp.friendcircle.ui.widget.popup.DeleteCommentPopup;
+import razerdp.friendcircle.ui.widget.praisewidget.PraiseWidget;
 
 /**
  * Created by 大灯泡 on 2016/11/1.

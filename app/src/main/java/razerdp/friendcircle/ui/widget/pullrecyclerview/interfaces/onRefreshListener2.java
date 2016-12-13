@@ -1,4 +1,4 @@
-package razerdp.friendcircle.widget.pullrecyclerview.interfaces;
+package razerdp.friendcircle.ui.widget.pullrecyclerview.interfaces;
 
 /**
  * Created by 大灯泡 on 2016/10/29.

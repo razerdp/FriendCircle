@@ -8,7 +8,7 @@
 *
 *
 * */
-package razerdp.friendcircle.widget.span;
+package razerdp.friendcircle.ui.widget.span;
 
 import android.graphics.Color;
 import android.text.Layout;

@@ -18,7 +18,7 @@ import razerdp.friendcircle.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.mvp.view.IMomentView;
 import razerdp.friendcircle.utils.ToolUtil;
-import razerdp.friendcircle.widget.commentwidget.CommentWidget;
+import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
 
 /**
  * Created by 大灯泡 on 2016/12/7.

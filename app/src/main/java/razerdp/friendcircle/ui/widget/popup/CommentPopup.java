@@ -1,4 +1,4 @@
-package razerdp.friendcircle.widget.popup;
+package razerdp.friendcircle.ui.widget.popup;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -19,7 +19,7 @@ import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.thirdpart.weakhandler.WeakHandler;
+import razerdp.friendcircle.thirdpart.WeakHandler;
 import razerdp.friendcircle.utils.ToolUtil;
 import razerdp.friendcircle.utils.UIHelper;
 
