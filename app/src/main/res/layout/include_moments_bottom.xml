@@ -57,6 +57,7 @@
             android:lineSpacingMultiplier="1"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
+            android:paddingTop="3dp"
             app:click_bg_color="@color/comment_click_bg"
             />
 
