@@ -1,6 +1,7 @@
 package razerdp.friendcircle.ui.widget.commentwidget;
 
 import android.content.Context;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -9,6 +10,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.mvp.model.entity.CommentInfo;
@@ -21,6 +25,7 @@ import razerdp.friendcircle.utils.UIHelper;
  * 评论输入框
  */
 
+// FIXME: 2016/12/13 跟别的控件耦合度较高，后期考虑优化
 public class CommentBox extends FrameLayout {
 
     private EditText mInputContent;
@@ -35,6 +40,15 @@ public class CommentBox extends FrameLayout {
     private CommentInfo commentInfo;
     private String momentid;
     private int dataPos;
+    private CommentWidget commentWidget;
+
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({CommentType.TYPE_CREATE, CommentType.TYPE_REPLY})
+    public @interface CommentType {
+        int TYPE_CREATE = 0x10;
+        int TYPE_REPLY = 0x11;
+    }
 
 
     public CommentBox(Context context) {
@@ -66,7 +80,6 @@ public class CommentBox extends FrameLayout {
         });
         setVisibility(GONE);
     }
-
 
     public void showCommentBox(@NonNull String momentid, @Nullable CommentInfo commentInfo) {
         if (TextUtils.isEmpty(momentid)) return;
@@ -153,6 +166,19 @@ public class CommentBox extends FrameLayout {
 
     public void setDataPos(int dataPos) {
         this.dataPos = dataPos;
+    }
+
+    @CommentType
+    public int getCommentType() {
+        return commentInfo == null ? CommentType.TYPE_CREATE : CommentType.TYPE_REPLY;
+    }
+
+    public CommentWidget getCommentWidget() {
+        return commentWidget;
+    }
+
+    public void setCommentWidget(CommentWidget commentWidget) {
+        this.commentWidget = commentWidget;
     }
 
     @Override

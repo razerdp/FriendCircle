@@ -1,12 +1,14 @@
 package razerdp.friendcircle.ui.widget.popup;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.TextView;
 
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
+import razerdp.friendcircle.mvp.model.entity.CommentInfo;
 
 /**
  * Created by 大灯泡 on 2016/4/22.
@@ -16,6 +18,7 @@ public class DeleteCommentPopup extends BasePopupWindow implements View.OnClickL
 
     private TextView mDel;
     private TextView mCancel;
+    private CommentInfo commentInfo;
 
     public DeleteCommentPopup(Activity context) {
         super(context);
@@ -52,12 +55,20 @@ public class DeleteCommentPopup extends BasePopupWindow implements View.OnClickL
     }
 
 
+    public void showPopupWindow(CommentInfo commentInfo) {
+        if (commentInfo==null)return;
+        this.commentInfo=commentInfo;
+        super.showPopupWindow();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.delete:
-                if (mDeleteCommentClickListener != null)
-                    mDeleteCommentClickListener.onDelClick(v);
+                if (mDeleteCommentClickListener != null) {
+                    mDeleteCommentClickListener.onDelClick(commentInfo);
+                }
+                dismiss();
                 break;
             case R.id.cancel:
                 dismiss();
@@ -78,6 +89,6 @@ public class DeleteCommentPopup extends BasePopupWindow implements View.OnClickL
     }
 
     public interface OnDeleteCommentClickListener {
-        void onDelClick(View v);
+        void onDelClick(CommentInfo commentInfo);
     }
 }

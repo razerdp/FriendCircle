@@ -1,15 +1,20 @@
 package razerdp.friendcircle.ui;
 
 import android.content.Context;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.socks.library.KLog;
@@ -20,6 +25,7 @@ import java.util.List;
 import cn.bmob.v3.exception.BmobException;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
+import razerdp.friendcircle.app.manager.KeyboardControlMnanager;
 import razerdp.friendcircle.app.net.request.MomentsRequest;
 import razerdp.friendcircle.app.net.request.SimpleResponseListener;
 import razerdp.friendcircle.config.MomentsType;
@@ -39,6 +45,8 @@ import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView.OnPreDispatchTouchListener;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
+
+import static android.R.attr.scrollY;
 
 /**
  * Created by 大灯泡 on 2016/10/26.
@@ -69,6 +77,7 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
         momentsInfoList = new ArrayList<>();
         momentsRequest = new MomentsRequest();
         initView();
+        initKeyboardHeightObserver();
 
     }
 
@@ -95,6 +104,55 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
         circleRecyclerView.setAdapter(adapter);
         circleRecyclerView.autoRefresh();
 
+    }
+
+
+    // TODO: 2016/12/13 进一步优化对齐功能
+    private void initKeyboardHeightObserver() {
+        //观察键盘弹出与消退
+        KeyboardControlMnanager.observerKeyboardVisibleChange(this, new KeyboardControlMnanager.OnKeyboardStateChangeListener() {
+            int alignScrollY;
+
+            @Override
+            public void onKeyboardChange(int keyboardHeight, boolean isVisible) {
+                int commentType = commentBox.getCommentType();
+                if (isVisible) {
+                    alignScrollY = alignCommentBoxToView(commentType);
+                } else {
+                    alignCommentBoxToViewWhenDismiss(alignScrollY);
+                }
+            }
+        });
+    }
+
+    private int alignCommentBoxToView(int commentType) {
+        // FIXME: 2016/12/13 有可能会获取不到itemView，特别是当view没有完全visible的时候。。。。暂无办法解决
+        int firstPos = circleRecyclerView.findFirstVisibleItemPosition();
+        int itemPos = commentBox.getDataPos() - firstPos + circleRecyclerView.getHeaderViewCount();
+        final View itemView = circleRecyclerView.getRecyclerView().getChildAt(itemPos);
+        int scrollY = 0;
+        if (itemView == null) {
+            KLog.e("获取不到itemView，pos = " + itemPos);
+            return 0;
+        }
+        if (commentType == CommentBox.CommentType.TYPE_CREATE) {
+            //对齐到动态底部
+            scrollY = itemView.getBottom() - commentBox.getTop();
+        } else {
+            //对齐到对应的评论
+            CommentWidget commentWidget = commentBox.getCommentWidget();
+            if (commentWidget == null) return 0;
+            Rect rect = new Rect();
+            commentWidget.getGlobalVisibleRect(rect);
+            scrollY = rect.bottom - commentBox.getTop();
+            circleRecyclerView.getRecyclerView().smoothScrollBy(0, scrollY);
+        }
+        circleRecyclerView.getRecyclerView().smoothScrollBy(0, scrollY);
+        return scrollY;
+    }
+
+    private void alignCommentBoxToViewWhenDismiss(int alignScrollY) {
+        circleRecyclerView.getRecyclerView().smoothScrollBy(0, -alignScrollY + commentBox.getHeight());
     }
 
     @Override
@@ -128,7 +186,6 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
                     }
                     break;
                 case REQUEST_LOADMORE:
-                    KLog.i("loadmore compelete");
                     adapter.addMore(response);
                     break;
             }
@@ -164,10 +221,8 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
     @Override
     public void showCommentBox(int itemPos, String momentid, CommentWidget commentWidget) {
         commentBox.setDataPos(itemPos);
+        commentBox.setCommentWidget(commentWidget);
         commentBox.toggleCommentBox(momentid, commentWidget == null ? null : commentWidget.getData(), false);
-        //向下滑动
-        //circleRecyclerView.getRecyclerView().smoothScrollBy(0,50);
-
     }
 
     @Override

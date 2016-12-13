@@ -71,7 +71,6 @@ public class MultiImageMomentsVH extends CircleBaseViewHolder {
             if (convertView == null) {
                 convertView = new ForceClickImageView(context);
                 convertView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                KLog.e("newInstance");
             }
             return convertView;
         }

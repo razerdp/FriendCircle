@@ -12,6 +12,6 @@ public interface OnCommentChangeCallback {
 
     void onAddComment(CommentInfo response);
 
-    void onRemoveComment(CommentInfo response);
+    void onDeleteComment(String commentid);
 
 }

@@ -17,7 +17,7 @@
             android:layout_height="match_parent"/>
 
         <RelativeLayout
-            android:id="@+id/action_bar"
+            android:id="@+id/circle_title"
             android:layout_width="match_parent"
             android:layout_height="@dimen/action_bar_height"
             android:background="@color/action_bar_bg">

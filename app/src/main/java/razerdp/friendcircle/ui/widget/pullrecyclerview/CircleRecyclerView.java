@@ -188,13 +188,13 @@ public class CircleRecyclerView extends FrameLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        Log.e(TAG, "onMeasure() called with: widthMeasureSpec = [" + widthMeasureSpec + "], heightMeasureSpec = [" + heightMeasureSpec + "]");
+        Log.d(TAG, "onMeasure() called with: widthMeasureSpec = [" + widthMeasureSpec + "], heightMeasureSpec = [" + heightMeasureSpec + "]");
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        Log.e(TAG, "onLayout: ");
+        Log.d(TAG, "onLayout: ");
     }
 
     @Override
@@ -299,6 +299,11 @@ public class CircleRecyclerView extends FrameLayout {
      */
     public boolean isScrollToBottom() {
         return recyclerView != null && recyclerView.computeVerticalScrollExtent() + recyclerView.computeVerticalScrollOffset() >= recyclerView.computeVerticalScrollRange();
+    }
+
+
+    public int findFirstVisibleItemPosition(){
+        return linearLayoutManager.findFirstVisibleItemPosition();
     }
 
 

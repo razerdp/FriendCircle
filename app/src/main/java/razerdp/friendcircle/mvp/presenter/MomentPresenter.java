@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.socks.library.KLog;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import cn.bmob.v3.BmobObject;
@@ -107,6 +108,7 @@ public class MomentPresenter implements IMomentPresenter {
 
     @Override
     public void addComment(final int viewHolderPos, String momentid, String replyUserid, String commentContent, final List<CommentInfo> currentCommentList) {
+        if (TextUtils.isEmpty(commentContent)) return;
         commentModel.addComment(momentid, LocalHostManager.INSTANCE.getUserid(), replyUserid, commentContent, new OnCommentChangeCallback() {
             @Override
             public void onAddComment(CommentInfo response) {
@@ -115,7 +117,7 @@ public class MomentPresenter implements IMomentPresenter {
                     resultLikeList.addAll(currentCommentList);
                 }
                 resultLikeList.add(response);
-                KLog.i("comment","评论成功 >>>  "+response.toString());
+                KLog.i("comment", "评论成功 >>>  " + response.toString());
                 if (momentView != null) {
                     momentView.onCommentChange(viewHolderPos, resultLikeList);
                 }
@@ -123,14 +125,43 @@ public class MomentPresenter implements IMomentPresenter {
             }
 
             @Override
-            public void onRemoveComment(CommentInfo response) {
+            public void onDeleteComment(String response) {
 
             }
         });
     }
 
     @Override
-    public void removeComment(int viewHolderPos, String commentid, List<CommentInfo> currentCommentList) {
+    public void deleteComment(final int viewHolderPos, String commentid, final List<CommentInfo> currentCommentList) {
+        if (TextUtils.isEmpty(commentid)) return;
+        commentModel.deleteComment(commentid, new OnCommentChangeCallback() {
+            @Override
+            public void onAddComment(CommentInfo response) {
+
+            }
+
+            @Override
+            public void onDeleteComment(String commentid) {
+                if (TextUtils.isEmpty(commentid)) return;
+                List<CommentInfo> resultLikeList = new ArrayList<CommentInfo>();
+                if (!ToolUtil.isListEmpty(currentCommentList)) {
+                    resultLikeList.addAll(currentCommentList);
+                }
+                Iterator<CommentInfo> iterator = resultLikeList.iterator();
+                while (iterator.hasNext()) {
+                    CommentInfo info = iterator.next();
+                    if (TextUtils.equals(info.getCommentid(), commentid)) {
+                        iterator.remove();
+                        break;
+                    }
+                }
+                KLog.i("comment", "删除评论成功 >>>  " + commentid);
+                if (momentView != null) {
+                    momentView.onCommentChange(viewHolderPos, resultLikeList);
+                }
+
+            }
+        });
 
     }
 

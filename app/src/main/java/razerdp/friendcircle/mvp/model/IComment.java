@@ -21,5 +21,5 @@ public interface IComment {
                     @NonNull String content,
                     @NonNull OnCommentChangeCallback onCommentChangeCallback);
 
-    void removeComment(@NonNull String commentid);
+    void deleteComment(@NonNull String commentid, @NonNull final OnCommentChangeCallback onCommentChangeCallback);
 }

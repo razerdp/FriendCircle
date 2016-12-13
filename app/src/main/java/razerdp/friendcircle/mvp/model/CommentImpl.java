@@ -3,14 +3,11 @@ package razerdp.friendcircle.mvp.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.socks.library.KLog;
-
 import razerdp.friendcircle.app.net.request.AddCommentRequest;
+import razerdp.friendcircle.app.net.request.DeleteCommentRequest;
 import razerdp.friendcircle.app.net.request.SimpleResponseListener;
 import razerdp.friendcircle.mvp.callback.OnCommentChangeCallback;
 import razerdp.friendcircle.mvp.model.entity.CommentInfo;
-
-import static android.support.v7.widget.StaggeredGridLayoutManager.TAG;
 
 /**
  * Created by 大灯泡 on 2016/12/7.
@@ -41,7 +38,17 @@ public class CommentImpl implements IComment {
     }
 
     @Override
-    public void removeComment(@NonNull String commentid) {
+    public void deleteComment(@NonNull String commentid, @NonNull final OnCommentChangeCallback onCommentChangeCallback) {
+        if (onCommentChangeCallback == null) return;
+        DeleteCommentRequest deleteCommentRequest = new DeleteCommentRequest();
+        deleteCommentRequest.setCommentid(commentid);
+        deleteCommentRequest.setOnResponseListener(new SimpleResponseListener<String>() {
+            @Override
+            public void onSuccess(String response, int requestType) {
+                onCommentChangeCallback.onDeleteComment(response);
+            }
+        });
+        deleteCommentRequest.execute();
 
     }
 }

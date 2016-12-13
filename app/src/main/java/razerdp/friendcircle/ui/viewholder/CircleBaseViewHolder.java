@@ -64,8 +64,8 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
     private DeleteCommentPopup deleteCommentPopup;
 
     private MomentPresenter momentPresenter;
-
     private int itemPosition;
+    private MomentsInfo momentsInfo;
 
 
     public CircleBaseViewHolder(Context context, ViewGroup viewGroup, int layoutResId) {
@@ -95,6 +95,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
 
         if (deleteCommentPopup == null) {
             deleteCommentPopup = new DeleteCommentPopup((Activity) getContext());
+            deleteCommentPopup.setOnDeleteCommentClickListener(onDeleteCommentClickListener);
         }
     }
 
@@ -114,7 +115,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
             userText.setText("这个动态的数据是空的。。。。OMG");
             return;
         }
-
+        this.momentsInfo=data;
         this.itemPosition = position;
         //通用数据绑定
         onBindMutualDataToViews(data);
@@ -225,10 +226,17 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
             CommentInfo commentInfo = ((CommentWidget) v).getData();
             if (commentInfo == null) return;
             if (commentInfo.canDelete()) {
-                deleteCommentPopup.showPopupWindow();
+                deleteCommentPopup.showPopupWindow(commentInfo);
             } else {
-                momentPresenter.showCommentBox(itemPosition, commentInfo.getMoment().getMomentid(), (CommentWidget) v);
+                momentPresenter.showCommentBox(itemPosition, momentsInfo.getMomentid(), (CommentWidget) v);
             }
+        }
+    };
+
+    private DeleteCommentPopup.OnDeleteCommentClickListener onDeleteCommentClickListener=new DeleteCommentPopup.OnDeleteCommentClickListener() {
+        @Override
+        public void onDelClick(CommentInfo commentInfo) {
+            momentPresenter.deleteComment(itemPosition,commentInfo.getCommentid(),momentsInfo.getCommentList());
         }
     };
 
