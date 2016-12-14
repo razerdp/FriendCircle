@@ -23,13 +23,15 @@ public enum PreferenceHelper {
     INSTANCE;
 
     @Retention(RetentionPolicy.SOURCE)
-    @StringDef({HOST_ID, HAS_LOGIN, HOST_AVATAR, HOST_NAME, HOST_NICK})
+    @StringDef({HOST_ID, HAS_LOGIN, HOST_AVATAR, HOST_NAME, HOST_NICK,HOST_COVER, CHECK_REGISTER})
     public @interface Keys {
         String HAS_LOGIN = "haslogin";
         String HOST_NAME = "hostName";
         String HOST_AVATAR = "hostAvatar";
         String HOST_NICK = "hostNick";
         String HOST_ID = "hostId";
+        String HOST_COVER="cover";
+        String CHECK_REGISTER = "check_register";
     }
 
 

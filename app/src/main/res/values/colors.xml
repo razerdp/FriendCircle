@@ -43,4 +43,6 @@
     <color name="dark_gray_divider">#bbc2ca</color>
     <color name="timeline_background">#f4f6f8</color>
 
+    <color name="round_rect_bg">#f8f8f8</color>
+
 </resources>

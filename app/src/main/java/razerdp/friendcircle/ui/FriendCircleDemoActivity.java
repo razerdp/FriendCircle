@@ -21,6 +21,7 @@ import cn.bmob.v3.exception.BmobException;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
 import razerdp.friendcircle.app.manager.KeyboardControlMnanager;
+import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.app.net.request.MomentsRequest;
 import razerdp.friendcircle.app.net.request.SimpleResponseListener;
 import razerdp.friendcircle.config.MomentsType;
@@ -36,9 +37,11 @@ import razerdp.friendcircle.ui.viewholder.TextOnlyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.WebMomentsVH;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentBox;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
+import razerdp.friendcircle.ui.widget.popup.RegisterPopup;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView.OnPreDispatchTouchListener;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
+import razerdp.friendcircle.utils.PreferenceHelper;
 import razerdp.friendcircle.utils.ToolUtil;
 
 /**
@@ -148,9 +151,10 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
                 case REQUEST_REFRESH:
                     if (!ToolUtil.isListEmpty(response)) {
                         KLog.i("firstMomentid", "第一条动态ID   >>>   " + response.get(0).getMomentid());
-                        hostViewHolder.loadHostData(response.get(0).getHostinfo());
+                        hostViewHolder.loadHostData(LocalHostManager.INSTANCE.getLocalHostUser());
                         adapter.updateData(response);
                     }
+                    checkRegister();
                     break;
                 case REQUEST_LOADMORE:
                     adapter.addMore(response);
@@ -260,6 +264,7 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
 
     /**
      * 计算回复评论的偏移
+     *
      * @param commentWidget
      * @return
      */
@@ -272,6 +277,7 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
 
     /**
      * 计算动态评论的偏移
+     *
      * @param momentsView
      * @return
      */
@@ -284,6 +290,7 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
 
     /**
      * 获取评论框的顶部（因为getTop不准确，因此采取 getLocationInWindow ）
+     *
      * @return
      */
     private int getCommentBoxViewTopInWindow() {
@@ -292,6 +299,21 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
         if (commentBoxViewLocation[1] != 0) return commentBoxViewLocation[1];
         commentBox.getLocationInWindow(commentBoxViewLocation);
         return commentBoxViewLocation[1];
+    }
+
+
+    private void checkRegister() {
+        boolean hasCheckRegister = (boolean) PreferenceHelper.INSTANCE.getData(PreferenceHelper.Keys.CHECK_REGISTER, false);
+        if (!hasCheckRegister) {
+            RegisterPopup registerPopup = new RegisterPopup(FriendCircleDemoActivity.this);
+            registerPopup.setOnRegisterSuccess(new RegisterPopup.onRegisterSuccess() {
+                @Override
+                public void onSuccess(UserInfo userInfo) {
+                    hostViewHolder.loadHostData(userInfo);
+                }
+            });
+            registerPopup.showPopupWindow();
+        }
     }
 
     //=============================================================call back
@@ -315,9 +337,11 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
         private ImageView friend_avatar;
         private ImageView message_avatar;
         private TextView message_detail;
+        private TextView hostid;
 
         public HostViewHolder(Context context) {
             this.rootView = LayoutInflater.from(context).inflate(R.layout.circle_host_header, null);
+            this.hostid = (TextView) rootView.findViewById(R.id.host_id);
             this.friend_wall_pic = (ImageView) rootView.findViewById(R.id.friend_wall_pic);
             this.friend_avatar = (ImageView) rootView.findViewById(R.id.friend_avatar);
             this.message_avatar = (ImageView) rootView.findViewById(R.id.message_avatar);
@@ -328,6 +352,7 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
             if (hostInfo == null) return;
             ImageLoadMnanger.INSTANCE.loadImage(friend_wall_pic, hostInfo.getCover());
             ImageLoadMnanger.INSTANCE.loadImage(friend_avatar, hostInfo.getAvatar());
+            hostid.setText("您的测试ID为: " + hostInfo.getUserid()+'\n'+"您的测试用户名为: "+hostInfo.getNick());
         }
 
         public View getView() {

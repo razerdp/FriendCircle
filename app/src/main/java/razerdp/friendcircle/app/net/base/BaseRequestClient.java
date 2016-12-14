@@ -66,7 +66,8 @@ public abstract class BaseRequestClient<T> {
         return onResponseListener;
     }
 
-    public void setOnResponseListener(OnResponseListener<T> onResponseListener) {
+    public BaseRequestClient setOnResponseListener(OnResponseListener<T> onResponseListener) {
         this.onResponseListener = onResponseListener;
+        return this;
     }
 }
