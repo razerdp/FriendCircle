@@ -200,7 +200,7 @@ public class CircleRecyclerView extends FrameLayout {
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (onPreDispatchTouchListener != null) {
-            onPreDispatchTouchListener.onTouch(ev);
+            onPreDispatchTouchListener.onPreTouch(ev);
         }
         return super.dispatchTouchEvent(ev);
     }
@@ -660,7 +660,7 @@ public class CircleRecyclerView extends FrameLayout {
     private OnPreDispatchTouchListener onPreDispatchTouchListener;
 
     public interface OnPreDispatchTouchListener {
-        boolean onTouch(MotionEvent ev);
+        boolean onPreTouch(MotionEvent ev);
     }
 
 

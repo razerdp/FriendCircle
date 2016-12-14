@@ -71,8 +71,9 @@ public class BmobInitHelper {
     }
 
     public void findAllMoments(final SimpleResponseListener simpleResponseListener) {
-        BmobQuery<MomentsInfo> userQuery = new BmobQuery<>();
-        userQuery.findObjects(new FindListener<MomentsInfo>() {
+        BmobQuery<MomentsInfo> momentQuery = new BmobQuery<>();
+        momentQuery.order("-createdAt");
+        momentQuery.findObjects(new FindListener<MomentsInfo>() {
             @Override
             public void done(List<MomentsInfo> list, BmobException e) {
                 if (e == null) {

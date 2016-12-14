@@ -1,20 +1,15 @@
 package razerdp.friendcircle.ui;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.socks.library.KLog;
@@ -39,15 +34,12 @@ import razerdp.friendcircle.ui.viewholder.EmptyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.MultiImageMomentsVH;
 import razerdp.friendcircle.ui.viewholder.TextOnlyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.WebMomentsVH;
-import razerdp.friendcircle.utils.ToolUtil;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentBox;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView.OnPreDispatchTouchListener;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
-import razerdp.friendcircle.utils.UIHelper;
-
-import static android.R.attr.scrollY;
+import razerdp.friendcircle.utils.ToolUtil;
 
 /**
  * Created by 大灯泡 on 2016/10/26.
@@ -118,8 +110,10 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
             public void onKeyboardChange(int keyboardHeight, boolean isVisible) {
                 int commentType = commentBox.getCommentType();
                 if (isVisible) {
+                    //定位评论框到view
                     anchorView = alignCommentBoxToView(commentType);
                 } else {
+                    //定位到底部
                     commentBox.dismissCommentBox(false);
                     alignCommentBoxToViewWhenDismiss(commentType, anchorView);
                 }
@@ -127,46 +121,6 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
         });
     }
 
-    private View alignCommentBoxToView(int commentType) {
-        // FIXME: 2016/12/13 有可能会获取不到itemView，特别是当view没有完全visible的时候。。。。暂无办法解决
-        int firstPos = circleRecyclerView.findFirstVisibleItemPosition();
-        int itemPos = commentBox.getDataPos() - firstPos + circleRecyclerView.getHeaderViewCount();
-        final View itemView = circleRecyclerView.getRecyclerView().getChildAt(itemPos);
-        if (itemView == null) {
-            KLog.e("获取不到itemView，pos = " + itemPos);
-            return null;
-        }
-        if (commentType == CommentBox.CommentType.TYPE_CREATE) {
-            //对齐到动态底部
-            int scrollY = itemView.getBottom() - commentBox.getTop();
-            circleRecyclerView.getRecyclerView().smoothScrollBy(0, scrollY);
-            return itemView;
-        } else {
-            //对齐到对应的评论
-            CommentWidget commentWidget = commentBox.getCommentWidget();
-            if (commentWidget == null) return null;
-            Rect rect = new Rect();
-            commentWidget.getGlobalVisibleRect(rect);
-            int scrollY = rect.bottom - commentBox.getTop();
-            circleRecyclerView.getRecyclerView().smoothScrollBy(0, scrollY);
-            return commentWidget;
-        }
-
-    }
-
-    private void alignCommentBoxToViewWhenDismiss(int commentType, View anchorView) {
-        if (anchorView == null) return;
-        int screenHeight = UIHelper.getScreenHeightPix(this);
-        int alignScrollY;
-        if (commentType == CommentBox.CommentType.TYPE_CREATE) {
-            alignScrollY = screenHeight - anchorView.getBottom() - commentBox.getHeight();
-        } else {
-            Rect rect = new Rect();
-            anchorView.getGlobalVisibleRect(rect);
-            alignScrollY = screenHeight - rect.bottom - commentBox.getHeight();
-        }
-        circleRecyclerView.getRecyclerView().smoothScrollBy(0, -alignScrollY);
-    }
 
     @Override
     public void onRefresh() {
@@ -239,7 +193,7 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
     }
 
     @Override
-    public boolean onTouch(MotionEvent ev) {
+    public boolean onPreTouch(MotionEvent ev) {
         if (commentBox != null && commentBox.isShowing()) {
             commentBox.dismissCommentBox(false);
             return true;
@@ -247,11 +201,104 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
         return false;
     }
 
+    //=============================================================tool method
+
+    int[] momentsViewLocation;
+    int[] commentWidgetLocation;
+    int[] commentBoxViewLocation;
+
+    /**
+     * 定位评论框到点击的view
+     *
+     * @param commentType
+     * @return
+     */
+    private View alignCommentBoxToView(int commentType) {
+        // FIXME: 2016/12/13 有可能会获取不到itemView，特别是当view没有完全visible的时候。。。。暂无办法解决
+        int firstPos = circleRecyclerView.findFirstVisibleItemPosition();
+        int itemPos = commentBox.getDataPos() - firstPos + circleRecyclerView.getHeaderViewCount();
+        final View itemView = circleRecyclerView.getRecyclerView().getChildAt(itemPos);
+        if (itemView == null) {
+            KLog.e("获取不到itemView，pos = " + itemPos);
+            return null;
+        }
+        if (commentType == CommentBox.CommentType.TYPE_CREATE) {
+            //对齐到动态底部
+            int scrollY = calcuateMomentsViewOffset(itemView);
+            circleRecyclerView.getRecyclerView().smoothScrollBy(0, scrollY);
+            return itemView;
+        } else {
+            //对齐到对应的评论
+            CommentWidget commentWidget = commentBox.getCommentWidget();
+            if (commentWidget == null) return null;
+            int scrollY = calcuateCommentWidgetOffset(commentWidget);
+            circleRecyclerView.getRecyclerView().smoothScrollBy(0, scrollY);
+            return commentWidget;
+        }
+
+    }
+
+    /**
+     * 输入法消退时，定位到与底部相隔一个评论框的位置
+     *
+     * @param commentType
+     * @param anchorView
+     */
+    private void alignCommentBoxToViewWhenDismiss(int commentType, View anchorView) {
+        if (anchorView == null) return;
+        int decorViewHeight = getWindow().getDecorView().getHeight();
+        int alignScrollY;
+        if (commentType == CommentBox.CommentType.TYPE_CREATE) {
+            alignScrollY = decorViewHeight - anchorView.getBottom() - commentBox.getHeight();
+        } else {
+            Rect rect = new Rect();
+            anchorView.getGlobalVisibleRect(rect);
+            alignScrollY = decorViewHeight - rect.bottom - commentBox.getHeight();
+        }
+        circleRecyclerView.getRecyclerView().smoothScrollBy(0, -alignScrollY);
+    }
+
+    /**
+     * 计算回复评论的偏移
+     * @param commentWidget
+     * @return
+     */
+    private int calcuateCommentWidgetOffset(CommentWidget commentWidget) {
+        if (commentWidgetLocation == null) commentWidgetLocation = new int[2];
+        if (commentWidget == null) return 0;
+        commentWidget.getLocationInWindow(commentWidgetLocation);
+        return commentWidgetLocation[1] + commentWidget.getHeight() - getCommentBoxViewTopInWindow();
+    }
+
+    /**
+     * 计算动态评论的偏移
+     * @param momentsView
+     * @return
+     */
+    private int calcuateMomentsViewOffset(View momentsView) {
+        if (momentsViewLocation == null) momentsViewLocation = new int[2];
+        if (momentsView == null) return 0;
+        momentsView.getLocationInWindow(momentsViewLocation);
+        return momentsViewLocation[1] + momentsView.getHeight() - getCommentBoxViewTopInWindow();
+    }
+
+    /**
+     * 获取评论框的顶部（因为getTop不准确，因此采取 getLocationInWindow ）
+     * @return
+     */
+    private int getCommentBoxViewTopInWindow() {
+        if (commentBoxViewLocation == null) commentBoxViewLocation = new int[2];
+        if (commentBox == null) return 0;
+        if (commentBoxViewLocation[1] != 0) return commentBoxViewLocation[1];
+        commentBox.getLocationInWindow(commentBoxViewLocation);
+        return commentBoxViewLocation[1];
+    }
 
     //=============================================================call back
     private CommentBox.OnCommentSendClickListener onCommentSendClickListener = new CommentBox.OnCommentSendClickListener() {
         @Override
         public void onCommentSendClick(View v, String momentid, String commentAuthorId, String commentContent) {
+            if (TextUtils.isEmpty(commentContent)) return;
             int itemPos = commentBox.getDataPos();
             if (itemPos < 0 || itemPos > adapter.getItemCount()) return;
             List<CommentInfo> commentInfos = adapter.findData(itemPos).getCommentList();
