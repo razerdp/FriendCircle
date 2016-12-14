@@ -46,7 +46,9 @@ public class CommentBox extends FrameLayout {
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({CommentType.TYPE_CREATE, CommentType.TYPE_REPLY})
     public @interface CommentType {
+        //评论
         int TYPE_CREATE = 0x10;
+        //回复
         int TYPE_REPLY = 0x11;
     }
 

@@ -45,6 +45,7 @@ import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView.OnPreDispatchTouchListener;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
+import razerdp.friendcircle.utils.UIHelper;
 
 import static android.R.attr.scrollY;
 
@@ -111,48 +112,60 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
     private void initKeyboardHeightObserver() {
         //观察键盘弹出与消退
         KeyboardControlMnanager.observerKeyboardVisibleChange(this, new KeyboardControlMnanager.OnKeyboardStateChangeListener() {
-            int alignScrollY;
+            View anchorView;
 
             @Override
             public void onKeyboardChange(int keyboardHeight, boolean isVisible) {
                 int commentType = commentBox.getCommentType();
                 if (isVisible) {
-                    alignScrollY = alignCommentBoxToView(commentType);
+                    anchorView = alignCommentBoxToView(commentType);
                 } else {
-                    alignCommentBoxToViewWhenDismiss(alignScrollY);
+                    commentBox.dismissCommentBox(false);
+                    alignCommentBoxToViewWhenDismiss(commentType, anchorView);
                 }
             }
         });
     }
 
-    private int alignCommentBoxToView(int commentType) {
+    private View alignCommentBoxToView(int commentType) {
         // FIXME: 2016/12/13 有可能会获取不到itemView，特别是当view没有完全visible的时候。。。。暂无办法解决
         int firstPos = circleRecyclerView.findFirstVisibleItemPosition();
         int itemPos = commentBox.getDataPos() - firstPos + circleRecyclerView.getHeaderViewCount();
         final View itemView = circleRecyclerView.getRecyclerView().getChildAt(itemPos);
-        int scrollY = 0;
         if (itemView == null) {
             KLog.e("获取不到itemView，pos = " + itemPos);
-            return 0;
+            return null;
         }
         if (commentType == CommentBox.CommentType.TYPE_CREATE) {
             //对齐到动态底部
-            scrollY = itemView.getBottom() - commentBox.getTop();
+            int scrollY = itemView.getBottom() - commentBox.getTop();
+            circleRecyclerView.getRecyclerView().smoothScrollBy(0, scrollY);
+            return itemView;
         } else {
             //对齐到对应的评论
             CommentWidget commentWidget = commentBox.getCommentWidget();
-            if (commentWidget == null) return 0;
+            if (commentWidget == null) return null;
             Rect rect = new Rect();
             commentWidget.getGlobalVisibleRect(rect);
-            scrollY = rect.bottom - commentBox.getTop();
+            int scrollY = rect.bottom - commentBox.getTop();
             circleRecyclerView.getRecyclerView().smoothScrollBy(0, scrollY);
+            return commentWidget;
         }
-        circleRecyclerView.getRecyclerView().smoothScrollBy(0, scrollY);
-        return scrollY;
+
     }
 
-    private void alignCommentBoxToViewWhenDismiss(int alignScrollY) {
-        circleRecyclerView.getRecyclerView().smoothScrollBy(0, -alignScrollY + commentBox.getHeight());
+    private void alignCommentBoxToViewWhenDismiss(int commentType, View anchorView) {
+        if (anchorView == null) return;
+        int screenHeight = UIHelper.getScreenHeightPix(this);
+        int alignScrollY;
+        if (commentType == CommentBox.CommentType.TYPE_CREATE) {
+            alignScrollY = screenHeight - anchorView.getBottom() - commentBox.getHeight();
+        } else {
+            Rect rect = new Rect();
+            anchorView.getGlobalVisibleRect(rect);
+            alignScrollY = screenHeight - rect.bottom - commentBox.getHeight();
+        }
+        circleRecyclerView.getRecyclerView().smoothScrollBy(0, -alignScrollY);
     }
 
     @Override
