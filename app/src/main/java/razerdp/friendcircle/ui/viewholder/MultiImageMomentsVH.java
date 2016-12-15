@@ -92,9 +92,5 @@ public class MultiImageMomentsVH extends CircleBaseViewHolder {
             notifyDataChanged();
         }
 
-        @Override
-        public void onItemClick(View convertView, int position, Rect visibleRect, Rect[] allItemRects) {
-
-        }
     }
 }
