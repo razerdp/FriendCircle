@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +12,6 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 
 import com.bumptech.glide.Glide;
 import com.socks.library.KLog;
@@ -36,12 +34,12 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  * <p>
  * 朋友圈图片浏览控件
  */
-// FIXME: 2016/12/16 进场动画的优化。
+// TODO: 2016/12/16 退场动画结束后，图片与原图片重叠后的图片跳动问题，以及滑动过后图片无法返回到原来位置的问题
 public class PhotoBrowseActivity extends BaseActivity {
     private static final String TAG = "PhotoBrowseActivity";
 
     private HackyViewPager photoViewpager;
-    private FrameLayout rootContainer;
+    private View blackBackground;
     private List<MPhotoView> viewBuckets;
     private PhotoBrowseInfo photoBrowseInfo;
     private InnerPhotoViewerAdapter adapter;
@@ -72,7 +70,7 @@ public class PhotoBrowseActivity extends BaseActivity {
 
     private void initView() {
         photoViewpager = (HackyViewPager) findViewById(R.id.photo_viewpager);
-        rootContainer = (FrameLayout) findViewById(R.id.root_container);
+        blackBackground = findViewById(R.id.v_background);
 
         adapter = new InnerPhotoViewerAdapter(this);
         photoViewpager.setAdapter(adapter);
@@ -103,19 +101,22 @@ public class PhotoBrowseActivity extends BaseActivity {
 
     @Override
     public void finish() {
-        super.finish();
-        // TODO: 2016/12/16 退出动画需要优化一下。。。。。
-      /*  final View currentChildView = photoViewpager.getChildAt(photoViewpager.getCurrentItem());
-        if (currentChildView == null) super.finish();
+        final MPhotoView currentPhotoView = viewBuckets.get(photoViewpager.getCurrentItem());
+        if (currentPhotoView == null) {
+            KLog.e(TAG, "childView is null");
+            super.finish();
+            return;
+        }
         final Rect startRect = new Rect();
-        final Rect endRect = new Rect(photoBrowseInfo.getViewLocalRects().get(photoViewpager.getCurrentItem()));
-        PhotoBrowseUtil.playExitAnima(currentChildView, rootContainer, startRect, endRect, new PhotoBrowseUtil.OnAnimaEndListener() {
+        startRect.set(PhotoBrowseUtil.calcuateDrawableBounds(currentPhotoView));
+        final Rect endRect = photoBrowseInfo.getViewLocalRects().get(photoViewpager.getCurrentItem());
+        PhotoBrowseUtil.playExitAnima(currentPhotoView, blackBackground, startRect, endRect, new PhotoBrowseUtil.OnAnimaEndListener() {
             @Override
             public void onAnimaEnd(Animator animator) {
                 PhotoBrowseActivity.super.finish();
                 overridePendingTransition(0, 0);
             }
-        });*/
+        });
     }
 
     //=============================================================InnerAdapter
@@ -146,18 +147,15 @@ public class PhotoBrowseActivity extends BaseActivity {
         @Override
         public void setPrimaryItem(ViewGroup container, final int position, final Object object) {
             if (isFirstInitlize && object instanceof View && position == photoBrowseInfo.getCurrentPhotoPosition()) {
+                //标志位不能放到onPredraw里面，因为回调时机不明确
+                isFirstInitlize = false;
                 final View targetView = (View) object;
                 targetView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                     @Override
                     public boolean onPreDraw() {
-                        final Rect endRect = new Rect();
-                        final Point globalOffset = new Point();
                         final Rect startRect = photoBrowseInfo.getViewLocalRects().get(position);
-                        targetView.getGlobalVisibleRect(endRect, globalOffset);
-                        PhotoBrowseUtil.playEnterAnima(targetView, startRect, endRect, globalOffset, null);
+                        PhotoBrowseUtil.playEnterAnima(targetView, startRect, null);
                         targetView.getViewTreeObserver().removeOnPreDrawListener(this);
-                        KLog.i(TAG, "onPreDraw  >>>  endRect >> " + endRect.toShortString() + "   startRect >> " + startRect.toShortString());
-                        isFirstInitlize = false;
                         return true;
                     }
                 });
