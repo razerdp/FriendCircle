@@ -24,6 +24,13 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.PhotoBrowseActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+
+
         <!--glide-->
         <meta-data
             android:name="razerdp.friendcircle.app.glide.GlobalGlideConfiguration"

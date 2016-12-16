@@ -31,6 +31,7 @@ import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.mvp.presenter.MomentPresenter;
 import razerdp.friendcircle.mvp.view.IMomentView;
 import razerdp.friendcircle.ui.adapter.CircleMomentsAdapter;
+import razerdp.friendcircle.ui.base.BaseActivity;
 import razerdp.friendcircle.ui.viewholder.EmptyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.MultiImageMomentsVH;
 import razerdp.friendcircle.ui.viewholder.TextOnlyMomentsVH;
@@ -50,7 +51,7 @@ import razerdp.friendcircle.utils.ToolUtil;
  * 朋友圈主界面
  */
 
-public class FriendCircleDemoActivity extends AppCompatActivity implements OnRefreshListener2, IMomentView, OnPreDispatchTouchListener {
+public class FriendCircleDemoActivity extends BaseActivity implements OnRefreshListener2, IMomentView, OnPreDispatchTouchListener {
 
     private static final int REQUEST_REFRESH = 0x10;
     private static final int REQUEST_LOADMORE = 0x11;

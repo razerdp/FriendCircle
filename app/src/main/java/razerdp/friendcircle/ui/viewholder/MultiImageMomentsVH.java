@@ -1,5 +1,6 @@
 package razerdp.friendcircle.ui.viewholder;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
@@ -15,6 +16,8 @@ import java.util.List;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
+import razerdp.friendcircle.mvp.model.uimodel.PhotoBrowseInfo;
+import razerdp.friendcircle.ui.PhotoBrowseActivity;
 import razerdp.friendcircle.ui.widget.imageview.ForceClickImageView;
 import razerdp.github.com.widget.PhotoContents;
 import razerdp.github.com.widget.adapter.PhotoContentsBaseAdapter;
@@ -27,7 +30,7 @@ import razerdp.github.com.widget.adapter.PhotoContentsBaseAdapter;
  * @see razerdp.friendcircle.config.MomentsType
  */
 
-public class MultiImageMomentsVH extends CircleBaseViewHolder {
+public class MultiImageMomentsVH extends CircleBaseViewHolder implements PhotoContents.OnItemClickListener {
 
 
     private PhotoContents imageContainer;
@@ -40,6 +43,9 @@ public class MultiImageMomentsVH extends CircleBaseViewHolder {
     @Override
     public void onFindView(@NonNull View rootView) {
         imageContainer = (PhotoContents) findView(imageContainer, R.id.circle_image_container);
+        if (imageContainer.getmOnItemClickListener() == null) {
+            imageContainer.setmOnItemClickListener(this);
+        }
     }
 
     @Override
@@ -51,6 +57,12 @@ public class MultiImageMomentsVH extends CircleBaseViewHolder {
             KLog.i("update image" + data.getAuthor().getNick() + "     :  " + data.getContent().getPics().size());
             adapter.updateData(data.getContent().getPics());
         }
+    }
+
+    @Override
+    public void onItemClick(ImageView imageView, int i) {
+        PhotoBrowseInfo info = PhotoBrowseInfo.create(adapter.datas, imageContainer.getContentViewsGlobalVisibleRects(), i);
+        PhotoBrowseActivity.startToPhotoBrowseActivity((Activity) getContext(), info);
     }
 
 
