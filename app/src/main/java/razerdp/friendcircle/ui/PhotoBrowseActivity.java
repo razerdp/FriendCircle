@@ -23,10 +23,11 @@ import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
 import razerdp.friendcircle.mvp.model.uimodel.PhotoBrowseInfo;
 import razerdp.friendcircle.ui.base.BaseActivity;
+import razerdp.friendcircle.ui.widget.GalleryPhotoView;
 import razerdp.friendcircle.ui.widget.HackyViewPager;
-import razerdp.friendcircle.ui.widget.MPhotoView;
 import razerdp.friendcircle.utils.PhotoBrowseUtil;
 import razerdp.friendcircle.utils.ToolUtil;
+import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
@@ -40,7 +41,7 @@ public class PhotoBrowseActivity extends BaseActivity {
 
     private HackyViewPager photoViewpager;
     private View blackBackground;
-    private List<MPhotoView> viewBuckets;
+    private List<GalleryPhotoView> viewBuckets;
     private PhotoBrowseInfo photoBrowseInfo;
     private InnerPhotoViewerAdapter adapter;
 
@@ -57,7 +58,7 @@ public class PhotoBrowseActivity extends BaseActivity {
         viewBuckets = new LinkedList<>();
         final int photoCount = photoBrowseInfo.getPhotosCount();
         for (int i = 0; i < photoCount; i++) {
-            MPhotoView photoView = new MPhotoView(this);
+            GalleryPhotoView photoView = new GalleryPhotoView(this);
             photoView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
                 @Override
                 public void onViewTap(View view, float x, float y) {
@@ -81,7 +82,7 @@ public class PhotoBrowseActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         if (!ToolUtil.isListEmpty(viewBuckets)) {
-            for (MPhotoView photoView : viewBuckets) {
+            for (PhotoView photoView : viewBuckets) {
                 photoView.destroy();
             }
         }
@@ -101,7 +102,7 @@ public class PhotoBrowseActivity extends BaseActivity {
 
     @Override
     public void finish() {
-        final MPhotoView currentPhotoView = viewBuckets.get(photoViewpager.getCurrentItem());
+        final PhotoView currentPhotoView = viewBuckets.get(photoViewpager.getCurrentItem());
         if (currentPhotoView == null) {
             KLog.e(TAG, "childView is null");
             super.finish();
@@ -137,7 +138,8 @@ public class PhotoBrowseActivity extends BaseActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            MPhotoView photoView = viewBuckets.get(position);
+            GalleryPhotoView photoView = viewBuckets.get(position);
+            photoView.setCleanOnDetachedFromWindow(false);
             String photoUrl = photoBrowseInfo.getPhotoUrls().get(position);
             ImageLoadMnanger.INSTANCE.loadImageDontAnimate(photoView, photoUrl);
             container.addView(photoView);
@@ -146,17 +148,18 @@ public class PhotoBrowseActivity extends BaseActivity {
 
         @Override
         public void setPrimaryItem(ViewGroup container, final int position, final Object object) {
-            if (isFirstInitlize && object instanceof View && position == photoBrowseInfo.getCurrentPhotoPosition()) {
+            if (isFirstInitlize && object instanceof GalleryPhotoView && position == photoBrowseInfo.getCurrentPhotoPosition()) {
                 //标志位不能放到onPredraw里面，因为回调时机不明确
                 isFirstInitlize = false;
-                final View targetView = (View) object;
+                final GalleryPhotoView targetView = (GalleryPhotoView) object;
                 targetView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                     @Override
                     public boolean onPreDraw() {
                         final Rect startRect = photoBrowseInfo.getViewLocalRects().get(position);
+//                        targetView.playEnterAnima(startRect);
                         PhotoBrowseUtil.playEnterAnima(targetView, startRect, null);
                         targetView.getViewTreeObserver().removeOnPreDrawListener(this);
-                        return true;
+                        return false;
                     }
                 });
             }

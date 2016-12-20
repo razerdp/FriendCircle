@@ -1,4 +1,20 @@
-package razerdp.friendcircle.ui.widget;
+/*******************************************************************************
+ * Copyright 2011, 2012 Chris Banes.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+
+package uk.co.senab.photoview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,33 +25,36 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.widget.ImageView;
-import uk.co.senab.photoview.IPhotoView;
-import uk.co.senab.photoview.PhotoViewAttacher;
 
-/**
- * Created by 大灯泡 on 2016/4/14.
- *
- * 针对onDetachedFromWindow
- *
- * 因为PhotoView在这里会导致attacher.cleanup，从而导致attacher的imageview=null
- * 最终无法在viewpager响应onPhotoViewClick
- *
- * 这里将cleanup注释掉，把cleanup移到手动调用方法中
- */
-public class MPhotoView extends ImageView implements IPhotoView {
+import uk.co.senab.photoview.PhotoViewAttacher.OnMatrixChangedListener;
+import uk.co.senab.photoview.PhotoViewAttacher.OnPhotoTapListener;
+import uk.co.senab.photoview.PhotoViewAttacher.OnViewTapListener;
+
+public class PhotoView extends ImageView implements IPhotoView {
+
+
+    /**
+     * 此项为另外添加，为了让viewpager的destroyItem方法不会让photoview的缩放功能失效(
+     * 默认是cleanup在DetachedFromWindow的时候
+     * ，viewpager是需要即使DetachedFromWindow也不cleanup)，
+     * 如果是除了viewpager以外的地方使用photoview，请勿设置此项目,
+     */
+    private boolean isCleanOnDetachedFromWindow = true;
+
+
     private PhotoViewAttacher mAttacher;
 
     private ScaleType mPendingScaleType;
 
-    public MPhotoView(Context context) {
+    public PhotoView(Context context) {
         this(context, null);
     }
 
-    public MPhotoView(Context context, AttributeSet attr) {
+    public PhotoView(Context context, AttributeSet attr) {
         this(context, attr, 0);
     }
 
-    public MPhotoView(Context context, AttributeSet attr, int defStyle) {
+    public PhotoView(Context context, AttributeSet attr, int defStyle) {
         super(context, attr, defStyle);
         super.setScaleType(ScaleType.MATRIX);
         init();
@@ -50,14 +69,6 @@ public class MPhotoView extends ImageView implements IPhotoView {
             setScaleType(mPendingScaleType);
             mPendingScaleType = null;
         }
-    }
-
-    /**
-     * @deprecated use {@link #setRotationTo(float)}
-     */
-    @Override
-    public void setPhotoViewRotation(float rotationDegree) {
-        mAttacher.setRotationTo(rotationDegree);
     }
 
     @Override
@@ -81,11 +92,6 @@ public class MPhotoView extends ImageView implements IPhotoView {
     }
 
     @Override
-    public Matrix getDisplayMatrix() {
-        return mAttacher.getDisplayMatrix();
-    }
-
-    @Override
     public void getDisplayMatrix(Matrix matrix) {
         mAttacher.getDisplayMatrix(matrix);
     }
@@ -96,31 +102,13 @@ public class MPhotoView extends ImageView implements IPhotoView {
     }
 
     @Override
-    @Deprecated
-    public float getMinScale() {
-        return getMinimumScale();
-    }
-
-    @Override
     public float getMinimumScale() {
         return mAttacher.getMinimumScale();
     }
 
     @Override
-    @Deprecated
-    public float getMidScale() {
-        return getMediumScale();
-    }
-
-    @Override
     public float getMediumScale() {
         return mAttacher.getMediumScale();
-    }
-
-    @Override
-    @Deprecated
-    public float getMaxScale() {
-        return getMaximumScale();
     }
 
     @Override
@@ -139,14 +127,13 @@ public class MPhotoView extends ImageView implements IPhotoView {
     }
 
     @Override
-    public void setAllowParentInterceptOnEdge(boolean allow) {
-        mAttacher.setAllowParentInterceptOnEdge(allow);
+    public Matrix getImageMatrix() {
+        return mAttacher.getImageMatrix();
     }
 
     @Override
-    @Deprecated
-    public void setMinScale(float minScale) {
-        setMinimumScale(minScale);
+    public void setAllowParentInterceptOnEdge(boolean allow) {
+        mAttacher.setAllowParentInterceptOnEdge(allow);
     }
 
     @Override
@@ -155,20 +142,8 @@ public class MPhotoView extends ImageView implements IPhotoView {
     }
 
     @Override
-    @Deprecated
-    public void setMidScale(float midScale) {
-        setMediumScale(midScale);
-    }
-
-    @Override
     public void setMediumScale(float mediumScale) {
         mAttacher.setMediumScale(mediumScale);
-    }
-
-    @Override
-    @Deprecated
-    public void setMaxScale(float maxScale) {
-        setMaximumScale(maxScale);
     }
 
     @Override
@@ -207,7 +182,16 @@ public class MPhotoView extends ImageView implements IPhotoView {
     }
 
     @Override
-    public void setOnMatrixChangeListener(PhotoViewAttacher.OnMatrixChangedListener listener) {
+    protected boolean setFrame(int l, int t, int r, int b) {
+        boolean changed = super.setFrame(l, t, r, b);
+        if (null != mAttacher) {
+            mAttacher.update();
+        }
+        return changed;
+    }
+
+    @Override
+    public void setOnMatrixChangeListener(OnMatrixChangedListener listener) {
         mAttacher.setOnMatrixChangeListener(listener);
     }
 
@@ -217,23 +201,13 @@ public class MPhotoView extends ImageView implements IPhotoView {
     }
 
     @Override
-    public void setOnPhotoTapListener(PhotoViewAttacher.OnPhotoTapListener listener) {
+    public void setOnPhotoTapListener(OnPhotoTapListener listener) {
         mAttacher.setOnPhotoTapListener(listener);
     }
 
     @Override
-    public PhotoViewAttacher.OnPhotoTapListener getOnPhotoTapListener() {
-        return mAttacher.getOnPhotoTapListener();
-    }
-
-    @Override
-    public void setOnViewTapListener(PhotoViewAttacher.OnViewTapListener listener) {
+    public void setOnViewTapListener(OnViewTapListener listener) {
         mAttacher.setOnViewTapListener(listener);
-    }
-
-    @Override
-    public PhotoViewAttacher.OnViewTapListener getOnViewTapListener() {
-        return mAttacher.getOnViewTapListener();
     }
 
     @Override
@@ -295,10 +269,39 @@ public class MPhotoView extends ImageView implements IPhotoView {
         mAttacher.setOnSingleFlingListener(onSingleFlingListener);
     }
 
+    public boolean isCleanOnDetachedFromWindow() {
+        return isCleanOnDetachedFromWindow;
+    }
+
+    public void setCleanOnDetachedFromWindow(boolean isCleanOnDetachedFromWindow) {
+        this.isCleanOnDetachedFromWindow = isCleanOnDetachedFromWindow;
+    }
+
+
+    public void postScale(float scale, float centerX, float centerY) {
+        mAttacher.postScale(scale, centerX, centerY);
+    }
+
+    public void postTranslate(float dx, float dy) {
+        mAttacher.postTranslate(dx, dy);
+    }
+
+    public void applyMatrix() {
+        mAttacher.applyMatrix();
+    }
+
     @Override
     protected void onDetachedFromWindow() {
-        //mAttacher.cleanup();
+        if (isCleanOnDetachedFromWindow && mAttacher != null) {
+            mAttacher.cleanup();
+            mAttacher = null;
+        }
         super.onDetachedFromWindow();
+    }
+
+    public void destroy() {
+        mAttacher.cleanup();
+        mAttacher = null;
     }
 
     @Override
@@ -306,11 +309,4 @@ public class MPhotoView extends ImageView implements IPhotoView {
         init();
         super.onAttachedToWindow();
     }
-
-    public void destroy(){
-        setImageBitmap(null);
-        mAttacher.cleanup();
-        onDetachedFromWindow();
-    }
-
 }
