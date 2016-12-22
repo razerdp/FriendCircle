@@ -1,6 +1,5 @@
 package razerdp.friendcircle.ui;
 
-import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -24,7 +23,6 @@ import razerdp.friendcircle.mvp.model.uimodel.PhotoBrowseInfo;
 import razerdp.friendcircle.ui.base.BaseActivity;
 import razerdp.friendcircle.ui.widget.GalleryPhotoView;
 import razerdp.friendcircle.ui.widget.HackyViewPager;
-import razerdp.friendcircle.utils.PhotoBrowseUtil;
 import razerdp.friendcircle.utils.ToolUtil;
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -58,6 +56,7 @@ public class PhotoBrowseActivity extends BaseActivity {
         final int photoCount = photoBrowseInfo.getPhotosCount();
         for (int i = 0; i < photoCount; i++) {
             GalleryPhotoView photoView = new GalleryPhotoView(this);
+            photoView.setCleanOnDetachedFromWindow(false);
             photoView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
                 @Override
                 public void onViewTap(View view, float x, float y) {
@@ -101,23 +100,22 @@ public class PhotoBrowseActivity extends BaseActivity {
 
     @Override
     public void finish() {
-        final PhotoView currentPhotoView = viewBuckets.get(photoViewpager.getCurrentItem());
+        final GalleryPhotoView currentPhotoView = viewBuckets.get(photoViewpager.getCurrentItem());
         if (currentPhotoView == null) {
             KLog.e(TAG, "childView is null");
             super.finish();
             return;
         }
-        final Rect startRect = new Rect();
-        startRect.set(PhotoBrowseUtil.calcuateDrawableBounds(currentPhotoView));
         final Rect endRect = photoBrowseInfo.getViewLocalRects().get(photoViewpager.getCurrentItem());
-        PhotoBrowseUtil.playExitAnima(currentPhotoView, blackBackground, startRect, endRect, new PhotoBrowseUtil.OnAnimaEndListener() {
+        currentPhotoView.playExitAnima(endRect, blackBackground, new GalleryPhotoView.OnExitAnimaEndListener() {
             @Override
-            public void onAnimaEnd(Animator animator) {
+            public void onExitAnimaEnd() {
                 PhotoBrowseActivity.super.finish();
                 overridePendingTransition(0, 0);
             }
         });
     }
+
 
     //=============================================================InnerAdapter
 
@@ -138,7 +136,6 @@ public class PhotoBrowseActivity extends BaseActivity {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             GalleryPhotoView photoView = viewBuckets.get(position);
-            photoView.setCleanOnDetachedFromWindow(false);
             String photoUrl = photoBrowseInfo.getPhotoUrls().get(position);
             ImageLoadMnanger.INSTANCE.loadImageDontAnimate(photoView, photoUrl);
             container.addView(photoView);

@@ -963,21 +963,25 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
         return imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom();
     }
 
+    public void setMatrixScale(float scale, float centerX, float centerY) {
+        mSuppMatrix.setScale(scale, scale, centerX, centerY);
+    }
 
-    public void postScale(float scale, float centerX, float centerY) {
+    public void setMatrixTranslate(float dx, float dy) {
+        mSuppMatrix.setTranslate(dx, dy);
+    }
+
+    public void postMatrixScale(float scale, float centerX, float centerY) {
         mSuppMatrix.postScale(scale, scale, centerX, centerY);
     }
 
-    public void postTranslate(float dx, float dy) {
+
+    public void postMatrixTranslate(float dx, float dy) {
         mSuppMatrix.postTranslate(dx, dy);
     }
 
     public void applyMatrix() {
-        if (checkMatrixBounds()) {
-            mDrawMatrix.set(mBaseMatrix);
-            mDrawMatrix.postConcat(mSuppMatrix);
-            setImageViewMatrix(mDrawMatrix);
-        }
+        setImageViewMatrix(getDrawMatrix());
 
     }
 

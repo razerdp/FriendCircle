@@ -4,12 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Matrix;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -20,7 +17,6 @@ import android.widget.Scroller;
 
 import com.socks.library.KLog;
 
-import razerdp.friendcircle.utils.PhotoBrowseUtil;
 import uk.co.senab.photoview.PhotoView;
 
 /**
@@ -34,9 +30,12 @@ public class GalleryPhotoView extends PhotoView {
 
     private ViewTransform viewTransfrom;
     private OnEnterAnimaEndListener onEnterAnimaEndListener;
+    private OnExitAnimaEndListener onExitAnimaEndListener;
 
     private boolean isPlayingEnterAnima = false;
+    private boolean isPlayingExitAnima = false;
 
+    private float[] scaleRatios;
 
     public GalleryPhotoView(Context context) {
         super(context);
@@ -64,30 +63,23 @@ public class GalleryPhotoView extends PhotoView {
             public boolean onPreDraw() {
                 playEnterAnimaInternal(from);
                 getViewTreeObserver().removeOnPreDrawListener(this);
-                return true;
+                return false;
             }
         });
     }
 
-    private void playEnterAnimaInternal(Rect from) {
+    private void playEnterAnimaInternal(final Rect from) {
         if (isPlayingEnterAnima || from == null) return;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (!isAttachedToWindow()) return;
-        }
 
         final Rect tFrom = new Rect(from);
         final Rect to = new Rect();
-        final Point tGlobalOffset = new Point();
 
-        getGlobalVisibleRect(to, tGlobalOffset);
+        getGlobalVisibleRect(to);
 
-        tFrom.offset(-tGlobalOffset.x, -tGlobalOffset.y);
-        to.offset(-tGlobalOffset.x, -tGlobalOffset.y);
+        scaleRatios = calculateRatios(tFrom, to);
 
-        float[] scaleRatios = calculateRatios(tFrom, to);
-
-        setPivotX(0.5f);
-        setPivotY(0.5f);
+        setPivotX(from.centerX() / to.width());
+        setPivotY(from.centerY() / to.height());
 
         final AnimatorSet enterSet = new AnimatorSet();
         enterSet.play(ObjectAnimator.ofFloat(this, View.X, tFrom.left, to.left))
@@ -123,6 +115,36 @@ public class GalleryPhotoView extends PhotoView {
             }
         });
         enterSet.start();
+
+
+    }
+
+
+    public void playExitAnima(Rect to, @Nullable View alphaView, @Nullable final OnExitAnimaEndListener l) {
+        this.onExitAnimaEndListener = l;
+        playExitAnimaInternal(to, alphaView);
+    }
+
+    private void playExitAnimaInternal(final Rect to, @Nullable View alphaView) {
+        if (isPlayingEnterAnima || to == null || mAttacher == null) return;
+
+        final float scale = Math.max(scaleRatios[0], scaleRatios[1]);
+
+        final Rect from = getMineRect();
+
+        viewTransfrom.animaTranslate(from.centerX(), to.centerX(), from.centerY(), to.centerY());
+        viewTransfrom.animaScale(getScale(), scale, to.centerX(), to.centerY());
+        if (alphaView != null) {
+            viewTransfrom.animaAlpha(alphaView, 1.0f, 0);
+        }
+        viewTransfrom.start(new OnAllFinishListener() {
+            @Override
+            public void onAllFinish() {
+                if (onExitAnimaEndListener != null) {
+                    onExitAnimaEndListener.onExitAnimaEnd();
+                }
+            }
+        });
 
 
     }
@@ -172,16 +194,35 @@ public class GalleryPhotoView extends PhotoView {
         this.onEnterAnimaEndListener = onEnterAnimaEndListener;
     }
 
+    public OnExitAnimaEndListener getOnExitAnimaEndListener() {
+        return onExitAnimaEndListener;
+    }
+
+    public void setOnExitAnimaEndListener(OnExitAnimaEndListener onExitAnimaEndListener) {
+        this.onExitAnimaEndListener = onExitAnimaEndListener;
+    }
+
     public interface OnEnterAnimaEndListener {
         void onEnterAnimaEnd();
     }
 
+    public interface OnExitAnimaEndListener {
+        void onExitAnimaEnd();
+    }
+
+    interface OnAllFinishListener {
+        void onAllFinish();
+    }
+
     private class ViewTransform implements Runnable {
+
+        View targetView;
 
         volatile boolean isRunning;
 
         Scroller translateScroller;
         Scroller scaleScroller;
+        Scroller alphaScroller;
 
         Interpolator defaultInterpolator = new DecelerateInterpolator();
 
@@ -191,29 +232,40 @@ public class GalleryPhotoView extends PhotoView {
 
         float currentScale;
 
+        float alpha;
+
         int dx;
         int dy;
 
         int preTranslateX;
         int preTranslateY;
 
+        OnAllFinishListener onAllFinishListener;
 
-        public ViewTransform() {
+
+        ViewTransform() {
             isRunning = false;
             translateScroller = new Scroller(getContext(), defaultInterpolator);
             scaleScroller = new Scroller(getContext(), defaultInterpolator);
+            alphaScroller = new Scroller(getContext(), defaultInterpolator);
         }
 
         void animaScale(float from, float to, int centerX, int centerY) {
             this.scaleCenterX = centerX;
             this.scaleCenterY = centerY;
+            KLog.i("animaScale", "from  >>>  " + from + "   to  >>  " + to);
             scaleScroller.startScroll((int) (from * 10000), 0, (int) ((to - from) * 10000), 0, ANIMA_DURATION);
         }
 
-        void animaTranslate(int dx, int dy) {
+        void animaTranslate(int fromX, int toX, int fromY, int toY) {
             preTranslateX = 0;
             preTranslateY = 0;
-            translateScroller.startScroll(0, 0, dx, dy, ANIMA_DURATION);
+            translateScroller.startScroll(0, 0, fromX - toX, fromY - toY, ANIMA_DURATION);
+        }
+
+        void animaAlpha(View target, float fromAlpha, float toAlpha) {
+            this.targetView = target;
+            alphaScroller.startScroll((int) (fromAlpha * 10000), 0, (int) ((toAlpha - fromAlpha) * 10000), 0, ANIMA_DURATION);
         }
 
         @Override
@@ -227,8 +279,8 @@ public class GalleryPhotoView extends PhotoView {
             }
 
             if (translateScroller.computeScrollOffset()) {
-                dx = translateScroller.getCurrX() - preTranslateX;
-                dy = translateScroller.getCurrY() - preTranslateY;
+                dx += translateScroller.getCurrX() - preTranslateX;
+                dy += translateScroller.getCurrY() - preTranslateY;
 
                 preTranslateX = translateScroller.getCurrX();
                 preTranslateY = translateScroller.getCurrY();
@@ -236,24 +288,50 @@ public class GalleryPhotoView extends PhotoView {
                 isAllFinish = false;
             }
 
+            if (alphaScroller.computeScrollOffset()) {
+                alpha = (float) alphaScroller.getCurrX() / 10000f;
+                isAllFinish = false;
+            }
+
             if (!isAllFinish) {
                 setMatrixValue();
                 postExecuteSelf();
             } else {
+                reset();
                 isRunning = false;
+                if (onAllFinishListener != null) {
+                    onAllFinishListener.onAllFinish();
+                }
             }
 
         }
 
         private void setMatrixValue() {
             KLog.i(currentScale);
-            postScale(currentScale, scaleCenterX, scaleCenterY);
+            if (mAttacher == null) return;
+            postMatrixTranslate(dx, dy);
+            setMatrixScale(currentScale, scaleCenterX, scaleCenterY);
+            if (targetView != null) targetView.setAlpha(alpha);
             applyMatrix();
-//            drage(dx, dy);
         }
 
         private void postExecuteSelf() {
             if (isRunning) post(this);
+        }
+
+        private void reset() {
+            scaleCenterX = 0;
+            scaleCenterY = 0;
+
+            currentScale = 0;
+
+            dx = 0;
+            dy = 0;
+
+            preTranslateX = 0;
+            preTranslateY = 0;
+
+            alpha = 0;
         }
 
         void stop() {
@@ -261,12 +339,22 @@ public class GalleryPhotoView extends PhotoView {
             scaleScroller.abortAnimation();
             translateScroller.abortAnimation();
             isRunning = false;
+            onAllFinishListener = null;
+            reset();
         }
 
-        void start() {
+        void start(@Nullable OnAllFinishListener onAllFinishListener) {
+            if (isRunning) return;
+            this.onAllFinishListener = onAllFinishListener;
             isRunning = true;
             postExecuteSelf();
         }
     }
 
+
+    @Override
+    protected void onDetachedFromWindow() {
+        viewTransfrom.stop();
+        super.onDetachedFromWindow();
+    }
 }

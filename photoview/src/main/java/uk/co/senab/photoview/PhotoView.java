@@ -42,7 +42,7 @@ public class PhotoView extends ImageView implements IPhotoView {
     private boolean isCleanOnDetachedFromWindow = true;
 
 
-    private PhotoViewAttacher mAttacher;
+    protected PhotoViewAttacher mAttacher;
 
     private ScaleType mPendingScaleType;
 
@@ -277,13 +277,20 @@ public class PhotoView extends ImageView implements IPhotoView {
         this.isCleanOnDetachedFromWindow = isCleanOnDetachedFromWindow;
     }
 
-
-    public void postScale(float scale, float centerX, float centerY) {
-        mAttacher.postScale(scale, centerX, centerY);
+    public void setMatrixScale(float scale, float centerX, float centerY) {
+        mAttacher.setMatrixScale(scale, centerX, centerY);
     }
 
-    public void postTranslate(float dx, float dy) {
-        mAttacher.postTranslate(dx, dy);
+    public void setMatrixTranslate(float dx, float dy) {
+        mAttacher.setMatrixTranslate(dx, dy);
+    }
+
+    public void postMatrixScale(float scale, float centerX, float centerY) {
+        mAttacher.postMatrixScale(scale, centerX, centerY);
+    }
+
+    public void postMatrixTranslate(float dx, float dy) {
+        mAttacher.postMatrixTranslate(dx, dy);
     }
 
     public void applyMatrix() {
