@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 
 import com.bumptech.glide.Glide;
 import com.socks.library.KLog;
@@ -149,19 +148,10 @@ public class PhotoBrowseActivity extends BaseActivity {
         @Override
         public void setPrimaryItem(ViewGroup container, final int position, final Object object) {
             if (isFirstInitlize && object instanceof GalleryPhotoView && position == photoBrowseInfo.getCurrentPhotoPosition()) {
-                //标志位不能放到onPredraw里面，因为回调时机不明确
                 isFirstInitlize = false;
                 final GalleryPhotoView targetView = (GalleryPhotoView) object;
-                targetView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                    @Override
-                    public boolean onPreDraw() {
-                        final Rect startRect = photoBrowseInfo.getViewLocalRects().get(position);
-//                        targetView.playEnterAnima(startRect);
-                        PhotoBrowseUtil.playEnterAnima(targetView, startRect, null);
-                        targetView.getViewTreeObserver().removeOnPreDrawListener(this);
-                        return false;
-                    }
-                });
+                final Rect startRect = photoBrowseInfo.getViewLocalRects().get(position);
+                targetView.playEnterAnima(startRect, null);
             }
             super.setPrimaryItem(container, position, object);
         }

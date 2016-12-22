@@ -1,17 +1,26 @@
 package razerdp.friendcircle.ui.widget;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.Scroller;
 
 import com.socks.library.KLog;
 
+import razerdp.friendcircle.utils.PhotoBrowseUtil;
 import uk.co.senab.photoview.PhotoView;
 
 /**
@@ -24,6 +33,10 @@ public class GalleryPhotoView extends PhotoView {
     private static final int ANIMA_DURATION = 350;
 
     private ViewTransform viewTransfrom;
+    private OnEnterAnimaEndListener onEnterAnimaEndListener;
+
+    private boolean isPlayingEnterAnima = false;
+
 
     public GalleryPhotoView(Context context) {
         super(context);
@@ -44,25 +57,73 @@ public class GalleryPhotoView extends PhotoView {
     }
 
 
-    public void playEnterAnima(Rect from) {
-        getImageMatrix().reset();
+    public void playEnterAnima(final Rect from, @Nullable final OnEnterAnimaEndListener l) {
+        this.onEnterAnimaEndListener = l;
+        getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                playEnterAnimaInternal(from);
+                getViewTreeObserver().removeOnPreDrawListener(this);
+                return true;
+            }
+        });
+    }
 
-        Rect mine = getMineRect();
+    private void playEnterAnimaInternal(Rect from) {
+        if (isPlayingEnterAnima || from == null) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (!isAttachedToWindow()) return;
+        }
 
-        float scaleX = (float) from.width() / mine.width();
-        float scaleY = (float) from.height() / mine.height();
-        float scale = Math.min(scaleX, scaleY);
+        final Rect tFrom = new Rect(from);
+        final Rect to = new Rect();
+        final Point tGlobalOffset = new Point();
 
-        postScale(scale, from.centerX(), from.centerY());
-        applyMatrix();
+        getGlobalVisibleRect(to, tGlobalOffset);
 
-   /*     int dx = from.left;
-        int dy = from.top;
+        tFrom.offset(-tGlobalOffset.x, -tGlobalOffset.y);
+        to.offset(-tGlobalOffset.x, -tGlobalOffset.y);
 
-//        viewTransfrom.animaTranslate(dx, dy);
-        viewTransfrom.animaScale(scale, 1.0f, from.centerX(), from.centerY());
+        float[] scaleRatios = calculateRatios(tFrom, to);
 
-        viewTransfrom.start();*/
+        setPivotX(0.5f);
+        setPivotY(0.5f);
+
+        final AnimatorSet enterSet = new AnimatorSet();
+        enterSet.play(ObjectAnimator.ofFloat(this, View.X, tFrom.left, to.left))
+                .with(ObjectAnimator.ofFloat(this, View.Y, tFrom.top, to.top))
+                .with(ObjectAnimator.ofFloat(this, View.SCALE_X, scaleRatios[0], 1f))
+                .with(ObjectAnimator.ofFloat(this, View.SCALE_Y, scaleRatios[1], 1f));
+
+        enterSet.setDuration(ANIMA_DURATION);
+        enterSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                isPlayingEnterAnima = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                isPlayingEnterAnima = false;
+                if (onEnterAnimaEndListener != null) {
+                    onEnterAnimaEndListener.onEnterAnimaEnd();
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                isPlayingEnterAnima = false;
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+                isPlayingEnterAnima = true;
+
+            }
+        });
+        enterSet.start();
+
 
     }
 
@@ -92,6 +153,28 @@ public class GalleryPhotoView extends PhotoView {
         return rect;
     }
 
+
+    private float[] calculateRatios(Rect startBounds, Rect endBounds) {
+        float[] result = new float[2];
+        float widthRatio = startBounds.width() * 1.0f / endBounds.width() * 1.0f;
+        float heightRatio = startBounds.height() * 1.0f / endBounds.height() * 1.0f;
+        result[0] = widthRatio;
+        result[1] = heightRatio;
+        return result;
+    }
+
+
+    public OnEnterAnimaEndListener getOnEnterAnimaEndListener() {
+        return onEnterAnimaEndListener;
+    }
+
+    public void setOnEnterAnimaEndListener(OnEnterAnimaEndListener onEnterAnimaEndListener) {
+        this.onEnterAnimaEndListener = onEnterAnimaEndListener;
+    }
+
+    public interface OnEnterAnimaEndListener {
+        void onEnterAnimaEnd();
+    }
 
     private class ViewTransform implements Runnable {
 
