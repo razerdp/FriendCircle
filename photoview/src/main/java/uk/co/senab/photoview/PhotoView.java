@@ -277,22 +277,34 @@ public class PhotoView extends ImageView implements IPhotoView {
         this.isCleanOnDetachedFromWindow = isCleanOnDetachedFromWindow;
     }
 
-    public void setMatrixScale(float scale, float centerX, float centerY) {
-        mAttacher.setMatrixScale(scale, centerX, centerY);
+    public void setMatrixScale(float scaleX, float scaleY, float centerX, float centerY) {
+        mAttacher.setMatrixScale(scaleX,scaleY, centerX, centerY);
     }
 
     public void setMatrixTranslate(float dx, float dy) {
         mAttacher.setMatrixTranslate(dx, dy);
     }
 
-    public void postMatrixScale(float scale, float centerX, float centerY) {
-        mAttacher.postMatrixScale(scale, centerX, centerY);
+    public void postMatrixScale(float scaleX, float scaleY, float centerX, float centerY) {
+        mAttacher.postMatrixScale(scaleX,scaleY, centerX, centerY);
     }
 
     public void postMatrixTranslate(float dx, float dy) {
         mAttacher.postMatrixTranslate(dx, dy);
     }
 
+
+    public void preMatrixScale(float scaleX, float scaleY, float centerX, float centerY) {
+        mAttacher.preMatrixScale(scaleX,scaleY, centerX, centerY);
+    }
+
+
+    public void preMatrixTranslate(float dx, float dy) {
+        mAttacher.preMatrixTranslate(dx, dy);
+    }
+    public void resetSuppMatrix(){
+        mAttacher.resetSuppMatrix();
+    }
     public void applyMatrix() {
         mAttacher.applyMatrix();
     }

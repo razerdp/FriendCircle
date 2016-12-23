@@ -110,12 +110,17 @@ public class PhotoBrowseActivity extends BaseActivity {
         currentPhotoView.playExitAnima(endRect, blackBackground, new GalleryPhotoView.OnExitAnimaEndListener() {
             @Override
             public void onExitAnimaEnd() {
-                PhotoBrowseActivity.super.finish();
-                overridePendingTransition(0, 0);
+                /*PhotoBrowseActivity.super.finish();
+                overridePendingTransition(0, 0);*/
             }
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        super.finish();
+    }
 
     //=============================================================InnerAdapter
 

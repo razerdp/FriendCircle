@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -35,6 +37,8 @@ public class GalleryPhotoView extends PhotoView {
     private boolean isPlayingEnterAnima = false;
     private boolean isPlayingExitAnima = false;
 
+    private Point globalOffset;
+
     private float[] scaleRatios;
 
     public GalleryPhotoView(Context context) {
@@ -53,6 +57,7 @@ public class GalleryPhotoView extends PhotoView {
     protected void init() {
         super.init();
         viewTransfrom = new ViewTransform();
+        globalOffset = new Point();
     }
 
 
@@ -74,12 +79,15 @@ public class GalleryPhotoView extends PhotoView {
         final Rect tFrom = new Rect(from);
         final Rect to = new Rect();
 
-        getGlobalVisibleRect(to);
+        getGlobalVisibleRect(to, globalOffset);
+
+        tFrom.offset(-globalOffset.x, -globalOffset.y);
+        to.offset(-globalOffset.x, -globalOffset.y);
 
         scaleRatios = calculateRatios(tFrom, to);
 
-        setPivotX(from.centerX() / to.width());
-        setPivotY(from.centerY() / to.height());
+        setPivotX(tFrom.centerX() / to.width());
+        setPivotY(tFrom.centerY() / to.height());
 
         final AnimatorSet enterSet = new AnimatorSet();
         enterSet.play(ObjectAnimator.ofFloat(this, View.X, tFrom.left, to.left))
@@ -129,11 +137,16 @@ public class GalleryPhotoView extends PhotoView {
         if (isPlayingEnterAnima || to == null || mAttacher == null) return;
 
         final float scale = Math.max(scaleRatios[0], scaleRatios[1]);
+        final float currentScale = getScale();
+        if (currentScale > 1.0f) setScale(1.0f);
 
         final Rect from = getMineRect();
+        final Rect target = new Rect(to);
 
-        viewTransfrom.animaTranslate(from.centerX(), to.centerX(), from.centerY(), to.centerY());
-        viewTransfrom.animaScale(getScale(), scale, to.centerX(), to.centerY());
+        target.offset(-globalOffset.x, -globalOffset.y);
+
+        viewTransfrom.animaTranslate(to.centerX(), from.centerX(), to.centerY(), from.centerY());
+        viewTransfrom.animaScale(currentScale, scale, from.centerX(), from.centerY());
         if (alphaView != null) {
             viewTransfrom.animaAlpha(alphaView, 1.0f, 0);
         }
@@ -149,17 +162,23 @@ public class GalleryPhotoView extends PhotoView {
 
     }
 
+    /**
+     * 如果有drawable，则返回drawable相对于整个view的rect，否则返回整个view的rect
+     *
+     * @return
+     */
     public Rect getMineRect() {
         Drawable drawable = getDrawable();
-        Rect drawableRect = new Rect();
+        Rect result = null;
         if (drawable != null) {
-            drawableRect = rectF2rect(getDisplayRect());
-        } else {
-            drawableRect.set(0, 0, getWidth(), getHeight());
+            result = getDrawableBounds(drawable);
         }
-
-        return drawableRect;
-
+        if (result == null) {
+            result = new Rect();
+            result.set(0, 0, getWidth(), getHeight());
+        }
+        KLog.i(result.toShortString());
+        return result;
     }
 
     private Rect rectF2rect(RectF rectf) {
@@ -173,6 +192,23 @@ public class GalleryPhotoView extends PhotoView {
             rect.bottom = (int) rectf.bottom;
         }
         return rect;
+    }
+
+    private Rect getDrawableBounds(Drawable d) {
+        if (d == null) return null;
+        Rect result = new Rect();
+        Rect tDrawableRect = d.getBounds();
+        Matrix drawableMatrix = getImageMatrix();
+
+        float[] values = new float[9];
+        drawableMatrix.getValues(values);
+
+        result.left = (int) values[Matrix.MTRANS_X];
+        result.top = (int) values[Matrix.MTRANS_Y];
+        result.right = (int) (result.left + tDrawableRect.width() * values[Matrix.MSCALE_X]);
+        result.bottom = (int) (result.top + tDrawableRect.height() * values[Matrix.MSCALE_Y]);
+
+        return result;
     }
 
 
@@ -230,7 +266,8 @@ public class GalleryPhotoView extends PhotoView {
         int scaleCenterX;
         int scaleCenterY;
 
-        float currentScale;
+        float scaleX;
+        float scaleY;
 
         float alpha;
 
@@ -250,17 +287,23 @@ public class GalleryPhotoView extends PhotoView {
             alphaScroller = new Scroller(getContext(), defaultInterpolator);
         }
 
-        void animaScale(float from, float to, int centerX, int centerY) {
+        void animaScale(float fromX, float toX, float fromY, float toY, int centerX, int centerY) {
             this.scaleCenterX = centerX;
             this.scaleCenterY = centerY;
-            KLog.i("animaScale", "from  >>>  " + from + "   to  >>  " + to);
-            scaleScroller.startScroll((int) (from * 10000), 0, (int) ((to - from) * 10000), 0, ANIMA_DURATION);
+            scaleScroller.startScroll((int) (fromX * 10000), (int) (fromY * 10000), (int) ((toX - fromX) * 10000), (int) ((toY - fromY) * 10000), ANIMA_DURATION);
+        }
+
+        void animaScale(float from, float to, int centerX, int centerY) {
+            animaScale(from, to, from, to, centerX, centerY);
         }
 
         void animaTranslate(int fromX, int toX, int fromY, int toY) {
             preTranslateX = 0;
             preTranslateY = 0;
+            KLog.i("animaTranslate", " from  >>  " + fromX + "," + fromY + "   to  >>  " + toX + "," + toY);
             translateScroller.startScroll(0, 0, fromX - toX, fromY - toY, ANIMA_DURATION);
+            KLog.i("animaTranslate", " dx  >>  " + (fromX - toX) + "   dy  >>  " + (fromY - toY));
+
         }
 
         void animaAlpha(View target, float fromAlpha, float toAlpha) {
@@ -274,16 +317,21 @@ public class GalleryPhotoView extends PhotoView {
             boolean isAllFinish = true;
 
             if (scaleScroller.computeScrollOffset()) {
-                currentScale = (float) scaleScroller.getCurrX() / 10000f;
+                scaleX = (float) scaleScroller.getCurrX() / 10000f;
+                scaleY = (float) scaleScroller.getCurrY() / 10000f;
+
                 isAllFinish = false;
             }
 
             if (translateScroller.computeScrollOffset()) {
-                dx += translateScroller.getCurrX() - preTranslateX;
-                dy += translateScroller.getCurrY() - preTranslateY;
+                int curX = translateScroller.getCurrX();
+                int curY = translateScroller.getCurrY();
 
-                preTranslateX = translateScroller.getCurrX();
-                preTranslateY = translateScroller.getCurrY();
+                dx += curX - preTranslateX;
+                dy += curY - preTranslateY;
+
+                preTranslateX = curX;
+                preTranslateY = curY;
 
                 isAllFinish = false;
             }
@@ -297,8 +345,8 @@ public class GalleryPhotoView extends PhotoView {
                 setMatrixValue();
                 postExecuteSelf();
             } else {
-                reset();
                 isRunning = false;
+                reset();
                 if (onAllFinishListener != null) {
                     onAllFinishListener.onAllFinish();
                 }
@@ -307,10 +355,10 @@ public class GalleryPhotoView extends PhotoView {
         }
 
         private void setMatrixValue() {
-            KLog.i(currentScale);
             if (mAttacher == null) return;
+            resetSuppMatrix();
+            postMatrixScale(scaleX, scaleY, scaleCenterX, scaleCenterY);
             postMatrixTranslate(dx, dy);
-            setMatrixScale(currentScale, scaleCenterX, scaleCenterY);
             if (targetView != null) targetView.setAlpha(alpha);
             applyMatrix();
         }
@@ -323,7 +371,8 @@ public class GalleryPhotoView extends PhotoView {
             scaleCenterX = 0;
             scaleCenterY = 0;
 
-            currentScale = 0;
+            scaleX = 0;
+            scaleY = 0;
 
             dx = 0;
             dy = 0;
@@ -334,17 +383,17 @@ public class GalleryPhotoView extends PhotoView {
             alpha = 0;
         }
 
-        void stop() {
+        void stop(boolean reset) {
             removeCallbacks(this);
             scaleScroller.abortAnimation();
             translateScroller.abortAnimation();
             isRunning = false;
             onAllFinishListener = null;
-            reset();
+            if (reset) reset();
         }
 
         void start(@Nullable OnAllFinishListener onAllFinishListener) {
-            if (isRunning) return;
+            if (isRunning) stop(false);
             this.onAllFinishListener = onAllFinishListener;
             isRunning = true;
             postExecuteSelf();
@@ -354,7 +403,7 @@ public class GalleryPhotoView extends PhotoView {
 
     @Override
     protected void onDetachedFromWindow() {
-        viewTransfrom.stop();
+        viewTransfrom.stop(true);
         super.onDetachedFromWindow();
     }
 }

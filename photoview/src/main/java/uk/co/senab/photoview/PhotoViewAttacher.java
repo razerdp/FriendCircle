@@ -43,6 +43,7 @@ import uk.co.senab.photoview.gestures.VersionedGestureDetector;
 import uk.co.senab.photoview.log.LogManager;
 import uk.co.senab.photoview.scrollerproxy.ScrollerProxy;
 
+import static android.R.attr.centerX;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
@@ -963,26 +964,37 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
         return imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom();
     }
 
-    public void setMatrixScale(float scale, float centerX, float centerY) {
-        mSuppMatrix.setScale(scale, scale, centerX, centerY);
+    public void setMatrixScale(float scaleX, float scaleY, float centerX, float centerY) {
+        mSuppMatrix.setScale(scaleX, scaleY, centerX, centerY);
     }
 
     public void setMatrixTranslate(float dx, float dy) {
         mSuppMatrix.setTranslate(dx, dy);
     }
 
-    public void postMatrixScale(float scale, float centerX, float centerY) {
-        mSuppMatrix.postScale(scale, scale, centerX, centerY);
+    public void postMatrixScale(float scaleX, float scaleY, float centerX, float centerY) {
+        mSuppMatrix.postScale(scaleX, scaleY, centerX, centerY);
     }
-
 
     public void postMatrixTranslate(float dx, float dy) {
         mSuppMatrix.postTranslate(dx, dy);
     }
 
+    public void preMatrixScale(float scaleX, float scaleY, float centerX, float centerY) {
+        mSuppMatrix.preScale(scaleX, scaleY, centerX, centerY);
+    }
+
+
+    public void preMatrixTranslate(float dx, float dy) {
+        mSuppMatrix.preTranslate(dx, dy);
+    }
+
+    public void resetSuppMatrix() {
+        mSuppMatrix.reset();
+    }
+
     public void applyMatrix() {
         setImageViewMatrix(getDrawMatrix());
-
     }
 
     /**
