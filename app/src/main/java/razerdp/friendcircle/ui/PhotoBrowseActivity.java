@@ -32,7 +32,6 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  * <p>
  * 朋友圈图片浏览控件
  */
-// TODO: 2016/12/16 退场动画结束后，图片与原图片重叠后的图片跳动问题，以及滑动过后图片无法返回到原来位置的问题
 public class PhotoBrowseActivity extends BaseActivity {
     private static final String TAG = "PhotoBrowseActivity";
 
@@ -110,16 +109,10 @@ public class PhotoBrowseActivity extends BaseActivity {
         currentPhotoView.playExitAnima(endRect, blackBackground, new GalleryPhotoView.OnExitAnimaEndListener() {
             @Override
             public void onExitAnimaEnd() {
-                /*PhotoBrowseActivity.super.finish();
-                overridePendingTransition(0, 0);*/
+                PhotoBrowseActivity.super.finish();
+                overridePendingTransition(0, 0);
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        super.finish();
     }
 
     //=============================================================InnerAdapter

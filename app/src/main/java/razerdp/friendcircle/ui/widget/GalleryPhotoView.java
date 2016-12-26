@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
+import android.widget.ImageView;
 import android.widget.Scroller;
 
 import com.socks.library.KLog;
@@ -25,6 +27,10 @@ import uk.co.senab.photoview.PhotoView;
  * Created by 大灯泡 on 2016/12/20.
  * <p>
  * 用于图片浏览页面的photoview，主要负责展开动画和回退动画的计算
+ * <p>
+ * <p>
+ * 本代码部分参考bm-x photoview(用scroller实现动画)：https://github.com/bm-x/PhotoView
+ * 本代码大部分参考photoview的实现方式：https://github.com/chrisbanes/PhotoView
  */
 
 public class GalleryPhotoView extends PhotoView {
@@ -38,8 +44,8 @@ public class GalleryPhotoView extends PhotoView {
     private boolean isPlayingExitAnima = false;
 
     private Point globalOffset;
-
     private float[] scaleRatios;
+    private RectF clipBounds;
 
     public GalleryPhotoView(Context context) {
         super(context);
@@ -60,6 +66,14 @@ public class GalleryPhotoView extends PhotoView {
         globalOffset = new Point();
     }
 
+    @Override
+    public void draw(Canvas canvas) {
+        if (clipBounds != null) {
+            canvas.clipRect(clipBounds);
+            clipBounds = null;
+        }
+        super.draw(canvas);
+    }
 
     public void playEnterAnima(final Rect from, @Nullable final OnEnterAnimaEndListener l) {
         this.onEnterAnimaEndListener = l;
@@ -145,11 +159,18 @@ public class GalleryPhotoView extends PhotoView {
 
         target.offset(-globalOffset.x, -globalOffset.y);
 
-        viewTransfrom.animaTranslate(to.centerX(), from.centerX(), to.centerY(), from.centerY());
+        viewTransfrom.animaTranslate(target.centerX(), from.centerX(), target.centerY(), from.centerY());
+        //等比缩放
         viewTransfrom.animaScale(currentScale, scale, from.centerX(), from.centerY());
         if (alphaView != null) {
             viewTransfrom.animaAlpha(alphaView, 1.0f, 0);
         }
+
+        if (target.width() < from.width() || target.height() < from.height()) {
+            viewTransfrom.animaClip(from, target);
+        }
+
+
         viewTransfrom.start(new OnAllFinishListener() {
             @Override
             public void onAllFinish() {
@@ -252,6 +273,8 @@ public class GalleryPhotoView extends PhotoView {
 
     private class ViewTransform implements Runnable {
 
+        static final float PRECISION = 10000f;
+
         View targetView;
 
         volatile boolean isRunning;
@@ -259,6 +282,7 @@ public class GalleryPhotoView extends PhotoView {
         Scroller translateScroller;
         Scroller scaleScroller;
         Scroller alphaScroller;
+        Scroller clipScroller;
 
         Interpolator defaultInterpolator = new DecelerateInterpolator();
 
@@ -277,6 +301,11 @@ public class GalleryPhotoView extends PhotoView {
         int preTranslateX;
         int preTranslateY;
 
+        RectF mClipRect;
+        RectF clipTo;
+        RectF clipFrom;
+        Matrix tempMatrix;
+
         OnAllFinishListener onAllFinishListener;
 
 
@@ -285,12 +314,15 @@ public class GalleryPhotoView extends PhotoView {
             translateScroller = new Scroller(getContext(), defaultInterpolator);
             scaleScroller = new Scroller(getContext(), defaultInterpolator);
             alphaScroller = new Scroller(getContext(), defaultInterpolator);
+            clipScroller = new Scroller(getContext(), defaultInterpolator);
+            mClipRect = new RectF();
+            tempMatrix = new Matrix();
         }
 
         void animaScale(float fromX, float toX, float fromY, float toY, int centerX, int centerY) {
             this.scaleCenterX = centerX;
             this.scaleCenterY = centerY;
-            scaleScroller.startScroll((int) (fromX * 10000), (int) (fromY * 10000), (int) ((toX - fromX) * 10000), (int) ((toY - fromY) * 10000), ANIMA_DURATION);
+            scaleScroller.startScroll((int) (fromX * PRECISION), (int) (fromY * PRECISION), (int) ((toX - fromX) * PRECISION), (int) ((toY - fromY) * PRECISION), ANIMA_DURATION);
         }
 
         void animaScale(float from, float to, int centerX, int centerY) {
@@ -300,15 +332,27 @@ public class GalleryPhotoView extends PhotoView {
         void animaTranslate(int fromX, int toX, int fromY, int toY) {
             preTranslateX = 0;
             preTranslateY = 0;
-            KLog.i("animaTranslate", " from  >>  " + fromX + "," + fromY + "   to  >>  " + toX + "," + toY);
             translateScroller.startScroll(0, 0, fromX - toX, fromY - toY, ANIMA_DURATION);
-            KLog.i("animaTranslate", " dx  >>  " + (fromX - toX) + "   dy  >>  " + (fromY - toY));
-
         }
 
         void animaAlpha(View target, float fromAlpha, float toAlpha) {
             this.targetView = target;
-            alphaScroller.startScroll((int) (fromAlpha * 10000), 0, (int) ((toAlpha - fromAlpha) * 10000), 0, ANIMA_DURATION);
+            alphaScroller.startScroll((int) (fromAlpha * PRECISION), 0, (int) ((toAlpha - fromAlpha) * PRECISION), 0, ANIMA_DURATION);
+        }
+
+        void animaClip(Rect clipFrom, Rect clipTo) {
+            this.clipFrom = new RectF(clipFrom);
+            this.clipTo = new RectF(clipTo);
+            if (!clipFrom.isEmpty() && !clipTo.isEmpty()) {
+                //算出显示范围的比率
+                float dx = Math.min(1.0f, (float) clipTo.width() / clipFrom.width());
+                float dy = Math.min(1.0f, (float) clipTo.height() / clipFrom.height());
+
+                dx = dx - 1;
+                dy = dy - 1;
+                //从1开始,乘以1w保证精度
+                clipScroller.startScroll((int) (1 * PRECISION), (int) (1 * PRECISION), (int) (dx * PRECISION), (int) (dy * PRECISION), ANIMA_DURATION);
+            }
         }
 
         @Override
@@ -317,8 +361,8 @@ public class GalleryPhotoView extends PhotoView {
             boolean isAllFinish = true;
 
             if (scaleScroller.computeScrollOffset()) {
-                scaleX = (float) scaleScroller.getCurrX() / 10000f;
-                scaleY = (float) scaleScroller.getCurrY() / 10000f;
+                scaleX = (float) scaleScroller.getCurrX() / PRECISION;
+                scaleY = (float) scaleScroller.getCurrY() / PRECISION;
 
                 isAllFinish = false;
             }
@@ -337,8 +381,32 @@ public class GalleryPhotoView extends PhotoView {
             }
 
             if (alphaScroller.computeScrollOffset()) {
-                alpha = (float) alphaScroller.getCurrX() / 10000f;
+                alpha = (float) alphaScroller.getCurrX() / PRECISION;
                 isAllFinish = false;
+            }
+
+            if (clipScroller.computeScrollOffset() || clipBounds != null) {
+
+                float curX = (float) clipScroller.getCurrX() / PRECISION;
+                float curY = (float) clipScroller.getCurrY() / PRECISION;
+
+                KLog.i("clip", curX, curY);
+
+
+                if (curX == 1 && clipTo != null) {
+                    mClipRect.left = clipTo.left;
+                    mClipRect.right = clipTo.right;
+                }
+
+                if (curY == 1 && clipTo != null) {
+                    mClipRect.top = clipTo.top;
+                    mClipRect.bottom = clipTo.bottom;
+                }
+
+                if (!mClipRect.isEmpty()) {
+                    clipBounds = mClipRect;
+                }
+
             }
 
             if (!isAllFinish) {
@@ -387,6 +455,9 @@ public class GalleryPhotoView extends PhotoView {
             removeCallbacks(this);
             scaleScroller.abortAnimation();
             translateScroller.abortAnimation();
+            alphaScroller.abortAnimation();
+            clipScroller.abortAnimation();
+
             isRunning = false;
             onAllFinishListener = null;
             if (reset) reset();
@@ -405,5 +476,27 @@ public class GalleryPhotoView extends PhotoView {
     protected void onDetachedFromWindow() {
         viewTransfrom.stop(true);
         super.onDetachedFromWindow();
+    }
+
+
+    //------------------------------------------tools block-----------------------------------------------
+    private int getViewWidth() {
+        return getWidth() - getPaddingLeft() - getPaddingRight();
+    }
+
+    private int getViewHeight() {
+        return getHeight() - getPaddingTop() - getPaddingBottom();
+    }
+
+    private int getDrawableIntrinsicWidth() {
+        Drawable d = getDrawable();
+        if (d == null) return 0;
+        return d.getIntrinsicWidth();
+    }
+
+    private int getDrawableIntrinsicHeight() {
+        Drawable d = getDrawable();
+        if (d == null) return 0;
+        return d.getIntrinsicHeight();
     }
 }

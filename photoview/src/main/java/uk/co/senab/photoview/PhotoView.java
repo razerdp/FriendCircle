@@ -30,6 +30,9 @@ import uk.co.senab.photoview.PhotoViewAttacher.OnMatrixChangedListener;
 import uk.co.senab.photoview.PhotoViewAttacher.OnPhotoTapListener;
 import uk.co.senab.photoview.PhotoViewAttacher.OnViewTapListener;
 
+import static android.R.attr.centerX;
+import static android.R.attr.centerY;
+
 public class PhotoView extends ImageView implements IPhotoView {
 
 
@@ -89,6 +92,10 @@ public class PhotoView extends ImageView implements IPhotoView {
     @Override
     public RectF getDisplayRect() {
         return mAttacher.getDisplayRect();
+    }
+
+    public RectF getDisplayRect(Matrix matrix) {
+        return mAttacher.getDisplayRect(matrix);
     }
 
     @Override
@@ -278,7 +285,7 @@ public class PhotoView extends ImageView implements IPhotoView {
     }
 
     public void setMatrixScale(float scaleX, float scaleY, float centerX, float centerY) {
-        mAttacher.setMatrixScale(scaleX,scaleY, centerX, centerY);
+        mAttacher.setMatrixScale(scaleX, scaleY, centerX, centerY);
     }
 
     public void setMatrixTranslate(float dx, float dy) {
@@ -286,7 +293,11 @@ public class PhotoView extends ImageView implements IPhotoView {
     }
 
     public void postMatrixScale(float scaleX, float scaleY, float centerX, float centerY) {
-        mAttacher.postMatrixScale(scaleX,scaleY, centerX, centerY);
+        mAttacher.postMatrixScale(scaleX, scaleY, centerX, centerY);
+    }
+
+    public void postMatrixScale(float scaleX, float scaleY) {
+        mAttacher.postMatrixScale(scaleX, scaleY);
     }
 
     public void postMatrixTranslate(float dx, float dy) {
@@ -295,16 +306,18 @@ public class PhotoView extends ImageView implements IPhotoView {
 
 
     public void preMatrixScale(float scaleX, float scaleY, float centerX, float centerY) {
-        mAttacher.preMatrixScale(scaleX,scaleY, centerX, centerY);
+        mAttacher.preMatrixScale(scaleX, scaleY, centerX, centerY);
     }
 
 
     public void preMatrixTranslate(float dx, float dy) {
         mAttacher.preMatrixTranslate(dx, dy);
     }
-    public void resetSuppMatrix(){
+
+    public void resetSuppMatrix() {
         mAttacher.resetSuppMatrix();
     }
+
     public void applyMatrix() {
         mAttacher.applyMatrix();
     }

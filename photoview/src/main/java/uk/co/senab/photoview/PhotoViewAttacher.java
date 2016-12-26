@@ -44,6 +44,7 @@ import uk.co.senab.photoview.log.LogManager;
 import uk.co.senab.photoview.scrollerproxy.ScrollerProxy;
 
 import static android.R.attr.centerX;
+import static android.R.attr.centerY;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
@@ -810,7 +811,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
      * @param matrix - Matrix to map Drawable against
      * @return RectF - Displayed Rectangle
      */
-    private RectF getDisplayRect(Matrix matrix) {
+    public RectF getDisplayRect(Matrix matrix) {
         ImageView imageView = getImageView();
 
         if (null != imageView) {
@@ -974,6 +975,10 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
 
     public void postMatrixScale(float scaleX, float scaleY, float centerX, float centerY) {
         mSuppMatrix.postScale(scaleX, scaleY, centerX, centerY);
+    }
+
+    public void postMatrixScale(float scaleX, float scaleY) {
+        mSuppMatrix.postScale(scaleX, scaleY);
     }
 
     public void postMatrixTranslate(float dx, float dy) {
