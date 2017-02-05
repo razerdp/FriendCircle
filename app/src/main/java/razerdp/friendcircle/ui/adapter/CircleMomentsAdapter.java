@@ -15,6 +15,9 @@ import java.util.List;
 
 import razerdp.friendcircle.app.baseadapter.BaseRecyclerViewAdapter;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
+import razerdp.friendcircle.mvp.presenter.IBasePresenter;
+import razerdp.friendcircle.mvp.presenter.MomentPresenter;
+import razerdp.friendcircle.ui.viewholder.CircleBaseViewHolder;
 
 /**
  * Created by 大灯泡 on 2016/11/1.
@@ -26,6 +29,7 @@ public class CircleMomentsAdapter extends BaseRecyclerViewAdapter<MomentsInfo> {
 
 
     private SparseArray<ViewHoldernfo> viewHolderKeyArray;
+    private MomentPresenter momentPresenter;
 
 
     private CircleMomentsAdapter(@NonNull Context context,
@@ -36,6 +40,7 @@ public class CircleMomentsAdapter extends BaseRecyclerViewAdapter<MomentsInfo> {
     private CircleMomentsAdapter(Builder builder) {
         this(builder.context, builder.datas);
         this.viewHolderKeyArray = builder.viewHolderKeyArray;
+        this.momentPresenter = builder.momentPresenter;
     }
 
     @Override
@@ -52,7 +57,11 @@ public class CircleMomentsAdapter extends BaseRecyclerViewAdapter<MomentsInfo> {
     protected CircleBaseViewHolder getViewHolder(ViewGroup parent, View rootView, int viewType) {
         ViewHoldernfo viewHoldernfo = viewHolderKeyArray.get(viewType);
         if (viewHoldernfo != null) {
-            return createCircleViewHolder(context, parent, viewHoldernfo);
+            CircleBaseViewHolder circleBaseViewHolder = createCircleViewHolder(context, parent, viewHoldernfo);
+            if (circleBaseViewHolder != null) {
+                circleBaseViewHolder.setPresenter(momentPresenter);
+            }
+            return circleBaseViewHolder;
         }
         return null;
     }
@@ -62,6 +71,8 @@ public class CircleMomentsAdapter extends BaseRecyclerViewAdapter<MomentsInfo> {
         private Context context;
         private SparseArray<ViewHoldernfo> viewHolderKeyArray = new SparseArray<>();
         private List<T> datas;
+        private MomentPresenter momentPresenter;
+
 
         public Builder(Context context) {
             this.context = context;
@@ -81,6 +92,11 @@ public class CircleMomentsAdapter extends BaseRecyclerViewAdapter<MomentsInfo> {
 
         public Builder<T> setData(List<T> datas) {
             this.datas = datas;
+            return this;
+        }
+
+        public Builder<T> setPresenter(MomentPresenter presenter) {
+            this.momentPresenter = presenter;
             return this;
         }
 
@@ -118,7 +134,7 @@ public class CircleMomentsAdapter extends BaseRecyclerViewAdapter<MomentsInfo> {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
         return null;

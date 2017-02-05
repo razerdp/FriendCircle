@@ -18,12 +18,11 @@ public enum LocalHostManager {
     private UserInfo localHostInfo = new UserInfo();
 
     public boolean init() {
-        if (!PreferenceHelper.INSTANCE.containsKey(HAS_LOGIN) || PreferenceHelper.INSTANCE.containsKey(HOST_ID))
-            return false;
         localHostInfo.setUsername((String) PreferenceHelper.INSTANCE.getData(HOST_NAME, "razerdp"));
         localHostInfo.setAvatar((String) PreferenceHelper.INSTANCE.getData(HOST_AVATAR, "http://upload.jianshu.io/users/upload_avatars/684042/bd1b2f796e3a.jpg?imageMogr/thumbnail/90x90/quality/100"));
         localHostInfo.setNick((String) PreferenceHelper.INSTANCE.getData(HOST_NICK, "羽翼君"));
         localHostInfo.setObjectId((String) PreferenceHelper.INSTANCE.getData(HOST_ID, "MMbKLCCU"));
+        localHostInfo.setCover((String) PreferenceHelper.INSTANCE.getData(HOST_COVER, "http://d.hiphotos.baidu.com/zhidao/pic/item/bf096b63f6246b601ffeb44be9f81a4c510fa218.jpg"));
         return true;
     }
 
@@ -53,6 +52,37 @@ public enum LocalHostManager {
 
     public void setAvatar(String avatar) {
         localHostInfo.setAvatar(avatar);
+    }
+
+    public void updateLocalHost(UserInfo userInfo) {
+        if (userInfo != null) {
+            PreferenceHelper.INSTANCE.saveData(HOST_NAME, userInfo.getUsername());
+            //头像和壁纸暂时强制使用开发者头像
+            PreferenceHelper.INSTANCE.saveData(HOST_AVATAR, "http://upload.jianshu.io/users/upload_avatars/684042/bd1b2f796e3a.jpg?imageMogr/thumbnail/90x90/quality/100");
+            PreferenceHelper.INSTANCE.saveData(HOST_COVER, "http://d.hiphotos.baidu.com/zhidao/pic/item/bf096b63f6246b601ffeb44be9f81a4c510fa218.jpg");
+            PreferenceHelper.INSTANCE.saveData(HOST_NICK, userInfo.getNick());
+            PreferenceHelper.INSTANCE.saveData(HOST_ID, userInfo.getUserid());
+
+            this.localHostInfo.setNick(userInfo.getNick());
+            this.localHostInfo.setObjectId(userInfo.getUserid());
+            this.localHostInfo.setCover("http://d.hiphotos.baidu.com/zhidao/pic/item/bf096b63f6246b601ffeb44be9f81a4c510fa218.jpg");
+            this.localHostInfo.setAvatar("http://upload.jianshu.io/users/upload_avatars/684042/bd1b2f796e3a.jpg?imageMogr/thumbnail/90x90/quality/100");
+            this.localHostInfo.setUsername(userInfo.getUsername());
+        }
+    }
+
+    public UserInfo getLocalHostUser() {
+        return localHostInfo;
+    }
+
+    public UserInfo getDeveloperHostUser() {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUsername("razerdp");
+        userInfo.setAvatar("http://upload.jianshu.io/users/upload_avatars/684042/bd1b2f796e3a.jpg?imageMogr/thumbnail/90x90/quality/100");
+        userInfo.setNick("羽翼君");
+        userInfo.setObjectId("MMbKLCCU");
+        userInfo.setCover("http://d.hiphotos.baidu.com/zhidao/pic/item/bf096b63f6246b601ffeb44be9f81a4c510fa218.jpg");
+        return userInfo;
     }
 
 

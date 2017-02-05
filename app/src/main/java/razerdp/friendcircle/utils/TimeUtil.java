@@ -17,7 +17,7 @@ public class TimeUtil {
     public static String getTimeString(long milliseconds) {
         result.delete(0, result.length());
 
-        long time = System.currentTimeMillis() - (milliseconds * 1000);
+        long time = System.currentTimeMillis() - milliseconds;
         long mill = (long) Math.ceil(time / 1000);//秒前
 
         long minute = (long) Math.ceil(time / 60 / 1000.0f);// 分钟前

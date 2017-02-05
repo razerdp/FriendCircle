@@ -6,8 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
-import razerdp.friendcircle.ui.adapter.CircleBaseViewHolder;
-import razerdp.friendcircle.ui.adapter.CircleMomentsAdapter;
 
 /**
  * Created by 大灯泡 on 2016/11/3.

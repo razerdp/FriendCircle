@@ -28,6 +28,7 @@
 
     <!--other-->
     <color name="wechat_green_bg">#10d21c</color>
+    <color name="wechat_green_bg_click">#5eec67</color>
     <color name="comment_click_bg">#CCD2DF</color>
     <color name="delete_click_bg">#EAEAEA</color>
     
@@ -41,5 +42,7 @@
     <color name="gray_divider">#d7dce1</color>
     <color name="dark_gray_divider">#bbc2ca</color>
     <color name="timeline_background">#f4f6f8</color>
+
+    <color name="round_rect_bg">#f8f8f8</color>
 
 </resources>

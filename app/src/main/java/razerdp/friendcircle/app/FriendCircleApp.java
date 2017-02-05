@@ -3,12 +3,10 @@ package razerdp.friendcircle.app;
 import android.app.Application;
 import android.content.Context;
 
-import com.socks.library.KLog;
-
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
+import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.config.Define;
-import razerdp.friendcircle.utils.PreferenceHelper;
 
 /**
  * Created by 大灯泡 on 2016/10/26.
@@ -24,8 +22,7 @@ public class FriendCircleApp extends Application {
         super.onCreate();
         FriendCircleApp.CONTEXT = getApplicationContext();
         initBmob();
-        PreferenceHelper.INSTANCE.init(this);
-        KLog.init(true, "FriendCircle");
+        initLocalHostInfo();
     }
 
     public static Context getAppContext() {
@@ -44,5 +41,9 @@ public class FriendCircleApp extends Application {
                 .setFileExpiration(1800)
                 .build();
         Bmob.initialize(config);
+    }
+
+    private void initLocalHostInfo() {
+        LocalHostManager.INSTANCE.init();
     }
 }

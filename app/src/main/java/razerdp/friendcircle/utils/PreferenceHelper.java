@@ -7,6 +7,8 @@ import android.support.annotation.StringDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import razerdp.friendcircle.app.FriendCircleApp;
+
 import static android.R.attr.data;
 import static android.R.attr.type;
 import static razerdp.friendcircle.utils.PreferenceHelper.Keys.*;
@@ -21,22 +23,20 @@ public enum PreferenceHelper {
     INSTANCE;
 
     @Retention(RetentionPolicy.SOURCE)
-    @StringDef({HOST_ID,HAS_LOGIN, HOST_AVATAR, HOST_NAME, HOST_NICK})
+    @StringDef({HOST_ID, HAS_LOGIN, HOST_AVATAR, HOST_NAME, HOST_NICK,HOST_COVER, CHECK_REGISTER})
     public @interface Keys {
         String HAS_LOGIN = "haslogin";
         String HOST_NAME = "hostName";
         String HOST_AVATAR = "hostAvatar";
         String HOST_NICK = "hostNick";
-        String HOST_ID="hostId";
+        String HOST_ID = "hostId";
+        String HOST_COVER="cover";
+        String CHECK_REGISTER = "check_register";
     }
 
 
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences = FriendCircleApp.getAppContext().getSharedPreferences(PERFERENCE_NAME, Context.MODE_PRIVATE);
     private static final String PERFERENCE_NAME = "FriendCircleData";
-
-    public void init(Context context) {
-        sharedPreferences = context.getSharedPreferences(PERFERENCE_NAME, Context.MODE_PRIVATE);
-    }
 
     /**
      * 保存数据

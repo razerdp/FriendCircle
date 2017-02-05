@@ -16,7 +16,7 @@
         android:paddingRight="@dimen/item_padding"
         >
 
-        <razerdp.friendcircle.widget.photoscontents.PhotoContents
+        <razerdp.github.com.widget.PhotoContents
             android:id="@+id/circle_image_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

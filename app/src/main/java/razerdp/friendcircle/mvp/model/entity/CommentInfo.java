@@ -65,4 +65,15 @@ public class CommentInfo extends BmobObject {
     public boolean canDelete() {
         return author != null && TextUtils.equals(author.getUserid(), LocalHostManager.INSTANCE.getUserid());
     }
+
+
+    @Override
+    public String toString() {
+        return "CommentInfo{" +
+                "moment=" + moment +
+                ", content='" + content + '\'' +
+                ", author=" + author.toString() + '\n' +
+                ", reply=" + (reply == null ? "null" : reply.toString()) + '\n' +
+                '}';
+    }
 }

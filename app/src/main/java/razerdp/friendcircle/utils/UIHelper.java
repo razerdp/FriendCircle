@@ -1,5 +1,6 @@
 package razerdp.friendcircle.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
@@ -15,7 +16,7 @@ import razerdp.friendcircle.app.FriendCircleApp;
 
 /**
  * Created by 大灯泡 on 2016/10/26.
- *
+ * <p>
  * ui工具类
  */
 public class UIHelper {
@@ -28,7 +29,7 @@ public class UIHelper {
      */
     public static int dipToPx(float dip) {
         return (int) (dip * FriendCircleApp.getAppContext().getResources()
-                                       .getDisplayMetrics().density + 0.5f);
+                                           .getDisplayMetrics().density + 0.5f);
     }
 
     /**
@@ -36,7 +37,7 @@ public class UIHelper {
      */
     public static int pxToDip(float pxValue) {
         final float scale = FriendCircleApp.getAppContext().getResources()
-                                       .getDisplayMetrics().density;
+                                           .getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
 
@@ -45,7 +46,7 @@ public class UIHelper {
      */
     public static int sp2px(float spValue) {
         final float fontScale = FriendCircleApp.getAppContext().getResources()
-                                           .getDisplayMetrics().scaledDensity;
+                                               .getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
     }
 
@@ -110,11 +111,13 @@ public class UIHelper {
      * 显示软键盘
      */
     public static void showInputMethod(View view) {
-        if (view != null && view instanceof EditText) view.requestFocus();
+        if (view == null) return;
+        if (view instanceof EditText) view.requestFocus();
         InputMethodManager imm = (InputMethodManager) view.getContext()
                                                           .getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
-            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+            boolean success=imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+            KLog.i("showSoftKeyboard"," isSuccess   >>>   "+success);
         }
     }
 
@@ -144,7 +147,6 @@ public class UIHelper {
     }
 
 
-
     /**
      * Toast封装
      */
@@ -160,8 +162,8 @@ public class UIHelper {
     public static int getResourceColor(int colorResId) {
         if (colorResId > 0) {
             return FriendCircleApp.getAppContext()
-                              .getResources()
-                              .getColor(colorResId);
+                                  .getResources()
+                                  .getColor(colorResId);
         } else {
             return Color.TRANSPARENT;
         }

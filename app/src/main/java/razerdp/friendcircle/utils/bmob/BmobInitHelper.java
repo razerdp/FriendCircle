@@ -1,5 +1,7 @@
 package razerdp.friendcircle.utils.bmob;
 
+import android.os.SystemClock;
+
 import com.socks.library.KLog;
 
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import razerdp.friendcircle.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.net.request.AddCommentRequest;
 import razerdp.friendcircle.app.net.request.AddMomentsRequest;
@@ -26,11 +29,29 @@ public class BmobInitHelper {
     private static final String TAG = "BmobInitHelper";
 
     private List<UserInfo> userInfoList;
+    private List<MomentsInfo> momentsList;
+
+    /*
+        //构建评论伪数据
+        final BmobInitHelper bmobInitHelper=new BmobInitHelper();
+        bmobInitHelper.findAllUsers(new SimpleResponseListener() {
+            @Override
+            public void onSuccess(Object response, int requestType) {
+                bmobInitHelper.findAllMoments(new SimpleResponseListener() {
+                    @Override
+                    public void onSuccess(Object response, int requestType) {
+                        KLog.i("initComment","开始");
+                        bmobInitHelper.addComments();
+                    }
+                });
+            }
+        });*/
+
 
     public BmobInitHelper() {
     }
 
-    public void initUser(final SimpleResponseListener simpleResponseListener) {
+    public void findAllUsers(final SimpleResponseListener simpleResponseListener) {
         BmobQuery<UserInfo> userQuery = new BmobQuery<>();
         userQuery.findObjects(new FindListener<UserInfo>() {
             @Override
@@ -41,6 +62,26 @@ public class BmobInitHelper {
                     }
                     userInfoList.clear();
                     userInfoList.addAll(list);
+                    if (simpleResponseListener != null) {
+                        simpleResponseListener.onSuccess("成功", 0);
+                    }
+                }
+            }
+        });
+    }
+
+    public void findAllMoments(final SimpleResponseListener simpleResponseListener) {
+        BmobQuery<MomentsInfo> momentQuery = new BmobQuery<>();
+        momentQuery.order("-createdAt");
+        momentQuery.findObjects(new FindListener<MomentsInfo>() {
+            @Override
+            public void done(List<MomentsInfo> list, BmobException e) {
+                if (e == null) {
+                    if (momentsList == null) {
+                        momentsList = new ArrayList<MomentsInfo>();
+                    }
+                    momentsList.clear();
+                    momentsList.addAll(list);
                     if (simpleResponseListener != null) {
                         simpleResponseListener.onSuccess("成功", 0);
                     }
@@ -121,6 +162,45 @@ public class BmobInitHelper {
             }
         });
         addMomentsRequest.execute();*/
+
+    }
+
+
+    /**
+     * 建立评论伪数据
+     */
+    public void addComments() {
+        if (ToolUtil.isListEmpty(momentsList) || ToolUtil.isListEmpty(userInfoList)) return;
+        Random random = new Random();
+        //随机为50条动态添加评论
+        for (int i = 0; i < 50; i++) {
+            int momentIndex = random.nextInt(momentsList.size());
+            int authorIndex = random.nextInt(userInfoList.size());
+            int commentContentIndex = random.nextInt(BmobTestDatasHelper.getCommentDatas().length);
+            int replyIndex = -1;
+            boolean isReply = random.nextBoolean();
+            if (isReply) {
+                do {
+                    replyIndex = random.nextInt(userInfoList.size());
+                } while (replyIndex == authorIndex);
+            }
+
+            String momentid = momentsList.get(momentIndex).getMomentid();
+            String authorId = userInfoList.get(authorIndex).getUserid();
+            String comment = BmobTestDatasHelper.getCommentText(commentContentIndex);
+            String replyUserid;
+            if (isReply) {
+                String replyCommentContent = BmobTestDatasHelper.getCommentText(random.nextInt(commentContentIndex));
+                replyUserid = userInfoList.get(replyIndex).getUserid();
+                //先添加评论，稍微延后一点再添加回复
+                addComment(momentid, authorId, null, comment);
+                SystemClock.sleep(200);
+                addComment(momentid, replyUserid, authorId, replyCommentContent);
+            } else {
+                addComment(momentid, authorId, null, comment);
+            }
+
+        }
 
     }
 

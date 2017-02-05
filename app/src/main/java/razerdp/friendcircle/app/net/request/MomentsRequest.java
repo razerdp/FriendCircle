@@ -12,6 +12,7 @@ import razerdp.friendcircle.mvp.model.entity.MomentsInfo.MomentsFields;
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.net.base.BaseRequestClient;
 import razerdp.friendcircle.utils.ToolUtil;
+import rx.Observable;
 
 import static razerdp.friendcircle.mvp.model.entity.CommentInfo.CommentFields.AUTHOR_USER;
 import static razerdp.friendcircle.mvp.model.entity.CommentInfo.CommentFields.MOMENT;
@@ -45,6 +46,7 @@ public class MomentsRequest extends BaseRequestClient<List<MomentsInfo>> {
     @Override
     protected void executeInternal(final int requestType, boolean showDialog) {
         BmobQuery<MomentsInfo> query = new BmobQuery<>();
+        query.order("-createdAt");
         query.include(MomentsFields.AUTHOR_USER + "," + MomentsFields.HOST);
         query.setLimit(count);
         query.setSkip(curPage * count);
@@ -70,6 +72,10 @@ public class MomentsRequest extends BaseRequestClient<List<MomentsInfo>> {
             final MomentsInfo momentsInfo = momentsList.get(i);
             BmobQuery<UserInfo> likesQuery = new BmobQuery<>();
             likesQuery.addWhereRelatedTo("likes", new BmobPointer(momentsInfo));
+            //根据更新时间降序
+            //文档:http://docs.bmob.cn/data/Android/b_developdoc/doc/index.html#查询数据
+            //排序子目录
+            likesQuery.order("-updatedAt");
             likesQuery.findObjects(new FindListener<UserInfo>() {
                 @Override
                 public void done(List<UserInfo> list, BmobException e) {
@@ -79,6 +85,7 @@ public class MomentsRequest extends BaseRequestClient<List<MomentsInfo>> {
                     BmobQuery<CommentInfo> commentQuery = new BmobQuery<>();
                     commentQuery.include(MOMENT + "," + REPLY_USER + "," + AUTHOR_USER);
                     commentQuery.addWhereEqualTo("moment", momentsInfo);
+                    commentQuery.order("createdAt");
                     commentQuery.findObjects(new FindListener<CommentInfo>() {
                         @Override
                         public void done(List<CommentInfo> list, BmobException e) {

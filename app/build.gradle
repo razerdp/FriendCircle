@@ -25,21 +25,21 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'
     compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'com.commit451:PhotoView:1.2.5'
-    compile 'com.github.razerdp:BasePopup:v1.4.0'
+    //改为本地依赖
+    //    compile 'com.github.chrisbanes:PhotoView:1.3.1'
+    compile 'com.github.razerdp:BasePopup:v1.5.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile ('com.github.bumptech.glide:okhttp3-integration:1.4.0'){
+    compile('com.github.bumptech.glide:okhttp3-integration:1.4.0') {
         exclude group: 'glide-parent'
         exclude group: 'com.squareup.okhttp3'
     }
-
     //bmob
     compile 'cn.bmob.android:bmob-sdk:3.5.0'
     //log
     compile 'com.github.zhaokaiqiang.klog:library:1.5.0'
     //over scroller helper
     compile 'me.everything:overscroll-decor-android:1.0.3'
-    //flow layout
-    compile 'org.apmem.tools:layouts:1.10@aar'
-
+    //朋友圈图片控件
+    compile 'com.github.razerdp:PhotoContents:v1.3.1'
+    compile project(':photoview')
 }

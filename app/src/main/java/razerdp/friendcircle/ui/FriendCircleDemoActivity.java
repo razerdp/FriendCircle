@@ -1,10 +1,13 @@
 package razerdp.friendcircle.ui;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,19 +20,30 @@ import java.util.List;
 import cn.bmob.v3.exception.BmobException;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
+import razerdp.friendcircle.app.manager.KeyboardControlMnanager;
+import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.app.net.request.MomentsRequest;
 import razerdp.friendcircle.app.net.request.SimpleResponseListener;
 import razerdp.friendcircle.config.MomentsType;
+import razerdp.friendcircle.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
+import razerdp.friendcircle.mvp.presenter.MomentPresenter;
+import razerdp.friendcircle.mvp.view.IMomentView;
 import razerdp.friendcircle.ui.adapter.CircleMomentsAdapter;
+import razerdp.friendcircle.ui.base.BaseActivity;
 import razerdp.friendcircle.ui.viewholder.EmptyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.MultiImageMomentsVH;
 import razerdp.friendcircle.ui.viewholder.TextOnlyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.WebMomentsVH;
+import razerdp.friendcircle.ui.widget.commentwidget.CommentBox;
+import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
+import razerdp.friendcircle.ui.widget.popup.RegisterPopup;
+import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView;
+import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView.OnPreDispatchTouchListener;
+import razerdp.friendcircle.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
+import razerdp.friendcircle.utils.PreferenceHelper;
 import razerdp.friendcircle.utils.ToolUtil;
-import razerdp.friendcircle.widget.pullrecyclerview.CircleRecyclerView;
-import razerdp.friendcircle.widget.pullrecyclerview.interfaces.OnRefreshListener2;
 
 /**
  * Created by 大灯泡 on 2016/10/26.
@@ -37,18 +51,20 @@ import razerdp.friendcircle.widget.pullrecyclerview.interfaces.OnRefreshListener
  * 朋友圈主界面
  */
 
-public class FriendCircleDemoActivity extends AppCompatActivity implements OnRefreshListener2 {
+public class FriendCircleDemoActivity extends BaseActivity implements OnRefreshListener2, IMomentView, OnPreDispatchTouchListener {
 
     private static final int REQUEST_REFRESH = 0x10;
     private static final int REQUEST_LOADMORE = 0x11;
 
 
     private CircleRecyclerView circleRecyclerView;
+    private CommentBox commentBox;
     private HostViewHolder hostViewHolder;
     private CircleMomentsAdapter adapter;
     private List<MomentsInfo> momentsInfoList;
     //request
     private MomentsRequest momentsRequest;
+    private MomentPresenter presenter;
 
 
     @Override
@@ -58,35 +74,57 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
         momentsInfoList = new ArrayList<>();
         momentsRequest = new MomentsRequest();
         initView();
-        //添加动态,伪造数据用的哦~轻易不要取消注释哦
-     /*   final BmobInitHelper helper=new BmobInitHelper();
-        helper.initUser(new SimpleResponseListener() {
-            @Override
-            public void onSuccess(Object response, int requestType) {
-                KLog.d(response);
-                helper.addMoments();
-            }
-        });*/
+        initKeyboardHeightObserver();
 
     }
 
     private void initView() {
+        presenter = new MomentPresenter(this);
+
         hostViewHolder = new HostViewHolder(this);
         circleRecyclerView = (CircleRecyclerView) findViewById(R.id.recycler);
         circleRecyclerView.setOnRefreshListener(this);
+        circleRecyclerView.setOnPreDispatchTouchListener(this);
         circleRecyclerView.addHeaderView(hostViewHolder.getView());
+
+        commentBox = (CommentBox) findViewById(R.id.widget_comment);
+        commentBox.setOnCommentSendClickListener(onCommentSendClickListener);
 
         CircleMomentsAdapter.Builder<MomentsInfo> builder = new CircleMomentsAdapter.Builder<>(this);
         builder.addType(EmptyMomentsVH.class, MomentsType.EMPTY_CONTENT, R.layout.moments_empty_content)
                .addType(MultiImageMomentsVH.class, MomentsType.MULTI_IMAGES, R.layout.moments_multi_image)
                .addType(TextOnlyMomentsVH.class, MomentsType.TEXT_ONLY, R.layout.moments_only_text)
                .addType(WebMomentsVH.class, MomentsType.WEB, R.layout.moments_web)
-               .setData(momentsInfoList);
+               .setData(momentsInfoList)
+               .setPresenter(presenter);
         adapter = builder.build();
         circleRecyclerView.setAdapter(adapter);
         circleRecyclerView.autoRefresh();
 
     }
+
+
+    // TODO: 2016/12/13 进一步优化对齐功能
+    private void initKeyboardHeightObserver() {
+        //观察键盘弹出与消退
+        KeyboardControlMnanager.observerKeyboardVisibleChange(this, new KeyboardControlMnanager.OnKeyboardStateChangeListener() {
+            View anchorView;
+
+            @Override
+            public void onKeyboardChange(int keyboardHeight, boolean isVisible) {
+                int commentType = commentBox.getCommentType();
+                if (isVisible) {
+                    //定位评论框到view
+                    anchorView = alignCommentBoxToView(commentType);
+                } else {
+                    //定位到底部
+                    commentBox.dismissCommentBox(false);
+                    alignCommentBoxToViewWhenDismiss(commentType, anchorView);
+                }
+            }
+        });
+    }
+
 
     @Override
     public void onRefresh() {
@@ -113,12 +151,13 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
             switch (requestType) {
                 case REQUEST_REFRESH:
                     if (!ToolUtil.isListEmpty(response)) {
-                        hostViewHolder.loadHostData(response.get(0).getHostinfo());
+                        KLog.i("firstMomentid", "第一条动态ID   >>>   " + response.get(0).getMomentid());
+                        hostViewHolder.loadHostData(LocalHostManager.INSTANCE.getLocalHostUser());
                         adapter.updateData(response);
                     }
+                    checkRegister();
                     break;
                 case REQUEST_LOADMORE:
-                    KLog.i("loadmore compelete");
                     adapter.addMore(response);
                     break;
             }
@@ -132,15 +171,178 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
     };
 
 
+    //=============================================================View's method
+    @Override
+    public void onLikeChange(int itemPos, List<UserInfo> likeUserList) {
+        MomentsInfo momentsInfo = adapter.findData(itemPos);
+        if (momentsInfo != null) {
+            momentsInfo.setLikesList(likeUserList);
+            adapter.notifyItemChanged(itemPos);
+        }
+    }
+
+    @Override
+    public void onCommentChange(int itemPos, List<CommentInfo> commentInfoList) {
+        MomentsInfo momentsInfo = adapter.findData(itemPos);
+        if (momentsInfo != null) {
+            momentsInfo.setCommentList(commentInfoList);
+            adapter.notifyItemChanged(itemPos);
+        }
+    }
+
+    @Override
+    public void showCommentBox(int itemPos, String momentid, CommentWidget commentWidget) {
+        commentBox.setDataPos(itemPos);
+        commentBox.setCommentWidget(commentWidget);
+        commentBox.toggleCommentBox(momentid, commentWidget == null ? null : commentWidget.getData(), false);
+    }
+
+    @Override
+    public boolean onPreTouch(MotionEvent ev) {
+        if (commentBox != null && commentBox.isShowing()) {
+            commentBox.dismissCommentBox(false);
+            return true;
+        }
+        return false;
+    }
+
+    //=============================================================tool method
+
+    int[] momentsViewLocation;
+    int[] commentWidgetLocation;
+    int[] commentBoxViewLocation;
+
+    /**
+     * 定位评论框到点击的view
+     *
+     * @param commentType
+     * @return
+     */
+    private View alignCommentBoxToView(int commentType) {
+        // FIXME: 2016/12/13 有可能会获取不到itemView，特别是当view没有完全visible的时候。。。。暂无办法解决
+        int firstPos = circleRecyclerView.findFirstVisibleItemPosition();
+        int itemPos = commentBox.getDataPos() - firstPos + circleRecyclerView.getHeaderViewCount();
+        final View itemView = circleRecyclerView.getRecyclerView().getChildAt(itemPos);
+        if (itemView == null) {
+            KLog.e("获取不到itemView，pos = " + itemPos);
+            return null;
+        }
+        if (commentType == CommentBox.CommentType.TYPE_CREATE) {
+            //对齐到动态底部
+            int scrollY = calcuateMomentsViewOffset(itemView);
+            circleRecyclerView.getRecyclerView().smoothScrollBy(0, scrollY);
+            return itemView;
+        } else {
+            //对齐到对应的评论
+            CommentWidget commentWidget = commentBox.getCommentWidget();
+            if (commentWidget == null) return null;
+            int scrollY = calcuateCommentWidgetOffset(commentWidget);
+            circleRecyclerView.getRecyclerView().smoothScrollBy(0, scrollY);
+            return commentWidget;
+        }
+
+    }
+
+    /**
+     * 输入法消退时，定位到与底部相隔一个评论框的位置
+     *
+     * @param commentType
+     * @param anchorView
+     */
+    private void alignCommentBoxToViewWhenDismiss(int commentType, View anchorView) {
+        if (anchorView == null) return;
+        int decorViewHeight = getWindow().getDecorView().getHeight();
+        int alignScrollY;
+        if (commentType == CommentBox.CommentType.TYPE_CREATE) {
+            alignScrollY = decorViewHeight - anchorView.getBottom() - commentBox.getHeight();
+        } else {
+            Rect rect = new Rect();
+            anchorView.getGlobalVisibleRect(rect);
+            alignScrollY = decorViewHeight - rect.bottom - commentBox.getHeight();
+        }
+        circleRecyclerView.getRecyclerView().smoothScrollBy(0, -alignScrollY);
+    }
+
+    /**
+     * 计算回复评论的偏移
+     *
+     * @param commentWidget
+     * @return
+     */
+    private int calcuateCommentWidgetOffset(CommentWidget commentWidget) {
+        if (commentWidgetLocation == null) commentWidgetLocation = new int[2];
+        if (commentWidget == null) return 0;
+        commentWidget.getLocationInWindow(commentWidgetLocation);
+        return commentWidgetLocation[1] + commentWidget.getHeight() - getCommentBoxViewTopInWindow();
+    }
+
+    /**
+     * 计算动态评论的偏移
+     *
+     * @param momentsView
+     * @return
+     */
+    private int calcuateMomentsViewOffset(View momentsView) {
+        if (momentsViewLocation == null) momentsViewLocation = new int[2];
+        if (momentsView == null) return 0;
+        momentsView.getLocationInWindow(momentsViewLocation);
+        return momentsViewLocation[1] + momentsView.getHeight() - getCommentBoxViewTopInWindow();
+    }
+
+    /**
+     * 获取评论框的顶部（因为getTop不准确，因此采取 getLocationInWindow ）
+     *
+     * @return
+     */
+    private int getCommentBoxViewTopInWindow() {
+        if (commentBoxViewLocation == null) commentBoxViewLocation = new int[2];
+        if (commentBox == null) return 0;
+        if (commentBoxViewLocation[1] != 0) return commentBoxViewLocation[1];
+        commentBox.getLocationInWindow(commentBoxViewLocation);
+        return commentBoxViewLocation[1];
+    }
+
+
+    private void checkRegister() {
+        boolean hasCheckRegister = (boolean) PreferenceHelper.INSTANCE.getData(PreferenceHelper.Keys.CHECK_REGISTER, false);
+        if (!hasCheckRegister) {
+            RegisterPopup registerPopup = new RegisterPopup(FriendCircleDemoActivity.this);
+            registerPopup.setOnRegisterSuccess(new RegisterPopup.onRegisterSuccess() {
+                @Override
+                public void onSuccess(UserInfo userInfo) {
+                    hostViewHolder.loadHostData(userInfo);
+                }
+            });
+            registerPopup.showPopupWindow();
+        }
+    }
+
+    //=============================================================call back
+    private CommentBox.OnCommentSendClickListener onCommentSendClickListener = new CommentBox.OnCommentSendClickListener() {
+        @Override
+        public void onCommentSendClick(View v, String momentid, String commentAuthorId, String commentContent) {
+            if (TextUtils.isEmpty(commentContent)) return;
+            int itemPos = commentBox.getDataPos();
+            if (itemPos < 0 || itemPos > adapter.getItemCount()) return;
+            List<CommentInfo> commentInfos = adapter.findData(itemPos).getCommentList();
+            presenter.addComment(itemPos, momentid, commentAuthorId, commentContent, commentInfos);
+            commentBox.clearDraft();
+            commentBox.dismissCommentBox(true);
+        }
+    };
+
+
     private static class HostViewHolder {
         private View rootView;
         private ImageView friend_wall_pic;
         private ImageView friend_avatar;
         private ImageView message_avatar;
         private TextView message_detail;
+        private TextView hostid;
 
         public HostViewHolder(Context context) {
             this.rootView = LayoutInflater.from(context).inflate(R.layout.circle_host_header, null);
+            this.hostid = (TextView) rootView.findViewById(R.id.host_id);
             this.friend_wall_pic = (ImageView) rootView.findViewById(R.id.friend_wall_pic);
             this.friend_avatar = (ImageView) rootView.findViewById(R.id.friend_avatar);
             this.message_avatar = (ImageView) rootView.findViewById(R.id.message_avatar);
@@ -151,6 +353,7 @@ public class FriendCircleDemoActivity extends AppCompatActivity implements OnRef
             if (hostInfo == null) return;
             ImageLoadMnanger.INSTANCE.loadImage(friend_wall_pic, hostInfo.getCover());
             ImageLoadMnanger.INSTANCE.loadImage(friend_avatar, hostInfo.getAvatar());
+            hostid.setText("您的测试ID为: " + hostInfo.getUserid()+'\n'+"您的测试用户名为: "+hostInfo.getNick());
         }
 
         public View getView() {

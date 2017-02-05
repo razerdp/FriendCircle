@@ -49,13 +49,16 @@
         android:background="@drawable/comment_praise"
         android:orientation="vertical">
 
-        <razerdp.friendcircle.widget.praisewidget.PraiseWidget
+        <razerdp.friendcircle.ui.widget.praisewidget.PraiseWidget
             android:id="@+id/praise"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="2dp"
             android:lineSpacingMultiplier="1"
-            android:paddingRight="5dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
             app:click_bg_color="@color/comment_click_bg"
             />
 
@@ -63,6 +66,8 @@
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
             android:background="@color/line_bg"
             />
@@ -71,10 +76,8 @@
             android:id="@+id/comment_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:orientation="vertical">
-
-        </LinearLayout>
+            android:orientation="vertical"
+            tools:background="@android:color/holo_red_dark"/>
     </LinearLayout>
 
     <View style="@style/base_divider_top_20"/>

@@ -28,6 +28,11 @@ public enum ImageLoadMnanger {
                                                   .into(imageView);
     }
 
+    public void loadImageDontAnimate(ImageView imageView, String imgUrl) {
+        loadImageByNormalConfig(imageView, imgUrl).dontAnimate()
+                                                  .into(imageView);
+    }
+
     public void loadImage(ImageView imageView, String imgUrl, int width, int height) {
         loadImageByNormalConfig(imageView, imgUrl).placeholder(new ColorDrawable(0xffc6c6c6))
                                                   .override(width, height)

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="50dp"
+              android:orientation="vertical">
+
+    <View
+        android:id="@+id/top_divider"
+        style="@style/base_divider"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_f9f9f9"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
+        tools:background="@android:color/holo_blue_bright"
+        >
+
+
+        <TextView
+            android:id="@+id/btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bg_send_button"
+            android:paddingBottom="4dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="4dp"
+            android:text="发送"
+            android:textColor="@color/white"/>
+
+        <EditText
+            android:id="@+id/ed_comment_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="8dp"
+            android:layout_toLeftOf="@id/btn_send"
+            android:background="@drawable/bg_input_edittext"
+            android:hint="评论"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="@color/normal_font_color"
+            android:textSize="14sp"
+            tools:background="@android:color/holo_red_dark"
+            tools:text="测试测试测试测试"/>
+
+    </RelativeLayout>
+</LinearLayout>
