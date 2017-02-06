@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -16,7 +17,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
-import android.widget.ImageView;
 import android.widget.Scroller;
 
 import com.socks.library.KLog;
@@ -36,7 +36,7 @@ import uk.co.senab.photoview.PhotoView;
 public class GalleryPhotoView extends PhotoView {
     private static final int ANIMA_DURATION = 350;
 
-    private ViewTransform viewTransfrom;
+    private BitmapTransform bitmapTransform;
     private OnEnterAnimaEndListener onEnterAnimaEndListener;
     private OnExitAnimaEndListener onExitAnimaEndListener;
 
@@ -62,15 +62,18 @@ public class GalleryPhotoView extends PhotoView {
     @Override
     protected void init() {
         super.init();
-        viewTransfrom = new ViewTransform();
+        bitmapTransform = new BitmapTransform();
         globalOffset = new Point();
     }
 
     @Override
     public void draw(Canvas canvas) {
         if (clipBounds != null) {
+            canvas.save();
+            KLog.i("clip", "draw by clip");
             canvas.clipRect(clipBounds);
             clipBounds = null;
+            canvas.restore();
         }
         super.draw(canvas);
     }
@@ -150,28 +153,32 @@ public class GalleryPhotoView extends PhotoView {
     private void playExitAnimaInternal(final Rect to, @Nullable View alphaView) {
         if (isPlayingEnterAnima || to == null || mAttacher == null) return;
 
-        final float scale = Math.max(scaleRatios[0], scaleRatios[1]);
         final float currentScale = getScale();
         if (currentScale > 1.0f) setScale(1.0f);
 
-        final Rect from = getMineRect();
+        final Rect from = getViewBounds();
+        final Rect drawableBounds = getDrawableBounds(getDrawable());
         final Rect target = new Rect(to);
-
         target.offset(-globalOffset.x, -globalOffset.y);
+        if (drawableBounds == null) return;
 
-        viewTransfrom.animaTranslate(target.centerX(), from.centerX(), target.centerY(), from.centerY());
+        //bitmap位移
+        bitmapTransform.animaTranslate(from.centerX(), target.centerX(), from.centerY(), target.centerY());
+
+        float scale = calculateScaleByCenterCrop(from, drawableBounds, target);
         //等比缩放
-        viewTransfrom.animaScale(currentScale, scale, from.centerX(), from.centerY());
+        bitmapTransform.animaScale(getScale(), scale, from.centerX(), from.centerY());
+
         if (alphaView != null) {
-            viewTransfrom.animaAlpha(alphaView, 1.0f, 0);
+            bitmapTransform.animaAlpha(alphaView, 1.0f, 0);
         }
 
-        if (target.width() < from.width() || target.height() < from.height()) {
-            viewTransfrom.animaClip(from, target);
-        }
+//        if (target.width() < from.width() || target.height() < from.height()) {
+//            bitmapTransform.animaClip(from, target);
+//        }
 
 
-        viewTransfrom.start(new OnAllFinishListener() {
+        bitmapTransform.start(new OnAllFinishListener() {
             @Override
             public void onAllFinish() {
                 if (onExitAnimaEndListener != null) {
@@ -183,21 +190,42 @@ public class GalleryPhotoView extends PhotoView {
 
     }
 
+    private float calculateScaleByCenterCrop(Rect from, Rect drawableBounds, Rect target) {
+        int viewWidth = from.width();
+        int viewHeight = from.height();
+        int imageHeight = drawableBounds.height();
+        int imageWidth = drawableBounds.width();
+
+        float result;
+
+
+        /**
+         * 假设原始图片高h，宽w ，Imageview的高y，宽x
+         * 判断高宽比例，如果目标高宽比例大于原图，则原图高度不变，宽度为(w1 = (h * x) / y)拉伸
+         * 画布宽高(w1,h),在原图的((w - w1) / 2, 0)位置进行切割
+         */
+        int t = (viewHeight / viewWidth) - (imageHeight / imageWidth);
+
+        if (t > 0) {
+            int w1 = (imageHeight * viewWidth) / viewHeight;
+            result = Math.min(target.width() * 1.0f / w1 * 1.0f, target.height() * 1.0f / imageHeight * 1.0f);
+
+        } else {
+            int h1 = (viewHeight * imageWidth) / viewWidth;
+            result = Math.min(target.width() * 1.0f / imageWidth * 1.0f, target.height() * 1.0f / h1 * 1.0f);
+        }
+
+        return result;
+    }
+
     /**
-     * 如果有drawable，则返回drawable相对于整个view的rect，否则返回整个view的rect
+     * 获取view的大小
      *
      * @return
      */
-    public Rect getMineRect() {
-        Drawable drawable = getDrawable();
-        Rect result = null;
-        if (drawable != null) {
-            result = getDrawableBounds(drawable);
-        }
-        if (result == null) {
-            result = new Rect();
-            result.set(0, 0, getWidth(), getHeight());
-        }
+    public Rect getViewBounds() {
+        Rect result = new Rect();
+        result.set(0, 0, getWidth(), getHeight());
         KLog.i(result.toShortString());
         return result;
     }
@@ -271,7 +299,7 @@ public class GalleryPhotoView extends PhotoView {
         void onAllFinish();
     }
 
-    private class ViewTransform implements Runnable {
+    private class BitmapTransform implements Runnable {
 
         static final float PRECISION = 10000f;
 
@@ -309,7 +337,7 @@ public class GalleryPhotoView extends PhotoView {
         OnAllFinishListener onAllFinishListener;
 
 
-        ViewTransform() {
+        BitmapTransform() {
             isRunning = false;
             translateScroller = new Scroller(getContext(), defaultInterpolator);
             scaleScroller = new Scroller(getContext(), defaultInterpolator);
@@ -332,7 +360,8 @@ public class GalleryPhotoView extends PhotoView {
         void animaTranslate(int fromX, int toX, int fromY, int toY) {
             preTranslateX = 0;
             preTranslateY = 0;
-            translateScroller.startScroll(0, 0, fromX - toX, fromY - toY, ANIMA_DURATION);
+            translateScroller.startScroll(0, 0, toX - fromX, toY - fromY, ANIMA_DURATION);
+            KLog.i("animaTranslate", (toX - fromX), (toY - fromY));
         }
 
         void animaAlpha(View target, float fromAlpha, float toAlpha) {
@@ -374,6 +403,8 @@ public class GalleryPhotoView extends PhotoView {
                 dx += curX - preTranslateX;
                 dy += curY - preTranslateY;
 
+                KLog.i("animaTranslate", dx, dy);
+
                 preTranslateX = curX;
                 preTranslateY = curY;
 
@@ -385,7 +416,7 @@ public class GalleryPhotoView extends PhotoView {
                 isAllFinish = false;
             }
 
-            if (clipScroller.computeScrollOffset() || clipBounds != null) {
+            if (clipScroller.computeScrollOffset()) {
 
                 float curX = (float) clipScroller.getCurrX() / PRECISION;
                 float curY = (float) clipScroller.getCurrY() / PRECISION;
@@ -393,15 +424,11 @@ public class GalleryPhotoView extends PhotoView {
                 KLog.i("clip", curX, curY);
 
 
-                if (curX == 1 && clipTo != null) {
-                    mClipRect.left = clipTo.left;
-                    mClipRect.right = clipTo.right;
-                }
+                mClipRect.left = clipTo.left;
+                mClipRect.right = clipTo.right;
 
-                if (curY == 1 && clipTo != null) {
-                    mClipRect.top = clipTo.top;
-                    mClipRect.bottom = clipTo.bottom;
-                }
+                mClipRect.top = clipTo.top;
+                mClipRect.bottom = clipTo.bottom;
 
                 if (!mClipRect.isEmpty()) {
                     clipBounds = mClipRect;
@@ -474,7 +501,7 @@ public class GalleryPhotoView extends PhotoView {
 
     @Override
     protected void onDetachedFromWindow() {
-        viewTransfrom.stop(true);
+        bitmapTransform.stop(true);
         super.onDetachedFromWindow();
     }
 
