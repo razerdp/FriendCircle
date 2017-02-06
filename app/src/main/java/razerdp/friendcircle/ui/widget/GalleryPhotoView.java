@@ -212,7 +212,7 @@ public class GalleryPhotoView extends PhotoView {
 
         } else {
             int h1 = (viewHeight * imageWidth) / viewWidth;
-            result = Math.min(target.width() * 1.0f / imageWidth * 1.0f, target.height() * 1.0f / h1 * 1.0f);
+            result = Math.max(target.width() * 1.0f / imageWidth * 1.0f, target.height() * 1.0f / h1 * 1.0f);
         }
 
         return result;
