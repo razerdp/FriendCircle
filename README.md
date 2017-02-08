@@ -32,12 +32,6 @@
 
 [代码实现逻辑（简书合集）](http://www.jianshu.com/notebooks/3224048/latest)
 
-**每次更新的模块Gif预览都在另一个MD文件里，如果您对效果感兴趣，不妨去查看一下：**
-
-[更新日志](https://github.com/razerdp/FriendCircle/blob/master/UPDATE_LOG.md)
-
-
-直至目前为止，原版的最新进度(重构版未到该进度，但会努力跟上)：
 
 ##2017-02-08
 重构后的朋友圈图片浏览过渡动画完成！（代码解析可能要等上几天）
