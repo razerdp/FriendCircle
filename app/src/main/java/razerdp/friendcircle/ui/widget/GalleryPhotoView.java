@@ -69,11 +69,9 @@ public class GalleryPhotoView extends PhotoView {
     @Override
     public void draw(Canvas canvas) {
         if (clipBounds != null) {
-            canvas.save();
-            KLog.i("clip", "draw by clip");
             canvas.clipRect(clipBounds);
+            KLog.i("clip", "clipBounds  >>  " + clipBounds.toShortString());
             clipBounds = null;
-            canvas.restore();
         }
         super.draw(canvas);
     }
@@ -159,6 +157,7 @@ public class GalleryPhotoView extends PhotoView {
         final Rect from = getViewBounds();
         final Rect drawableBounds = getDrawableBounds(getDrawable());
         final Rect target = new Rect(to);
+        from.offset(-globalOffset.x, -globalOffset.y);
         target.offset(-globalOffset.x, -globalOffset.y);
         if (drawableBounds == null) return;
 
@@ -173,9 +172,9 @@ public class GalleryPhotoView extends PhotoView {
             bitmapTransform.animaAlpha(alphaView, 1.0f, 0);
         }
 
-//        if (target.width() < from.width() || target.height() < from.height()) {
-//            bitmapTransform.animaClip(from, target);
-//        }
+        if (target.width() < from.width() || target.height() < from.height()) {
+            bitmapTransform.animaClip(from, target);
+        }
 
 
         bitmapTransform.start(new OnAllFinishListener() {
@@ -225,7 +224,7 @@ public class GalleryPhotoView extends PhotoView {
      */
     public Rect getViewBounds() {
         Rect result = new Rect();
-        result.set(0, 0, getWidth(), getHeight());
+        getGlobalVisibleRect(result, globalOffset);
         KLog.i(result.toShortString());
         return result;
     }
@@ -372,15 +371,18 @@ public class GalleryPhotoView extends PhotoView {
         void animaClip(Rect clipFrom, Rect clipTo) {
             this.clipFrom = new RectF(clipFrom);
             this.clipTo = new RectF(clipTo);
-            if (!clipFrom.isEmpty() && !clipTo.isEmpty()) {
-                //算出显示范围的比率
-                float dx = Math.min(1.0f, (float) clipTo.width() / clipFrom.width());
-                float dy = Math.min(1.0f, (float) clipTo.height() / clipFrom.height());
+            KLog.i("clip", "clipFrom  >>>  " + clipFrom.toShortString());
+            KLog.i("clip", "clipTo  >>>  " + clipTo.toShortString());
 
+            if (!clipFrom.isEmpty() && !clipTo.isEmpty()) {
+                //算出裁剪比率
+                float dx = Math.min(1.0f, clipTo.width() * 1.0f / clipFrom.width() * 1.0f);
+                float dy = Math.min(1.0f, clipTo.height() * 1.0f / clipFrom.height() * 1.0f);
+                //因为scroller是对起始值和终点值之间的数值影响，所以减去1，如果为0，意味着不裁剪，因为目标值比开始值大，而画布无法再扩大了，所以忽略
                 dx = dx - 1;
                 dy = dy - 1;
                 //从1开始,乘以1w保证精度
-                clipScroller.startScroll((int) (1 * PRECISION), (int) (1 * PRECISION), (int) (dx * PRECISION), (int) (dy * PRECISION), ANIMA_DURATION);
+                clipScroller.startScroll((int) (0 * PRECISION), (int) (0 * PRECISION), (int) (dx * PRECISION), (int) (dy * PRECISION), ANIMA_DURATION);
             }
         }
 
@@ -418,21 +420,56 @@ public class GalleryPhotoView extends PhotoView {
 
             if (clipScroller.computeScrollOffset()) {
 
-                float curX = (float) clipScroller.getCurrX() / PRECISION;
-                float curY = (float) clipScroller.getCurrY() / PRECISION;
+                float curX = Math.abs((float) clipScroller.getCurrX() / PRECISION);
+                float curY = Math.abs((float) clipScroller.getCurrY() / PRECISION);
 
                 KLog.i("clip", curX, curY);
 
+                //算出当前的移动像素的综合
+                float dx = clipFrom.width() * curX;
+                float dy = clipFrom.height() * curY;
 
-                mClipRect.left = clipTo.left;
-                mClipRect.right = clipTo.right;
 
-                mClipRect.top = clipTo.top;
-                mClipRect.bottom = clipTo.bottom;
+                /*
+                 裁剪动画算法是一个。。。初中的简单方程题
+
+                 设裁剪过程中，左边缘移动dl个像素，右边缘移动dr个像素
+                 由上面dx算出dl+dr=dx;
+                 因为d和dr的比率可知，因此可以知道dLeft和dRight的相对速率
+                 比如左边裁剪1像素，而右边宽度是左边的3倍，则右边应该裁剪3像素才追得上左边
+                 联立方程：
+                 1：dl+dr=dx;
+                 2：dl/dr=a;
+                 则由2可得
+                 dl=a*dr;
+                 代入1
+                 dr*(a+1)=dx;
+                 可以算得出dr
+                 再次代入1可知
+                 dl=dx-dr
+                 */
+
+
+                float ratiofLeftAndRight = Math.abs(clipFrom.left - clipTo.left) / Math.abs(clipFrom.right - clipTo.right);
+                float ratiofTopAndBottom = Math.abs(clipFrom.top - clipTo.top) / Math.abs(clipFrom.bottom - clipTo.bottom);
+
+                float dClipRight = dx / (ratiofLeftAndRight + 1);
+                float dClipLeft = dx - dClipRight;
+                float dClipBottom = dy / (ratiofTopAndBottom + 1);
+                float dClipTop = dy - dClipBottom;
+
+
+                mClipRect.left = clipFrom.left + dClipLeft;
+                mClipRect.right = clipFrom.right - dClipRight;
+
+                mClipRect.top = clipFrom.top + dClipTop;
+                mClipRect.bottom = clipFrom.bottom - dClipBottom;
 
                 if (!mClipRect.isEmpty()) {
                     clipBounds = mClipRect;
                 }
+
+                isAllFinish = false;
 
             }
 
