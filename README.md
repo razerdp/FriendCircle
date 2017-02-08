@@ -39,16 +39,16 @@
 
 直至目前为止，原版的最新进度(重构版未到该进度，但会努力跟上)：
 
-##2016-04-21
-朋友圈图片浏览指示器完成（评论后台交互完成）
+##2017-02-08
+重构后的朋友圈图片浏览过渡动画完成！（代码解析可能要等上几天）
 
 代码解析地址：
 
-http://www.jianshu.com/p/17c51bd5ba70
+待写
 
 图片预览：
 
-![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2016-04-21_dot_indicator.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2017-02-08%E5%9B%BE%E7%89%87%E9%80%80%E5%87%BA%E5%8A%A8%E7%94%BB.gif)
 
 ***
 
