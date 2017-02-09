@@ -14,7 +14,6 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-
     <style name="base_divider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0.5dp</item>

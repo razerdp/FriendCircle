@@ -4,6 +4,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:background="@color/transparent"
+             android:fitsSystemWindows="true"
     >
 
     <View
@@ -16,5 +17,13 @@
         android:id="@+id/photo_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <razerdp.friendcircle.ui.widget.DotIndicator
+        android:id="@+id/dot_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="15dp"
+        />
 
 </FrameLayout>

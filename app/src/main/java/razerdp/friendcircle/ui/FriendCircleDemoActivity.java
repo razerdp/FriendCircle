@@ -43,7 +43,9 @@ import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView.OnPreDispatchTouchListener;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
 import razerdp.friendcircle.utils.PreferenceHelper;
+import razerdp.friendcircle.utils.StringUtil;
 import razerdp.friendcircle.utils.ToolUtil;
+import razerdp.friendcircle.utils.UIHelper;
 
 /**
  * Created by 大灯泡 on 2016/10/26.
@@ -317,6 +319,18 @@ public class FriendCircleDemoActivity extends BaseActivity implements OnRefreshL
         }
     }
 
+    private long lastClickBackTime;
+
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - lastClickBackTime > 2000) { // 后退阻断
+            UIHelper.ToastMessage("再点一次退出");
+            lastClickBackTime = System.currentTimeMillis();
+        } else { // 关掉app
+            super.onBackPressed();
+        }
+    }
+
     //=============================================================call back
     private CommentBox.OnCommentSendClickListener onCommentSendClickListener = new CommentBox.OnCommentSendClickListener() {
         @Override
@@ -353,7 +367,7 @@ public class FriendCircleDemoActivity extends BaseActivity implements OnRefreshL
             if (hostInfo == null) return;
             ImageLoadMnanger.INSTANCE.loadImage(friend_wall_pic, hostInfo.getCover());
             ImageLoadMnanger.INSTANCE.loadImage(friend_avatar, hostInfo.getAvatar());
-            hostid.setText("您的测试ID为: " + hostInfo.getUserid()+'\n'+"您的测试用户名为: "+hostInfo.getNick());
+            hostid.setText("您的测试ID为: " + hostInfo.getUserid() + '\n' + "您的测试用户名为: " + hostInfo.getNick());
         }
 
         public View getView() {
