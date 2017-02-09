@@ -8,8 +8,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.bumptech.glide.Glide;
 import com.socks.library.KLog;
@@ -21,6 +24,7 @@ import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
 import razerdp.friendcircle.mvp.model.uimodel.PhotoBrowseInfo;
 import razerdp.friendcircle.ui.base.BaseActivity;
+import razerdp.friendcircle.ui.widget.DotIndicator;
 import razerdp.friendcircle.ui.widget.GalleryPhotoView;
 import razerdp.friendcircle.ui.widget.HackyViewPager;
 import razerdp.friendcircle.utils.ToolUtil;
@@ -37,6 +41,7 @@ public class PhotoBrowseActivity extends BaseActivity {
 
     private HackyViewPager photoViewpager;
     private View blackBackground;
+    private DotIndicator dotIndicator;//小圆点指示器
     private List<GalleryPhotoView> viewBuckets;
     private PhotoBrowseInfo photoBrowseInfo;
     private InnerPhotoViewerAdapter adapter;
@@ -44,6 +49,8 @@ public class PhotoBrowseActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_photo_browse);
         preInitData();
         initView();
@@ -69,11 +76,21 @@ public class PhotoBrowseActivity extends BaseActivity {
     private void initView() {
         photoViewpager = (HackyViewPager) findViewById(R.id.photo_viewpager);
         blackBackground = findViewById(R.id.v_background);
+        dotIndicator = (DotIndicator) findViewById(R.id.dot_indicator);
+
+        dotIndicator.init(this, photoBrowseInfo.getPhotosCount());
+        dotIndicator.setCurrentSelection(photoBrowseInfo.getCurrentPhotoPosition());
 
         adapter = new InnerPhotoViewerAdapter(this);
         photoViewpager.setAdapter(adapter);
         photoViewpager.setLocked(photoBrowseInfo.getPhotosCount() == 1);
         photoViewpager.setCurrentItem(photoBrowseInfo.getCurrentPhotoPosition());
+        photoViewpager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                dotIndicator.setCurrentSelection(position);
+            }
+        });
     }
 
     @Override
