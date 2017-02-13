@@ -61,7 +61,7 @@ public class MultiImageMomentsVH extends CircleBaseViewHolder implements PhotoCo
 
     @Override
     public void onItemClick(ImageView imageView, int i) {
-        PhotoBrowseInfo info = PhotoBrowseInfo.create(adapter.datas, imageContainer.getContentViewsGlobalVisibleRects(), i);
+        PhotoBrowseInfo info = PhotoBrowseInfo.create(adapter.datas, imageContainer.getContentViewsDrawableRects(), i);
         PhotoBrowseActivity.startToPhotoBrowseActivity((Activity) getContext(), info);
     }
 

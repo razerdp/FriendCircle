@@ -40,6 +40,6 @@ dependencies {
     //over scroller helper
     compile 'me.everything:overscroll-decor-android:1.0.3'
     //朋友圈图片控件
-    compile 'com.github.razerdp:PhotoContents:v1.3.1'
+    compile 'com.github.razerdp:PhotoContents:v1.4'
     compile project(':photoview')
 }
