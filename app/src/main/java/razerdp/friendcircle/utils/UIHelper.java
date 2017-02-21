@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -116,8 +117,8 @@ public class UIHelper {
         InputMethodManager imm = (InputMethodManager) view.getContext()
                                                           .getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
-            boolean success=imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
-            KLog.i("showSoftKeyboard"," isSuccess   >>>   "+success);
+            boolean success = imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+            KLog.i("showSoftKeyboard", " isSuccess   >>>   " + success);
         }
     }
 
@@ -156,15 +157,28 @@ public class UIHelper {
 
     /**
      * =============================================================
+     * 一些工具方法
+     */
+    public static void setViewsClickListener(@NonNull View.OnClickListener listener, View... views) {
+        for (View view : views) {
+            if (view != null) {
+                view.setOnClickListener(listener);
+            }
+        }
+    }
+
+
+    /**
+     * =============================================================
      * 资源工具
      */
 
     public static int getResourceColor(int colorResId) {
-        if (colorResId > 0) {
+        try {
             return FriendCircleApp.getAppContext()
                                   .getResources()
                                   .getColor(colorResId);
-        } else {
+        } catch (Exception e) {
             return Color.TRANSPARENT;
         }
     }

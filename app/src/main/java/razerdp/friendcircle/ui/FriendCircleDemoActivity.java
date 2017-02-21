@@ -36,6 +36,7 @@ import razerdp.friendcircle.ui.viewholder.EmptyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.MultiImageMomentsVH;
 import razerdp.friendcircle.ui.viewholder.TextOnlyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.WebMomentsVH;
+import razerdp.friendcircle.ui.widget.TitleBar;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentBox;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
 import razerdp.friendcircle.ui.widget.popup.RegisterPopup;
@@ -81,6 +82,11 @@ public class FriendCircleDemoActivity extends BaseActivity implements OnRefreshL
     }
 
     private void initView() {
+        setTitle("朋友圈");
+        setTitleMode(TitleBar.MODE_BOTH);
+        setTitleRightIcon(R.drawable.ic_camera);
+        setTitleLeftText("发现");
+        setTitleLeftIcon(R.drawable.back_left);
         presenter = new MomentPresenter(this);
 
         hostViewHolder = new HostViewHolder(this);
@@ -143,6 +149,32 @@ public class FriendCircleDemoActivity extends BaseActivity implements OnRefreshL
         momentsRequest.execute();
     }
 
+
+    //titlebar click
+
+
+    @Override
+    public void onTitleDoubleClick() {
+        super.onTitleDoubleClick();
+        if (circleRecyclerView!=null){
+            circleRecyclerView.getRecyclerView().smoothScrollToPosition(0);
+        }
+    }
+
+    @Override
+    public void onTitleLeftClick() {
+        if (System.currentTimeMillis() - lastClickBackTime > 2000) { // 后退阻断
+            UIHelper.ToastMessage("这是朋友圈工程哦，不是整个微信哦~再点一次退出");
+            lastClickBackTime = System.currentTimeMillis();
+        } else { // 关掉app
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onTitleRightClick() {
+        UIHelper.ToastMessage("功能还在完善中。。。请关注本项目的github进度-V-");
+    }
 
     //call back block
     //==============================================
