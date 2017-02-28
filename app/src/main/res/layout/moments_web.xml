@@ -17,7 +17,7 @@
         android:padding="8dp"
         android:background="#f1f1f1">
 
-        <razerdp.friendcircle.ui.widget.SuperImageView
+        <ImageView
             android:id="@+id/web_thumb"
             android:layout_width="45dp"
             android:layout_height="45dp"

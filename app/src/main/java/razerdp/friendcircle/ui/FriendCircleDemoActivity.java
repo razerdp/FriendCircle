@@ -156,9 +156,19 @@ public class FriendCircleDemoActivity extends BaseActivity implements OnRefreshL
     @Override
     public void onTitleDoubleClick() {
         super.onTitleDoubleClick();
-        if (circleRecyclerView!=null){
+        if (circleRecyclerView != null) {
+            int firstVisibleItemPos = circleRecyclerView.findFirstVisibleItemPosition();
             circleRecyclerView.getRecyclerView().smoothScrollToPosition(0);
+            if (firstVisibleItemPos > 1) {
+                circleRecyclerView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        circleRecyclerView.autoRefresh();
+                    }
+                }, 200);
+            }
         }
+
     }
 
     @Override
