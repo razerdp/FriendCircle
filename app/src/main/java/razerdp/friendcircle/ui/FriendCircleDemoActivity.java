@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -32,11 +31,12 @@ import razerdp.friendcircle.mvp.presenter.MomentPresenter;
 import razerdp.friendcircle.mvp.view.IMomentView;
 import razerdp.friendcircle.ui.adapter.CircleMomentsAdapter;
 import razerdp.friendcircle.ui.base.BaseActivity;
+import razerdp.friendcircle.ui.publish.PublishActivity;
 import razerdp.friendcircle.ui.viewholder.EmptyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.MultiImageMomentsVH;
 import razerdp.friendcircle.ui.viewholder.TextOnlyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.WebMomentsVH;
-import razerdp.friendcircle.ui.widget.TitleBar;
+import razerdp.friendcircle.ui.widget.common.TitleBar;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentBox;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
 import razerdp.friendcircle.ui.widget.popup.RegisterPopup;
@@ -44,7 +44,6 @@ import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView.OnPreDispatchTouchListener;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
 import razerdp.friendcircle.utils.PreferenceHelper;
-import razerdp.friendcircle.utils.StringUtil;
 import razerdp.friendcircle.utils.ToolUtil;
 import razerdp.friendcircle.utils.UIHelper;
 
@@ -111,8 +110,6 @@ public class FriendCircleDemoActivity extends BaseActivity implements OnRefreshL
 
     }
 
-
-    // TODO: 2016/12/13 进一步优化对齐功能
     private void initKeyboardHeightObserver() {
         //观察键盘弹出与消退
         KeyboardControlMnanager.observerKeyboardVisibleChange(this, new KeyboardControlMnanager.OnKeyboardStateChangeListener() {
@@ -183,7 +180,13 @@ public class FriendCircleDemoActivity extends BaseActivity implements OnRefreshL
 
     @Override
     public void onTitleRightClick() {
-        UIHelper.ToastMessage("功能还在完善中。。。请关注本项目的github进度-V-");
+        ActivityLauncher.startToPublishActivityWithResult(this, PublishActivity.Mode.MULTI, 0);
+    }
+
+    @Override
+    public boolean onTitleRightLongClick() {
+        ActivityLauncher.startToPublishActivityWithResult(this, PublishActivity.Mode.TEXT, 0);
+        return true;
     }
 
     //call back block

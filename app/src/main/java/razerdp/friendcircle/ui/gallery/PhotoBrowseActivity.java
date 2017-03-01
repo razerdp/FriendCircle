@@ -1,4 +1,4 @@
-package razerdp.friendcircle.ui;
+package razerdp.friendcircle.ui.gallery;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,8 +11,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.bumptech.glide.Glide;
 import com.socks.library.KLog;
@@ -24,9 +22,9 @@ import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
 import razerdp.friendcircle.mvp.model.uimodel.PhotoBrowseInfo;
 import razerdp.friendcircle.ui.base.BaseActivity;
-import razerdp.friendcircle.ui.widget.DotIndicator;
-import razerdp.friendcircle.ui.widget.GalleryPhotoView;
-import razerdp.friendcircle.ui.widget.HackyViewPager;
+import razerdp.friendcircle.ui.widget.indicator.DotIndicator;
+import razerdp.friendcircle.ui.widget.imageview.GalleryPhotoView;
+import razerdp.friendcircle.ui.widget.common.HackyViewPager;
 import razerdp.friendcircle.utils.ToolUtil;
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;

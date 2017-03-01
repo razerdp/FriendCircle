@@ -15,13 +15,13 @@ import java.util.List;
 
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.interfaces.MultiClickListener;
-import razerdp.friendcircle.ui.widget.TitleBar;
+import razerdp.friendcircle.ui.widget.common.TitleBar;
 
-import static razerdp.friendcircle.ui.widget.TitleBar.*;
+import static razerdp.friendcircle.ui.widget.common.TitleBar.*;
 
 /**
  * Created by 大灯泡 on 2016/10/28.
- *
+ * <p>
  * baseactivity
  */
 
@@ -32,8 +32,9 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        KLog.i("activityName", "now on activity  >>>  "+this.getClass().getSimpleName());
+        KLog.i("activityName", "now on activity  >>>  " + this.getClass().getSimpleName());
     }
+
     /**
      * 判断程序是否在前台运行
      */
@@ -72,6 +73,7 @@ public class BaseActivity extends AppCompatActivity {
         super.setContentView(layoutResID);
         initTitlebar();
     }
+
     @Override
     public void setContentView(View view) {
         super.setContentView(view);
@@ -107,15 +109,33 @@ public class BaseActivity extends AppCompatActivity {
     private OnTitleBarClickListener onTitleClickListener = new OnTitleBarClickListener() {
 
         @Override
-        public void onLeftClick(View v) {
-            onTitleLeftClick();
+        public boolean onLeftClick(View v, boolean isLongClick) {
+            if (!isLongClick) {
+                onTitleLeftClick();
+                return false;
+            } else {
+                return onTitleLeftLongClick();
+            }
         }
 
         @Override
-        public void onRightClick(View v) {
-            onTitleRightClick();
+        public boolean onRightClick(View v, boolean isLongClick) {
+            if (!isLongClick) {
+                onTitleRightClick();
+                return false;
+            } else {
+                return onTitleRightLongClick();
+            }
         }
     };
+
+    public boolean onTitleLeftLongClick() {
+        return false;
+    }
+
+    public boolean onTitleRightLongClick() {
+        return false;
+    }
 
     public void onTitleLeftClick() {
         finish();
@@ -148,27 +168,39 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void setTitleRightText(String text){
-        if (titleBar!=null){
+    public void setTitleRightText(String text) {
+        if (titleBar != null) {
             titleBar.setRightText(text);
         }
     }
 
-    public void setTitleRightIcon(int resid){
-        if (titleBar!=null){
+    public void setTitleRightIcon(int resid) {
+        if (titleBar != null) {
             titleBar.setRightIcon(resid);
         }
     }
 
-    public void setTitleLeftText(String text){
-        if (titleBar!=null){
+    public void setTitleLeftText(String text) {
+        if (titleBar != null) {
             titleBar.setLeftText(text);
         }
     }
 
-    public void setTitleLeftIcon(int resid){
-        if (titleBar!=null){
+    public void setTitleLeftIcon(int resid) {
+        if (titleBar != null) {
             titleBar.setLeftIcon(resid);
+        }
+    }
+
+    public void setLeftTextColor(int color) {
+        if (titleBar != null) {
+            titleBar.setLeftTextColor(color);
+        }
+    }
+
+    public void setRightTextColor(int color) {
+        if (titleBar != null) {
+            titleBar.setRightTextColor(color);
         }
     }
 

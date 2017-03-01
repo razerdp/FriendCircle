@@ -22,13 +22,13 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/avatar"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="4dp"
         android:layout_toRightOf="@id/avatar"
         android:textColor="@color/nick"
         android:textSize="@dimen/normal_font"
+        android:textStyle="bold"
         tools:text="羽翼君"/>
 
-    <razerdp.friendcircle.ui.widget.ClickShowMoreLayout
+    <razerdp.friendcircle.ui.widget.common.ClickShowMoreLayout
         android:id="@+id/item_text_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

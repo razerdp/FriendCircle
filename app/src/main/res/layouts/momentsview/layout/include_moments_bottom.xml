@@ -17,7 +17,7 @@
         <TextView
             android:id="@+id/create_time"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
             android:gravity="center_vertical"
             android:textColor="@color/item_bottom_text"
             android:textSize="@dimen/small_font"
@@ -26,7 +26,7 @@
         <FrameLayout
             android:id="@+id/menu_button"
             android:layout_width="60dp"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
             android:layout_alignParentRight="true">
 
             <ImageView

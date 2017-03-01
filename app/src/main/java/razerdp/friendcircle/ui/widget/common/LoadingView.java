@@ -1,4 +1,4 @@
-package razerdp.friendcircle.ui.widget;
+package razerdp.friendcircle.ui.widget.common;
 
 import android.animation.ValueAnimator;
 import android.content.Context;

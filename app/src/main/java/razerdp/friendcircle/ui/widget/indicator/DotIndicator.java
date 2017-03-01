@@ -1,4 +1,4 @@
-package razerdp.friendcircle.ui.widget;
+package razerdp.friendcircle.ui.widget.indicator;
 
 import android.content.Context;
 import android.util.AttributeSet;

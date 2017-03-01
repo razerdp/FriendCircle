@@ -1,4 +1,4 @@
-package razerdp.friendcircle.ui.widget;
+package razerdp.friendcircle.ui.widget.common;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -18,16 +18,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import razerdp.friendcircle.R;
+import razerdp.friendcircle.ui.widget.indicator.DotWidget;
 import razerdp.friendcircle.utils.UIHelper;
 
 /**
  * Created by 大灯泡 on 2016/7/20.
  * <p>
  * titlebar
- *
  */
 
-public class TitleBar extends FrameLayout implements View.OnClickListener {
+public class TitleBar extends FrameLayout implements View.OnClickListener, View.OnLongClickListener {
 
     private LinearLayout ll_left;
     private ImageView iv_left;
@@ -93,19 +93,25 @@ public class TitleBar extends FrameLayout implements View.OnClickListener {
             case MODE_LEFT:
                 ll_left.setVisibility(VISIBLE);
                 ll_right.setOnClickListener(null);
+                ll_right.setOnLongClickListener(null);
                 ll_right.setVisibility(INVISIBLE);
-                UIHelper.setViewsClickListener(this, ll_left);
+                ll_left.setOnClickListener(this);
+                ll_left.setOnLongClickListener(this);
                 break;
             case MODE_RIGHT:
                 ll_right.setVisibility(VISIBLE);
                 ll_left.setOnClickListener(null);
+                ll_left.setOnLongClickListener(null);
                 ll_left.setVisibility(INVISIBLE);
-                UIHelper.setViewsClickListener(this, ll_right);
+                ll_right.setOnClickListener(this);
+                ll_right.setOnLongClickListener(this);
                 break;
             case MODE_BOTH:
                 ll_left.setVisibility(VISIBLE);
                 ll_right.setVisibility(VISIBLE);
                 UIHelper.setViewsClickListener(this, ll_left, ll_right);
+                ll_left.setOnLongClickListener(this);
+                ll_right.setOnLongClickListener(this);
                 break;
             case MODE_TITLE:
                 ll_left.setVisibility(GONE);
@@ -145,14 +151,16 @@ public class TitleBar extends FrameLayout implements View.OnClickListener {
     public void setLeftIcon(int resid) {
         try {
             iv_left.setImageResource(resid);
+            setShowLeftIcon(resid != 0);
         } catch (Exception e) {
-           KLog.e(e);
+            KLog.e(e);
         }
     }
 
     public void setRightIcon(int resid) {
         try {
             iv_right.setImageResource(resid);
+            setShowRightIcon(resid != 0);
         } catch (Exception e) {
             KLog.e(e);
         }
@@ -172,6 +180,15 @@ public class TitleBar extends FrameLayout implements View.OnClickListener {
             tx_left.setText(leftText);
         }
     }
+
+    public void setLeftTextColor(int color) {
+        tx_left.setTextColor(color);
+    }
+
+    public void setRightTextColor(int color) {
+        tx_right.setTextColor(color);
+    }
+
 
     public void setRightText(int resid) {
         if (resid > 0) {
@@ -224,15 +241,33 @@ public class TitleBar extends FrameLayout implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.ll_title_bar_left:
                 if (onTitleBarClickListener != null) {
-                    onTitleBarClickListener.onLeftClick(ll_left);
+                    onTitleBarClickListener.onLeftClick(ll_left, false);
                 }
                 break;
             case R.id.ll_title_bar_right:
                 if (onTitleBarClickListener != null) {
-                    onTitleBarClickListener.onRightClick(ll_left);
+                    onTitleBarClickListener.onRightClick(ll_left, false);
                 }
                 break;
         }
+    }
+
+
+    @Override
+    public boolean onLongClick(View v) {
+        switch (v.getId()) {
+            case R.id.ll_title_bar_left:
+                if (onTitleBarClickListener != null) {
+                    return onTitleBarClickListener.onLeftClick(ll_left, true);
+                }
+                break;
+            case R.id.ll_title_bar_right:
+                if (onTitleBarClickListener != null) {
+                    return onTitleBarClickListener.onRightClick(ll_left, true);
+                }
+                break;
+        }
+        return false;
     }
 
     private OnTitleBarClickListener onTitleBarClickListener;
@@ -246,8 +281,8 @@ public class TitleBar extends FrameLayout implements View.OnClickListener {
     }
 
     public interface OnTitleBarClickListener {
-        void onLeftClick(View v);
+        boolean onLeftClick(View v, boolean isLongClick);
 
-        void onRightClick(View v);
+        boolean onRightClick(View v, boolean isLongClick);
     }
 }

@@ -13,12 +13,12 @@
         android:layout_height="match_parent"
         android:background="@color/black"/>
 
-    <razerdp.friendcircle.ui.widget.HackyViewPager
+    <razerdp.friendcircle.ui.widget.common.HackyViewPager
         android:id="@+id/photo_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <razerdp.friendcircle.ui.widget.DotIndicator
+    <razerdp.friendcircle.ui.widget.indicator.DotIndicator
         android:id="@+id/dot_indicator"
         android:layout_width="match_parent"
         android:layout_height="30dp"

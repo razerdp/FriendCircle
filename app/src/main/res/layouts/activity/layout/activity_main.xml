@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <razerdp.friendcircle.ui.widget.TitleBar
+        <razerdp.friendcircle.ui.widget.common.TitleBar
             android:id="@id/title_bar_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

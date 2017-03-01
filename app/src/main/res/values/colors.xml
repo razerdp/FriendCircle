@@ -28,6 +28,7 @@
 
     <!--other-->
     <color name="wechat_green_bg">#10d21c</color>
+    <color name="wechat_green_transparent">#7a10d21c</color>
     <color name="wechat_green_bg_click">#5eec67</color>
     <color name="comment_click_bg">#CCD2DF</color>
     <color name="delete_click_bg">#EAEAEA</color>

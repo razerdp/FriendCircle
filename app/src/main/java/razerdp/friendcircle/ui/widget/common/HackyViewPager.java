@@ -1,4 +1,4 @@
-package razerdp.friendcircle.ui.widget;
+package razerdp.friendcircle.ui.widget.common;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

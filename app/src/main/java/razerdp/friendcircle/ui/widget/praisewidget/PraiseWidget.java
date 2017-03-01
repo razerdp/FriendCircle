@@ -16,8 +16,8 @@ import java.util.List;
 
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.ui.widget.CustomImageSpan;
-import razerdp.friendcircle.ui.widget.SpannableStringBuilderAllVer;
+import razerdp.friendcircle.ui.widget.span.CustomImageSpan;
+import razerdp.friendcircle.ui.widget.span.SpannableStringBuilderCompat;
 import razerdp.friendcircle.ui.widget.span.ClickableSpanEx;
 
 /**
@@ -38,10 +38,10 @@ public class PraiseWidget extends TextView {
 
     private List<UserInfo> datas;
 
-    private static final LruCache<String, SpannableStringBuilderAllVer> praiseCache
-            = new LruCache<String, SpannableStringBuilderAllVer>(50) {
+    private static final LruCache<String, SpannableStringBuilderCompat> praiseCache
+            = new LruCache<String, SpannableStringBuilderCompat>(50) {
         @Override
-        protected int sizeOf(String key, SpannableStringBuilderAllVer value) {
+        protected int sizeOf(String key, SpannableStringBuilderCompat value) {
             return 1;
         }
     };
@@ -92,14 +92,14 @@ public class PraiseWidget extends TextView {
     private void createSpanStringBuilder(List<UserInfo> datas) {
         if (datas == null || datas.size() == 0) return;
         String key = Integer.toString(datas.hashCode() + datas.size());
-        SpannableStringBuilderAllVer spanStrBuilder = praiseCache.get(key);
+        SpannableStringBuilderCompat spanStrBuilder = praiseCache.get(key);
         if (spanStrBuilder == null) {
             CustomImageSpan icon = new CustomImageSpan(getContext(), iconRes);
             //因为spanstringbuilder不支持直接append span，所以通过spanstring转换
             SpannableString iconSpanStr = new SpannableString(" ");
             iconSpanStr.setSpan(icon, 0, 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
-            spanStrBuilder = new SpannableStringBuilderAllVer(iconSpanStr);
+            spanStrBuilder = new SpannableStringBuilderCompat(iconSpanStr);
             //给出两个空格，点赞图标后
             spanStrBuilder.append(" ");
             for (int i = 0; i < datas.size(); i++) {

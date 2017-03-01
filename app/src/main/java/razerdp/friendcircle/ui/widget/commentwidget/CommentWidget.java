@@ -10,7 +10,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import razerdp.friendcircle.mvp.model.entity.CommentInfo;
-import razerdp.friendcircle.ui.widget.SpannableStringBuilderAllVer;
+import razerdp.friendcircle.ui.widget.span.SpannableStringBuilderCompat;
 import razerdp.friendcircle.ui.widget.span.ClickableSpanEx;
 
 /**
@@ -22,7 +22,7 @@ public class CommentWidget extends TextView {
     //用户名颜色
     private int textColor = 0xff517fae;
     private static final int textSize = 14;
-    SpannableStringBuilderAllVer mSpannableStringBuilderAllVer;
+    SpannableStringBuilderCompat mSpannableStringBuilderCompat;
 
     public CommentWidget(Context context) {
         this(context, null);
@@ -60,12 +60,12 @@ public class CommentWidget extends TextView {
     }
 
     private void createCommentStringBuilder(@NonNull CommentInfo info) {
-        if (mSpannableStringBuilderAllVer == null) {
-            mSpannableStringBuilderAllVer = new SpannableStringBuilderAllVer();
+        if (mSpannableStringBuilderCompat == null) {
+            mSpannableStringBuilderCompat = new SpannableStringBuilderCompat();
         }
         else {
-            mSpannableStringBuilderAllVer.clear();
-            mSpannableStringBuilderAllVer.clearSpans();
+            mSpannableStringBuilderCompat.clear();
+            mSpannableStringBuilderCompat.clearSpans();
         }
         String content = ": " + info.getContent() + "\0";
         boolean isApply = (info.getReply() == null);
@@ -75,8 +75,8 @@ public class CommentWidget extends TextView {
                                                                                    .setClickEventColor(0xffc6c6c6)
                                                                                    .setTextSize(textSize)
                                                                                    .build();
-            mSpannableStringBuilderAllVer.append(info.getAuthor().getNick(), userA, 0);
-            mSpannableStringBuilderAllVer.append(content);
+            mSpannableStringBuilderCompat.append(info.getAuthor().getNick(), userA, 0);
+            mSpannableStringBuilderCompat.append(content);
         }
         else if (info.getAuthor() != null && !isApply) {
             //用户A，B不空，证明是回复评论
@@ -84,16 +84,16 @@ public class CommentWidget extends TextView {
                                                                                    .setClickEventColor(0xffc6c6c6)
                                                                                    .setTextSize(textSize)
                                                                                    .build();
-            mSpannableStringBuilderAllVer.append(info.getAuthor().getNick(), userA, 0);
-            mSpannableStringBuilderAllVer.append(" 回复 ");
+            mSpannableStringBuilderCompat.append(info.getAuthor().getNick(), userA, 0);
+            mSpannableStringBuilderCompat.append(" 回复 ");
             CommentClick userB = new CommentClick.Builder(getContext(), info.getReply()).setColor(0xff517fae)
                                                                                    .setClickEventColor(0xffc6c6c6)
                                                                                    .setTextSize(textSize)
                                                                                    .build();
-            mSpannableStringBuilderAllVer.append(info.getReply().getNick(), userB, 0);
-            mSpannableStringBuilderAllVer.append(content);
+            mSpannableStringBuilderCompat.append(info.getReply().getNick(), userB, 0);
+            mSpannableStringBuilderCompat.append(content);
         }
-        setText(mSpannableStringBuilderAllVer);
+        setText(mSpannableStringBuilderCompat);
     }
 
     public CommentInfo getData() throws ClassCastException {

@@ -4,8 +4,6 @@
               android:layout_width="match_parent"
               android:layout_height="50dp"
               android:orientation="horizontal"
-              android:paddingLeft="6dp"
-              android:paddingRight="6dp"
               android:weightSum="10"
               tools:background="@color/action_bar_bg">
 
@@ -13,25 +11,27 @@
         android:id="@+id/ll_title_bar_left"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:paddingLeft="8dp"
         android:layout_weight="2"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        >
 
         <ImageView
             android:id="@+id/ic_title_bar_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
             android:src="@drawable/back_left"/>
 
         <TextView
             android:id="@+id/tx_title_bar_left"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="8dp"
-            android:gravity="center_vertical"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
+            android:textSize="16sp"
             tools:text="test"/>
 
     </LinearLayout>
@@ -48,6 +48,7 @@
         android:paddingRight="8dp"
         android:textColor="@android:color/white"
         android:textSize="18sp"
+        android:textStyle="bold"
         tools:text="朋友圈"/>
 
     <LinearLayout
@@ -55,24 +56,26 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"
-        android:paddingRight="8dp"
         android:gravity="center_vertical|right"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        >
 
         <TextView
             android:id="@+id/tx_title_bar_right"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginRight="8dp"
-            android:gravity="center_vertical"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
+            android:textSize="16sp"
             tools:text="test"/>
 
         <ImageView
             android:id="@+id/ic_title_bar_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
             android:src="@drawable/ic_camera"/>
 
     </LinearLayout>
