@@ -3,6 +3,8 @@
 
 欢迎来到本项目，这个项目是一个尝试性项目，目的在于从无到有撸出一个微信朋友圈。</br>
 
+ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp/FriendCircle/tree/main-dev)分支哦
+
 #####【简略更新日志】
  - 2017/02/28
     + 优化刷新icon的逻辑
