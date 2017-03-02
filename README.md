@@ -4,6 +4,9 @@
 欢迎来到本项目，这个项目是一个尝试性项目，目的在于从无到有撸出一个微信朋友圈。</br>
 
 #####【简略更新日志】
+ - 2017/03/02
+    + 增加popup
+
  - 2017/03/01
     + UI微调
     + 发布朋友圈动态的activity预添加
@@ -18,16 +21,9 @@
     + 预留发朋友圈的开关
     + 双击回到顶部
 
- - 2017/02/13
-    + 修复单图位置不准的问题
-
- - 2017/02/09
-    + 增加图片浏览的指示器
-
  - 更多日志请看 → [更新日志](https://github.com/razerdp/FriendCircle/blob/master/UPDATE_LOG.md)
 
 ---
-
 
 **本项目的一切实现思路以及逻辑都有记录，它们都有在我的简书文集记载：**
 
@@ -77,14 +73,4 @@
 
 ##LICENSE：
 ***
-The MIT License (MIT)
-
-Copyright (c) [2016] [razerdp]
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
+MIT

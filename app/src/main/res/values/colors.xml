@@ -37,7 +37,7 @@
     <color name="img_foregroundColor">#85414141</color>
 
     <!--popup背景蒙层-->
-    <color name="popup_background">#8e030303</color>
+    <color name="popup_background">#80030303</color>
 
     <!--分割线-->
     <color name="gray_divider">#d7dce1</color>
@@ -45,5 +45,8 @@
     <color name="timeline_background">#f4f6f8</color>
 
     <color name="round_rect_bg">#f8f8f8</color>
+
+    <!--文字-->
+    <color name="text_black">#1A1A1A</color>
 
 </resources>

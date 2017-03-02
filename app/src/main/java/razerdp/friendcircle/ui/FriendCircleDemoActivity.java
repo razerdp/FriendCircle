@@ -36,10 +36,11 @@ import razerdp.friendcircle.ui.viewholder.EmptyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.MultiImageMomentsVH;
 import razerdp.friendcircle.ui.viewholder.TextOnlyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.WebMomentsVH;
-import razerdp.friendcircle.ui.widget.common.TitleBar;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentBox;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
+import razerdp.friendcircle.ui.widget.common.TitleBar;
 import razerdp.friendcircle.ui.widget.popup.RegisterPopup;
+import razerdp.friendcircle.ui.widget.popup.SelectPhotoMenuPopup;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.CircleRecyclerView.OnPreDispatchTouchListener;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
@@ -180,7 +181,17 @@ public class FriendCircleDemoActivity extends BaseActivity implements OnRefreshL
 
     @Override
     public void onTitleRightClick() {
-        ActivityLauncher.startToPublishActivityWithResult(this, PublishActivity.Mode.MULTI, 0);
+        new SelectPhotoMenuPopup(this).setOnSelectPhotoMenuClickListener(new SelectPhotoMenuPopup.OnSelectPhotoMenuClickListener() {
+            @Override
+            public void onShootClick() {
+                UIHelper.ToastMessage("跳到拍摄页面");
+            }
+
+            @Override
+            public void onAlbumClick() {
+                UIHelper.ToastMessage("跳到选择页面");
+            }
+        }).showPopupWindow();
     }
 
     @Override
