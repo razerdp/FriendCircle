@@ -25,11 +25,17 @@
         </activity>
 
         <activity
-            android:name=".ui.PhotoBrowseActivity"
+            android:name=".ui.gallery.PhotoBrowseActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:theme="@style/Transparent"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Transparent"/>
+
+        <activity
+            android:name=".ui.publish.PublishActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
 
 
         <!--glide-->

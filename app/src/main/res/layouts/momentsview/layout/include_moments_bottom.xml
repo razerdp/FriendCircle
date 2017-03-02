@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="5dp"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/menu_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="74dp"
+        android:layout_marginRight="@dimen/item_padding">
+
+        <TextView
+            android:id="@+id/create_time"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/item_bottom_text"
+            android:textSize="@dimen/small_font"
+            tools:text="3小时前"/>
+
+        <FrameLayout
+            android:id="@+id/menu_button"
+            android:layout_width="60dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true">
+
+            <ImageView
+                android:id="@+id/menu_img"
+                android:layout_width="25dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_vertical|right"
+                android:src="@drawable/bg_comment_pressed"/>
+        </FrameLayout>
+    </RelativeLayout>
+
+    <!--praise && comment-->
+    <LinearLayout
+        android:id="@+id/comment_praise_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/menu_layout"
+        android:layout_marginLeft="74dp"
+        android:layout_marginRight="@dimen/item_padding"
+        android:background="@drawable/comment_praise"
+        android:orientation="vertical">
+
+        <razerdp.friendcircle.ui.widget.praisewidget.PraiseWidget
+            android:id="@+id/praise"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="2dp"
+            android:lineSpacingMultiplier="1"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            app:click_bg_color="@color/comment_click_bg"
+            />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/line_bg"
+            />
+
+        <LinearLayout
+            android:id="@+id/comment_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:background="@android:color/holo_red_dark"/>
+    </LinearLayout>
+
+    <View style="@style/base_divider_top_20"/>
+
+</LinearLayout>

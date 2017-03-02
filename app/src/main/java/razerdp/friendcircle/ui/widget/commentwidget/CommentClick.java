@@ -1,6 +1,7 @@
 package razerdp.friendcircle.ui.widget.commentwidget;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.view.View;
@@ -33,13 +34,14 @@ public class CommentClick extends ClickableSpanEx {
     public void onClick(View widget) {
         if (mUserInfo != null)
             Toast.makeText(mContext, "当前用户名是： " + mUserInfo.getNick() + "   它的ID是： " + mUserInfo.getUserid(),
-                    Toast.LENGTH_SHORT).show();
+                           Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void updateDrawState(TextPaint ds) {
         super.updateDrawState(ds);
         ds.setTextSize(textSize);
+        ds.setTypeface(Typeface.DEFAULT_BOLD);
     }
 
     public static class Builder {

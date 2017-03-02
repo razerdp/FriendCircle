@@ -2,7 +2,6 @@ package razerdp.friendcircle.ui.viewholder;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
 import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.mvp.model.uimodel.PhotoBrowseInfo;
-import razerdp.friendcircle.ui.PhotoBrowseActivity;
+import razerdp.friendcircle.ui.ActivityLauncher;
 import razerdp.friendcircle.ui.widget.imageview.ForceClickImageView;
 import razerdp.github.com.widget.PhotoContents;
 import razerdp.github.com.widget.adapter.PhotoContentsBaseAdapter;
@@ -62,7 +61,7 @@ public class MultiImageMomentsVH extends CircleBaseViewHolder implements PhotoCo
     @Override
     public void onItemClick(ImageView imageView, int i) {
         PhotoBrowseInfo info = PhotoBrowseInfo.create(adapter.datas, imageContainer.getContentViewsDrawableRects(), i);
-        PhotoBrowseActivity.startToPhotoBrowseActivity((Activity) getContext(), info);
+        ActivityLauncher.startToPhotoBrosweActivity((Activity) getContext(), info);
     }
 
 

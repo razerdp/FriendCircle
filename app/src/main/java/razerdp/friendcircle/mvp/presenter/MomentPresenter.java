@@ -65,7 +65,7 @@ public class MomentPresenter implements IMomentPresenter {
                 }
                 boolean hasLocalLiked = findPosByObjid(resultLikeList, LocalHostManager.INSTANCE.getUserid()) > -1;
                 if (!hasLocalLiked) {
-                    resultLikeList.add(0, LocalHostManager.INSTANCE.getLocalHostUser());
+                    resultLikeList.add(LocalHostManager.INSTANCE.getLocalHostUser());
                 }
                 if (momentView != null) {
                     momentView.onLikeChange(viewHolderPos, resultLikeList);

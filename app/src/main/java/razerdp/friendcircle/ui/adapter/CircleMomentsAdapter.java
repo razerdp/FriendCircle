@@ -111,9 +111,9 @@ public class CircleMomentsAdapter extends BaseRecyclerViewAdapter<MomentsInfo> {
      * vh的信息类
      */
     private static final class ViewHoldernfo {
-        public Class<? extends CircleBaseViewHolder> holderClass;
-        public int viewType;
-        public int layoutResID;
+        Class<? extends CircleBaseViewHolder> holderClass;
+        int viewType;
+        int layoutResID;
     }
 
     private CircleBaseViewHolder createCircleViewHolder(Context context, ViewGroup viewGroup, ViewHoldernfo viewHoldernfo) {
@@ -126,15 +126,7 @@ public class CircleMomentsAdapter extends BaseRecyclerViewAdapter<MomentsInfo> {
         try {
             constructor = className.getConstructor(Context.class, ViewGroup.class, int.class);
             return (CircleBaseViewHolder) constructor.newInstance(context, viewGroup, viewHoldernfo.layoutResID);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException | NullPointerException e) {
             e.printStackTrace();
         }
         return null;
