@@ -19,7 +19,7 @@ import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.app.net.OnResponseListener;
 import razerdp.friendcircle.app.net.request.RegisterRequest;
 import razerdp.friendcircle.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.ui.widget.LoadingView;
+import razerdp.friendcircle.ui.widget.common.LoadingView;
 import razerdp.friendcircle.utils.PreferenceHelper;
 import razerdp.friendcircle.utils.UIHelper;
 

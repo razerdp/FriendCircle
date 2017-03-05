@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <include layout="@layout/include_moments_header"/>
+
+    <RelativeLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="74dp"
+        android:layout_marginRight="@dimen/item_padding"
+        android:padding="8dp"
+        android:background="#f1f1f1">
+
+        <ImageView
+            android:id="@+id/web_thumb"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/test_avatar"/>
+
+        <TextView
+            android:id="@+id/web_title"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_toRightOf="@id/web_thumb"
+            android:layout_marginLeft="5dp"
+            android:gravity="left|center_vertical"
+            android:textColor="@color/normal_font_color"
+            android:textSize="@dimen/normal_font"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="啦啦啦啦啦啦~啦啦啦啦啦啦~啦啦啦啦啦啦~"/>
+
+    </RelativeLayout>
+
+    <include layout="@layout/include_moments_bottom"/>
+    <!--点赞控件/评论控件-->
+
+</LinearLayout>

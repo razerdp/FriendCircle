@@ -1,6 +1,7 @@
 package razerdp.friendcircle.ui.widget.praisewidget;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.view.View;
@@ -39,6 +40,7 @@ public class PraiseClick extends ClickableSpanEx {
     public void updateDrawState(TextPaint ds) {
         super.updateDrawState(ds);
         ds.setTextSize(textSize);
+        ds.setTypeface(Typeface.DEFAULT_BOLD);
     }
 
 

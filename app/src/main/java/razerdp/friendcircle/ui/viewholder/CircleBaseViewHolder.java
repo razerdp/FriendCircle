@@ -26,7 +26,7 @@ import razerdp.friendcircle.utils.SimpleObjectPool;
 import razerdp.friendcircle.utils.TimeUtil;
 import razerdp.friendcircle.utils.ToolUtil;
 import razerdp.friendcircle.utils.UIHelper;
-import razerdp.friendcircle.ui.widget.ClickShowMoreLayout;
+import razerdp.friendcircle.ui.widget.common.ClickShowMoreLayout;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
 import razerdp.friendcircle.ui.widget.popup.CommentPopup;
 import razerdp.friendcircle.ui.widget.popup.DeleteCommentPopup;
@@ -115,7 +115,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
             userText.setText("这个动态的数据是空的。。。。OMG");
             return;
         }
-        this.momentsInfo=data;
+        this.momentsInfo = data;
         this.itemPosition = position;
         //通用数据绑定
         onBindMutualDataToViews(data);
@@ -233,10 +233,10 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         }
     };
 
-    private DeleteCommentPopup.OnDeleteCommentClickListener onDeleteCommentClickListener=new DeleteCommentPopup.OnDeleteCommentClickListener() {
+    private DeleteCommentPopup.OnDeleteCommentClickListener onDeleteCommentClickListener = new DeleteCommentPopup.OnDeleteCommentClickListener() {
         @Override
         public void onDelClick(CommentInfo commentInfo) {
-            momentPresenter.deleteComment(itemPosition,commentInfo.getCommentid(),momentsInfo.getCommentList());
+            momentPresenter.deleteComment(itemPosition, commentInfo.getCommentid(), momentsInfo.getCommentList());
         }
     };
 
