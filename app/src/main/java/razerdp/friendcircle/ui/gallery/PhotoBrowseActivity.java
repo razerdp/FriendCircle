@@ -148,7 +148,7 @@ public class PhotoBrowseActivity extends BaseActivity {
         public Object instantiateItem(ViewGroup container, int position) {
             GalleryPhotoView photoView = viewBuckets.get(position);
             String photoUrl = photoBrowseInfo.getPhotoUrls().get(position);
-            ImageLoadMnanger.INSTANCE.loadImageDontAnimate(photoView, "");
+            ImageLoadMnanger.INSTANCE.loadImageDontAnimate(photoView, photoUrl);
             container.addView(photoView);
             return photoView;
         }
