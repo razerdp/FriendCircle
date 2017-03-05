@@ -1,4 +1,8 @@
 # 更新日志
+
+##2017/03/08
+  - 解决浏览大图失败无法返回退出的问题[#41](https://github.com/razerdp/FriendCircle/issues/41)
+
 ##2017/03/02
   - 增加popup
 

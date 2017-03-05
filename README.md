@@ -4,6 +4,9 @@
 欢迎来到本项目，这个项目是一个尝试性项目，目的在于从无到有撸出一个微信朋友圈。</br>
 
 #####【简略更新日志】
+ - 2017/03/08
+    + 解决浏览大图失败无法返回退出的问题[#41](https://github.com/razerdp/FriendCircle/issues/41)
+
  - 2017/03/02
     + 增加popup
 
@@ -73,4 +76,4 @@
 
 ##LICENSE：
 ***
-MIT
+[MIT](https://github.com/razerdp/FriendCircle/blob/master/LICENSE)
