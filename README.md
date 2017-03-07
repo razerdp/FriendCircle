@@ -74,6 +74,13 @@
 
 本项目在更新的同时也会同步发布经验心得（撸代码的过程），不过因为在下才学疏浅，有些地方肯定做的不好，所以衷心希望如果您有好的建议或优化方案，可以留下脚印。
 
+
+如果您愿意捐助一下项目，可以通过微信捐助哟~
+
+[](https://github.com/razerdp/FriendCircle/blob/master/wechat.jpg)
+
+
+
 ##LICENSE：
 ***
 [MIT](https://github.com/razerdp/FriendCircle/blob/master/LICENSE)
