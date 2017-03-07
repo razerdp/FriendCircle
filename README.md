@@ -77,7 +77,7 @@
 
 如果您愿意捐助一下项目，可以通过微信捐助哟~
 
-[](https://github.com/razerdp/FriendCircle/blob/master/wechat.jpg)
+![](https://github.com/razerdp/FriendCircle/blob/main-dev/wechat.jpg)
 
 
 
