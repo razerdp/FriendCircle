@@ -6,6 +6,9 @@
 ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp/FriendCircle/tree/main-dev)分支哦
 
 #####【简略更新日志】
+ - 2017/03/08
+    + 解决浏览大图失败无法返回退出的问题[#41](https://github.com/razerdp/FriendCircle/issues/41)
+
  - 2017/03/02
     + 增加popup
 
@@ -73,6 +76,13 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
 
 本项目在更新的同时也会同步发布经验心得（撸代码的过程），不过因为在下才学疏浅，有些地方肯定做的不好，所以衷心希望如果您有好的建议或优化方案，可以留下脚印。
 
+
+如果您愿意捐助一下项目，可以通过微信捐助哟~
+
+![](https://github.com/razerdp/FriendCircle/blob/main-dev/wechat.jpg)
+
+
+
 ##LICENSE：
 ***
-MIT
+[MIT](https://github.com/razerdp/FriendCircle/blob/master/LICENSE)

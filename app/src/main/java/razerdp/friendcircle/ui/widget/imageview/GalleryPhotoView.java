@@ -149,7 +149,12 @@ public class GalleryPhotoView extends PhotoView {
     }
 
     private void playExitAnimaInternal(final Rect to, @Nullable View alphaView) {
-        if (isPlayingEnterAnima || to == null || mAttacher == null) return;
+        if (isPlayingEnterAnima || to == null || mAttacher == null) {
+            if (onExitAnimaEndListener != null) {
+                onExitAnimaEndListener.onExitAnimaEnd();
+            }
+            return;
+        }
 
         final float currentScale = getScale();
         if (currentScale > 1.0f) setScale(1.0f);
@@ -159,7 +164,12 @@ public class GalleryPhotoView extends PhotoView {
         final Rect target = new Rect(to);
         from.offset(-globalOffset.x, -globalOffset.y);
         target.offset(-globalOffset.x, -globalOffset.y);
-        if (drawableBounds == null) return;
+        if (drawableBounds == null) {
+            if (onExitAnimaEndListener != null) {
+                onExitAnimaEndListener.onExitAnimaEnd();
+            }
+            return;
+        }
 
         //bitmap位移
         bitmapTransform.animaTranslate(from.centerX(), target.centerX(), from.centerY(), target.centerY());
