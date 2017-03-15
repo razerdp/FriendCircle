@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,7 +128,9 @@ public class CircleRecyclerView extends FrameLayout {
         setBackground(background);
 
         if (recyclerView == null) {
-            recyclerView = new RecyclerView(context);
+            recyclerView = (RecyclerView) LayoutInflater.from(context).inflate(R.layout.view_recyclerview, this, false);
+            //new出来的recyclerview并没有滚动条，原因：没有走到View.initializeScrollbars(TypedArray a)
+            //recyclerView = new RecyclerView(context);
             recyclerView.setBackgroundColor(Color.WHITE);
             linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearLayoutManager);
@@ -318,12 +321,10 @@ public class CircleRecyclerView extends FrameLayout {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
-            RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-            if (!(layoutManager instanceof LinearLayoutManager)) return;
-            if (currentStatus == REFRESHING) return;
-            if (onRefreshListener == null) return;
-
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+            //fix issue #42
+            //按照原来的习惯，我是当RecyclerView滑动停止状态下才检查是否要自动加在更多，但就出现了一个问题，如#42提出的，手指不离开屏幕一直滑动
+            //就会无法加载更多，在iOS朋友圈里，不离开屏幕是可以继续加载的，因此将这里的逻辑移动到了onScrolled，不对滑动状态进行监听了
+            /*if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 if (isScrollToBottom() && currentStatus != REFRESHING) {
                     onRefreshListener.onLoadMore();
                     KLog.i("loadmoretag", "loadmore");
@@ -331,6 +332,18 @@ public class CircleRecyclerView extends FrameLayout {
                     setCurrentStatus(REFRESHING);
                     footerView.onRefreshing();
                 }
+            }*/
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if (isScrollToBottom() && currentStatus != REFRESHING) {
+                onRefreshListener.onLoadMore();
+                KLog.i("loadmoretag", "loadmore");
+                pullMode = FROM_BOTTOM;
+                setCurrentStatus(REFRESHING);
+                footerView.onRefreshing();
             }
         }
     };
@@ -394,7 +407,7 @@ public class CircleRecyclerView extends FrameLayout {
         }
 
         void catchResetEvent() {
-            KLog.i("refreshTop"," top  >>>  "+refreshIcon.getTop());
+            KLog.i("refreshTop", " top  >>>  " + refreshIcon.getTop());
             if (mValueAnimator == null) {
                 mValueAnimator = ValueAnimator.ofFloat(refreshPosition, 0);
                 mValueAnimator.setInterpolator(new LinearInterpolator());

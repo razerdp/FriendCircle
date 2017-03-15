@@ -4,6 +4,10 @@
 欢迎来到本项目，这个项目是一个尝试性项目，目的在于从无到有撸出一个微信朋友圈。</br>
 
 #####【简略更新日志】
+ - 2017/03/15
+    + fix [#42](https://github.com/razerdp/FriendCircle/issues/42)
+    + 修复RecyclerView没有滚动条的问题。
+
  - 2017/03/08
     + 解决浏览大图失败无法返回退出的问题[#41](https://github.com/razerdp/FriendCircle/issues/41)
 
@@ -14,15 +18,6 @@
     + UI微调
     + 发布朋友圈动态的activity预添加
     + TitleBarView稍作调整
-
- - 2017/02/28
-    + 优化刷新icon的逻辑
-    + 双击回顶部刷新
-
- - 2017/02/21
-    + 标题栏整合到控件中
-    + 预留发朋友圈的开关
-    + 双击回到顶部
 
  - 更多日志请看 → [更新日志](https://github.com/razerdp/FriendCircle/blob/master/UPDATE_LOG.md)
 
