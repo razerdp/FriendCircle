@@ -6,6 +6,11 @@
 ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp/FriendCircle/tree/main-dev)分支哦
 
 #####【简略更新日志】
+ - 2017/03/15
+    + fix [#42](https://github.com/razerdp/FriendCircle/issues/42)
+    + 修复RecyclerView没有滚动条的问题。
+    + RecyclerView的HeaderViewAdapter单独抽出。
+
  - 2017/03/08
     + 解决浏览大图失败无法返回退出的问题[#41](https://github.com/razerdp/FriendCircle/issues/41)
 
@@ -16,15 +21,6 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
     + UI微调
     + 发布朋友圈动态的activity预添加
     + TitleBarView稍作调整
-
- - 2017/02/28
-    + 优化刷新icon的逻辑
-    + 双击回顶部刷新
-
- - 2017/02/21
-    + 标题栏整合到控件中
-    + 预留发朋友圈的开关
-    + 双击回到顶部
 
  - 更多日志请看 → [更新日志](https://github.com/razerdp/FriendCircle/blob/master/UPDATE_LOG.md)
 
