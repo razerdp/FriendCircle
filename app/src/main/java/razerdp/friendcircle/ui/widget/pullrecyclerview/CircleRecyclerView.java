@@ -6,10 +6,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +20,12 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.socks.library.KLog;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import me.everything.android.ui.overscroll.IOverScrollDecor;
@@ -32,6 +34,8 @@ import me.everything.android.ui.overscroll.IOverScrollUpdateListener;
 import me.everything.android.ui.overscroll.VerticalOverScrollBounceEffectDecorator;
 import me.everything.android.ui.overscroll.adapters.RecyclerViewOverScrollDecorAdapter;
 import razerdp.friendcircle.R;
+import razerdp.friendcircle.ui.widget.pullrecyclerview.wrapperadapter.FixedViewInfo;
+import razerdp.friendcircle.ui.widget.pullrecyclerview.wrapperadapter.HeaderViewWrapperAdapter;
 import razerdp.friendcircle.utils.AnimUtils;
 import razerdp.friendcircle.utils.UIHelper;
 import razerdp.friendcircle.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
@@ -127,7 +131,9 @@ public class CircleRecyclerView extends FrameLayout {
         setBackground(background);
 
         if (recyclerView == null) {
-            recyclerView = new RecyclerView(context);
+            recyclerView = (RecyclerView) LayoutInflater.from(context).inflate(R.layout.view_recyclerview, this, false);
+            //new出来的recyclerview并没有滚动条，原因：没有走到View.initializeScrollbars(TypedArray a)
+            //recyclerView = new RecyclerView(context);
             recyclerView.setBackgroundColor(Color.WHITE);
             linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearLayoutManager);
@@ -231,10 +237,12 @@ public class CircleRecyclerView extends FrameLayout {
     }
 
     public void setAdapter(RecyclerView.Adapter adapter) {
-        if (adapter != null && !(adapter instanceof InnerWrapperHeaderViewRecyclerAdapter)) {
-            recyclerView.setAdapter(new InnerWrapperHeaderViewRecyclerAdapter(adapter));
-        } else {
-            recyclerView.setAdapter(adapter);
+        if (adapter != null) {
+            if (mHeaderViewInfos.size() > 0 || mFooterViewInfos.size() > 0) {
+                recyclerView.setAdapter(wrapHeaderRecyclerViewAdapterInternal(adapter, mHeaderViewInfos, mFooterViewInfos));
+            } else {
+                recyclerView.setAdapter(adapter);
+            }
         }
         initOverScroll();
     }
@@ -318,12 +326,10 @@ public class CircleRecyclerView extends FrameLayout {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
-            RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-            if (!(layoutManager instanceof LinearLayoutManager)) return;
-            if (currentStatus == REFRESHING) return;
-            if (onRefreshListener == null) return;
-
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+            //fix issue #42
+            //按照原来的习惯，我是当RecyclerView滑动停止状态下才检查是否要自动加在更多，但就出现了一个问题，如#42提出的，手指不离开屏幕一直滑动
+            //就会无法加载更多，在iOS朋友圈里，不离开屏幕是可以继续加载的，因此将这里的逻辑移动到了onScrolled，不对滑动状态进行监听了
+            /*if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 if (isScrollToBottom() && currentStatus != REFRESHING) {
                     onRefreshListener.onLoadMore();
                     KLog.i("loadmoretag", "loadmore");
@@ -331,6 +337,18 @@ public class CircleRecyclerView extends FrameLayout {
                     setCurrentStatus(REFRESHING);
                     footerView.onRefreshing();
                 }
+            }*/
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if (isScrollToBottom() && currentStatus != REFRESHING) {
+                onRefreshListener.onLoadMore();
+                KLog.i("loadmoretag", "loadmore");
+                pullMode = FROM_BOTTOM;
+                setCurrentStatus(REFRESHING);
+                footerView.onRefreshing();
             }
         }
     };
@@ -394,7 +412,7 @@ public class CircleRecyclerView extends FrameLayout {
         }
 
         void catchResetEvent() {
-            KLog.i("refreshTop"," top  >>>  "+refreshIcon.getTop());
+            KLog.i("refreshTop", " top  >>>  " + refreshIcon.getTop());
             if (mValueAnimator == null) {
                 mValueAnimator = ValueAnimator.ofFloat(refreshPosition, 0);
                 mValueAnimator.setInterpolator(new LinearInterpolator());
@@ -457,8 +475,8 @@ public class CircleRecyclerView extends FrameLayout {
      * <p>
      * 以Listview的headerView和footerView为模板做出的recyclerview的header和footer
      */
-    private LinkedList<FixedViewInfo> mHeaderViewInfos = new LinkedList<>();
-    private LinkedList<FixedViewInfo> mFooterViewInfos = new LinkedList<>();
+    private ArrayList<FixedViewInfo> mHeaderViewInfos = new ArrayList<>();
+    private ArrayList<FixedViewInfo> mFooterViewInfos = new ArrayList<>();
 
     /**
      * 不完美解决方法：添加一个header，则从-2开始减1
@@ -472,20 +490,33 @@ public class CircleRecyclerView extends FrameLayout {
     private static final int ITEM_VIEW_TYPE_FOOTER_START = -99;
 
     public void addHeaderView(View headerView) {
-        final FixedViewInfo info = new FixedViewInfo();
+        final FixedViewInfo info = new FixedViewInfo(headerView, ITEM_VIEW_TYPE_HEADER_START - mHeaderViewInfos.size());
         if (mHeaderViewInfos.size() == Math.abs(ITEM_VIEW_TYPE_FOOTER_START - ITEM_VIEW_TYPE_HEADER_START)) {
-            mHeaderViewInfos.removeLast();
+            mHeaderViewInfos.remove(mHeaderViewInfos.size() - 1);
         }
-        info.view = headerView;
-        info.itemViewType = ITEM_VIEW_TYPE_HEADER_START - mHeaderViewInfos.size();
         mHeaderViewInfos.add(info);
+        checkAndNotifyWrappedViewAdd(recyclerView.getAdapter(), info, true);
+
+    }
+
+    private void checkAndNotifyWrappedViewAdd(RecyclerView.Adapter adapter, FixedViewInfo info, boolean isHeader) {
+        //header和footer只能再setAdapter前使用，如果是set了之后再用，为何不add普通的viewholder而非要Headr或者footer呢
+        if (adapter != null) {
+            if (!(adapter instanceof HeaderViewWrapperAdapter)) {
+                adapter = wrapHeaderRecyclerViewAdapterInternal(adapter);
+                if (isHeader) {
+                    adapter.notifyItemInserted(((HeaderViewWrapperAdapter) adapter).findHeaderPosition(info.view));
+                } else {
+                    adapter.notifyItemInserted(((HeaderViewWrapperAdapter) adapter).findFooterPosition(info.view));
+                }
+            }
+        }
     }
 
     public void addFooterView(View footerView) {
-        final FixedViewInfo info = new FixedViewInfo();
-        info.view = footerView;
-        info.itemViewType = ITEM_VIEW_TYPE_FOOTER_START - mFooterViewInfos.size();
+        final FixedViewInfo info = new FixedViewInfo(footerView, ITEM_VIEW_TYPE_FOOTER_START - mFooterViewInfos.size());
         mFooterViewInfos.add(info);
+        checkAndNotifyWrappedViewAdd(recyclerView.getAdapter(), info, false);
     }
 
     public int getHeaderViewCount() {
@@ -497,167 +528,16 @@ public class CircleRecyclerView extends FrameLayout {
     }
 
 
-    private class FixedViewInfo {
-        /**
-         * The view to add to the list
-         */
-        public View view;
-        /**
-         * 因为onCreateViewHolder不包含位置信息，所以itemViewType需要包含位置信息
-         * <p>
-         * 位置信息方法：将位置添加到高位
-         */
-        public int itemViewType;
+    protected HeaderViewWrapperAdapter wrapHeaderRecyclerViewAdapterInternal(@NonNull RecyclerView.Adapter mWrappedAdapter,
+                                                                             ArrayList<FixedViewInfo> mHeaderViewInfos,
+                                                                             ArrayList<FixedViewInfo> mFooterViewInfos) {
+        return new HeaderViewWrapperAdapter(recyclerView, mWrappedAdapter, mHeaderViewInfos, mFooterViewInfos);
+
     }
 
-    private final class InnerWrapperHeaderViewRecyclerAdapter extends RecyclerView.Adapter {
-        private final RecyclerView.Adapter mAdapter;
-        private RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {
+    protected HeaderViewWrapperAdapter wrapHeaderRecyclerViewAdapterInternal(@NonNull RecyclerView.Adapter mWrappedAdapter) {
+        return wrapHeaderRecyclerViewAdapterInternal(mWrappedAdapter, mHeaderViewInfos, mFooterViewInfos);
 
-            @Override
-            public void onChanged() {
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onItemRangeChanged(int positionStart, int itemCount) {
-                notifyItemRangeChanged(positionStart + getHeadersCount(), itemCount);
-            }
-
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                notifyItemRangeInserted(positionStart + getHeadersCount(), itemCount);
-            }
-
-            @Override
-            public void onItemRangeRemoved(int positionStart, int itemCount) {
-                notifyItemRangeRemoved(positionStart + getHeadersCount(), itemCount);
-            }
-
-            @Override
-            public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-                int headerViewsCountCount = getHeadersCount();
-                notifyItemRangeChanged(fromPosition + headerViewsCountCount, toPosition + headerViewsCountCount + itemCount);
-            }
-        };
-
-        public InnerWrapperHeaderViewRecyclerAdapter(RecyclerView.Adapter mAdapter) {
-            this.mAdapter = mAdapter;
-            this.mAdapter.registerAdapterDataObserver(mDataObserver);
-        }
-
-        public int getHeadersCount() {
-            return mHeaderViewInfos.size();
-        }
-
-        public int getFootersCount() {
-            return mFooterViewInfos.size();
-        }
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            //header
-            if (onCreateHeaderViewHolder(viewType)) {
-                final int headerPosition = getHeaderPosition(viewType);
-                View headerView = mHeaderViewInfos.get(headerPosition).view;
-                checkAndSetRecyclerViewLayoutParams(headerView);
-                return new HeaderOrFooterViewHolder(headerView);
-            } else if (onCreateFooterViewHolder(viewType)) {
-                //footer
-                final int footerPosition = getFooterPosition(viewType);
-                View footerView = mFooterViewInfos.get(footerPosition).view;
-                checkAndSetRecyclerViewLayoutParams(footerView);
-                return new HeaderOrFooterViewHolder(footerView);
-            }
-            return mAdapter.onCreateViewHolder(parent, viewType);
-
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            int numHeaders = getHeadersCount();
-            int adapterCount = mAdapter.getItemCount();
-            if (position < numHeaders) {
-                //header
-                return;
-            } else if (position > (numHeaders + adapterCount - 1)) {
-                //footer
-                return;
-            } else {
-                int adjustPosition = position - numHeaders;
-                if (adjustPosition < adapterCount) {
-                    mAdapter.onBindViewHolder(holder, adjustPosition);
-                }
-            }
-
-        }
-
-        private void checkAndSetRecyclerViewLayoutParams(View child) {
-            if (child == null) return;
-            ViewGroup.LayoutParams p = child.getLayoutParams();
-            RecyclerView.LayoutParams params = null;
-            if (p == null) {
-                params = new RecyclerView.LayoutParams(new MarginLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                                                                                         ViewGroup.LayoutParams.WRAP_CONTENT)));
-            } else {
-                if (!(p instanceof RecyclerView.LayoutParams)) {
-                    params = recyclerView.getLayoutManager().generateLayoutParams(p);
-                }
-            }
-            child.setLayoutParams(params);
-
-        }
-
-        @Override
-        public int getItemCount() {
-            if (mAdapter != null) {
-                return getHeadersCount() + getFootersCount() + mAdapter.getItemCount();
-            } else {
-                return getHeadersCount() + getFootersCount();
-            }
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            int numHeaders = getHeadersCount();
-            if (mAdapter == null) return -1;
-            //header之后的view，返回adapter的itemType
-            int adjustPos = position - numHeaders;
-            int adapterItemCount = mAdapter.getItemCount();
-            if (position >= numHeaders) {
-                if (adjustPos < adapterItemCount) {
-                    //如果是adapter返回的范围内，则取adapter的itemviewtype
-                    return mAdapter.getItemViewType(adjustPos);
-                }
-            } else if (position < numHeaders) {
-                return mHeaderViewInfos.get(position).itemViewType;
-            }
-            return mFooterViewInfos.get(position - adapterItemCount - numHeaders).itemViewType;
-        }
-
-        private boolean onCreateHeaderViewHolder(int viewType) {
-            return mHeaderViewInfos.size() > 0 && viewType <= ITEM_VIEW_TYPE_HEADER_START && viewType > ITEM_VIEW_TYPE_FOOTER_START;
-        }
-
-        private boolean onCreateFooterViewHolder(int viewType) {
-            return mFooterViewInfos.size() > 0 && viewType <= ITEM_VIEW_TYPE_FOOTER_START;
-        }
-
-        private int getHeaderPosition(int viewType) {
-            return Math.abs(viewType) - Math.abs(ITEM_VIEW_TYPE_HEADER_START);
-        }
-
-        private int getFooterPosition(int viewType) {
-            return Math.abs(viewType) - Math.abs(ITEM_VIEW_TYPE_FOOTER_START);
-        }
-
-
-        private final class HeaderOrFooterViewHolder extends RecyclerView.ViewHolder {
-
-            public HeaderOrFooterViewHolder(View itemView) {
-                super(itemView);
-            }
-        }
     }
 
 
