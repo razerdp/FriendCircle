@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '25.0.0'
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
 
     defaultConfig {
         applicationId "razerdp.friendcircle"
-        minSdkVersion 17
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
     }
     buildTypes {
         release {
@@ -36,24 +36,10 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:design:23.4.0'
     compile 'org.greenrobot:eventbus:3.0.0'
-    //改为本地依赖
-    //    compile 'com.github.chrisbanes:PhotoView:1.3.1'
-    compile 'com.github.razerdp:BasePopup:v1.6.0'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile('com.github.bumptech.glide:okhttp3-integration:1.4.0') {
-        exclude group: 'glide-parent'
-        exclude group: 'com.squareup.okhttp3'
-    }
-    //bmob
-    compile 'cn.bmob.android:bmob-sdk:3.5.0'
-    //log
-    compile 'com.github.zhaokaiqiang.klog:library:1.5.0'
-    //over scroller helper
-    compile 'me.everything:overscroll-decor-android:1.0.3'
     //朋友圈图片控件
     compile 'com.github.razerdp:PhotoContents:v1.4.2'
-    compile project(':photoview')
+    compile project(':baselib')
+    compile project(':baseuilib')
+    compile project(':imagelib')
 }

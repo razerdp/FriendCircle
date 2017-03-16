@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="FriendCirclePtrListView">
+        <!--abslistview start-->
+        <!--=====================================-->
+        <attr name="listSelector"
+            format="color|reference"/>
+        <attr name="transcriptMode">
+            <enum name="disabled"
+                value="0"/>
+            <enum name="normal"
+                value="1"/>
+            <enum name="alwaysScroll"
+                value="2"/>
+        </attr>
+        <attr name="cacheColorHint"
+            format="color"/>
+        <attr name="fastScrollEnabled"
+            format="boolean"/>
+        <attr name="fastScrollStyle"
+            format="reference"/>
+        <attr name="smoothScrollbar"
+            format="boolean"/>
+        <attr name="choiceMode">
+            <enum name="none"
+                value="0"/>
+            <enum name="singleChoice"
+                value="1"/>
+            <enum name="multipleChoice"
+                value="2"/>
+            <enum name="multipleChoiceModal"
+                value="3"/>
+        </attr>
+        <!--=====================================-->
+        <!--abslistview end-->
+        <!--=====================================-->
+        <!--listview start-->
+        <attr name="listview_divider"
+            format="reference|color"/>
+        <attr name="dividerHeight"
+            format="dimension"/>
+        <attr name="overScrollHeader"
+            format="reference|color"/>
+        <attr name="overScrollFooter"
+            format="reference|color"/>
+    </declare-styleable>
+
+    <declare-styleable name="ClickShowMoreLayout">
+        <attr name="show_line"
+            format="integer"/>
+        <attr name="click_text"
+            format="string"/>
+        <attr name="text_color"
+            format="color"/>
+        <attr name="text_size"
+            format="dimension"/>
+    </declare-styleable>
+
+    <!--显示点赞控件-->
+    <declare-styleable name="PraiseWidget">
+        <attr name="click_bg_color"
+            format="color"/>
+        <attr name="font_color"
+            format="color"/>
+        <attr name="font_size"
+            format="dimension"/>
+        <attr name="like_icon"
+            format="reference"/>
+    </declare-styleable>
+
+    <!--圆形头像-->
+    <declare-styleable name="CircleImageView">
+        <attr name="civ_border_width" format="dimension" />
+        <attr name="civ_border_color" format="color" />
+        <attr name="civ_border_overlay" format="boolean" />
+        <attr name="civ_fill_color" format="color" />
+    </declare-styleable>
+
+    <!--ForceClickImageView-->
+    <declare-styleable name="ForceClickImageView">
+        <attr name="foregroundColor" format="reference|color"/>
+    </declare-styleable>
+
+
+    <!--饼图的进度条-->
+    <declare-styleable name="CircleProgressView">
+        <attr name="inner_circle_size" format="dimension"/>
+        <attr name="inner_circle_color" format="color"/>
+        <attr name="inner_text_color" format="color"/>
+        <attr name="inner_text_size" format="dimension"/>
+        <attr name="stroke_margin" format="dimension"/>
+        <attr name="stroke_color" format="color"/>
+        <attr name="stroke_width" format="dimension"/>
+        <attr name="current_progress" format="integer"/>
+    </declare-styleable>
+</resources>

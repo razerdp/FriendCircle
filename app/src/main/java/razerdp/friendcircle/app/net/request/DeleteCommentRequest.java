@@ -4,8 +4,8 @@ import android.text.TextUtils;
 
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.UpdateListener;
+import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.app.net.base.BaseRequestClient;
-import razerdp.friendcircle.mvp.model.entity.CommentInfo;
 
 /**
  * Created by 大灯泡 on 2016/12/13.

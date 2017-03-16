@@ -6,7 +6,8 @@ import android.view.animation.Animation;
 
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.utils.UIHelper;
+import razerdp.friendcircle.ui.utils.UIHelper;
+import razerdp.github.com.baseuilib.utils.ViewUtil;
 
 /**
  * Created by 大灯泡 on 2017/3/2.
@@ -29,7 +30,7 @@ public class SelectPhotoMenuPopup extends BasePopupWindow implements View.OnClic
         album = findViewById(R.id.album);
         cancel = findViewById(R.id.cancel);
 
-        UIHelper.setViewsClickListener(this, shoot, album, cancel);
+        ViewUtil.setViewsClickListener(this, shoot, album, cancel);
     }
 
     @Override
