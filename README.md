@@ -6,6 +6,10 @@
 ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp/FriendCircle/tree/main-dev)分支哦
 
 ##### 【简略更新日志】
+ - 2017/03/16
+    + 啦啦啦~又是一个大重构了咯
+    + 组件化，lib拆分
+
  - 2017/03/15
     + fix [#42](https://github.com/razerdp/FriendCircle/issues/42)
     + 修复RecyclerView没有滚动条的问题。

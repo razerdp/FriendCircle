@@ -5,7 +5,8 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
+import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
+
 
 /**
  * Created by 大灯泡 on 2016/11/3.

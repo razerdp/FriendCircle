@@ -16,12 +16,12 @@ import cn.bmob.v3.exception.BmobException;
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.manager.LocalHostManager;
+import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.net.OnResponseListener;
 import razerdp.friendcircle.app.net.request.RegisterRequest;
-import razerdp.friendcircle.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.ui.widget.common.LoadingView;
-import razerdp.friendcircle.utils.PreferenceHelper;
-import razerdp.friendcircle.utils.UIHelper;
+import razerdp.friendcircle.ui.utils.UIHelper;
+import razerdp.github.com.baseuilib.widget.common.LoadingView;
+import razerdp.friendcircle.helper.PreferenceHelper;
 
 /**
  * Created by 大灯泡 on 2016/12/14.

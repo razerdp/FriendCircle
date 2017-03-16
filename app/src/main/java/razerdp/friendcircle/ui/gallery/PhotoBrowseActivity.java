@@ -19,13 +19,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
-import razerdp.friendcircle.mvp.model.uimodel.PhotoBrowseInfo;
+import razerdp.friendcircle.app.mvp.model.uimodel.PhotoBrowseInfo;
+import razerdp.github.com.imagelib.imageload.ImageLoadMnanger;
 import razerdp.friendcircle.ui.base.BaseActivity;
-import razerdp.friendcircle.ui.widget.indicator.DotIndicator;
-import razerdp.friendcircle.ui.widget.imageview.GalleryPhotoView;
-import razerdp.friendcircle.ui.widget.common.HackyViewPager;
-import razerdp.friendcircle.utils.ToolUtil;
+import razerdp.github.com.baseuilib.widget.indicator.DotIndicator;
+import razerdp.github.com.baseuilib.widget.imageview.GalleryPhotoView;
+import razerdp.github.com.baseuilib.widget.common.HackyViewPager;
+import razerdp.github.com.baselibrary.utils.ToolUtil;
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 

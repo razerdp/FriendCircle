@@ -40,7 +40,7 @@
 
         <!--glide-->
         <meta-data
-            android:name="razerdp.friendcircle.app.glide.GlobalGlideConfiguration"
+            android:name="razerdp.github.com.imagelib.glide.GlobalGlideConfiguration"
             android:value="GlideModule"/>
     </application>
 

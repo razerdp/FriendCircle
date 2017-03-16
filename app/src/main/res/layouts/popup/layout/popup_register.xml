@@ -101,7 +101,7 @@
             android:background="@drawable/round_rect_background_trans_black"
             android:visibility="gone">
 
-            <razerdp.friendcircle.ui.widget.common.LoadingView
+            <razerdp.github.com.baseuilib.widget.common.LoadingView
                 android:id="@+id/view_loading"
                 android:layout_width="60dp"
                 android:layout_height="60dp"

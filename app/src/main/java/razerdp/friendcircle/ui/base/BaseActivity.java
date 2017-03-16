@@ -14,10 +14,10 @@ import com.socks.library.KLog;
 import java.util.List;
 
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.interfaces.MultiClickListener;
-import razerdp.friendcircle.ui.widget.common.TitleBar;
+import razerdp.github.com.baselibrary.interfaces.MultiClickListener;
+import razerdp.github.com.baseuilib.widget.common.TitleBar;
 
-import static razerdp.friendcircle.ui.widget.common.TitleBar.*;
+import static razerdp.github.com.baseuilib.widget.common.TitleBar.*;
 
 /**
  * Created by 大灯泡 on 2016/10/28.

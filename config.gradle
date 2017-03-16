@@ -1,0 +1,32 @@
+ext {
+
+    android = [
+            compileSdkVersion: 25,
+            buildToolsVersion: "25.0.0",
+            minSdkVersion    : 17,
+            targetSdkVersion : 25,
+            versionCode      : 5,
+            versionName      : "1.6"
+    ]
+
+    baselib = [
+            versionCode: 3,
+            versionName: "1.2"
+    ]
+
+    baseuilib = [
+            versionCode: 2,
+            versionName: "1.1"
+    ]
+
+    imagelib = [
+            versionCode: 1,
+            versionName: "1.0"
+    ]
+
+    dependencies = [
+            appcompat_v7: 'com.android.support:appcompat-v7:25.2.0',
+            design      : 'com.android.support:design:25.2.0',
+            support_util: 'com.android.support:support-core-utils:25.1.0'
+    ]
+}
