@@ -1,9 +1,13 @@
 package razerdp.friendcircle.app.manager;
 
-import razerdp.friendcircle.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.utils.PreferenceHelper;
+import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
+import razerdp.friendcircle.helper.PreferenceHelper;
 
-import static razerdp.friendcircle.utils.PreferenceHelper.Keys.*;
+import static razerdp.friendcircle.helper.PreferenceHelper.Keys.HOST_AVATAR;
+import static razerdp.friendcircle.helper.PreferenceHelper.Keys.HOST_COVER;
+import static razerdp.friendcircle.helper.PreferenceHelper.Keys.HOST_ID;
+import static razerdp.friendcircle.helper.PreferenceHelper.Keys.HOST_NAME;
+import static razerdp.friendcircle.helper.PreferenceHelper.Keys.HOST_NICK;
 
 /**
  * Created by 大灯泡 on 2016/10/28.

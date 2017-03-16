@@ -7,11 +7,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.ui.ActivityLauncher;
 import razerdp.friendcircle.ui.base.BaseActivity;
-import razerdp.friendcircle.ui.widget.common.TitleBar;
-import razerdp.friendcircle.utils.SwitchActivityTransitionUtil;
-import razerdp.friendcircle.utils.UIHelper;
+import razerdp.github.com.baseuilib.widget.common.TitleBar;
+import razerdp.github.com.baseuilib.utils.SwitchActivityTransitionUtil;
+import razerdp.friendcircle.ui.utils.UIHelper;
 
 /**
  * Created by 大灯泡 on 2017/3/1.

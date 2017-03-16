@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.imageload.ImageLoadMnanger;
-import razerdp.friendcircle.mvp.model.entity.MomentsInfo;
-import razerdp.friendcircle.mvp.model.uimodel.PhotoBrowseInfo;
+import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
+import razerdp.friendcircle.app.mvp.model.uimodel.PhotoBrowseInfo;
+import razerdp.github.com.imagelib.imageload.ImageLoadMnanger;
 import razerdp.friendcircle.ui.ActivityLauncher;
-import razerdp.friendcircle.ui.widget.imageview.ForceClickImageView;
+import razerdp.github.com.baseuilib.widget.imageview.ForceClickImageView;
 import razerdp.github.com.widget.PhotoContents;
 import razerdp.github.com.widget.adapter.PhotoContentsBaseAdapter;
 

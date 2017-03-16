@@ -15,9 +15,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.mvp.model.entity.CommentInfo;
-import razerdp.friendcircle.utils.StringUtil;
-import razerdp.friendcircle.utils.UIHelper;
+import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.ui.utils.UIHelper;
+import razerdp.github.com.baselibrary.utils.StringUtil;
 
 /**
  * Created by 大灯泡 on 2016/12/8.

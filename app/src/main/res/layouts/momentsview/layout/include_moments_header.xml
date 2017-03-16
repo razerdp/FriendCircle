@@ -28,7 +28,7 @@
         android:textStyle="bold"
         tools:text="羽翼君"/>
 
-    <razerdp.friendcircle.ui.widget.common.ClickShowMoreLayout
+    <razerdp.github.com.baseuilib.widget.common.ClickShowMoreLayout
         android:id="@+id/item_text_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

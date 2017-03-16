@@ -15,10 +15,10 @@ import android.widget.TextView;
 import java.util.List;
 
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.ui.widget.span.CustomImageSpan;
-import razerdp.friendcircle.ui.widget.span.SpannableStringBuilderCompat;
-import razerdp.friendcircle.ui.widget.span.ClickableSpanEx;
+import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
+import razerdp.github.com.baseuilib.widget.span.CustomImageSpan;
+import razerdp.github.com.baseuilib.widget.span.SpannableStringBuilderCompat;
+import razerdp.github.com.baseuilib.widget.span.ClickableSpanEx;
 
 /**
  * Created by 大灯泡 on 2016/2/21.

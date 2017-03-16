@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import razerdp.friendcircle.mvp.model.uimodel.PhotoBrowseInfo;
+import razerdp.friendcircle.app.mvp.model.uimodel.PhotoBrowseInfo;
 import razerdp.friendcircle.ui.gallery.PhotoBrowseActivity;
 import razerdp.friendcircle.ui.publish.PublishActivity;
-import razerdp.friendcircle.utils.SwitchActivityTransitionUtil;
+import razerdp.github.com.baseuilib.utils.SwitchActivityTransitionUtil;
 
 /**
  * Created by 大灯泡 on 2017/3/1.
