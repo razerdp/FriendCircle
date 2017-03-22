@@ -4,7 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context=".ui.FriendCircleDemoActivity">
+              tools:context=".activity.FriendCircleDemoActivity">
 
     <razerdp.github.com.baseuilib.widget.common.TitleBar
         android:id="@id/title_bar_view"

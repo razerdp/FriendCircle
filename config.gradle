@@ -24,6 +24,11 @@ ext {
             versionName: "1.0"
     ]
 
+    photoselect = [
+            versionCode: 1,
+            versionName: "1.0"
+    ]
+
     dependencies = [
             appcompat_v7: 'com.android.support:appcompat-v7:25.2.0',
             design      : 'com.android.support:design:25.2.0',

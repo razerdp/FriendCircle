@@ -9,8 +9,8 @@ import cn.bmob.v3.listener.SaveListener;
 import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.app.net.base.BaseRequestClient;
 import razerdp.github.com.baselibrary.utils.StringUtil;
+import razerdp.github.com.net.base.BaseRequestClient;
 
 import static razerdp.friendcircle.app.mvp.model.entity.CommentInfo.*;
 

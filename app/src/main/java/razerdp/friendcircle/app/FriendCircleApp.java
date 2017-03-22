@@ -15,18 +15,12 @@ import razerdp.friendcircle.config.Define;
  */
 
 public class FriendCircleApp extends Application {
-    private static Context CONTEXT;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        FriendCircleApp.CONTEXT = getApplicationContext();
         initBmob();
         initLocalHostInfo();
-    }
-
-    public static Context getAppContext() {
-        return CONTEXT;
     }
 
     private void initBmob() {

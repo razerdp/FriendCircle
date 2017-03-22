@@ -11,8 +11,8 @@ import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baseuilib.R;
-import razerdp.github.com.baseuilib.utils.DimenUtils;
 
 /**
  * Created by 大灯泡 on 2016/2/19.
@@ -79,7 +79,7 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                                                                          ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.topMargin = DimenUtils.dipToPx(getContext(),10f);
+        params.topMargin = UIHelper.dipToPx(10f);
         mClickToShow.setLayoutParams(params);
         mClickToShow.setOnClickListener(this);
 

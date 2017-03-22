@@ -8,6 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import razerdp.friendcircle.app.FriendCircleApp;
+import razerdp.github.com.baselibrary.base.AppContext;
 
 import static razerdp.friendcircle.helper.PreferenceHelper.Keys.*;
 
@@ -33,7 +34,7 @@ public enum PreferenceHelper {
     }
 
 
-    private SharedPreferences sharedPreferences = FriendCircleApp.getAppContext().getSharedPreferences(PERFERENCE_NAME, Context.MODE_PRIVATE);
+    private SharedPreferences sharedPreferences = AppContext.getAppContext().getSharedPreferences(PERFERENCE_NAME, Context.MODE_PRIVATE);
     private static final String PERFERENCE_NAME = "FriendCircleData";
 
     /**

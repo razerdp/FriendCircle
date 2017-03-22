@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.FriendCircleDemoActivity">
+        <activity android:name=".activity.FriendCircleDemoActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -25,14 +25,14 @@
         </activity>
 
         <activity
-            android:name=".ui.gallery.PhotoBrowseActivity"
+            android:name=".activity.gallery.PhotoBrowseActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Transparent"/>
 
         <activity
-            android:name=".ui.publish.PublishActivity"
+            android:name=".activity.publish.PublishActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
@@ -40,7 +40,7 @@
 
         <!--glide-->
         <meta-data
-            android:name="razerdp.github.com.imagelib.glide.GlobalGlideConfiguration"
+            android:name="razerdp.github.com.baselibrary.imageloader.glide.GlobalGlideConfiguration"
             android:value="GlideModule"/>
     </application>
 

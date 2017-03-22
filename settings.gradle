@@ -1,1 +1,1 @@
-include ':app', ':baselib', ':baseuilib', ':photoview', ':imagelib'
+include ':app', ':baselib', ':baseuilib', ':photoview', ':network', ':photoselect'

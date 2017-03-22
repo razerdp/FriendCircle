@@ -10,7 +10,7 @@ import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo.MomentsFields;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.app.net.base.BaseRequestClient;
+import razerdp.github.com.net.base.BaseRequestClient;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
 
 import static razerdp.friendcircle.app.mvp.model.entity.CommentInfo.CommentFields.AUTHOR_USER;

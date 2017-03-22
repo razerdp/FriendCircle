@@ -6,6 +6,17 @@
 ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp/FriendCircle/tree/main-dev)分支哦
 
 ##### 【简略更新日志】
+ - 2017/03/22
+    + 组件化大致完成，目前的结构将会改为如下结构：
+        - app：即工程主入口
+        - baselib:主要的library，公用工具，base方法等
+        - baseuilib:主要是自定义控件存放，baseadapter等
+        - network:封装bmob的网络依赖
+        - photoview：本来可以放入baseuilib的，但人家有开源协议，所以要遵守哦，因此一整个module保留
+        - photoselect:图片选择模块，这个模块是目前的工作进程，可以单独运行该模块，但要记得去`gradle.properties`把`isModule`设置为true哦
+
+    + 下一步，将会是继续开发朋友圈啦啦啦~应该会是做这个图片选择模块吧，做完后就是到发布模块了
+
  - 2017/03/16
     + 啦啦啦~又是一个大重构了咯
     + 组件化，lib拆分
@@ -14,17 +25,6 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
     + fix [#42](https://github.com/razerdp/FriendCircle/issues/42)
     + 修复RecyclerView没有滚动条的问题。
     + RecyclerView的HeaderViewAdapter单独抽出。
-
- - 2017/03/08
-    + 解决浏览大图失败无法返回退出的问题[#41](https://github.com/razerdp/FriendCircle/issues/41)
-
- - 2017/03/02
-    + 增加popup
-
- - 2017/03/01
-    + UI微调
-    + 发布朋友圈动态的activity预添加
-    + TitleBarView稍作调整
 
  - 更多日志请看 → [更新日志](https://github.com/razerdp/FriendCircle/blob/master/UPDATE_LOG.md)
 

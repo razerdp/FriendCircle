@@ -17,11 +17,11 @@ import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.app.net.OnResponseListener;
 import razerdp.friendcircle.app.net.request.RegisterRequest;
-import razerdp.friendcircle.ui.utils.UIHelper;
+import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baseuilib.widget.common.LoadingView;
 import razerdp.friendcircle.helper.PreferenceHelper;
+import razerdp.github.com.net.base.OnResponseListener;
 
 /**
  * Created by 大灯泡 on 2016/12/14.

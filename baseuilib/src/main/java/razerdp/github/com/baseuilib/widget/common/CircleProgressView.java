@@ -13,8 +13,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 
+import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baseuilib.R;
-import razerdp.github.com.baseuilib.utils.DimenUtils;
 
 
 /**
@@ -89,13 +89,13 @@ public class CircleProgressView extends View implements View.OnClickListener {
     }
 
     private void initDefaultValueWhenEmpty(Context context) {
-        if (circleSize == 0) circleSize = DimenUtils.dipToPx(context, 30f);
+        if (circleSize == 0) circleSize = UIHelper.dipToPx(30f);
         if (textSize == 0) textSize = 16;
         if (circleColor == 0) circleColor = 0xafffffff;
         if (textColor == 0) textColor = Color.WHITE;
-        if (strokeWidth == 0) strokeWidth = DimenUtils.dipToPx(context, 2f);
+        if (strokeWidth == 0) strokeWidth = UIHelper.dipToPx(2f);
         if (strokeColor == 0) strokeColor = 0xafffffff;
-        if (strokeMargin == 0) strokeMargin = DimenUtils.dipToPx(context, 5f);
+        if (strokeMargin == 0) strokeMargin = UIHelper.dipToPx(5f);
     }
 
     private void buildAnimation() {
@@ -291,8 +291,7 @@ public class CircleProgressView extends View implements View.OnClickListener {
                 lastThreadId = 0;
                 if (getAnimation() != null) clearAnimation();
                 if (defaultWidth != 0) {
-                    getLayoutParams().width = defaultWidth * 3 >= DimenUtils.getScreenWidthPix(
-                            getContext()) ? DimenUtils.getScreenWidthPix(getContext()) : defaultWidth * 3;
+                    getLayoutParams().width = defaultWidth * 3 >= UIHelper.getScreenWidthPix(getContext()) ? UIHelper.getScreenWidthPix(getContext()) : defaultWidth * 3;
                     setLayoutParams(getLayoutParams());
                 }
                 textPaint.setTextSize(30);

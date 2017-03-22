@@ -7,7 +7,7 @@ import android.text.TextPaint;
 import android.view.View;
 
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.ui.utils.UIHelper;
+import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baseuilib.widget.span.ClickableSpanEx;
 
 /**

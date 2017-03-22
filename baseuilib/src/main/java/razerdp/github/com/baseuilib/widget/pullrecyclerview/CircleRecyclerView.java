@@ -32,13 +32,13 @@ import me.everything.android.ui.overscroll.IOverScrollStateListener;
 import me.everything.android.ui.overscroll.IOverScrollUpdateListener;
 import me.everything.android.ui.overscroll.VerticalOverScrollBounceEffectDecorator;
 import me.everything.android.ui.overscroll.adapters.RecyclerViewOverScrollDecorAdapter;
+import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baseuilib.R;
-import razerdp.github.com.baseuilib.utils.DimenUtils;
 import razerdp.github.com.baseuilib.widget.pullrecyclerview.wrapperadapter.FixedViewInfo;
 import razerdp.github.com.baseuilib.widget.pullrecyclerview.wrapperadapter.HeaderViewWrapperAdapter;
-import razerdp.github.com.baselibrary.utils.AnimUtils;
+import razerdp.github.com.baselibrary.utils.ui.AnimUtils;
 import razerdp.github.com.baseuilib.widget.pullrecyclerview.interfaces.OnRefreshListener2;
-import razerdp.github.com.baseuilib.utils.ViewOffsetHelper;
+import razerdp.github.com.baselibrary.utils.ui.ViewOffsetHelper;
 
 import static me.everything.android.ui.overscroll.IOverScrollState.STATE_BOUNCE_BACK;
 import static me.everything.android.ui.overscroll.IOverScrollState.STATE_DRAG_END_SIDE;
@@ -146,12 +146,12 @@ public class CircleRecyclerView extends FrameLayout {
             refreshIcon.setImageResource(R.drawable.rotate_icon);
         }
         FrameLayout.LayoutParams iconParam = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        iconParam.leftMargin = DimenUtils.dipToPx(getContext(),12);
+        iconParam.leftMargin = UIHelper.dipToPx(12);
 
         addView(recyclerView, RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT);
         addView(refreshIcon, iconParam);
 
-        refreshPosition = DimenUtils.dipToPx(getContext(),90);
+        refreshPosition = UIHelper.dipToPx(90);
 
         iconObserver = new InnerRefreshIconObserver(refreshIcon, refreshPosition);
 

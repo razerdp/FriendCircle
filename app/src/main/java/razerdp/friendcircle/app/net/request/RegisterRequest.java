@@ -3,7 +3,7 @@ package razerdp.friendcircle.app.net.request;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.app.net.base.BaseRequestClient;
+import razerdp.github.com.net.base.BaseRequestClient;
 import razerdp.github.com.baselibrary.utils.EncryUtil;
 import razerdp.github.com.baselibrary.utils.StringUtil;
 

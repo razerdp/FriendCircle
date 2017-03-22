@@ -16,10 +16,9 @@ import com.socks.library.KLog;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baseuilib.R;
-import razerdp.github.com.baseuilib.utils.DimenUtils;
-import razerdp.github.com.baseuilib.utils.ResourceUtil;
-import razerdp.github.com.baseuilib.utils.ViewUtil;
+import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.widget.indicator.DotWidget;
 
 /**
@@ -75,7 +74,7 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
         tx_right = (TextView) findViewById(R.id.tx_title_bar_right);
 
         title = (TextView) findViewById(R.id.tx_title);
-        this.setBackgroundColor(ResourceUtil.getResourceColor(getContext(),R.color.action_bar_bg));
+        this.setBackgroundColor(UIHelper.getResourceColor(R.color.action_bar_bg));
 
         ll_right.setOnClickListener(null);
         ll_right.setVisibility(INVISIBLE);
@@ -227,7 +226,7 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
         if (leftDotWidget == null) {
             leftDotWidget = new DotWidget(getContext(), iv_left);
             leftDotWidget.setDotColor(Color.RED);
-            leftDotWidget.setDotSize(DimenUtils.dipToPx(getContext(),3f));
+            leftDotWidget.setDotSize(UIHelper.dipToPx(3f));
             leftDotWidget.setMode(DotWidget.Mode.CIRCLE);
         }
         if (isShow) {

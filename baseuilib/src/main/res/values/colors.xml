@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="colorPrimary">#232426</color>
     <color name="colorPrimaryDark">#232426</color>
     <color name="colorAccent">#FF4081</color>
@@ -32,7 +33,7 @@
     <color name="wechat_green_bg_click">#5eec67</color>
     <color name="comment_click_bg">#CCD2DF</color>
     <color name="delete_click_bg">#EAEAEA</color>
-    
+
     <!--图片点击颜色-->
     <color name="img_foregroundColor">#85414141</color>
 

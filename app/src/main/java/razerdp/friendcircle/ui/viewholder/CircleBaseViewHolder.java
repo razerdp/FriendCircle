@@ -20,7 +20,7 @@ import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.mvp.presenter.MomentPresenter;
-import razerdp.friendcircle.ui.utils.UIHelper;
+import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.SimpleObjectPool;
 import razerdp.github.com.baselibrary.utils.TimeUtil;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
@@ -30,7 +30,7 @@ import razerdp.github.com.baseuilib.widget.common.ClickShowMoreLayout;
 import razerdp.friendcircle.ui.widget.popup.CommentPopup;
 import razerdp.friendcircle.ui.widget.popup.DeleteCommentPopup;
 import razerdp.friendcircle.ui.widget.praisewidget.PraiseWidget;
-import razerdp.github.com.imagelib.imageload.ImageLoadMnanger;
+import razerdp.github.com.baselibrary.imageloader.ImageLoadMnanger;
 
 /**
  * Created by 大灯泡 on 2016/11/1.

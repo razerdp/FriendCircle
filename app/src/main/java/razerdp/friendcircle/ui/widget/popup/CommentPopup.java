@@ -19,7 +19,7 @@ import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.ui.utils.UIHelper;
+import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.thirdpart.WeakHandler;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
 

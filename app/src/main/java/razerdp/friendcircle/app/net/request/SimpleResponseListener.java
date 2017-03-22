@@ -1,8 +1,8 @@
 package razerdp.friendcircle.app.net.request;
 
 import cn.bmob.v3.exception.BmobException;
-import razerdp.friendcircle.app.net.OnResponseListener;
-import razerdp.friendcircle.ui.utils.UIHelper;
+import razerdp.github.com.baselibrary.utils.ui.UIHelper;
+import razerdp.github.com.net.base.OnResponseListener;
 
 /**
  * Created by 大灯泡 on 2016/10/28.

@@ -12,7 +12,7 @@ import cn.bmob.v3.listener.UpdateListener;
 import razerdp.friendcircle.app.mvp.model.entity.MomentContent;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.app.net.base.BaseRequestClient;
+import razerdp.github.com.net.base.BaseRequestClient;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
 
 /**

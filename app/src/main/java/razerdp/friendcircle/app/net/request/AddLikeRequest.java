@@ -6,7 +6,7 @@ import cn.bmob.v3.listener.UpdateListener;
 import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.app.net.base.BaseRequestClient;
+import razerdp.github.com.net.base.BaseRequestClient;
 
 /**
  * Created by 大灯泡 on 2016/12/6.

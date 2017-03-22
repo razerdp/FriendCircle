@@ -1,4 +1,16 @@
 # 更新日志
+## 2017/03/22
+  - 组件化大致完成，目前的结构将会改为如下结构：
+    + app：即工程主入口
+    + baselib:主要的library，公用工具，base方法等
+    + baseuilib:主要是自定义控件存放，baseadapter等
+    + network:封装bmob的网络依赖
+    + photoview：本来可以放入baseuilib的，但人家有开源协议，所以要遵守哦，因此一整个module保留
+    + photoselect:图片选择模块，这个模块是目前的工作进程，可以单独运行该模块，但要记得去`gradle.properties`把`isModule`设置为true哦
+
+  - 下一步，将会是继续开发朋友圈啦啦啦~应该会是做这个图片选择模块吧，做完后就是到发布模块了
+
+
 ## 2017/03/16
   - 组件化：
     + 公共工具类移动到baselib

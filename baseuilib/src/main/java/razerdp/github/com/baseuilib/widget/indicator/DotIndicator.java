@@ -11,7 +11,7 @@ import com.socks.library.KLog;
 import java.util.ArrayList;
 import java.util.List;
 
-import razerdp.github.com.baseuilib.utils.DimenUtils;
+import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 
 
 /**
@@ -76,11 +76,11 @@ public class DotIndicator extends LinearLayout {
         for (int i = 0; i < mDotsNum; i++) {
             DotView dotView = new DotView(context);
             dotView.setSelected(false);
-            LinearLayout.LayoutParams params = new LayoutParams(DimenUtils.dipToPx(getContext(),DOT_SIZE), DimenUtils.dipToPx(getContext(),DOT_SIZE));
+            LinearLayout.LayoutParams params = new LayoutParams(UIHelper.dipToPx(DOT_SIZE), UIHelper.dipToPx(DOT_SIZE));
             if (i == 0) {
                 params.leftMargin = 0;
             } else {
-                params.leftMargin = DimenUtils.dipToPx(getContext(),6f);
+                params.leftMargin = UIHelper.dipToPx(6f);
             }
             addView(dotView, params);
             mDotViews.add(dotView);

@@ -2,9 +2,9 @@ package razerdp.friendcircle.app.mvp.model;
 
 import cn.bmob.v3.exception.BmobException;
 import razerdp.friendcircle.app.mvp.callback.OnLikeChangeCallback;
-import razerdp.friendcircle.app.net.OnResponseListener;
 import razerdp.friendcircle.app.net.request.AddLikeRequest;
 import razerdp.friendcircle.app.net.request.UnLikeRequest;
+import razerdp.github.com.net.base.OnResponseListener;
 
 /**
  * Created by 大灯泡 on 2016/12/7.

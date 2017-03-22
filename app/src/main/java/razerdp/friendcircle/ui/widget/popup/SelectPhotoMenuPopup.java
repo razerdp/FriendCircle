@@ -6,8 +6,7 @@ import android.view.animation.Animation;
 
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.ui.utils.UIHelper;
-import razerdp.github.com.baseuilib.utils.ViewUtil;
+import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 
 /**
  * Created by 大灯泡 on 2017/3/2.
