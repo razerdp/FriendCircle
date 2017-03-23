@@ -6,6 +6,9 @@
 ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp/FriendCircle/tree/main-dev)分支哦
 
 ##### 【简略更新日志】
+ - 2017/03/23
+    + 开始photoselect的初步搭建
+
  - 2017/03/22
     + 组件化大致完成，目前的结构将会改为如下结构：
         - app：即工程主入口
