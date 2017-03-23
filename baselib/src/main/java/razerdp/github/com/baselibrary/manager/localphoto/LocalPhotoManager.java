@@ -124,6 +124,7 @@ public enum LocalPhotoManager {
         progressRunnable.reset();
         isAsync = false;
         callFinish(listener);
+        // TODO: 2017/3/23 把结果序列化到file
     }
 
     private String getThumbPath(String[] whereQuery) {
