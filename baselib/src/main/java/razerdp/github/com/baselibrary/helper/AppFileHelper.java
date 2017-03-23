@@ -1,6 +1,9 @@
 package razerdp.github.com.baselibrary.helper;
 
+import android.os.Environment;
 import android.text.TextUtils;
+
+import com.socks.library.KLog;
 
 import java.io.File;
 
@@ -27,7 +30,10 @@ public class AppFileHelper {
         if (TextUtils.isEmpty(storagePath)) {
             storagePath = FileUtil.getStoragePath(AppContext.getAppContext(), FileUtil.hasSDCard());
             if (TextUtils.isEmpty(storagePath)) {
-                storagePath = FileUtil.checkFileSeparator(AppContext.getAppContext().getFilesDir().getAbsolutePath());
+                storagePath = FileUtil.checkFileSeparator(Environment.getExternalStorageDirectory().getAbsolutePath());
+                if (TextUtils.isEmpty(storagePath)) {
+                    storagePath = FileUtil.checkFileSeparator(AppContext.getAppContext().getFilesDir().getAbsolutePath());
+                }
             }
         }
 
@@ -49,7 +55,10 @@ public class AppFileHelper {
     }
 
     private static void checkAndMakeDir(File file) {
-        if (!file.exists()) file.mkdirs();
+        if (!file.exists()) {
+            KLog.i("mkdirs  >>>  " + file.getAbsolutePath());
+            file.mkdirs();
+        }
     }
 
     public static String getAppStoragePath() {

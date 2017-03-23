@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.socks.library.KLog;
 
 import razerdp.github.com.baselibrary.base.AppContext;
+import razerdp.github.com.baselibrary.manager.localphoto.LPException;
+import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
 import razerdp.github.com.baselibrary.utils.FileUtil;
 import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
@@ -36,6 +38,22 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photoselect);
         init();
+        LocalPhotoManager.INSTANCE.scanImg(new LocalPhotoManager.OnScanListener() {
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+
+            @Override
+            public void onError(LPException e) {
+
+            }
+        });
     }
 
     @Override

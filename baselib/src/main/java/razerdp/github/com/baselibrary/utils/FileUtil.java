@@ -525,7 +525,7 @@ public class FileUtil {
         try {
             storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
             Method getVolumeList = mStorageManager.getClass().getMethod("getVolumeList");
-            Method getPath = storageVolumeClazz.getMethod("getUrl");
+            Method getPath = storageVolumeClazz.getMethod("getPath");
             Method isRemovable = storageVolumeClazz.getMethod("isRemovable");
             Object result = getVolumeList.invoke(mStorageManager);
             final int length = Array.getLength(result);
