@@ -12,10 +12,11 @@ import android.widget.TextView;
 
 import com.socks.library.KLog;
 
-import razerdp.github.com.baselibrary.base.AppContext;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import razerdp.github.com.baselibrary.manager.localphoto.LPException;
 import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
-import razerdp.github.com.baselibrary.utils.FileUtil;
 import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
@@ -38,19 +39,22 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photoselect);
         init();
-        LocalPhotoManager.INSTANCE.scanImg(new LocalPhotoManager.OnScanListener() {
+        LocalPhotoManager.INSTANCE.scanImgAsync(new LocalPhotoManager.OnScanListener() {
             @Override
             public void onStart() {
+                KLog.i();
 
             }
 
             @Override
             public void onFinish() {
-
+                LinkedHashMap<String, List<LocalPhotoManager.ImageInfo>> info = LocalPhotoManager.INSTANCE.getLocalImages();
+                KLog.i();
             }
 
             @Override
             public void onError(LPException e) {
+                KLog.e(e);
 
             }
         });
