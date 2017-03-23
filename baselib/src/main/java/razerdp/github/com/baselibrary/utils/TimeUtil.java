@@ -3,6 +3,9 @@ package razerdp.github.com.baselibrary.utils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+
+import razerdp.github.com.baselibrary.R;
 
 /**
  * Created by 大灯泡 on 2016/11/1.
@@ -11,53 +14,46 @@ import java.util.Date;
  */
 
 public class TimeUtil {
-    private static StringBuffer result = new StringBuffer();
 
-    public static String getTimeString(long milliseconds) {
-        result.delete(0, result.length());
+    public final static String FORMAT_DATE_ALL = "yyyy-MM-dd HH:mm:ss";
+    public final static String FORMAT_DATE = "yyyy-MM-dd";
+    public final static String FORMAT_TIME = "hh:mm";
+    public final static String FORMAT_DATE_TIME = "yyyy-MM-dd hh:mm";
+    public final static String FORMAT_MONTH_DAY_TIME = "MM月dd日 hh:mm";
+    private static SimpleDateFormat sdf = new SimpleDateFormat();
+    private static final int YEAR = 365 * 24 * 60 * 60;// 年
+    private static final int MONTH = 30 * 24 * 60 * 60;// 月
+    private static final int DAY = 24 * 60 * 60;// 天
+    private static final int HOUR = 60 * 60;// 小时
+    private static final int MINUTE = 60;// 分钟
 
-        long time = System.currentTimeMillis() - milliseconds;
-        long mill = (long) Math.ceil(time / 1000);//秒前
+    public static String getTimeString(long timestamp) {
+        long currentTime = System.currentTimeMillis();
+        long timeGap = (currentTime - timestamp) / 1000;// 与现在时间相差秒数
+        String timeStr = null;
+        if (timeGap > YEAR) {
+            timeStr = formatTimeFromResource(R.string.format_time_year, (int) (timeGap / YEAR));
+        } else if (timeGap > MONTH) {
+            timeStr = formatTimeFromResource(R.string.format_time_month, (int) (timeGap / MONTH));
 
-        long minute = (long) Math.ceil(time / 60 / 1000.0f);// 分钟前
-
-        long hour = (long) Math.ceil(time / 60 / 60 / 1000.0f);// 小时
-
-        long day = (long) Math.ceil(time / 24 / 60 / 60 / 1000.0f);// 天前
-
-        if (day - 1 > 0 && day - 1 < 30) {
-            result.append(day + "天");
-        } else if (day - 1 >= 30) {
-            result.append(Math.round((day - 1) / 30) + "个月");
-        } else if (hour - 1 > 0) {
-            if (hour >= 24) {
-                result.append("1天");
-            } else {
-                result.append(hour + "小时");
-            }
-        } else if (minute - 1 > 0) {
-            if (minute == 60) {
-                result.append("1小时");
-            } else {
-                result.append(minute + "分钟");
-            }
-        } else if (mill - 1 > 0) {
-            if (mill == 60) {
-                result.append("1分钟");
-            } else {
-                result.append(mill + "秒");
-            }
-        } else {
-            result.append("刚刚");
+        } else if (timeGap > DAY) {// 1天以上
+            timeStr = formatTimeFromResource(R.string.format_time_day, (int) (timeGap / DAY));
+        } else if (timeGap > HOUR) {// 1小时-24小时
+            timeStr = formatTimeFromResource(R.string.format_time_hour, (int) (timeGap / HOUR));
+        } else if (timeGap > MINUTE) {// 1分钟-59分钟
+            timeStr = formatTimeFromResource(R.string.format_time_minute, (int) (timeGap / MINUTE));
+        } else {// 1秒钟-59秒钟
+            timeStr = StringUtil.getResourceString(R.string.format_time_sec);
         }
-        if (!result.toString().equals("刚刚")) {
-            result.append("前");
-        }
-        return result.toString();
+        return timeStr;
+    }
+
+    private static String formatTimeFromResource(int resource, int time) {
+        return StringUtil.getResourceStringAndFormat(resource, time);
     }
 
 
-    private static SimpleDateFormat dataFormate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static SimpleDateFormat dataFormate = new SimpleDateFormat(FORMAT_DATE_ALL, Locale.getDefault());
 
     public static String getTimeStringFromBmob(String time) {
         //格式:2016-10-28 18:48:23

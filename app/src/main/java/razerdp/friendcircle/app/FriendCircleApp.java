@@ -7,6 +7,7 @@ import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
 import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.config.Define;
+import razerdp.github.com.baselibrary.helper.AppFileHelper;
 
 /**
  * Created by 大灯泡 on 2016/10/26.
@@ -35,6 +36,7 @@ public class FriendCircleApp extends Application {
                 .setFileExpiration(1800)
                 .build();
         Bmob.initialize(config);
+        AppFileHelper.initStoryPath();
     }
 
     private void initLocalHostInfo() {

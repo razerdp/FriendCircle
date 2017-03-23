@@ -6,6 +6,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.bitmap_recycle.LruBitmapPool;
+import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory;
 import com.bumptech.glide.load.engine.cache.LruResourceCache;
 import com.bumptech.glide.load.engine.cache.MemorySizeCalculator;
 import com.bumptech.glide.module.GlideModule;
@@ -13,6 +14,7 @@ import com.bumptech.glide.request.target.ViewTarget;
 import com.socks.library.KLog;
 
 import razerdp.github.com.baselibrary.R;
+import razerdp.github.com.baselibrary.helper.AppFileHelper;
 
 
 /**
@@ -25,6 +27,7 @@ public class GlobalGlideConfiguration implements GlideModule {
         //解决setTag问题
         ViewTarget.setTagId(R.id.glide_tag_id);
         //磁盘缓存
+        builder.setDiskCache(new DiskLruCacheFactory(AppFileHelper.getAppCachePath(), 50 * 1024 * 1024));
         builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);
         //内存缓存
         MemorySizeCalculator calculator = new MemorySizeCalculator(context);
@@ -35,13 +38,10 @@ public class GlobalGlideConfiguration implements GlideModule {
         int customBitmapPoolSize = defaultBitmapPoolSize;
 
 
-        //------------------------------------------temp-----------------------------------------------test
-
-        KLog.i("poolSize",
-               "bitmapPoolSize >>>>>   "
-                       + android.text.format.Formatter.formatFileSize(context, customBitmapPoolSize)
-                       + "          memorySize>>>>>>>>   " +
-                       android.text.format.Formatter.formatFileSize(context, customMemoryCacheSize));
+        KLog.i("poolSize", "bitmapPoolSize >>>>>   "
+                + android.text.format.Formatter.formatFileSize(context, customBitmapPoolSize)
+                + "          memorySize>>>>>>>>   " +
+                android.text.format.Formatter.formatFileSize(context, customMemoryCacheSize));
 
         builder.setMemoryCache(new LruResourceCache(customMemoryCacheSize));
         builder.setBitmapPool(new LruBitmapPool(customBitmapPoolSize));
