@@ -6,6 +6,11 @@
 ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp/FriendCircle/tree/main-dev)分支哦
 
 ##### 【简略更新日志】
+ - 2017/03/24
+    + 扫描系统媒体库Manager完成
+    + 图片选择页面的扫描进度完成
+    + 增加媒体库图片更新的监听
+
  - 2017/03/23
     + 开始photoselect的初步搭建
     + baselib的本地图片扫面完成

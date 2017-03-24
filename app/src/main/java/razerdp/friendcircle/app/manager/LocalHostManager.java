@@ -1,13 +1,13 @@
 package razerdp.friendcircle.app.manager;
 
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.helper.PreferenceHelper;
+import razerdp.github.com.baselibrary.helper.AppSetting;
 
-import static razerdp.friendcircle.helper.PreferenceHelper.Keys.HOST_AVATAR;
-import static razerdp.friendcircle.helper.PreferenceHelper.Keys.HOST_COVER;
-import static razerdp.friendcircle.helper.PreferenceHelper.Keys.HOST_ID;
-import static razerdp.friendcircle.helper.PreferenceHelper.Keys.HOST_NAME;
-import static razerdp.friendcircle.helper.PreferenceHelper.Keys.HOST_NICK;
+import static razerdp.github.com.baselibrary.helper.AppSetting.HOST_AVATAR;
+import static razerdp.github.com.baselibrary.helper.AppSetting.HOST_COVER;
+import static razerdp.github.com.baselibrary.helper.AppSetting.HOST_ID;
+import static razerdp.github.com.baselibrary.helper.AppSetting.HOST_NAME;
+import static razerdp.github.com.baselibrary.helper.AppSetting.HOST_NICK;
 
 /**
  * Created by 大灯泡 on 2016/10/28.
@@ -22,11 +22,12 @@ public enum LocalHostManager {
     private UserInfo localHostInfo = new UserInfo();
 
     public boolean init() {
-        localHostInfo.setUsername((String) PreferenceHelper.INSTANCE.getData(HOST_NAME, "razerdp"));
-        localHostInfo.setAvatar((String) PreferenceHelper.INSTANCE.getData(HOST_AVATAR, "http://upload.jianshu.io/users/upload_avatars/684042/bd1b2f796e3a.jpg?imageMogr/thumbnail/90x90/quality/100"));
-        localHostInfo.setNick((String) PreferenceHelper.INSTANCE.getData(HOST_NICK, "羽翼君"));
-        localHostInfo.setObjectId((String) PreferenceHelper.INSTANCE.getData(HOST_ID, "MMbKLCCU"));
-        localHostInfo.setCover((String) PreferenceHelper.INSTANCE.getData(HOST_COVER, "http://d.hiphotos.baidu.com/zhidao/pic/item/bf096b63f6246b601ffeb44be9f81a4c510fa218.jpg"));
+        localHostInfo.setUsername(AppSetting.loadStringPreferenceByKey(HOST_NAME, "razerdp"));
+        localHostInfo.setAvatar(AppSetting.loadStringPreferenceByKey(HOST_AVATAR,
+                                                                     "http://upload.jianshu.io/users/upload_avatars/684042/bd1b2f796e3a.jpg?imageMogr/thumbnail/90x90/quality/100"));
+        localHostInfo.setNick(AppSetting.loadStringPreferenceByKey(HOST_NICK, "羽翼君"));
+        localHostInfo.setObjectId(AppSetting.loadStringPreferenceByKey(HOST_ID, "MMbKLCCU"));
+        localHostInfo.setCover(AppSetting.loadStringPreferenceByKey(HOST_COVER, "http://d.hiphotos.baidu.com/zhidao/pic/item/bf096b63f6246b601ffeb44be9f81a4c510fa218.jpg"));
         return true;
     }
 
@@ -60,12 +61,12 @@ public enum LocalHostManager {
 
     public void updateLocalHost(UserInfo userInfo) {
         if (userInfo != null) {
-            PreferenceHelper.INSTANCE.saveData(HOST_NAME, userInfo.getUsername());
+            AppSetting.saveStringPreferenceByKey(HOST_NAME, userInfo.getUsername());
             //头像和壁纸暂时强制使用开发者头像
-            PreferenceHelper.INSTANCE.saveData(HOST_AVATAR, "http://upload.jianshu.io/users/upload_avatars/684042/bd1b2f796e3a.jpg?imageMogr/thumbnail/90x90/quality/100");
-            PreferenceHelper.INSTANCE.saveData(HOST_COVER, "http://d.hiphotos.baidu.com/zhidao/pic/item/bf096b63f6246b601ffeb44be9f81a4c510fa218.jpg");
-            PreferenceHelper.INSTANCE.saveData(HOST_NICK, userInfo.getNick());
-            PreferenceHelper.INSTANCE.saveData(HOST_ID, userInfo.getUserid());
+            AppSetting.saveStringPreferenceByKey(HOST_AVATAR, "http://upload.jianshu.io/users/upload_avatars/684042/bd1b2f796e3a.jpg?imageMogr/thumbnail/90x90/quality/100");
+            AppSetting.saveStringPreferenceByKey(HOST_COVER, "http://d.hiphotos.baidu.com/zhidao/pic/item/bf096b63f6246b601ffeb44be9f81a4c510fa218.jpg");
+            AppSetting.saveStringPreferenceByKey(HOST_NICK, userInfo.getNick());
+            AppSetting.saveStringPreferenceByKey(HOST_ID, userInfo.getUserid());
 
             this.localHostInfo.setNick(userInfo.getNick());
             this.localHostInfo.setObjectId(userInfo.getUserid());

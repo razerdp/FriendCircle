@@ -20,7 +20,7 @@ import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.net.request.RegisterRequest;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baseuilib.widget.common.LoadingView;
-import razerdp.friendcircle.helper.PreferenceHelper;
+import razerdp.github.com.baselibrary.helper.AppSetting;
 import razerdp.github.com.net.base.OnResponseListener;
 
 /**
@@ -86,7 +86,7 @@ public class RegisterPopup extends BasePopupWindow implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.cancel:
-                PreferenceHelper.INSTANCE.saveData(PreferenceHelper.Keys.CHECK_REGISTER, true);
+                AppSetting.saveBooleanPreferenceByKey(AppSetting.CHECK_REGISTER, true);
                 if (onRegisterSuccess != null) onRegisterSuccess.onSuccess(LocalHostManager.INSTANCE.getDeveloperHostUser());
                 dismiss();
                 break;
@@ -109,14 +109,14 @@ public class RegisterPopup extends BasePopupWindow implements View.OnClickListen
                 new RegisterRequest().setUsername(username).setPassword(pass).setNick(nick).setOnResponseListener(new OnResponseListener<UserInfo>() {
                     @Override
                     public void onStart(int requestType) {
-                        PreferenceHelper.INSTANCE.saveData(PreferenceHelper.Keys.CHECK_REGISTER, true);
+                        AppSetting.saveBooleanPreferenceByKey(AppSetting.CHECK_REGISTER, true);
                         vh.rl_loading.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onSuccess(UserInfo response, int requestType) {
                         dismiss();
-                        PreferenceHelper.INSTANCE.saveData(PreferenceHelper.Keys.CHECK_REGISTER, true);
+                        AppSetting.saveBooleanPreferenceByKey(AppSetting.CHECK_REGISTER, true);
                         LocalHostManager.INSTANCE.updateLocalHost(response);
                         vh.rl_loading.setVisibility(View.GONE);
                         if (onRegisterSuccess != null) onRegisterSuccess.onSuccess(response);

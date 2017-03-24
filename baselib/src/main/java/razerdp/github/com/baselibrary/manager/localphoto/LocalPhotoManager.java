@@ -35,8 +35,10 @@ import razerdp.github.com.baselibrary.utils.GsonUtil;
 public enum LocalPhotoManager {
     INSTANCE;
     private static final String TAG = "LocalPhotoManager";
-
     public static final String LOCAL_FILE_NAME = "LocalPhotoFile";
+    private static final String ALL_PHOTO_TITLE = "所有照片";
+
+    private WeakHandler handler = new WeakHandler();
 
     boolean isScaning;
     long lastScanTime;
@@ -104,7 +106,7 @@ public enum LocalPhotoManager {
         final String[] thumbWhereQuery = new String[1];
         List<ImageInfo> allImageInfoLists = new ArrayList<>();
         final int cursorCount = cursor.getCount();
-        sALBUM.put("所有图片", allImageInfoLists);
+        sALBUM.put(ALL_PHOTO_TITLE, allImageInfoLists);
         cursor.moveToFirst();
         while (cursor.moveToNext()) {
             int imgId = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID));
@@ -133,17 +135,17 @@ public enum LocalPhotoManager {
                 imageInfoList.add(imageInfo);
             }
             if (isProgressListener) {
-                callProgress((OnScanProgresslistener) listener, isAsync, cursor.getPosition() / cursorCount);
+                callProgress((OnScanProgresslistener) listener, isAsync, (int) (cursor.getPosition() * 100.0f / cursorCount));
             }
         }
         lastScanTime = System.currentTimeMillis();
         cursor.close();
         isScaning = false;
         progressRunnable.reset();
-        isAsync = false;
         if (!callImmediately) {
             callFinish(listener);
         }
+        isAsync = false;
         //事实上io流的速度也是杠杠的，所以这里可以采取写入到本地文件的方法来存储扫描结果
         ThreadPoolManager.execute(new WriteToLocalRunnable());
     }
@@ -198,26 +200,57 @@ public enum LocalPhotoManager {
         return new LinkedHashMap<>(sALBUM);
     }
 
+    public String getAllPhotoTitle() {
+        return ALL_PHOTO_TITLE;
+    }
+
     public void writeToLocal() {
         KLog.i(TAG, "图库记录写入本地");
         ThreadPoolManager.execute(new WriteToLocalRunnable());
     }
 
-    private void callStart(OnScanListener listener) {
+    private void callStart(final OnScanListener listener) {
         if (listener != null) {
-            listener.onStart();
+            if (isAsync) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onStart();
+                    }
+                });
+            } else {
+                listener.onStart();
+            }
         }
     }
 
-    private void callFinish(OnScanListener listener) {
+    private void callFinish(final OnScanListener listener) {
         if (listener != null) {
-            listener.onFinish();
+            if (isAsync) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onFinish();
+                    }
+                });
+            } else {
+                listener.onFinish();
+            }
         }
     }
 
-    private void callError(OnScanListener listener, String message, Exception e) {
+    private void callError(final OnScanListener listener, final String message, final Exception e) {
         if (listener != null) {
-            listener.onError(new LPException(message, e));
+            if (isAsync) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onError(new LPException(message, e));
+                    }
+                });
+            } else {
+                listener.onError(new LPException(message, e));
+            }
         }
     }
 
@@ -235,15 +268,6 @@ public enum LocalPhotoManager {
         }
     }
 
-
-    private WeakHandler handler = new WeakHandler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            return false;
-        }
-    });
-
-
     public interface OnScanListener {
         void onStart();
 
@@ -252,8 +276,8 @@ public enum LocalPhotoManager {
         void onError(LPException e);
     }
 
-    public abstract class OnScanProgresslistener implements OnScanListener {
-        abstract void onProgress(int progress);
+    public abstract static class OnScanProgresslistener implements OnScanListener {
+        public abstract void onProgress(int progress);
     }
 
     private static class ProgressRunnable implements Runnable {
@@ -386,7 +410,7 @@ public enum LocalPhotoManager {
             KLog.i(TAG, "查询到  >>  " + cursor.getCount() + " 条数据");
             // FIXME: 2017/3/24 没错。。。他喵的又是上面的重复步骤，有空把它抽取出来
             final String[] thumbWhereQuery = new String[1];
-            List<ImageInfo> allImageInfoLists = sALBUM.get("所有图片");
+            List<ImageInfo> allImageInfoLists = sALBUM.get(ALL_PHOTO_TITLE);
             cursor.moveToFirst();
             while (cursor.moveToNext()) {
                 int imgId = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID));
@@ -403,7 +427,9 @@ public enum LocalPhotoManager {
                 List<ImageInfo> imageInfoList = sALBUM.get(albumName);
                 ImageInfo imageInfo = new ImageInfo(imgPath, thumbImgPath, albumName, dateTaken, orientation);
                 try {
-                    allImageInfoLists.add(imageInfo.clone());
+                    if (allImageInfoLists != null) {
+                        allImageInfoLists.add(imageInfo.clone());
+                    }
                 } catch (CloneNotSupportedException e) {
                     e.printStackTrace();
                     KLog.e(e);

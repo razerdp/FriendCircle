@@ -12,9 +12,7 @@ import android.widget.TextView;
 
 import com.socks.library.KLog;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-
+import razerdp.github.com.baselibrary.helper.AppSetting;
 import razerdp.github.com.baselibrary.manager.localphoto.LPException;
 import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
 import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
@@ -22,6 +20,7 @@ import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.base.BaseTitleBarActivity;
 import razerdp.github.com.baseuilib.widget.common.TitleBar;
+import razerdp.github.com.baseuilib.widget.popup.PopupProgress;
 
 /**
  * Created by 大灯泡 on 2017/3/22.
@@ -40,24 +39,6 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photoselect);
         init();
-        LocalPhotoManager.INSTANCE.scanImgAsync(new LocalPhotoManager.OnScanListener() {
-            @Override
-            public void onStart() {
-                KLog.i(TAG, "onStart");
-
-            }
-
-            @Override
-            public void onFinish() {
-                KLog.i(TAG, "onFinish");
-            }
-
-            @Override
-            public void onError(LPException e) {
-                KLog.e(TAG, e);
-
-            }
-        });
     }
 
     @Override
@@ -68,11 +49,10 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
     private void init() {
         initTitle();
         initData();
-        initView();
     }
 
     private void initTitle() {
-        setTitle("所有照片");
+        setTitle(LocalPhotoManager.INSTANCE.getAllPhotoTitle());
         setTitleMode(TitleBar.MODE_BOTH);
         setTitleLeftText("返回");
         setTitleRightText("取消");
@@ -80,6 +60,75 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
     }
 
     private void initData() {
+        boolean hasScanImg = AppSetting.loadBooleanPreferenceByKey(AppSetting.APP_HAS_SCAN_IMG, false);
+        if (!hasScanImg) {
+            scanImgSyncWithProgress();
+        } else {
+            scanImgSync();
+        }
+    }
+
+    private void scanImgSync() {
+        LocalPhotoManager.INSTANCE.scanImgAsync(new LocalPhotoManager.OnScanListener() {
+
+            @Override
+            public void onStart() {
+                KLog.i(TAG, "onStart");
+
+            }
+
+            @Override
+            public void onFinish() {
+                KLog.i(TAG, "onFinish");
+                initView();
+            }
+
+            @Override
+            public void onError(LPException e) {
+                KLog.e(TAG, e);
+
+            }
+        });
+    }
+
+    private void scanImgSyncWithProgress() {
+        AppSetting.saveBooleanPreferenceByKey(AppSetting.APP_HAS_SCAN_IMG, true);
+        final PopupProgress popupProgress = new PopupProgress(this);
+        popupProgress.setProgressTips("正在扫描系统相册...");
+        //popup在activity没初始化完成前可能无法展示，因此需要延迟一点。。。
+        getWindow().getDecorView().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                LocalPhotoManager.INSTANCE.scanImgAsync(new LocalPhotoManager.OnScanProgresslistener() {
+
+                    @Override
+                    public void onStart() {
+                        popupProgress.showPopupWindow();
+                        KLog.i(TAG, "onStart");
+                    }
+
+                    @Override
+                    public void onProgress(int progress) {
+                        popupProgress.setProgress(progress);
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        KLog.i(TAG, "onFinish");
+                        AppSetting.saveBooleanPreferenceByKey(AppSetting.APP_HAS_SCAN_IMG, true);
+                        popupProgress.dismiss();
+                        initView();
+                    }
+
+                    @Override
+                    public void onError(LPException e) {
+                        KLog.e(TAG, e);
+                        UIHelper.ToastMessage(e.getMessage());
+                        popupProgress.dismiss();
+                    }
+                });
+            }
+        }, 500);
 
     }
 

@@ -51,4 +51,7 @@
     <color name="text_black">#1A1A1A</color>
     <color name="text_gray">#bbc2ca</color>
 
+    <!--popup-->
+    <color name="popup_progress_bg">#bc24292e</color>
+
 </resources>

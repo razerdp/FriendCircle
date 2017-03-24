@@ -28,7 +28,7 @@ import razerdp.friendcircle.app.mvp.view.IMomentView;
 import razerdp.friendcircle.app.net.request.MomentsRequest;
 import razerdp.friendcircle.app.net.request.SimpleResponseListener;
 import razerdp.friendcircle.config.MomentsType;
-import razerdp.friendcircle.helper.PreferenceHelper;
+import razerdp.github.com.baselibrary.helper.AppSetting;
 import razerdp.friendcircle.ui.adapter.CircleMomentsAdapter;
 import razerdp.friendcircle.activity.publish.PublishActivity;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
@@ -369,7 +369,7 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
 
 
     private void checkRegister() {
-        boolean hasCheckRegister = (boolean) PreferenceHelper.INSTANCE.getData(PreferenceHelper.Keys.CHECK_REGISTER, false);
+        boolean hasCheckRegister = (boolean) AppSetting.loadBooleanPreferenceByKey(AppSetting.CHECK_REGISTER, false);
         if (!hasCheckRegister) {
             RegisterPopup registerPopup = new RegisterPopup(FriendCircleDemoActivity.this);
             registerPopup.setOnRegisterSuccess(new RegisterPopup.onRegisterSuccess() {
