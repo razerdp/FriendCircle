@@ -8,11 +8,13 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.socks.library.KLog;
 
 import razerdp.github.com.baselibrary.helper.AppSetting;
+import razerdp.github.com.baselibrary.imageloader.ImageLoadMnanger;
 import razerdp.github.com.baselibrary.manager.localphoto.LPException;
 import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
 import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
@@ -20,6 +22,7 @@ import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.base.BaseTitleBarActivity;
 import razerdp.github.com.baseuilib.widget.common.TitleBar;
+import razerdp.github.com.baseuilib.widget.imageview.CheckImageView;
 import razerdp.github.com.baseuilib.widget.popup.PopupProgress;
 
 /**
@@ -137,6 +140,10 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
         vh.mPhotoEdit.setOnClickListener(onPhotoEditClickListener);
         vh.mPhotoPreview.setOnClickListener(onPhotoPreviewClickListener);
         vh.mFinish.setOnClickListener(onFinishClickListener);
+
+        CheckImageView iv = (CheckImageView) findViewById(R.id.test_iv);
+        ImageLoadMnanger.INSTANCE.loadImage(iv,
+                                            "http://upload.jianshu.io/users/upload_avatars/684042/b8ca2d97-f136-4bc5-8a4c-9f903842580a.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240");
     }
 
 
