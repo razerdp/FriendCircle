@@ -28,7 +28,7 @@
     <color name="normal_font_color">#1A1A1A</color>
 
     <!--other-->
-    <color name="wechat_green_bg">#10d21c</color>
+    <color name="wechat_green_bg">#10ba0c</color>
     <color name="wechat_green_transparent">#7a10d21c</color>
     <color name="wechat_green_bg_click">#5eec67</color>
     <color name="comment_click_bg">#CCD2DF</color>

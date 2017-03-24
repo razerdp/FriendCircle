@@ -3,7 +3,9 @@ package razerdp.github.com.baseuilib.widget.imageview;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.nfc.Tag;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -45,9 +47,8 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
 
     private void init(Context context) {
         checkDrawable = new CheckDrawable(context);
+        checkDrawable.setCallback(this);
         checkBounds = new Rect();
-        //drawable要draw需要关闭硬件加速
-        setLayerType(View.LAYER_TYPE_SOFTWARE,null);
 
         setOnTouchListener(new OnTouchListener() {
             int x = 0;
@@ -63,7 +64,7 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
                     case MotionEvent.ACTION_UP:
                         if (checkBounds.contains(x, y)) {
                             isSelected = checkDrawable.toggleSelected();
-                            KLog.i(TAG,"toggle");
+                            KLog.i(TAG, "toggle");
                             invalidate();
                             return true;
                         }
@@ -80,10 +81,18 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
         super.onDraw(canvas);
         checkAndInitCheckDrawBounds();
 
-        KLog.i("draw","外部的draw");
         checkDrawable.setBounds(checkBounds);
         checkDrawable.setSelected(isSelected);
         checkDrawable.draw(canvas);
+    }
+
+    @Override
+    public void invalidateDrawable(@NonNull Drawable dr) {
+        if (dr == checkDrawable) {
+            invalidate();
+        } else {
+            super.invalidateDrawable(dr);
+        }
     }
 
     private void checkAndInitCheckDrawBounds() {

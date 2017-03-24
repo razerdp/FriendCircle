@@ -14,6 +14,7 @@ import com.socks.library.KLog;
 
 import razerdp.github.com.baselibrary.utils.ui.AnimUtils;
 import razerdp.github.com.baseuilib.R;
+import razerdp.github.com.baseuilib.interpolator.SpringInterpolator;
 
 /**
  * Created by 大灯泡 on 2017/3/24.
@@ -32,12 +33,14 @@ public class CheckDrawable extends BitmapDrawable {
     private boolean needAnima;
     private boolean isPlayingAnima;
 
+    private int animaRadius = 0;
+
     public CheckDrawable(Context context) {
         super(context.getResources(), BitmapFactory.decodeResource(context.getResources(), CHECK_ICON));
         initPaint(context);
         animator = ValueAnimator.ofFloat(1.0f);
-        animator.setDuration(500);
-        animator.setInterpolator(new BounceInterpolator());
+        animator.setDuration(1000);
+        animator.setInterpolator(new SpringInterpolator());
     }
 
     private void initPaint(Context context) {
@@ -50,7 +53,7 @@ public class CheckDrawable extends BitmapDrawable {
         strokePaint.setStyle(Paint.Style.STROKE);
 
         fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        fillPaint.setColor(0xff10d21c);
+        fillPaint.setColor(context.getResources().getColor(R.color.wechat_green_bg));
         fillPaint.setStyle(Paint.Style.FILL);
     }
 
@@ -79,7 +82,6 @@ public class CheckDrawable extends BitmapDrawable {
             drawNormal(canvas);
         }
         super.draw(canvas);
-
     }
 
     private void drawSelected(final Canvas canvas) {
@@ -92,9 +94,9 @@ public class CheckDrawable extends BitmapDrawable {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         float animaValue = (float) animation.getAnimatedValue();
-                        KLog.i(TAG, animaValue, radius * animaValue);
-                        KLog.i("draw", "内部的draw");
-                        canvas.drawCircle(cx, cy, radius * animaValue, fillPaint);
+                        animaRadius = (int) (radius * animaValue);
+                        KLog.i(TAG, animaRadius);
+                        invalidateSelf();
                     }
                 });
                 animator.addListener(new AnimUtils.SimpleAnimatorListener() {
@@ -109,6 +111,7 @@ public class CheckDrawable extends BitmapDrawable {
                         needAnima = false;
                         animator.removeAllUpdateListeners();
                         animation.removeListener(this);
+                        animaRadius = 0;
                         KLog.i(TAG, "selected  >>  " + select);
                     }
 
@@ -118,11 +121,16 @@ public class CheckDrawable extends BitmapDrawable {
                         needAnima = false;
                         animator.removeAllUpdateListeners();
                         animation.removeListener(this);
+                        animaRadius = 0;
 
                         KLog.i(TAG, "selected  >>  " + select);
                     }
                 });
                 animator.start();
+            } else {
+                if (animaRadius > 0) {
+                    canvas.drawCircle(cx, cy, animaRadius, fillPaint);
+                }
             }
         } else {
             canvas.drawCircle(cx, cy, radius, fillPaint);
