@@ -10,10 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <razerdp.github.com.baseuilib.widget.imageview.CheckImageView
-        android:id="@+id/test_iv"
-        android:layout_width="150dp"
-        android:layout_height="150dp"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/photo_content"
@@ -22,7 +18,7 @@
         android:layout_weight="1"
         android:background="@color/white"
         android:scrollbars="vertical"
-        android:visibility="gone"/>
+        />
 
     <View style="@style/base_divider"/>
 

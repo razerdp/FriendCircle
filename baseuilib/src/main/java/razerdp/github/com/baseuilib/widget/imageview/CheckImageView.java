@@ -32,7 +32,7 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
     private int checkDrawableSize = UIHelper.dipToPx(25);
     private static final int CHECK_DRAWABLE_MARGIN = UIHelper.dipToPx(5);
     private Rect checkBounds;
-
+    private boolean canSelect = true;
     private ColorFilter mask;
 
     public CheckImageView(Context context) {
@@ -67,7 +67,7 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
                         y = (int) event.getY();
                         return checkBounds.contains(x, y);
                     case MotionEvent.ACTION_UP:
-                        if (checkBounds.contains(x, y)) {
+                        if (checkBounds.contains(x, y) && canSelect) {
                             isSelected = checkDrawable.toggleSelected();
                             KLog.i(TAG, "toggle");
                             invalidate();
@@ -82,12 +82,14 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
 
 
     public void setCanSelect(boolean canSelect) {
-        if (getDrawable() == null) return;
-        if (!canSelect) {
-            getDrawable().setColorFilter(Color.argb(75, 255, 255, 255), PorterDuff.Mode.SRC_ATOP);
-        } else {
-            getDrawable().clearColorFilter();
+        this.canSelect = canSelect;
+        if (getDrawable() != null) {
+            invalidate();
         }
+    }
+
+    public boolean getCanSelect() {
+        return canSelect;
     }
 
 
@@ -95,7 +97,13 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         checkAndInitCheckDrawBounds();
-
+        if (getDrawable() != null) {
+            if (!canSelect) {
+                getDrawable().setColorFilter(Color.argb(75, 255, 255, 255), PorterDuff.Mode.SRC_ATOP);
+            } else {
+                getDrawable().clearColorFilter();
+            }
+        }
         checkDrawable.setBounds(checkBounds);
         checkDrawable.setSelected(isSelected);
         checkDrawable.draw(canvas);

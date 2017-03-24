@@ -1,8 +1,10 @@
 package razerdp.github.com.photoselect;
 
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.Animation;
@@ -13,6 +15,10 @@ import android.widget.TextView;
 
 import com.socks.library.KLog;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import razerdp.github.com.adapter.PhotoSelectAdapter;
 import razerdp.github.com.baselibrary.helper.AppSetting;
 import razerdp.github.com.baselibrary.imageloader.ImageLoadMnanger;
 import razerdp.github.com.baselibrary.manager.localphoto.LPException;
@@ -21,6 +27,7 @@ import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.base.BaseTitleBarActivity;
+import razerdp.github.com.baseuilib.baseadapter.itemdecoration.GridItemDecoration;
 import razerdp.github.com.baseuilib.widget.common.TitleBar;
 import razerdp.github.com.baseuilib.widget.imageview.CheckImageView;
 import razerdp.github.com.baseuilib.widget.popup.PopupProgress;
@@ -36,6 +43,8 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
     private static final String TAG = "PhotoSelectActivity";
 
     private ViewHolder vh;
+
+    private PhotoSelectAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -141,9 +150,12 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
         vh.mPhotoPreview.setOnClickListener(onPhotoPreviewClickListener);
         vh.mFinish.setOnClickListener(onFinishClickListener);
 
-        CheckImageView iv = (CheckImageView) findViewById(R.id.test_iv);
-        ImageLoadMnanger.INSTANCE.loadImage(iv,
-                                            "http://upload.jianshu.io/users/upload_avatars/684042/b8ca2d97-f136-4bc5-8a4c-9f903842580a.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240");
+        LinkedHashMap<String, List<LocalPhotoManager.ImageInfo>> info = LocalPhotoManager.INSTANCE.getLocalImages();
+        adapter = new PhotoSelectAdapter(this, info.get(LocalPhotoManager.INSTANCE.getAllPhotoTitle()));
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 4);
+        vh.mPhotoContent.setLayoutManager(gridLayoutManager);
+        vh.mPhotoContent.addItemDecoration(new GridItemDecoration(UIHelper.dipToPx(5)));
+        vh.mPhotoContent.setAdapter(adapter);
     }
 
 
