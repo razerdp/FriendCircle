@@ -12,6 +12,8 @@ import razerdp.github.com.baseuilib.widget.common.TitleBar.OnTitleBarClickListen
 
 /**
  * Created by 大灯泡 on 2017/3/22.
+ *
+ * 拥有titlebar的act基类
  */
 
 public abstract class BaseTitleBarActivity extends BaseActivity {

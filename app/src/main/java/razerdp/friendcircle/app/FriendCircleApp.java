@@ -7,6 +7,9 @@ import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
 import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.config.Define;
+import razerdp.github.com.baselibrary.helper.AppFileHelper;
+import razerdp.github.com.baselibrary.manager.ThreadPoolManager;
+import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
 
 /**
  * Created by 大灯泡 on 2016/10/26.
@@ -21,6 +24,8 @@ public class FriendCircleApp extends Application {
         super.onCreate();
         initBmob();
         initLocalHostInfo();
+        AppFileHelper.initStoryPath();
+        LocalPhotoManager.INSTANCE.registerContentObserver(null);
     }
 
     private void initBmob() {
@@ -39,5 +44,11 @@ public class FriendCircleApp extends Application {
 
     private void initLocalHostInfo() {
         LocalHostManager.INSTANCE.init();
+    }
+
+    @Override
+    public void onTerminate() {
+        LocalPhotoManager.INSTANCE.writeToLocal();
+        super.onTerminate();
     }
 }

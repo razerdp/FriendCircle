@@ -2,6 +2,9 @@ package debug;
 
 import android.app.Application;
 
+import razerdp.github.com.baselibrary.helper.AppFileHelper;
+import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
+
 /**
  * Created by 大灯泡 on 2017/3/22.
  * <p>
@@ -9,4 +12,16 @@ import android.app.Application;
  */
 
 public class ModuleApplication extends Application {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        AppFileHelper.initStoryPath();
+        LocalPhotoManager.INSTANCE.registerContentObserver(null);
+    }
+
+    @Override
+    public void onTerminate() {
+        LocalPhotoManager.INSTANCE.writeToLocal();
+        super.onTerminate();
+    }
 }

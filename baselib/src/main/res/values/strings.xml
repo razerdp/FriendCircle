@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">BaseLibrary</string>
+
+    <!--other-->
+    <string name="format_time_year" formatted="false">%s年前</string>
+    <string name="format_time_month" formatted="false">%s个月前</string>
+    <string name="format_time_day" formatted="false">%s天前</string>
+    <string name="format_time_hour" formatted="false">%s小时前</string>
+    <string name="format_time_minute" formatted="false">%s分钟前</string>
+    <string name="format_time_sec">刚刚</string>
 </resources>

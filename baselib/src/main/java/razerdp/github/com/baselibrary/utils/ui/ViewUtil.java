@@ -15,4 +15,26 @@ public class ViewUtil {
             }
         }
     }
+
+    public static void setViewsVisible(int visible, View... views) {
+        for (View view : views) {
+            if (view.getVisibility() != visible) {
+                view.setVisibility(visible);
+            }
+        }
+    }
+
+    public static void setViewsEnable(boolean enable, View... views) {
+        for (View view : views) {
+            view.setEnabled(enable);
+        }
+    }
+
+    public static void setViewsEnableAndClickable(boolean enable,boolean clickable, View... views) {
+        for (View view : views) {
+            view.setEnabled(enable);
+            view.setClickable(clickable);
+        }
+    }
+
 }

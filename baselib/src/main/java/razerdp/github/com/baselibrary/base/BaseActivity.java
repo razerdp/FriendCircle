@@ -47,8 +47,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * run in {@link BaseActivity#onCreate(Bundle)}
-     * 如果有intent，则需要处理这个intent
+     * run in {@link BaseActivity#onCreate(Bundle)} but before {@link AppCompatActivity#setContentView(int)}
+     * <p>
+     * <p>
+     * 如果有intent，则需要处理这个intent（该方法在onCreate里面执行，但在setContentView之前调用）
      *
      * @param intent
      * @return false:关闭activity
