@@ -2,6 +2,9 @@ package razerdp.github.com.baseuilib.widget.imageview;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.nfc.Tag;
@@ -29,6 +32,8 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
     private int checkDrawableSize = UIHelper.dipToPx(25);
     private static final int CHECK_DRAWABLE_MARGIN = UIHelper.dipToPx(5);
     private Rect checkBounds;
+
+    private ColorFilter mask;
 
     public CheckImageView(Context context) {
         super(context);
@@ -73,6 +78,16 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
                 return false;
             }
         });
+    }
+
+
+    public void setCanSelect(boolean canSelect) {
+        if (getDrawable() == null) return;
+        if (!canSelect) {
+            getDrawable().setColorFilter(Color.argb(75, 255, 255, 255), PorterDuff.Mode.SRC_ATOP);
+        } else {
+            getDrawable().clearColorFilter();
+        }
     }
 
 
