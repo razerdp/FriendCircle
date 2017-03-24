@@ -31,6 +31,7 @@ import razerdp.github.com.baseuilib.widget.common.TitleBar;
 
 // TODO: 2017/3/23 扫描相册
 public class PhotoSelectActivity extends BaseTitleBarActivity {
+    private static final String TAG = "PhotoSelectActivity";
 
     private ViewHolder vh;
 
@@ -42,19 +43,18 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
         LocalPhotoManager.INSTANCE.scanImgAsync(new LocalPhotoManager.OnScanListener() {
             @Override
             public void onStart() {
-                KLog.i();
+                KLog.i(TAG, "onStart");
 
             }
 
             @Override
             public void onFinish() {
-                LinkedHashMap<String, List<LocalPhotoManager.ImageInfo>> info = LocalPhotoManager.INSTANCE.getLocalImages();
-                KLog.i();
+                KLog.i(TAG, "onFinish");
             }
 
             @Override
             public void onError(LPException e) {
-                KLog.e(e);
+                KLog.e(TAG, e);
 
             }
         });

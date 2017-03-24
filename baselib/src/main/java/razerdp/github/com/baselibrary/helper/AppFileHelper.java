@@ -17,8 +17,11 @@ import razerdp.github.com.baselibrary.utils.FileUtil;
  */
 
 public class AppFileHelper {
+    private static final String TAG = "AppFileHelper";
+
     public static final String[] INTERNAL_STORAGE_PATHS = new String[]{"/mnt/", "/emmc/"};
-    public static final String ROOT_PATH = "razerdp/github/friendcircle";
+    public static final String ROOT_PATH = "razerdp/github/friendcircle/";
+    public static final String DATA_PATH = ROOT_PATH + ".data/";
     public static final String CACHE_PATH = ROOT_PATH + ".cache/";
     public static final String PIC_PATH = ROOT_PATH + ".pic/.nomedia/";
     public static final String LOG_PATH = ROOT_PATH + ".log/";
@@ -28,17 +31,25 @@ public class AppFileHelper {
 
     public static void initStoryPath() {
         if (TextUtils.isEmpty(storagePath)) {
-            storagePath = FileUtil.getStoragePath(AppContext.getAppContext(), FileUtil.hasSDCard());
+            //storagePath = FileUtil.getStoragePath(AppContext.getAppContext(), FileUtil.hasSDCard());
+            //因为外置sd卡似乎无法写入，所以写到内置sd卡
+            storagePath = FileUtil.getStoragePath(AppContext.getAppContext(), false);
             if (TextUtils.isEmpty(storagePath)) {
-                storagePath = FileUtil.checkFileSeparator(Environment.getExternalStorageDirectory().getAbsolutePath());
+                storagePath = Environment.getExternalStorageDirectory().getAbsolutePath();
                 if (TextUtils.isEmpty(storagePath)) {
-                    storagePath = FileUtil.checkFileSeparator(AppContext.getAppContext().getFilesDir().getAbsolutePath());
+                    storagePath = AppContext.getAppContext().getFilesDir().getAbsolutePath();
                 }
             }
         }
 
+        storagePath = FileUtil.checkFileSeparator(storagePath);
+        KLog.i(TAG,"storagepath  >>  "+storagePath);
+
         File rootDir = new File(storagePath.concat(ROOT_PATH));
         checkAndMakeDir(rootDir);
+
+        File dataDir = new File(storagePath.concat(DATA_PATH));
+        checkAndMakeDir(dataDir);
 
         File cacheDir = new File(storagePath.concat(CACHE_PATH));
         checkAndMakeDir(cacheDir);
@@ -64,6 +75,11 @@ public class AppFileHelper {
     public static String getAppStoragePath() {
         return storagePath;
     }
+
+    public static String getAppDataPath() {
+        return storagePath.concat(DATA_PATH);
+    }
+
 
     public static String getAppCachePath() {
         return storagePath.concat(CACHE_PATH);

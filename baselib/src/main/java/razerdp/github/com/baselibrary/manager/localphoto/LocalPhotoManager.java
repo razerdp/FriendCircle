@@ -1,27 +1,30 @@
 package razerdp.github.com.baselibrary.manager.localphoto;
 
+import android.database.ContentObserver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
+import com.google.gson.reflect.TypeToken;
 import com.socks.library.KLog;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import razerdp.github.com.baselibrary.base.AppContext;
+import razerdp.github.com.baselibrary.helper.AppFileHelper;
 import razerdp.github.com.baselibrary.manager.ThreadPoolManager;
 import razerdp.github.com.baselibrary.thirdpart.WeakHandler;
+import razerdp.github.com.baselibrary.utils.FileUtil;
+import razerdp.github.com.baselibrary.utils.GsonUtil;
 
 /**
  * Created by 大灯泡 on 2017/3/23.
@@ -31,6 +34,9 @@ import razerdp.github.com.baselibrary.thirdpart.WeakHandler;
 
 public enum LocalPhotoManager {
     INSTANCE;
+    private static final String TAG = "LocalPhotoManager";
+
+    public static final String LOCAL_FILE_NAME = "LocalPhotoFile";
 
     boolean isScaning;
     long lastScanTime;
@@ -66,8 +72,20 @@ public enum LocalPhotoManager {
         if (isScaning) return;
         isScaning = true;
         callStart(listener);
-        lastScanTime = System.currentTimeMillis();
-
+        boolean callImmediately = checkLocalSerializableFile();
+        //如果本地文件已经有了，那么可以立即回调，提高用户体验。
+        //然后再后台扫一次更新本地文件记录
+        if (callImmediately) {
+            callFinish(listener);
+        }
+        long curTime = System.currentTimeMillis();
+        if (curTime - lastScanTime <= 60 * 1000) {
+            //1分钟内不应该再扫一次
+            if (!callImmediately) {
+                callError(listener, "扫描频率不应该低于1分钟", new IllegalStateException("扫描频率不应该低于1分钟"));
+                return;
+            }
+        }
         final boolean isProgressListener = listener instanceof OnScanProgresslistener;
 
         Cursor cursor = AppContext.getAppContext()
@@ -97,7 +115,6 @@ public enum LocalPhotoManager {
 
             if (!new File(imgPath).exists()) continue;
 
-            // TODO: 2017/3/23 查询thumb
             thumbWhereQuery[0] = String.valueOf(imgId);
             String thumbImgPath = getThumbPath(thumbWhereQuery);
 
@@ -119,12 +136,41 @@ public enum LocalPhotoManager {
                 callProgress((OnScanProgresslistener) listener, isAsync, cursor.getPosition() / cursorCount);
             }
         }
+        lastScanTime = System.currentTimeMillis();
         cursor.close();
         isScaning = false;
         progressRunnable.reset();
         isAsync = false;
-        callFinish(listener);
-        // TODO: 2017/3/23 把结果序列化到file
+        if (!callImmediately) {
+            callFinish(listener);
+        }
+        //事实上io流的速度也是杠杠的，所以这里可以采取写入到本地文件的方法来存储扫描结果
+        ThreadPoolManager.execute(new WriteToLocalRunnable());
+    }
+
+    public void registerContentObserver(Handler handler) {
+        AppContext.getAppContext().getContentResolver().registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, false, new MediaImageContentObserver(handler));
+    }
+
+    private boolean checkLocalSerializableFile() {
+        if (!sALBUM.isEmpty()) return true;
+        File file = new File(AppFileHelper.getAppDataPath().concat(LOCAL_FILE_NAME));
+        if (file.exists()) {
+            try {
+                LinkedHashMap<String, List<ImageInfo>> map = GsonUtil.INSTANCE.toLinkHashMap(FileUtil.Read(file.getAbsolutePath()),
+                                                                                             new TypeToken<LinkedHashMap<String, List<ImageInfo>>>() {
+                                                                                             }.getType());
+                if (!map.isEmpty()) {
+                    sALBUM.clear();
+                    sALBUM.putAll(map);
+                    return true;
+                }
+            } catch (Exception e) {
+                KLog.e(e);
+                return false;
+            }
+        }
+        return false;
     }
 
     private String getThumbPath(String[] whereQuery) {
@@ -150,6 +196,11 @@ public enum LocalPhotoManager {
 
     public LinkedHashMap<String, List<ImageInfo>> getLocalImages() {
         return new LinkedHashMap<>(sALBUM);
+    }
+
+    public void writeToLocal() {
+        KLog.i(TAG, "图库记录写入本地");
+        ThreadPoolManager.execute(new WriteToLocalRunnable());
     }
 
     private void callStart(OnScanListener listener) {
@@ -245,7 +296,18 @@ public enum LocalPhotoManager {
         }
     }
 
-    public static class ImageInfo implements Serializable, Cloneable {
+    private static class WriteToLocalRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            LinkedHashMap<String, List<LocalPhotoManager.ImageInfo>> info = LocalPhotoManager.INSTANCE.getLocalImages();
+            if (!info.isEmpty()) {
+                FileUtil.writeToFile(AppFileHelper.getAppDataPath().concat(LOCAL_FILE_NAME), GsonUtil.INSTANCE.toString(info));
+            }
+        }
+    }
+
+    public static class ImageInfo implements Serializable, Cloneable, Comparable<String> {
         public final String imagePath;
         public final String thumbnailPath;
         public final String albumName;
@@ -266,6 +328,12 @@ public enum LocalPhotoManager {
             return (ImageInfo) super.clone();
         }
 
+        @Override
+        public int compareTo(@NonNull String o) {
+            if (TextUtils.equals(o, imagePath)) return 0;
+            return 1;
+        }
+
         //深复制，暂时不需要，另外利用流的方法的话，类需要实现Serializable接口
        /* public Object cloneDeepInternal() throws IOException, ClassNotFoundException {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -274,6 +342,83 @@ public enum LocalPhotoManager {
             ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
             return ois.readObject();
         }*/
+
+        @Override
+        public String toString() {
+            return "ImageInfo{" +
+                    "imagePath='" + imagePath + '\'' +
+                    ", thumbnailPath='" + thumbnailPath + '\'' +
+                    ", albumName='" + albumName + '\'' +
+                    ", time=" + time +
+                    ", orientation=" + orientation +
+                    '}';
+        }
+    }
+
+    /**
+     * 本监听存在于整个app生命期
+     */
+    class MediaImageContentObserver extends ContentObserver {
+
+        /**
+         * Creates a content observer.
+         *
+         * @param handler The handler to run {@link #onChange} on, or null if none.
+         */
+        public MediaImageContentObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+            if (uri.compareTo(MediaStore.Images.Media.EXTERNAL_CONTENT_URI) != 0) return;
+            KLog.i(TAG, "监听到系统图库更新  >>>  " + uri.toString());
+
+            //查询5分钟内更新的数据
+            long queryTime = System.currentTimeMillis() - (5 * 60 * 1000);
+            final String[] whereQuery = {String.valueOf(queryTime)};
+
+
+            Cursor cursor = AppContext.getAppContext().getContentResolver().query(uri, STORE_IMGS, MediaStore.Images.ImageColumns.DATE_TAKEN.concat(" > ?"),
+                                                                                  whereQuery, MediaStore.Images.ImageColumns.DATE_TAKEN.concat(" DESC"));
+            if (cursor == null) return;
+            KLog.i(TAG, "查询到  >>  " + cursor.getCount() + " 条数据");
+            // FIXME: 2017/3/24 没错。。。他喵的又是上面的重复步骤，有空把它抽取出来
+            final String[] thumbWhereQuery = new String[1];
+            List<ImageInfo> allImageInfoLists = sALBUM.get("所有图片");
+            cursor.moveToFirst();
+            while (cursor.moveToNext()) {
+                int imgId = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID));
+                String imgPath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
+                int orientation = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.ImageColumns.ORIENTATION));
+                String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME));
+                long dateTaken = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATE_TAKEN));
+
+                if (!new File(imgPath).exists()) continue;
+
+                thumbWhereQuery[0] = String.valueOf(imgId);
+                String thumbImgPath = getThumbPath(thumbWhereQuery);
+
+                List<ImageInfo> imageInfoList = sALBUM.get(albumName);
+                ImageInfo imageInfo = new ImageInfo(imgPath, thumbImgPath, albumName, dateTaken, orientation);
+                try {
+                    allImageInfoLists.add(imageInfo.clone());
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                    KLog.e(e);
+                }
+                if (imageInfoList == null) {
+                    imageInfoList = new ArrayList<>();
+                    sALBUM.put(albumName, imageInfoList);
+                } else {
+                    imageInfoList.add(imageInfo);
+                }
+
+                KLog.i(TAG, "成功刷新到一条数据 >>>  " + imageInfo.toString());
+            }
+            cursor.close();
+        }
     }
 
 }
