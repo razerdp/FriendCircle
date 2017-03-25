@@ -8,7 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
-import android.view.animation.BounceInterpolator;
 
 import com.socks.library.KLog;
 
@@ -23,7 +22,7 @@ import razerdp.github.com.baseuilib.interpolator.SpringInterpolator;
 public class CheckDrawable extends BitmapDrawable {
     private static final String TAG = "CheckDrawable";
     private static final int CHECK_ICON = R.drawable.ic_check;
-    boolean select;
+    boolean isSelect;
 
     ValueAnimator animator;
 
@@ -62,21 +61,21 @@ public class CheckDrawable extends BitmapDrawable {
     }
 
     public void setSelected(boolean select, boolean needAnima) {
-        this.select = select;
+        this.isSelect = select;
         this.needAnima = needAnima;
     }
 
     public boolean toggleSelected() {
-        boolean needAnima = !select;
-        setSelected(!select, needAnima);
-        return select;
+        boolean needAnima = !isSelect;
+        setSelected(!isSelect, needAnima);
+        return isSelect;
     }
 
 
     @Override
     public void draw(Canvas canvas) {
-        KLog.i(TAG, "bounds  >>  " + getBounds().toShortString());
-        if (select) {
+        KLog.i(TAG, "draw in drawable  >>>  needAnima  :  " + needAnima + "   isSelect  :  " + isSelect);
+        if (isSelect) {
             drawSelected(canvas);
         } else {
             drawNormal(canvas);
@@ -95,7 +94,6 @@ public class CheckDrawable extends BitmapDrawable {
                     public void onAnimationUpdate(ValueAnimator animation) {
                         float animaValue = (float) animation.getAnimatedValue();
                         animaRadius = (int) (radius * animaValue);
-                        KLog.i(TAG, animaRadius);
                         invalidateSelf();
                     }
                 });
@@ -112,7 +110,7 @@ public class CheckDrawable extends BitmapDrawable {
                         animator.removeAllUpdateListeners();
                         animation.removeListener(this);
                         animaRadius = 0;
-                        KLog.i(TAG, "selected  >>  " + select);
+                        KLog.i(TAG, "selected  >>  " + isSelect);
                     }
 
                     @Override
@@ -123,11 +121,11 @@ public class CheckDrawable extends BitmapDrawable {
                         animation.removeListener(this);
                         animaRadius = 0;
 
-                        KLog.i(TAG, "selected  >>  " + select);
+                        KLog.i(TAG, "selected  >>  " + isSelect);
                     }
                 });
                 animator.start();
-            } else {
+            }else {
                 if (animaRadius > 0) {
                     canvas.drawCircle(cx, cy, animaRadius, fillPaint);
                 }

@@ -23,6 +23,7 @@ public class AppSetting {
     public static final String HOST_COVER = "cover";
     public static final String CHECK_REGISTER = "check_register";
     public static final String APP_HAS_SCAN_IMG = "has_scan_img";
+    public static final String APP_LAST_SCAN_IMG_TIME = "last_scan_image_time";
 
 
     private static final String PERFERENCE_NAME = "FriendCircleData";

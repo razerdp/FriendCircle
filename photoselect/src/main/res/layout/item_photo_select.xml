@@ -5,8 +5,15 @@
 
     <razerdp.github.com.baseuilib.widget.imageview.CheckImageView
         android:id="@+id/iv_photo_select"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:scaleType="centerCrop"/>
+
+    <View
+        android:id="@+id/iv_photo_mask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white_light"
+        android:visibility="gone"/>
 
 </FrameLayout>

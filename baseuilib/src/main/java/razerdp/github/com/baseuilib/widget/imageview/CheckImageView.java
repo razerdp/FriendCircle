@@ -3,11 +3,9 @@ package razerdp.github.com.baseuilib.widget.imageview;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -29,11 +27,10 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
     boolean isSelected;
 
     private CheckDrawable checkDrawable;
-    private int checkDrawableSize = UIHelper.dipToPx(25);
+    private static final int CHECK_DRAWABLE_SIZE = UIHelper.dipToPx(20);
     private static final int CHECK_DRAWABLE_MARGIN = UIHelper.dipToPx(5);
-    private Rect checkBounds;
+    private static Rect checkBounds;
     private boolean canSelect = true;
-    private ColorFilter mask;
 
     public CheckImageView(Context context) {
         super(context);
@@ -69,7 +66,10 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
                     case MotionEvent.ACTION_UP:
                         if (checkBounds.contains(x, y) && canSelect) {
                             isSelected = checkDrawable.toggleSelected();
-                            KLog.i(TAG, "toggle");
+                            if (onSelectedChangeListener != null) {
+                                KLog.i(TAG,"on touch up");
+                                onSelectedChangeListener.onSelectChange(isSelected);
+                            }
                             invalidate();
                             return true;
                         }
@@ -80,30 +80,32 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
         });
     }
 
+    @Override
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 
     public void setCanSelect(boolean canSelect) {
+        if (this.canSelect == canSelect) return;
         this.canSelect = canSelect;
-        if (getDrawable() != null) {
-            invalidate();
-        }
     }
 
-    public boolean getCanSelect() {
+    public boolean isCanSelect() {
         return canSelect;
     }
+
 
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         checkAndInitCheckDrawBounds();
-        if (getDrawable() != null) {
-            if (!canSelect) {
-                getDrawable().setColorFilter(Color.argb(75, 255, 255, 255), PorterDuff.Mode.SRC_ATOP);
-            } else {
-                getDrawable().clearColorFilter();
-            }
-        }
+
         checkDrawable.setBounds(checkBounds);
         checkDrawable.setSelected(isSelected);
         checkDrawable.draw(canvas);
@@ -119,16 +121,28 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
     }
 
     private void checkAndInitCheckDrawBounds() {
-        if (checkDrawableSize > getWidth() / 3) {
-            checkDrawableSize = getWidth() / 3;
-        }
-        if (checkBounds.isEmpty()) {
-            int left = getWidth() - checkDrawableSize - getPaddingRight() - CHECK_DRAWABLE_MARGIN;
+        if (checkBounds.isEmpty() && getWidth() > 0 || checkBounds.left < 0) {
+            int left = getWidth() - CHECK_DRAWABLE_SIZE - getPaddingRight() - CHECK_DRAWABLE_MARGIN;
             int top = getPaddingTop() + CHECK_DRAWABLE_MARGIN;
-            int rigth = left + checkDrawableSize;
-            int bottom = top + checkDrawableSize;
+            int rigth = left + CHECK_DRAWABLE_SIZE;
+            int bottom = top + CHECK_DRAWABLE_SIZE;
             checkBounds.set(left, top, rigth, bottom);
         }
+    }
+
+
+    private OnSelectedChangeListener onSelectedChangeListener;
+
+    public OnSelectedChangeListener getOnSelectedChangeListener() {
+        return onSelectedChangeListener;
+    }
+
+    public void setOnSelectedChangeListener(OnSelectedChangeListener onSelectedChangeListener) {
+        this.onSelectedChangeListener = onSelectedChangeListener;
+    }
+
+    public interface OnSelectedChangeListener {
+        void onSelectChange(boolean isSelect);
     }
 
 }

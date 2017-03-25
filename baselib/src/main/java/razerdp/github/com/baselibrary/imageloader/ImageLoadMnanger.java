@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import com.bumptech.glide.BitmapRequestBuilder;
 import com.bumptech.glide.Glide;
 
+import razerdp.github.com.baselibrary.base.AppContext;
+
 
 /**
  * Created by 大灯泡 on 2016/11/1.
@@ -40,10 +42,11 @@ public enum ImageLoadMnanger {
 
 
     private BitmapRequestBuilder loadImageByNormalConfig(ImageView imageView, String url) {
-        return Glide.with(getImageContext(imageView)).load(url).asBitmap().thumbnail(0.5f);
+        return Glide.with(getImageContext(imageView)).load(url).asBitmap();
     }
 
     private Context getImageContext(@Nullable ImageView imageView) {
+        if (imageView == null) return AppContext.getAppContext();
         return imageView.getContext();
     }
 }
