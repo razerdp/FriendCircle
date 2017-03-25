@@ -3,6 +3,7 @@ package razerdp.github.com.baseuilib.baseadapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import razerdp.github.com.baselibrary.manager.ThreadPoolManager;
+import razerdp.github.com.baselibrary.utils.ToolUtil;
 import razerdp.github.com.baseuilib.R;
 
 import static android.R.attr.data;
@@ -23,6 +26,7 @@ import static android.R.attr.data;
 
 public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<BaseRecyclerViewHolder<T>> {
 
+    private static final String TAG = "BaseRecyclerViewAdapter";
     protected Context context;
     protected List<T> datas;
     protected LayoutInflater mInflater;
@@ -33,7 +37,9 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
     public BaseRecyclerViewAdapter(@NonNull Context context, @NonNull List<T> datas) {
         this.context = context;
         this.datas = new ArrayList<>();
-        this.datas.addAll(datas);
+        if (datas != null) {
+            this.datas.addAll(datas);
+        }
         mInflater = LayoutInflater.from(context);
     }
 
@@ -101,6 +107,12 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
         }
         notifyDataSetChanged();
     }
+    public void addMore(List<T> datas) {
+        if (!ToolUtil.isListEmpty(datas)) {
+            this.datas.addAll(datas);
+            notifyDataSetChanged();
+        }
+    }
 
     public void addData(int pos, @NonNull T data) {
         if (datas != null) {
@@ -121,6 +133,14 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
             datas.remove(pos);
             notifyItemRemoved(pos);
         }
+    }
+
+    public T findData(int pos) {
+        if (pos < 0 || pos > datas.size()) {
+            Log.e(TAG, "这个position他喵咪的太强大了，我hold不住");
+            return null;
+        }
+        return datas.get(pos);
     }
 
     protected abstract int getViewType(int position, @NonNull T data);
