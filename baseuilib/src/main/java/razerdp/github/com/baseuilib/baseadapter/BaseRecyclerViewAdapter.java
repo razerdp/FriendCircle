@@ -8,21 +8,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
+import razerdp.github.com.baselibrary.manager.ThreadPoolManager;
+import razerdp.github.com.baselibrary.utils.ToolUtil;
 import razerdp.github.com.baseuilib.R;
 
+import static android.R.attr.data;
 
 /**
- * Created by 大灯泡 on 2016/11/1.
+ * Created by 大灯泡 on 2016/7/20.
  * <p>
  * 抽象的adapter
  */
 
 public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<BaseRecyclerViewHolder<T>> {
-    private static final String TAG = "BaseRecyclerViewAdapter";
 
+    private static final String TAG = "BaseRecyclerViewAdapter";
     protected Context context;
     protected List<T> datas;
     protected LayoutInflater mInflater;
@@ -33,7 +37,9 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
     public BaseRecyclerViewAdapter(@NonNull Context context, @NonNull List<T> datas) {
         this.context = context;
         this.datas = new ArrayList<>();
-        this.datas.addAll(datas);
+        if (datas != null) {
+            this.datas.addAll(datas);
+        }
         mInflater = LayoutInflater.from(context);
     }
 
@@ -70,9 +76,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
                 public void onClick(View v) {
                     //这个获取位置的方法，防止添加删除导致位置不变
                     int layoutPosition = holder.getAdapterPosition();
-                    onRecyclerViewItemClickListener.onItemClick(holder.itemView,
-                                                                layoutPosition,
-                                                                datas.get(layoutPosition));
+                    onRecyclerViewItemClickListener.onItemClick(holder.itemView, layoutPosition, datas.get(layoutPosition));
                 }
             });
         }
@@ -82,9 +86,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
                 @Override
                 public boolean onLongClick(View v) {
                     int layoutPosition = holder.getAdapterPosition();
-                    onRecyclerViewLongItemClickListener.onItemLongClick(holder.itemView,
-                                                                        layoutPosition,
-                                                                        datas.get(layoutPosition));
+                    onRecyclerViewLongItemClickListener.onItemLongClick(holder.itemView, layoutPosition, datas.get(layoutPosition));
                     return false;
                 }
             });
@@ -97,14 +99,19 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
     }
 
     public void updateData(List<T> datas) {
-        this.datas.clear();
-        this.datas.addAll(datas);
+        if (this.datas != null) {
+            this.datas.clear();
+            this.datas.addAll(datas);
+        } else {
+            this.datas = datas;
+        }
         notifyDataSetChanged();
     }
-
     public void addMore(List<T> datas) {
-        this.datas.addAll(datas);
-        notifyDataSetChanged();
+        if (!ToolUtil.isListEmpty(datas)) {
+            this.datas.addAll(datas);
+            notifyDataSetChanged();
+        }
     }
 
     public void addData(int pos, @NonNull T data) {
@@ -140,7 +147,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
 
     protected abstract int getLayoutResId(int viewType);
 
-    protected abstract BaseRecyclerViewHolder getViewHolder(ViewGroup parent, View inflatedView, int viewType);
+    protected abstract BaseRecyclerViewHolder getViewHolder(ViewGroup parent, View rootView, int viewType);
 
     protected void onBindData(BaseRecyclerViewHolder<T> holder, T data, int position) {
 

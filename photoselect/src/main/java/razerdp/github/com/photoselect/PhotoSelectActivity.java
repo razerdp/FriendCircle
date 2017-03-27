@@ -3,6 +3,7 @@ package razerdp.github.com.photoselect;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.Animation;
@@ -12,6 +13,10 @@ import android.widget.TextView;
 
 import com.socks.library.KLog;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import razerdp.github.com.adapter.PhotoSelectAdapter;
 import razerdp.github.com.baselibrary.helper.AppSetting;
 import razerdp.github.com.baselibrary.manager.localphoto.LPException;
 import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
@@ -19,6 +24,7 @@ import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.base.BaseTitleBarActivity;
+import razerdp.github.com.baseuilib.baseadapter.itemdecoration.GridItemDecoration;
 import razerdp.github.com.baseuilib.widget.common.TitleBar;
 import razerdp.github.com.baseuilib.widget.popup.PopupProgress;
 
@@ -28,11 +34,13 @@ import razerdp.github.com.baseuilib.widget.popup.PopupProgress;
  * 图片选择器
  */
 
-// TODO: 2017/3/23 扫描相册
 public class PhotoSelectActivity extends BaseTitleBarActivity {
     private static final String TAG = "PhotoSelectActivity";
 
+    private GridLayoutManager gridLayoutManager;
     private ViewHolder vh;
+
+    private PhotoSelectAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,6 +94,7 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
             @Override
             public void onError(LPException e) {
                 KLog.e(TAG, e);
+                UIHelper.ToastMessage(e.getMessage());
 
             }
         });
@@ -137,6 +146,24 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
         vh.mPhotoEdit.setOnClickListener(onPhotoEditClickListener);
         vh.mPhotoPreview.setOnClickListener(onPhotoPreviewClickListener);
         vh.mFinish.setOnClickListener(onFinishClickListener);
+
+        LinkedHashMap<String, List<LocalPhotoManager.ImageInfo>> info = LocalPhotoManager.INSTANCE.getLocalImages();
+        final int itemDecoration = UIHelper.dipToPx(2);
+        adapter = new PhotoSelectAdapter(this, itemDecoration, info.get(LocalPhotoManager.INSTANCE.getAllPhotoTitle()));
+        initSelectCountChangeListener();
+        gridLayoutManager = new GridLayoutManager(this, 4);
+        vh.mPhotoContent.setLayoutManager(gridLayoutManager);
+        vh.mPhotoContent.addItemDecoration(new GridItemDecoration(itemDecoration));
+        vh.mPhotoContent.setAdapter(adapter);
+    }
+
+    private void initSelectCountChangeListener() {
+        adapter.setOnSelectCountChangeLisntenr(new PhotoSelectAdapter.OnSelectCountChangeLisntenr() {
+            @Override
+            public void onSelectCountChange(int count) {
+                vh.setPhotoSlectCount(count);
+            }
+        });
     }
 
 

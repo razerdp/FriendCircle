@@ -21,10 +21,12 @@ import java.util.List;
 
 import razerdp.github.com.baselibrary.base.AppContext;
 import razerdp.github.com.baselibrary.helper.AppFileHelper;
+import razerdp.github.com.baselibrary.helper.AppSetting;
 import razerdp.github.com.baselibrary.manager.ThreadPoolManager;
 import razerdp.github.com.baselibrary.thirdpart.WeakHandler;
 import razerdp.github.com.baselibrary.utils.FileUtil;
 import razerdp.github.com.baselibrary.utils.GsonUtil;
+import razerdp.github.com.baselibrary.utils.StringUtil;
 
 /**
  * Created by 大灯泡 on 2017/3/23.
@@ -37,6 +39,10 @@ public enum LocalPhotoManager {
     private static final String TAG = "LocalPhotoManager";
     public static final String LOCAL_FILE_NAME = "LocalPhotoFile";
     private static final String ALL_PHOTO_TITLE = "所有照片";
+    private static final String QUERY_ORDER = " DESC";
+    private static final boolean SCAN_EXTERNAL_SD = true;
+    //5天内不再扫描
+    private static final long SCAN_INTERVAL = 5 * 24 * 60 * 60 * 1000;
 
     private WeakHandler handler = new WeakHandler();
 
@@ -73,6 +79,7 @@ public enum LocalPhotoManager {
     public synchronized void scanImg(@Nullable OnScanListener listener) {
         if (isScaning) return;
         isScaning = true;
+        lastScanTime = AppSetting.loadLongPreferenceByKey(AppSetting.APP_LAST_SCAN_IMG_TIME, 0);
         callStart(listener);
         boolean callImmediately = checkLocalSerializableFile();
         //如果本地文件已经有了，那么可以立即回调，提高用户体验。
@@ -81,22 +88,23 @@ public enum LocalPhotoManager {
             callFinish(listener);
         }
         long curTime = System.currentTimeMillis();
-        if (curTime - lastScanTime <= 60 * 1000) {
+        if (curTime - lastScanTime <= SCAN_INTERVAL) {
             //1分钟内不应该再扫一次
             if (!callImmediately) {
-                callError(listener, "扫描频率不应该低于1分钟", new IllegalStateException("扫描频率不应该低于1分钟"));
+                callError(listener, "5天内不应该再次扫描", new IllegalStateException("5天内不应该再次扫描"));
                 return;
             }
         }
+
         final boolean isProgressListener = listener instanceof OnScanProgresslistener;
 
         Cursor cursor = AppContext.getAppContext()
                                   .getContentResolver()
-                                  .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                  .query(SCAN_EXTERNAL_SD ? MediaStore.Images.Media.EXTERNAL_CONTENT_URI : MediaStore.Images.Media.INTERNAL_CONTENT_URI,
                                          STORE_IMGS,
                                          null,
                                          null,
-                                         MediaStore.Images.ImageColumns.DATE_TAKEN.concat(" DESC"));
+                                         MediaStore.Images.ImageColumns.DATE_TAKEN.concat(QUERY_ORDER));
         if (cursor == null) {
             callError(listener, "cursor为空", null);
             isScaning = false;
@@ -123,7 +131,9 @@ public enum LocalPhotoManager {
             List<ImageInfo> imageInfoList = sALBUM.get(albumName);
             ImageInfo imageInfo = new ImageInfo(imgPath, thumbImgPath, albumName, dateTaken, orientation);
             try {
-                allImageInfoLists.add(imageInfo.clone());
+                if (imageInfo.checkValided()) {
+                    allImageInfoLists.add(imageInfo.clone());
+                }
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
                 KLog.e(e);
@@ -132,13 +142,16 @@ public enum LocalPhotoManager {
                 imageInfoList = new ArrayList<>();
                 sALBUM.put(albumName, imageInfoList);
             } else {
-                imageInfoList.add(imageInfo);
+                if (imageInfo.checkValided()) {
+                    imageInfoList.add(imageInfo);
+                }
             }
             if (isProgressListener) {
                 callProgress((OnScanProgresslistener) listener, isAsync, (int) (cursor.getPosition() * 100.0f / cursorCount));
             }
         }
         lastScanTime = System.currentTimeMillis();
+        AppSetting.saveLongPreferenceByKey(AppSetting.APP_LAST_SCAN_IMG_TIME, lastScanTime);
         cursor.close();
         isScaning = false;
         progressRunnable.reset();
@@ -180,7 +193,7 @@ public enum LocalPhotoManager {
         //通过大图的id，并且构造cursor的查询语句来获取大图对应的小图
         Cursor cursor = AppContext.getAppContext()
                                   .getContentResolver()
-                                  .query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+                                  .query(SCAN_EXTERNAL_SD ? MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI : MediaStore.Images.Thumbnails.INTERNAL_CONTENT_URI,
                                          THUMBNAIL_STORE_IMAGE,
                                          MediaStore.Images.Thumbnails.IMAGE_ID.concat(" = ?"),
                                          whereQuery,
@@ -326,7 +339,7 @@ public enum LocalPhotoManager {
         public void run() {
             LinkedHashMap<String, List<LocalPhotoManager.ImageInfo>> info = LocalPhotoManager.INSTANCE.getLocalImages();
             if (!info.isEmpty()) {
-                FileUtil.writeToFile(AppFileHelper.getAppDataPath().concat(LOCAL_FILE_NAME), GsonUtil.INSTANCE.toString(info));
+                FileUtil.writeToFile(AppFileHelper.getAppDataPath().concat(LOCAL_FILE_NAME), GsonUtil.INSTANCE.toString(info).getBytes());
             }
         }
     }
@@ -344,6 +357,10 @@ public enum LocalPhotoManager {
             this.albumName = albumName;
             this.time = time;
             this.orientation = orientation;
+        }
+
+        public boolean checkValided() {
+            return StringUtil.noEmpty(imagePath) || StringUtil.noEmpty(thumbnailPath);
         }
 
         @Override
@@ -405,7 +422,7 @@ public enum LocalPhotoManager {
 
 
             Cursor cursor = AppContext.getAppContext().getContentResolver().query(uri, STORE_IMGS, MediaStore.Images.ImageColumns.DATE_TAKEN.concat(" > ?"),
-                                                                                  whereQuery, MediaStore.Images.ImageColumns.DATE_TAKEN.concat(" DESC"));
+                                                                                  whereQuery, MediaStore.Images.ImageColumns.DATE_TAKEN.concat(QUERY_ORDER));
             if (cursor == null) return;
             KLog.i(TAG, "查询到  >>  " + cursor.getCount() + " 条数据");
             // FIXME: 2017/3/24 没错。。。他喵的又是上面的重复步骤，有空把它抽取出来
@@ -427,7 +444,7 @@ public enum LocalPhotoManager {
                 List<ImageInfo> imageInfoList = sALBUM.get(albumName);
                 ImageInfo imageInfo = new ImageInfo(imgPath, thumbImgPath, albumName, dateTaken, orientation);
                 try {
-                    if (allImageInfoLists != null) {
+                    if (allImageInfoLists != null && imageInfo.checkValided()) {
                         allImageInfoLists.add(imageInfo.clone());
                     }
                 } catch (CloneNotSupportedException e) {
@@ -438,7 +455,9 @@ public enum LocalPhotoManager {
                     imageInfoList = new ArrayList<>();
                     sALBUM.put(albumName, imageInfoList);
                 } else {
-                    imageInfoList.add(imageInfo);
+                    if (imageInfo.checkValided()) {
+                        imageInfoList.add(imageInfo);
+                    }
                 }
 
                 KLog.i(TAG, "成功刷新到一条数据 >>>  " + imageInfo.toString());
