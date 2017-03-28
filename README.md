@@ -8,6 +8,11 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
 ##### 因为采取组件化（目前正在开发的组件：photoselect），所以可能push上来的是组件的build，如果您要build整个app，请把gradle.properties下的  isModule=true 切换为false并sync gradle
 
 ##### 【简略更新日志】
+ - 2017/03/28
+    + 图片选择模块完成
+    + 动画交互完成
+    + 添加gif预览
+
  - 2017/03/24
     + 扫描系统媒体库Manager完成
     + 图片选择页面的扫描进度完成
@@ -16,26 +21,6 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
  - 2017/03/23
     + 开始photoselect的初步搭建
     + baselib的本地图片扫面完成
-
- - 2017/03/22
-    + 组件化大致完成，目前的结构将会改为如下结构：
-        - app：即工程主入口
-        - baselib:主要的library，公用工具，base方法等
-        - baseuilib:主要是自定义控件存放，baseadapter等
-        - network:封装bmob的网络依赖
-        - photoview：本来可以放入baseuilib的，但人家有开源协议，所以要遵守哦，因此一整个module保留
-        - photoselect:图片选择模块，这个模块是目前的工作进程，可以单独运行该模块，但要记得去`gradle.properties`把`isModule`设置为true哦
-
-    + 下一步，将会是继续开发朋友圈啦啦啦~应该会是做这个图片选择模块吧，做完后就是到发布模块了
-
- - 2017/03/16
-    + 啦啦啦~又是一个大重构了咯
-    + 组件化，lib拆分
-
- - 2017/03/15
-    + fix [#42](https://github.com/razerdp/FriendCircle/issues/42)
-    + 修复RecyclerView没有滚动条的问题。
-    + RecyclerView的HeaderViewAdapter单独抽出。
 
  - 更多日志请看 → [更新日志](https://github.com/razerdp/FriendCircle/blob/master/UPDATE_LOG.md)
 
@@ -46,16 +31,12 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
 [代码实现逻辑（简书合集）](http://www.jianshu.com/notebooks/3224048/latest)
 
 
-## 2017-02-08
-重构后的朋友圈图片浏览过渡动画完成！（代码解析可能要等上几天）
+#### 【最新进度图片预览】
+##### 2017-03-28
 
-代码解析地址：
+图片选择模块完成！包含了选择的动画，交互按照iOS的哦~
 
-待写
-
-图片预览：
-
-![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2017-02-08%E5%9B%BE%E7%89%87%E9%80%80%E5%87%BA%E5%8A%A8%E7%94%BB.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2017-03-28%20%E5%9B%BE%E7%89%87%E9%80%89%E6%8B%A9.gif)
 
 ***
 

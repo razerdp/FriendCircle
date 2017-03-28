@@ -15,6 +15,8 @@ import razerdp.github.com.baselibrary.utils.ui.AnimUtils;
 import razerdp.github.com.baseuilib.R;
 import razerdp.github.com.baseuilib.interpolator.SpringInterpolator;
 
+import static android.R.attr.animation;
+
 /**
  * Created by 大灯泡 on 2017/3/24.
  */
@@ -66,15 +68,13 @@ public class CheckDrawable extends BitmapDrawable {
     }
 
     public boolean toggleSelected() {
-        boolean needAnima = !isSelect;
-        setSelected(!isSelect, needAnima);
+        setSelected(!isSelect, true);
         return isSelect;
     }
 
 
     @Override
     public void draw(Canvas canvas) {
-        KLog.i(TAG, "draw in drawable  >>>  needAnima  :  " + needAnima + "   isSelect  :  " + isSelect);
         if (isSelect) {
             drawSelected(canvas);
         } else {
@@ -88,6 +88,7 @@ public class CheckDrawable extends BitmapDrawable {
         final int cy = getBounds().centerY();
         final int radius = getBounds().width() / 2;
         if (needAnima) {
+            KLog.i(TAG, "draw in drawable with anima");
             if (!isPlayingAnima) {
                 animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
@@ -105,32 +106,31 @@ public class CheckDrawable extends BitmapDrawable {
 
                     @Override
                     public void onAnimationCancel(Animator animation) {
-                        isPlayingAnima = false;
-                        needAnima = false;
-                        animator.removeAllUpdateListeners();
-                        animation.removeListener(this);
-                        animaRadius = 0;
-                        KLog.i(TAG, "selected  >>  " + isSelect);
+                        reset();
                     }
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
+                        reset();
+                    }
+
+                    void reset() {
                         isPlayingAnima = false;
                         needAnima = false;
                         animator.removeAllUpdateListeners();
-                        animation.removeListener(this);
+                        animator.removeListener(this);
                         animaRadius = 0;
-
                         KLog.i(TAG, "selected  >>  " + isSelect);
                     }
                 });
                 animator.start();
-            }else {
+            } else {
                 if (animaRadius > 0) {
                     canvas.drawCircle(cx, cy, animaRadius, fillPaint);
                 }
             }
         } else {
+            KLog.i(TAG, "draw in drawable without anima");
             canvas.drawCircle(cx, cy, radius, fillPaint);
         }
 

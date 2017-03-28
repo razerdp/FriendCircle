@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.Animation;
@@ -37,7 +38,6 @@ import razerdp.github.com.baseuilib.widget.popup.PopupProgress;
 public class PhotoSelectActivity extends BaseTitleBarActivity {
     private static final String TAG = "PhotoSelectActivity";
 
-    private GridLayoutManager gridLayoutManager;
     private ViewHolder vh;
 
     private PhotoSelectAdapter adapter;
@@ -151,8 +151,7 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
         final int itemDecoration = UIHelper.dipToPx(2);
         adapter = new PhotoSelectAdapter(this, itemDecoration, info.get(LocalPhotoManager.INSTANCE.getAllPhotoTitle()));
         initSelectCountChangeListener();
-        gridLayoutManager = new GridLayoutManager(this, 4);
-        vh.mPhotoContent.setLayoutManager(gridLayoutManager);
+        vh.mPhotoContent.setLayoutManager(new GridLayoutManager(this, 4, LinearLayoutManager.VERTICAL, true));
         vh.mPhotoContent.addItemDecoration(new GridItemDecoration(itemDecoration));
         vh.mPhotoContent.setAdapter(adapter);
     }

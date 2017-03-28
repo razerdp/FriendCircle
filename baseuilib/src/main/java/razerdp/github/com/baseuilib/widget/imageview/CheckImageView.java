@@ -29,7 +29,9 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
     private CheckDrawable checkDrawable;
     private static final int CHECK_DRAWABLE_SIZE = UIHelper.dipToPx(20);
     private static final int CHECK_DRAWABLE_MARGIN = UIHelper.dipToPx(5);
-    private static Rect checkBounds;
+    //对于每一个imageview来说，小勾勾的位置都是固定的，所以直接给静态，不用new太多对象
+    private static Rect checkBounds = new Rect();
+    private static Rect touchRectDelegate = new Rect();
     private boolean canSelect = true;
 
     public CheckImageView(Context context) {
@@ -50,7 +52,6 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
     private void init(Context context) {
         checkDrawable = new CheckDrawable(context);
         checkDrawable.setCallback(this);
-        checkBounds = new Rect();
 
         setOnTouchListener(new OnTouchListener() {
             int x = 0;
@@ -62,12 +63,12 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
                     case MotionEvent.ACTION_DOWN:
                         x = (int) event.getX();
                         y = (int) event.getY();
-                        return checkBounds.contains(x, y);
+                        return touchRectDelegate.contains(x, y);
                     case MotionEvent.ACTION_UP:
-                        if (checkBounds.contains(x, y) && canSelect) {
+                        if (touchRectDelegate.contains(x, y) && canSelect) {
                             isSelected = checkDrawable.toggleSelected();
                             if (onSelectedChangeListener != null) {
-                                KLog.i(TAG,"on touch up");
+                                KLog.i(TAG, "on touch up");
                                 onSelectedChangeListener.onSelectChange(isSelected);
                             }
                             invalidate();
@@ -100,7 +101,6 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
     }
 
 
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -127,6 +127,9 @@ public class CheckImageView extends android.support.v7.widget.AppCompatImageView
             int rigth = left + CHECK_DRAWABLE_SIZE;
             int bottom = top + CHECK_DRAWABLE_SIZE;
             checkBounds.set(left, top, rigth, bottom);
+            touchRectDelegate.set(checkBounds);
+            //扩展点击范围
+            touchRectDelegate.inset(-5,-5);
         }
     }
 

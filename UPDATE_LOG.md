@@ -1,4 +1,10 @@
 # 更新日志
+## 2017-03-28
+  - 图片选择模块完成！包含了选择的动画，交互按照iOS的哦~
+  
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2017-03-28%20%E5%9B%BE%E7%89%87%E9%80%89%E6%8B%A9.gif)
+
+
 ## 2017/03/24
   - 扫描系统媒体库Manager完成
   - 图片选择页面的扫描进度完成

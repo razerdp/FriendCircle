@@ -12,11 +12,9 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import razerdp.github.com.baselibrary.manager.ThreadPoolManager;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
 import razerdp.github.com.baseuilib.R;
 
-import static android.R.attr.data;
 
 /**
  * Created by 大灯泡 on 2016/7/20.
@@ -107,6 +105,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
         }
         notifyDataSetChanged();
     }
+
     public void addMore(List<T> datas) {
         if (!ToolUtil.isListEmpty(datas)) {
             this.datas.addAll(datas);

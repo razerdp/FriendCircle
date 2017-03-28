@@ -29,7 +29,6 @@ import razerdp.github.com.photoselect.R;
  * 图片选择adapter
  */
 
-// TODO: 2017/3/25 解决notifydatasetchange的oom问题
 public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManager.ImageInfo> {
     private static final String TAG = "PhotoSelectAdapter";
 
@@ -76,7 +75,12 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
 
     private void callSelectListenerChange() {
         final int size = selectedRecordLists.size();
+        boolean hasChangeState = selectable;
         selectable = checkSelectListLength();
+        hasChangeState = hasChangeState != selectable;
+        if (hasChangeState) {
+            notifyDataSetChanged();
+        }
         if (onSelectCountChangeLisntenr != null) {
             onSelectCountChangeLisntenr.onSelectCountChange(size);
         }
@@ -97,34 +101,23 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
             super(itemView, viewType);
             checkImageView = (CheckImageView) findViewById(R.id.iv_photo_select);
             maskView = findViewById(R.id.iv_photo_mask);
-            setCheckImageViewLayoutParams(checkImageView);
+            setCheckImageViewLayoutParams();
         }
 
         /**
          * 根据屏幕宽度设置iv的大小
          */
-        private void setCheckImageViewLayoutParams(final CheckImageView checkImageView) {
+        private void setCheckImageViewLayoutParams() {
             int itemDercorationSum = 5 * itemDecoration;
             int screenWidth = UIHelper.getScreenWidthPix(getContext());
             final int size = (screenWidth - itemDercorationSum) >> 2;
-            checkImageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) checkImageView.getLayoutParams();
-                    params.width = params.height = size;
-                    checkImageView.getViewTreeObserver().removeOnPreDrawListener(this);
-                    return true;
-                }
-            });
-            maskView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) maskView.getLayoutParams();
-                    params.width = params.height = size;
-                    maskView.getViewTreeObserver().removeOnPreDrawListener(this);
-                    return true;
-                }
-            });
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(size, size);
+            params.width = params.height = size;
+            checkImageView.setLayoutParams(params);
+
+            FrameLayout.LayoutParams maskParams = new FrameLayout.LayoutParams(size, size);
+            maskParams.width = maskParams.height = size;
+            maskView.setLayoutParams(maskParams);
         }
 
         @Override

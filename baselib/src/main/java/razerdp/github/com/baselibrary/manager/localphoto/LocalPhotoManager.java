@@ -89,8 +89,7 @@ public enum LocalPhotoManager {
         }
         long curTime = System.currentTimeMillis();
         if (curTime - lastScanTime <= SCAN_INTERVAL) {
-            //1分钟内不应该再扫一次
-            if (!callImmediately) {
+            if (callImmediately) {
                 callError(listener, "5天内不应该再次扫描", new IllegalStateException("5天内不应该再次扫描"));
                 return;
             }
