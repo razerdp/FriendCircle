@@ -33,17 +33,17 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (isApplicationInBackground()) {
-            isAppInBackground = true;
-        }
+//        if (isApplicationInBackground()) {
+//            isAppInBackground = true;
+//        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (isAppInBackground) {
-            isAppInBackground = false;
-        }
+//        if (isAppInBackground) {
+//            isAppInBackground = false;
+//        }
     }
 
     /**
