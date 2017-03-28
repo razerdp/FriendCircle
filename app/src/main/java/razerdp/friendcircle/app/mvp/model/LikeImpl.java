@@ -18,17 +18,15 @@ public class LikeImpl implements ILike {
     public void addLike(String momentid, final OnLikeChangeCallback onLikeChangeCallback) {
         if (onLikeChangeCallback == null) return;
         AddLikeRequest request = new AddLikeRequest(momentid);
-        request.setOnResponseListener(new OnResponseListener<Boolean>() {
+        request.setOnResponseListener(new OnResponseListener<String>() {
             @Override
             public void onStart(int requestType) {
 
             }
 
             @Override
-            public void onSuccess(Boolean response, int requestType) {
-                if (response) {
-                    onLikeChangeCallback.onLike();
-                }
+            public void onSuccess(String response, int requestType) {
+                onLikeChangeCallback.onLike(response);
             }
 
             @Override
@@ -40,9 +38,9 @@ public class LikeImpl implements ILike {
     }
 
     @Override
-    public void unLike(String momentid, final OnLikeChangeCallback onLikeChangeCallback) {
+    public void unLike(String likesid, final OnLikeChangeCallback onLikeChangeCallback) {
         if (onLikeChangeCallback == null) return;
-        UnLikeRequest request = new UnLikeRequest(momentid);
+        UnLikeRequest request = new UnLikeRequest(likesid);
         request.setOnResponseListener(new OnResponseListener<Boolean>() {
             @Override
             public void onStart(int requestType) {

@@ -12,6 +12,7 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
     + 图片选择模块完成
     + 动画交互完成
     + 添加gif预览
+    + 重构Bmob的点赞表等，现在查询所有动态已经是不再有那么多请求了，fix #38
 
  - 2017/03/24
     + 扫描系统媒体库Manager完成

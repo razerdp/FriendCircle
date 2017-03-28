@@ -17,6 +17,7 @@ import android.widget.TextView;
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.manager.LocalHostManager;
+import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
@@ -167,8 +168,8 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
         this.mMomentsInfo = info;
         hasLiked = false;
         if (!ToolUtil.isListEmpty(info.getLikesList())) {
-            for (UserInfo userInfo : info.getLikesList()) {
-                if (TextUtils.equals(userInfo.getObjectId(), LocalHostManager.INSTANCE.getUserid())) {
+            for (LikesInfo likesInfo : info.getLikesList()) {
+                if (TextUtils.equals(likesInfo.getUserid(), LocalHostManager.INSTANCE.getUserid())) {
                     hasLiked = true;
                     break;
                 }

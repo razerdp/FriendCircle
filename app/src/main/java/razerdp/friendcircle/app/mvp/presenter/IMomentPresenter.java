@@ -3,6 +3,7 @@ package razerdp.friendcircle.app.mvp.presenter;
 import java.util.List;
 
 import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.mvp.view.IMomentView;
 import razerdp.github.com.baselibrary.mvp.IBasePresenter;
@@ -14,9 +15,9 @@ import razerdp.github.com.baselibrary.mvp.IBasePresenter;
 public interface IMomentPresenter extends IBasePresenter<IMomentView> {
 
 
-    void addLike(int viewHolderPos, String momentid, List<UserInfo> currentLikeUserList);
+    void addLike(int viewHolderPos, String momentid, List<LikesInfo> currentLikeList);
 
-    void unLike(int viewHolderPos, String momentid, List<UserInfo> currentLikeUserList);
+    void unLike(int viewHolderPos, String momentid, List<LikesInfo> currentLikeList);
 
     void addComment(int viewHolderPos, String momentid, String replyUserid, String commentContent, List<CommentInfo> currentCommentList);
 

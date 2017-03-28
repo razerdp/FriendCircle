@@ -3,6 +3,7 @@ package razerdp.friendcircle.app.mvp.view;
 import java.util.List;
 
 import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.github.com.baselibrary.mvp.IBaseView;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
@@ -14,7 +15,7 @@ import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
 public interface IMomentView extends IBaseView {
 
 
-    void onLikeChange(int itemPos, List<UserInfo> likeUserList);
+    void onLikeChange(int itemPos, List<LikesInfo> likeUserList);
 
 
     void onCommentChange(int itemPos, List<CommentInfo> commentInfoList);

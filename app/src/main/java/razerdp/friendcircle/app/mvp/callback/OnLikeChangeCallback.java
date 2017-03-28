@@ -8,7 +8,7 @@ package razerdp.friendcircle.app.mvp.callback;
 
 public interface OnLikeChangeCallback {
 
-    void onLike();
+    void onLike(String likeinfoid);
 
     void onUnLike();
 

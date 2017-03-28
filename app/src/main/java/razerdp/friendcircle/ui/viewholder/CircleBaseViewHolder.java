@@ -17,6 +17,7 @@ import java.util.List;
 
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.mvp.presenter.MomentPresenter;
@@ -150,7 +151,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
      * @param likesList
      * @return ture=显示点赞，false=不显示点赞
      */
-    private boolean addLikes(List<UserInfo> likesList) {
+    private boolean addLikes(List<LikesInfo> likesList) {
         if (ToolUtil.isListEmpty(likesList)) {
             return false;
         }
@@ -263,7 +264,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         @Override
         public void onLikeClick(View v, @NonNull MomentsInfo info, boolean hasLiked) {
             if (hasLiked) {
-                momentPresenter.unLike(itemPosition, info.getMomentid(), info.getLikesList());
+                momentPresenter.unLike(itemPosition, info.getLikesObjectid(), info.getLikesList());
             } else {
                 momentPresenter.addLike(itemPosition, info.getMomentid(), info.getLikesList());
             }

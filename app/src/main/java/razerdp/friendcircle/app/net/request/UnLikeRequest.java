@@ -1,11 +1,11 @@
 package razerdp.friendcircle.app.net.request;
 
-import cn.bmob.v3.datatype.BmobRelation;
+import android.text.TextUtils;
+
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.UpdateListener;
 import razerdp.friendcircle.app.manager.LocalHostManager;
-import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
+import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
 import razerdp.github.com.net.base.BaseRequestClient;
 
 /**
@@ -14,42 +14,21 @@ import razerdp.github.com.net.base.BaseRequestClient;
 
 public class UnLikeRequest extends BaseRequestClient<Boolean> {
 
-    private String momentsId;
-    private String userid;
+    private String likesInfoid;
 
-    public UnLikeRequest(String momentsId) {
-        this.momentsId = momentsId;
-        this.userid = LocalHostManager.INSTANCE.getUserid();
-    }
-
-    public String getMomentsId() {
-        return momentsId;
-    }
-
-    public UnLikeRequest setMomentsId(String momentsId) {
-        this.momentsId = momentsId;
-        return this;
-    }
-
-    public String getUserid() {
-        return userid;
-    }
-
-    public UnLikeRequest setUserid(String userid) {
-        this.userid = userid;
-        return this;
+    public UnLikeRequest(String likesInfoid) {
+        this.likesInfoid = likesInfoid;
     }
 
     @Override
     protected void executeInternal(final int requestType, boolean showDialog) {
-        MomentsInfo info = new MomentsInfo();
-        info.setObjectId(momentsId);
-        UserInfo userInfo = new UserInfo();
-        userInfo.setObjectId(userid);
-        BmobRelation bmobRelation = new BmobRelation();
-        bmobRelation.remove(userInfo);
-        info.setLikesBmobRelation(bmobRelation);
-        info.update(new UpdateListener() {
+        if (TextUtils.isEmpty(likesInfoid)) {
+            onResponseError(new BmobException("likesinfoid为空"), requestType);
+            return;
+        }
+        LikesInfo info = new LikesInfo();
+        info.setObjectId(likesInfoid);
+        info.delete(new UpdateListener() {
             @Override
             public void done(BmobException e) {
                 onResponseSuccess(e == null, requestType);

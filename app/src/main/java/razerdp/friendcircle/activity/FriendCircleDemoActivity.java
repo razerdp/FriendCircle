@@ -19,8 +19,10 @@ import java.util.List;
 
 import cn.bmob.v3.exception.BmobException;
 import razerdp.friendcircle.R;
+import razerdp.friendcircle.app.bmob.BmobInitHelper;
 import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.mvp.presenter.MomentPresenter;
@@ -238,7 +240,7 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
 
     //=============================================================View's method
     @Override
-    public void onLikeChange(int itemPos, List<UserInfo> likeUserList) {
+    public void onLikeChange(int itemPos, List<LikesInfo> likeUserList) {
         MomentsInfo momentsInfo = adapter.findData(itemPos);
         if (momentsInfo != null) {
             momentsInfo.setLikesList(likeUserList);

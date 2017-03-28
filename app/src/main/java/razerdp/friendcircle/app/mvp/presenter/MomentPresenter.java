@@ -16,6 +16,7 @@ import razerdp.friendcircle.app.mvp.callback.OnLikeChangeCallback;
 import razerdp.friendcircle.app.mvp.model.CommentImpl;
 import razerdp.friendcircle.app.mvp.model.LikeImpl;
 import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.mvp.view.IMomentView;
 import razerdp.github.com.baselibrary.mvp.IBasePresenter;
@@ -56,17 +57,21 @@ public class MomentPresenter implements IMomentPresenter {
 
     //=============================================================动作控制
     @Override
-    public void addLike(final int viewHolderPos, String momentid, final List<UserInfo> currentLikeUserList) {
+    public void addLike(final int viewHolderPos, final String momentid, final List<LikesInfo> currentLikeList) {
         likeModel.addLike(momentid, new OnLikeChangeCallback() {
             @Override
-            public void onLike() {
-                List<UserInfo> resultLikeList = new ArrayList<UserInfo>();
-                if (!ToolUtil.isListEmpty(currentLikeUserList)) {
-                    resultLikeList.addAll(currentLikeUserList);
+            public void onLike(String likeinfoid) {
+                List<LikesInfo> resultLikeList = new ArrayList<LikesInfo>();
+                if (!ToolUtil.isListEmpty(currentLikeList)) {
+                    resultLikeList.addAll(currentLikeList);
                 }
-                boolean hasLocalLiked = findPosByObjid(resultLikeList, LocalHostManager.INSTANCE.getUserid()) > -1;
-                if (!hasLocalLiked) {
-                    resultLikeList.add(LocalHostManager.INSTANCE.getLocalHostUser());
+                boolean hasLocalLiked = findLikeInfoPosByUserid(resultLikeList, LocalHostManager.INSTANCE.getUserid()) > -1;
+                if (!hasLocalLiked && !TextUtils.isEmpty(likeinfoid)) {
+                    LikesInfo info = new LikesInfo();
+                    info.setObjectId(likeinfoid);
+                    info.setMomentsid(momentid);
+                    info.setUserInfo(LocalHostManager.INSTANCE.getLocalHostUser());
+                    resultLikeList.add(info);
                 }
                 if (momentView != null) {
                     momentView.onLikeChange(viewHolderPos, resultLikeList);
@@ -82,20 +87,20 @@ public class MomentPresenter implements IMomentPresenter {
     }
 
     @Override
-    public void unLike(final int viewHolderPos, String momentid, final List<UserInfo> currentLikeUserList) {
-        likeModel.unLike(momentid, new OnLikeChangeCallback() {
+    public void unLike(final int viewHolderPos, String likesid, final List<LikesInfo> currentLikeList) {
+        likeModel.unLike(likesid, new OnLikeChangeCallback() {
             @Override
-            public void onLike() {
+            public void onLike(String likeinfoid) {
 
             }
 
             @Override
             public void onUnLike() {
-                List<UserInfo> resultLikeList = new ArrayList<UserInfo>();
-                if (!ToolUtil.isListEmpty(currentLikeUserList)) {
-                    resultLikeList.addAll(currentLikeUserList);
+                List<LikesInfo> resultLikeList = new ArrayList<LikesInfo>();
+                if (!ToolUtil.isListEmpty(currentLikeList)) {
+                    resultLikeList.addAll(currentLikeList);
                 }
-                final int localLikePos = findPosByObjid(resultLikeList, LocalHostManager.INSTANCE.getUserid());
+                final int localLikePos = findLikeInfoPosByUserid(resultLikeList, LocalHostManager.INSTANCE.getUserid());
                 if (localLikePos > -1) {
                     resultLikeList.remove(localLikePos);
                 }
@@ -174,17 +179,13 @@ public class MomentPresenter implements IMomentPresenter {
     }
 
 
-    /**
-     * 从bmobobj列表寻找符合id的位置
-     *
-     * @return -1:找不到
-     */
-    private int findPosByObjid(List<? extends BmobObject> objectList, String id) {
+    private int findLikeInfoPosByUserid(List<LikesInfo> infoList, String id) {
+
         int result = -1;
-        if (ToolUtil.isListEmpty(objectList)) return result;
-        for (int i = 0; i < objectList.size(); i++) {
-            BmobObject object = objectList.get(i);
-            if (TextUtils.equals(object.getObjectId(), id)) {
+        if (ToolUtil.isListEmpty(infoList)) return result;
+        for (int i = 0; i < infoList.size(); i++) {
+            LikesInfo info = infoList.get(i);
+            if (TextUtils.equals(info.getUserid(), id)) {
                 result = i;
                 break;
             }

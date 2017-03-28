@@ -1,12 +1,17 @@
 package razerdp.friendcircle.app.mvp.model.entity;
 
+import android.text.TextUtils;
+
 import com.socks.library.KLog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobRelation;
+import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.config.MomentsType;
+import razerdp.github.com.baselibrary.utils.ToolUtil;
 
 /**
  * Created by 大灯泡 on 2016/10/27.
@@ -27,7 +32,7 @@ public class MomentsInfo extends BmobObject {
     private UserInfo author;
     private UserInfo hostinfo;
     private BmobRelation likes;
-    private List<UserInfo> likesList;
+    private List<LikesInfo> likesList;
     private List<CommentInfo> commentList;
     private MomentContent content;
 
@@ -59,11 +64,11 @@ public class MomentsInfo extends BmobObject {
         this.likes = likes;
     }
 
-    public List<UserInfo> getLikesList() {
+    public List<LikesInfo> getLikesList() {
         return likesList;
     }
 
-    public void setLikesList(List<UserInfo> likesList) {
+    public void setLikesList(List<LikesInfo> likesList) {
         this.likesList = likesList;
     }
 
@@ -81,6 +86,35 @@ public class MomentsInfo extends BmobObject {
 
     public void setContent(MomentContent content) {
         this.content = content;
+    }
+
+    public void addComment(CommentInfo commentInfo) {
+        if (commentInfo == null) return;
+        if (this.commentList == null) {
+            this.commentList = new ArrayList<>();
+        }
+        this.commentList.add(commentInfo);
+    }
+
+    public void addLikes(LikesInfo likesInfo) {
+        if (likesInfo == null) return;
+        if (this.likesList==null){
+            this.likesList=new ArrayList<>();
+        }
+        this.likesList.add(likesInfo);
+    }
+
+    public String getLikesObjectid() {
+        String momentid = getMomentid();
+        String userid = LocalHostManager.INSTANCE.getUserid();
+        if (!ToolUtil.isListEmpty(likesList)) {
+            for (LikesInfo likesInfo : likesList) {
+                if (TextUtils.equals(momentid, likesInfo.getMomentsid()) && TextUtils.equals(userid, likesInfo.getUserid())) {
+                    return likesInfo.getObjectId();
+                }
+            }
+        }
+        return null;
     }
 
     public int getMomentType() {

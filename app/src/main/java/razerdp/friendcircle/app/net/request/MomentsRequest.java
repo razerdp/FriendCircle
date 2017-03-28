@@ -1,5 +1,9 @@
 package razerdp.friendcircle.app.net.request;
 
+import com.socks.library.KLog;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -7,12 +11,14 @@ import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
+import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo.MomentsFields;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.github.com.net.base.BaseRequestClient;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
 
+import static android.R.id.list;
 import static razerdp.friendcircle.app.mvp.model.entity.CommentInfo.CommentFields.AUTHOR_USER;
 import static razerdp.friendcircle.app.mvp.model.entity.CommentInfo.CommentFields.MOMENT;
 import static razerdp.friendcircle.app.mvp.model.entity.CommentInfo.CommentFields.REPLY_USER;
@@ -67,45 +73,88 @@ public class MomentsRequest extends BaseRequestClient<List<MomentsInfo>> {
          * oRz，果然没有自己写服务器来的简单，好吧，都是在下没钱的原因，我的锅
          *
          */
-        for (int i = 0; i < momentsList.size(); i++) {
-            final int currentPos = i;
-            final MomentsInfo momentsInfo = momentsList.get(i);
-            BmobQuery<UserInfo> likesQuery = new BmobQuery<>();
-            likesQuery.addWhereRelatedTo("likes", new BmobPointer(momentsInfo));
-            //根据更新时间降序
-            //文档:http://docs.bmob.cn/data/Android/b_developdoc/doc/index.html#查询数据
-            //排序子目录
-            likesQuery.order("-updatedAt");
-            likesQuery.findObjects(new FindListener<UserInfo>() {
-                @Override
-                public void done(List<UserInfo> list, BmobException e) {
-                    if (!ToolUtil.isListEmpty(list)) {
-                        momentsInfo.setLikesList(list);
-                    }
-                    BmobQuery<CommentInfo> commentQuery = new BmobQuery<>();
-                    commentQuery.include(MOMENT + "," + REPLY_USER + "," + AUTHOR_USER);
-                    commentQuery.addWhereEqualTo("moment", momentsInfo);
-                    commentQuery.order("createdAt");
-                    commentQuery.findObjects(new FindListener<CommentInfo>() {
-                        @Override
-                        public void done(List<CommentInfo> list, BmobException e) {
-                            if (!ToolUtil.isListEmpty(list)) {
-                                momentsInfo.setCommentList(list);
-                            }
+        final List<CommentInfo> commentInfoList = new ArrayList<>();
+        final List<LikesInfo> likesInfoList = new ArrayList<>();
 
-                            if (e == null) {
-                                if (currentPos == momentsList.size() - 1) {
-                                    onResponseSuccess(momentsList, getRequestType());
-                                    curPage++;
-                                }
-                            } else {
-                                onResponseError(e, getRequestType());
-                            }
-                        }
-                    });
-                }
-            });
+        final boolean[] isCommentRequestFin = {false};
+        final boolean[] isLikesRequestFin = {false};
+
+        BmobQuery<CommentInfo> commentQuery = new BmobQuery<>();
+        commentQuery.include(MOMENT + "," + REPLY_USER + "," + AUTHOR_USER);
+        List<String> id = new ArrayList<>();
+        for (MomentsInfo momentsInfo : momentsList) {
+            id.add(momentsInfo.getObjectId());
         }
+        commentQuery.addWhereContainedIn(CommentInfo.CommentFields.MOMENT, id);
+        commentQuery.order("createdAt");
+        commentQuery.findObjects(new FindListener<CommentInfo>() {
+            @Override
+            public void done(List<CommentInfo> list, BmobException e) {
+                isCommentRequestFin[0] = true;
+                if (!ToolUtil.isListEmpty(list)) {
+                    commentInfoList.addAll(list);
+                }
+                mergeData(isCommentRequestFin[0], isLikesRequestFin[0], commentInfoList, likesInfoList, momentsList, e);
+            }
+        });
+
+        BmobQuery<LikesInfo> likesInfoBmobQuery = new BmobQuery<>();
+        likesInfoBmobQuery.include(LikesInfo.LikesField.MOMENTID + "," + LikesInfo.LikesField.USERID);
+        likesInfoBmobQuery.addWhereContainedIn(LikesInfo.LikesField.MOMENTID, id);
+        likesInfoBmobQuery.order("createdAt");
+        likesInfoBmobQuery.findObjects(new FindListener<LikesInfo>() {
+            @Override
+            public void done(List<LikesInfo> list, BmobException e) {
+                isLikesRequestFin[0] = true;
+                if (!ToolUtil.isListEmpty(list)) {
+                    likesInfoList.addAll(list);
+                }
+                mergeData(isCommentRequestFin[0], isLikesRequestFin[0], commentInfoList, likesInfoList, momentsList, e);
+            }
+        });
+
+    }
+
+
+    private void mergeData(boolean isCommentRequestFin,
+                           boolean isLikeRequestFin,
+                           List<CommentInfo> commentInfoList,
+                           List<LikesInfo> likesInfoList,
+                           List<MomentsInfo> momentsList,
+                           BmobException e) {
+        if (!isCommentRequestFin || !isLikeRequestFin) return;
+        if (e != null) {
+            onResponseError(e, getRequestType());
+            return;
+        }
+        if (ToolUtil.isListEmpty(momentsList)) {
+            onResponseError(new BmobException("动态数据为空"), getRequestType());
+            return;
+        }
+        curPage++;
+
+        HashMap<String, MomentsInfo> map = new HashMap<>();
+        for (MomentsInfo momentsInfo : momentsList) {
+            map.put(momentsInfo.getMomentid(), momentsInfo);
+        }
+
+        for (CommentInfo commentInfo : commentInfoList) {
+            MomentsInfo info = map.get(commentInfo.getMoment().getMomentid());
+            if (info != null) {
+                info.addComment(commentInfo);
+            }
+        }
+
+        for (LikesInfo likesInfo : likesInfoList) {
+            MomentsInfo info = map.get(likesInfo.getMomentsid());
+            if (info != null) {
+                info.addLikes(likesInfo);
+            }
+        }
+
+
+        onResponseSuccess(momentsList, getRequestType());
+
     }
 
 }

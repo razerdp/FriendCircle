@@ -12,4 +12,18 @@ public interface OnResponseListener<T> {
     void onSuccess(T response, int requestType);
 
     void onError(BmobException e, int requestType);
+
+    abstract class SimpleResponseListener<T> implements OnResponseListener<T> {
+
+        @Override
+        public void onStart(int requestType) {
+
+        }
+
+
+        @Override
+        public void onError(BmobException e, int requestType) {
+
+        }
+    }
 }

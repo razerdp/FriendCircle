@@ -15,9 +15,11 @@ import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.net.request.AddCommentRequest;
+import razerdp.friendcircle.app.net.request.AddLikeRequest;
 import razerdp.friendcircle.app.net.request.AddMomentsRequest;
 import razerdp.friendcircle.app.net.request.SimpleResponseListener;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
+import razerdp.github.com.net.base.OnResponseListener;
 
 /**
  * Created by 大灯泡 on 2016/10/28.
@@ -202,6 +204,35 @@ public class BmobInitHelper {
 
         }
 
+    }
+
+    public void addLikes() {
+        if (ToolUtil.isListEmpty(userInfoList)) return;
+        if (ToolUtil.isListEmpty(momentsList)) return;
+
+        Random random = new Random();
+
+        for (int i = 0; i < 100; i++) {
+            int randomIndex = random.nextInt(1000);
+
+            String momentsid = momentsList.get(randomIndex % momentsList.size()).getMomentid();
+            String userid = userInfoList.get(randomIndex % userInfoList.size()).getUserid();
+
+            AddLikeRequest request = new AddLikeRequest(momentsid).setUserid(userid);
+            request.setOnResponseListener(new OnResponseListener.SimpleResponseListener<String>() {
+                @Override
+                public void onError(BmobException e, int requestType) {
+                    super.onError(e, requestType);
+                    KLog.e(e.getMessage());
+                }
+
+                @Override
+                public void onSuccess(String response, int requestType) {
+                    KLog.i(response);
+                }
+            });
+            request.execute();
+        }
     }
 
 

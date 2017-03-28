@@ -15,6 +15,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import razerdp.friendcircle.R;
+import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
 import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.github.com.baseuilib.widget.span.CustomImageSpan;
 import razerdp.github.com.baseuilib.widget.span.SpannableStringBuilderCompat;
@@ -36,7 +37,7 @@ public class PraiseWidget extends TextView {
     //默认点击背景
     private int clickBg = 0x00000000;
 
-    private List<UserInfo> datas;
+    private List<LikesInfo> datas;
 
     private static final LruCache<String, SpannableStringBuilderCompat> praiseCache
             = new LruCache<String, SpannableStringBuilderCompat>(50) {
@@ -74,7 +75,7 @@ public class PraiseWidget extends TextView {
         setTextSize(textSize);
     }
 
-    public void setDatas(List<UserInfo> datas) {
+    public void setDatas(List<LikesInfo> datas) {
         this.datas = datas;
     }
 
@@ -89,7 +90,7 @@ public class PraiseWidget extends TextView {
         }
     }
 
-    private void createSpanStringBuilder(List<UserInfo> datas) {
+    private void createSpanStringBuilder(List<LikesInfo> datas) {
         if (datas == null || datas.size() == 0) return;
         String key = Integer.toString(datas.hashCode() + datas.size());
         SpannableStringBuilderCompat spanStrBuilder = praiseCache.get(key);
@@ -103,12 +104,12 @@ public class PraiseWidget extends TextView {
             //给出两个空格，点赞图标后
             spanStrBuilder.append(" ");
             for (int i = 0; i < datas.size(); i++) {
-                PraiseClick praiseClick = new PraiseClick.Builder(getContext(), datas.get(i)).setTextSize(textSize)
+                PraiseClick praiseClick = new PraiseClick.Builder(getContext(), datas.get(i).getUserInfo()).setTextSize(textSize)
                                                                                              .setColor(textColor)
                                                                                              .setClickEventColor(clickBg)
                                                                                              .build();
                 try {
-                    spanStrBuilder.append(datas.get(i).getNick(), praiseClick, 0);
+                    spanStrBuilder.append(datas.get(i).getUserInfo().getNick(), praiseClick, 0);
                 }catch (NullPointerException e){
                     e.printStackTrace();
                     Log.e(TAG, "praiseUserInfo是空的哦");
