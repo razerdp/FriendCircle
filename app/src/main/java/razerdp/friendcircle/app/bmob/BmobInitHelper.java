@@ -212,26 +212,39 @@ public class BmobInitHelper {
 
         Random random = new Random();
 
+        List<String> userList = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
-            int randomIndex = random.nextInt(1000);
+            int randomIndex = random.nextInt(100);
 
             String momentsid = momentsList.get(randomIndex % momentsList.size()).getMomentid();
-            String userid = userInfoList.get(randomIndex % userInfoList.size()).getUserid();
 
-            AddLikeRequest request = new AddLikeRequest(momentsid).setUserid(userid);
-            request.setOnResponseListener(new OnResponseListener.SimpleResponseListener<String>() {
-                @Override
-                public void onError(BmobException e, int requestType) {
-                    super.onError(e, requestType);
-                    KLog.e(e.getMessage());
-                }
+            int likeUsers = random.nextInt(20);
 
-                @Override
-                public void onSuccess(String response, int requestType) {
-                    KLog.i(response);
+            for (int j = 0; j < likeUsers; j++) {
+                int userIndex = random.nextInt(100);
+                String userid = userInfoList.get(userIndex % userInfoList.size()).getUserid();
+                if (userList.contains(userid)) {
+                    continue;
+                } else {
+                    userList.add(userid);
                 }
-            });
-            request.execute();
+                AddLikeRequest request = new AddLikeRequest(momentsid).setUserid(userid);
+                request.setOnResponseListener(new OnResponseListener.SimpleResponseListener<String>() {
+                    @Override
+                    public void onError(BmobException e, int requestType) {
+                        super.onError(e, requestType);
+                        KLog.e(e.getMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(String response, int requestType) {
+                        KLog.i(response);
+                    }
+                });
+                request.execute();
+            }
+            userList.clear();
+
         }
     }
 
