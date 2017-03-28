@@ -72,32 +72,12 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
         if (!hasScanImg) {
             scanImgSyncWithProgress();
         } else {
-            scanImgSync();
-        }
-    }
-
-    private void scanImgSync() {
-        LocalPhotoManager.INSTANCE.scanImgAsync(new LocalPhotoManager.OnScanListener() {
-
-            @Override
-            public void onStart() {
-                KLog.i(TAG, "onStart");
-
-            }
-
-            @Override
-            public void onFinish() {
-                KLog.i(TAG, "onFinish");
+            if (LocalPhotoManager.INSTANCE.hasData()) {
                 initView();
+            } else {
+                scanImgSyncWithProgress();
             }
-
-            @Override
-            public void onError(LPException e) {
-                KLog.e(TAG, e);
-                UIHelper.ToastMessage(e.getMessage());
-
-            }
-        });
+        }
     }
 
     private void scanImgSyncWithProgress() {

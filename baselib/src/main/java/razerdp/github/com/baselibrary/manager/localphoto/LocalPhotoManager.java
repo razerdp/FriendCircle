@@ -89,8 +89,9 @@ public enum LocalPhotoManager {
         }
         long curTime = System.currentTimeMillis();
         if (curTime - lastScanTime <= SCAN_INTERVAL) {
-            if (callImmediately) {
+            if (new File(AppFileHelper.getAppDataPath().concat(LOCAL_FILE_NAME)).exists() && !callImmediately) {
                 callError(listener, "5天内不应该再次扫描", new IllegalStateException("5天内不应该再次扫描"));
+                reset();
                 return;
             }
         }
@@ -106,7 +107,7 @@ public enum LocalPhotoManager {
                                          MediaStore.Images.ImageColumns.DATE_TAKEN.concat(QUERY_ORDER));
         if (cursor == null) {
             callError(listener, "cursor为空", null);
-            isScaning = false;
+            reset();
             return;
         }
         //构造thumb的查询语句(where id = xxx)
@@ -152,14 +153,20 @@ public enum LocalPhotoManager {
         lastScanTime = System.currentTimeMillis();
         AppSetting.saveLongPreferenceByKey(AppSetting.APP_LAST_SCAN_IMG_TIME, lastScanTime);
         cursor.close();
-        isScaning = false;
-        progressRunnable.reset();
+        reset();
         if (!callImmediately) {
             callFinish(listener);
         }
-        isAsync = false;
         //事实上io流的速度也是杠杠的，所以这里可以采取写入到本地文件的方法来存储扫描结果
         ThreadPoolManager.execute(new WriteToLocalRunnable());
+    }
+
+    private void reset() {
+        isScaning = false;
+        isAsync = false;
+        if (progressRunnable != null) {
+            progressRunnable.reset();
+        }
     }
 
     public void registerContentObserver(Handler handler) {
@@ -185,6 +192,10 @@ public enum LocalPhotoManager {
             }
         }
         return false;
+    }
+
+    public boolean hasData() {
+        return !sALBUM.isEmpty();
     }
 
     private String getThumbPath(String[] whereQuery) {

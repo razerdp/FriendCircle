@@ -26,6 +26,7 @@ public class FriendCircleApp extends Application {
         initLocalHostInfo();
         AppFileHelper.initStoryPath();
         LocalPhotoManager.INSTANCE.registerContentObserver(null);
+        LocalPhotoManager.INSTANCE.scanImgAsync(null);
     }
 
     private void initBmob() {

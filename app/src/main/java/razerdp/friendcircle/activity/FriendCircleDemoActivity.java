@@ -198,7 +198,7 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
 
             @Override
             public void onAlbumClick() {
-                UIHelper.ToastMessage("跳到选择页面");
+                ActivityLauncher.startToPhotoSelectActivity(getActivity());
             }
         }).showPopupWindow();
     }

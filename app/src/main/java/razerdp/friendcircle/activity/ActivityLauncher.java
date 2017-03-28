@@ -8,6 +8,7 @@ import razerdp.friendcircle.app.mvp.model.uimodel.PhotoBrowseInfo;
 import razerdp.friendcircle.activity.gallery.PhotoBrowseActivity;
 import razerdp.friendcircle.activity.publish.PublishActivity;
 import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
+import razerdp.github.com.photoselect.PhotoSelectActivity;
 
 /**
  * Created by 大灯泡 on 2017/3/1.
@@ -35,5 +36,17 @@ public class ActivityLauncher {
     public static void startToPhotoBrosweActivity(Activity act, @NonNull PhotoBrowseInfo info) {
         if (info == null) return;
         PhotoBrowseActivity.startToPhotoBrowseActivity(act, info);
+    }
+
+    /**
+     * 发射到选择图片页面
+     *
+     * @param act
+     */
+    public static void startToPhotoSelectActivity(Activity act){
+        Intent intent=new Intent(act, PhotoSelectActivity.class);
+        act.startActivity(intent);
+        SwitchActivityTransitionUtil.transitionVerticalIn(act);
+
     }
 }

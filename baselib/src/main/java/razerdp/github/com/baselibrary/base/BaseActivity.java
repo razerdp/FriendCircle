@@ -1,5 +1,6 @@
 package razerdp.github.com.baselibrary.base;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,6 +10,8 @@ import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
+import com.socks.library.KLog;
 
 import java.util.List;
 
@@ -26,6 +29,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        KLog.i("activity onCreate :  " + this.getClass().getSimpleName());
         onHandleIntent(getIntent());
     }
 
@@ -69,6 +73,10 @@ public abstract class BaseActivity extends AppCompatActivity {
             return !topActivity.getPackageName().equals(getPackageName());
         }
         return false;
+    }
+
+    public Activity getActivity() {
+        return BaseActivity.this;
     }
 
 }
