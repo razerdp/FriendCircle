@@ -213,10 +213,17 @@ public class BmobInitHelper {
         Random random = new Random();
 
         List<String> userList = new ArrayList<>();
+        List<String> momentList = new ArrayList<>();
+
         for (int i = 0; i < 100; i++) {
             int randomIndex = random.nextInt(100);
 
             String momentsid = momentsList.get(randomIndex % momentsList.size()).getMomentid();
+            if (momentList.contains(momentsid)) {
+                continue;
+            } else {
+                momentList.add(momentsid);
+            }
 
             int likeUsers = random.nextInt(20);
 

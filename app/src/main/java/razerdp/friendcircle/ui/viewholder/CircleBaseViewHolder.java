@@ -19,7 +19,6 @@ import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.mvp.presenter.MomentPresenter;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.SimpleObjectPool;
@@ -184,7 +183,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
                     commentWidget.setPadding(commentLeftAndPaddintRight, commentTopAndPaddintBottom, commentLeftAndPaddintRight, commentTopAndPaddintBottom);
                     commentWidget.setLineSpacing(4, 1);
                 }
-                commentWidget.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.selector_comment_widget));
+                commentWidget.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.common_selector));
                 commentWidget.setOnClickListener(onCommentWidgetClickListener);
                 commentWidget.setOnLongClickListener(onCommentLongClickListener);
                 commentLayout.addView(commentWidget);

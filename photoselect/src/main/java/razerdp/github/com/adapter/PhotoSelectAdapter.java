@@ -65,7 +65,6 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
         callSelectListenerChange();
     }
 
-
     private void onUnSelectPhoto(LocalPhotoManager.ImageInfo info) {
         if (info == null) return;
         if (selectedRecordLists.size() <= 0) return;
@@ -91,6 +90,11 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
         return !(selectedRecordLists.size() >= MAX_COUNT || selectedRecordLists.size() < 0);
     }
 
+    @Override
+    public void updateData(List<LocalPhotoManager.ImageInfo> datas) {
+        selectedRecordLists.clear();
+        super.updateData(datas);
+    }
 
     private class InnerViewHolder extends BaseRecyclerViewHolder<LocalPhotoManager.ImageInfo> {
 

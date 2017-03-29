@@ -110,6 +110,7 @@ public enum LocalPhotoManager {
             reset();
             return;
         }
+        sALBUM.clear();
         //构造thumb的查询语句(where id = xxx)
         final String[] thumbWhereQuery = new String[1];
         List<ImageInfo> allImageInfoLists = new ArrayList<>();
@@ -219,8 +220,16 @@ public enum LocalPhotoManager {
         return result;
     }
 
-    public LinkedHashMap<String, List<ImageInfo>> getLocalImages() {
+    public LinkedHashMap<String, List<ImageInfo>> getLocalImagesMap() {
         return new LinkedHashMap<>(sALBUM);
+    }
+
+    public List<ImageInfo> getLocalImages(String albumName) {
+        List<ImageInfo> infos = sALBUM.get(albumName);
+        if (infos != null) {
+            return new ArrayList<ImageInfo>(infos);
+        }
+        return new ArrayList<ImageInfo>();
     }
 
     public String getAllPhotoTitle() {
@@ -347,7 +356,7 @@ public enum LocalPhotoManager {
 
         @Override
         public void run() {
-            LinkedHashMap<String, List<LocalPhotoManager.ImageInfo>> info = LocalPhotoManager.INSTANCE.getLocalImages();
+            LinkedHashMap<String, List<LocalPhotoManager.ImageInfo>> info = LocalPhotoManager.INSTANCE.getLocalImagesMap();
             if (!info.isEmpty()) {
                 FileUtil.writeToFile(AppFileHelper.getAppDataPath().concat(LOCAL_FILE_NAME), GsonUtil.INSTANCE.toString(info).getBytes());
             }

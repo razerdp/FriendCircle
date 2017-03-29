@@ -1,24 +1,19 @@
 package razerdp.friendcircle.app.net.request;
 
-import com.socks.library.KLog;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo.MomentsFields;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.github.com.net.base.BaseRequestClient;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
+import razerdp.github.com.net.base.BaseRequestClient;
 
-import static android.R.id.list;
 import static razerdp.friendcircle.app.mvp.model.entity.CommentInfo.CommentFields.AUTHOR_USER;
 import static razerdp.friendcircle.app.mvp.model.entity.CommentInfo.CommentFields.MOMENT;
 import static razerdp.friendcircle.app.mvp.model.entity.CommentInfo.CommentFields.REPLY_USER;

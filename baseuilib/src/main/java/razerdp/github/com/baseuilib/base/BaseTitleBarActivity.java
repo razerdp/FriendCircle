@@ -12,7 +12,7 @@ import razerdp.github.com.baseuilib.widget.common.TitleBar.OnTitleBarClickListen
 
 /**
  * Created by 大灯泡 on 2017/3/22.
- *
+ * <p>
  * 拥有titlebar的act基类
  */
 
@@ -160,5 +160,14 @@ public abstract class BaseTitleBarActivity extends BaseActivity {
             titleBar.setTitleBarBackground(color);
         }
     }
+
+
+    public String getBarTitle() {
+        if (titleBar != null) {
+            return titleBar.getTitleView().getText().toString();
+        }
+        return null;
+    }
+
 
 }

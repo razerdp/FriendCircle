@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.BitmapRequestBuilder;
 import com.bumptech.glide.Glide;
 
+import razerdp.github.com.baselibrary.R;
 import razerdp.github.com.baselibrary.base.AppContext;
 
 
@@ -25,8 +26,7 @@ public enum ImageLoadMnanger {
     }
 
     public void loadImage(ImageView imageView, String imgUrl) {
-        loadImageByNormalConfig(imageView, imgUrl).placeholder(new ColorDrawable(0xffc6c6c6))
-                                                  .into(imageView);
+        loadImageByNormalConfig(imageView, imgUrl).placeholder(R.drawable.image_nophoto).into(imageView);
     }
 
     public void loadImageDontAnimate(ImageView imageView, String imgUrl) {
@@ -35,7 +35,7 @@ public enum ImageLoadMnanger {
     }
 
     public void loadImage(ImageView imageView, String imgUrl, int width, int height) {
-        loadImageByNormalConfig(imageView, imgUrl).placeholder(new ColorDrawable(0xffc6c6c6))
+        loadImageByNormalConfig(imageView, imgUrl).placeholder(R.drawable.image_nophoto)
                                                   .override(width, height)
                                                   .into(imageView);
     }
