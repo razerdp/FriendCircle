@@ -1,8 +1,10 @@
 package razerdp.github.com.baselibrary.base;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.util.Log;
 
 /**
@@ -18,6 +20,7 @@ public class AppContext {
 
     private static final String TAG = "AppContext";
     public static final Application sApplication;
+    private static final InnerLifecycleHandler INNER_LIFECYCLE_HANDLER;
 
     static {
         Application app = null;
@@ -35,13 +38,24 @@ public class AppContext {
         } finally {
             sApplication = app;
         }
+        INNER_LIFECYCLE_HANDLER = new InnerLifecycleHandler();
+        if (sApplication != null) {
+            sApplication.registerActivityLifecycleCallbacks(INNER_LIFECYCLE_HANDLER);
+        }
+    }
+
+    public static boolean isAppVisable() {
+        return INNER_LIFECYCLE_HANDLER != null && INNER_LIFECYCLE_HANDLER.started > INNER_LIFECYCLE_HANDLER.stopped;
+    }
+
+    public static boolean isAppBackground() {
+        return INNER_LIFECYCLE_HANDLER != null && INNER_LIFECYCLE_HANDLER.paused > INNER_LIFECYCLE_HANDLER.resumed;
     }
 
     private static void checkAppContext() {
         if (sApplication == null)
             throw new IllegalStateException("app reference is null");
     }
-
 
     public static Application getAppInstance() {
         checkAppContext();
@@ -56,6 +70,55 @@ public class AppContext {
     public static Resources getResources() {
         checkAppContext();
         return sApplication.getResources();
+    }
+
+
+    private static class InnerLifecycleHandler implements Application.ActivityLifecycleCallbacks {
+        private int created;
+        private int resumed;
+        private int paused;
+        private int started;
+        private int stopped;
+
+        @Override
+        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+            ++created;
+
+        }
+
+        @Override
+        public void onActivityStarted(Activity activity) {
+            ++started;
+
+        }
+
+        @Override
+        public void onActivityResumed(Activity activity) {
+            ++resumed;
+
+        }
+
+        @Override
+        public void onActivityPaused(Activity activity) {
+            ++paused;
+
+        }
+
+        @Override
+        public void onActivityStopped(Activity activity) {
+            ++stopped;
+
+        }
+
+        @Override
+        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+        }
+
+        @Override
+        public void onActivityDestroyed(Activity activity) {
+
+        }
     }
 
 }

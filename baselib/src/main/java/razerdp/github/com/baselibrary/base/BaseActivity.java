@@ -37,17 +37,17 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-//        if (isApplicationInBackground()) {
-//            isAppInBackground = true;
-//        }
+        if (AppContext.isAppBackground()) {
+            isAppInBackground = true;
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        if (isAppInBackground) {
-//            isAppInBackground = false;
-//        }
+        if (isAppInBackground) {
+            isAppInBackground = false;
+        }
     }
 
     /**
@@ -65,15 +65,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         return (T) super.findViewById(id);
     }
 
-    private boolean isApplicationInBackground() {
-        final ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        final List<ActivityManager.RunningTaskInfo> tasks = manager.getRunningTasks(1);
-        if (!tasks.isEmpty()) {
-            final ComponentName topActivity = tasks.get(0).topActivity;
-            return !topActivity.getPackageName().equals(getPackageName());
-        }
-        return false;
-    }
 
     public Activity getActivity() {
         return BaseActivity.this;
