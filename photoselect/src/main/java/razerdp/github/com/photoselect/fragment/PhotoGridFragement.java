@@ -1,5 +1,6 @@
 package razerdp.github.com.photoselect.fragment;
 
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -131,13 +132,14 @@ public class PhotoGridFragement extends BaseFragment {
             final int itemDecoration = UIHelper.dipToPx(2);
             adapter = new PhotoSelectAdapter(getActivity(), itemDecoration, LocalPhotoManager.INSTANCE.getLocalImages(albumName));
             initSelectCountChangeListener();
-            vh.mPhotoContent.setLayoutManager(new GridLayoutManager(getActivity(), 4, LinearLayoutManager.VERTICAL, true));
+            vh.mPhotoContent.setLayoutManager(new GridLayoutManager(getActivity(), 4, LinearLayoutManager.VERTICAL, false));
             vh.mPhotoContent.addItemDecoration(new GridItemDecoration(itemDecoration));
             vh.mPhotoContent.setAdapter(adapter);
         } else {
             adapter.updateData(LocalPhotoManager.INSTANCE.getLocalImages(albumName));
             vh.setPhotoSlectCount(0);
         }
+        vh.mPhotoContent.getLayoutManager().scrollToPosition(adapter.getItemCount()-1);
     }
 
     //=============================================================click event

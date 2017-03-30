@@ -7,12 +7,12 @@
                 android:gravity="center_vertical">
 
     <ImageView
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="8dp"
-        android:src="@drawable/arrow"/>
+        android:src="@drawable/arrow_gray_bold"/>
 
     <ImageView
         android:id="@+id/album_thumb"
@@ -43,4 +43,8 @@
         android:textSize="16sp"
         tools:text="（204）"
         />
+
+    <View
+        style="@style/dark_divider"
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>

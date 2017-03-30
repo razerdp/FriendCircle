@@ -92,9 +92,15 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
 
     @Override
     public void updateData(List<LocalPhotoManager.ImageInfo> datas) {
-        selectedRecordLists.clear();
+        clearSelectRecord();
         super.updateData(datas);
     }
+
+    private void clearSelectRecord(){
+        selectedRecordLists.clear();
+        selectable = true;
+    }
+
 
     private class InnerViewHolder extends BaseRecyclerViewHolder<LocalPhotoManager.ImageInfo> {
 

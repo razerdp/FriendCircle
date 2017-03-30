@@ -3,6 +3,7 @@ package debug;
 import android.app.Application;
 
 import razerdp.github.com.baselibrary.helper.AppFileHelper;
+import razerdp.github.com.baselibrary.helper.AppSetting;
 import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
 
 /**
@@ -17,6 +18,9 @@ public class ModuleApplication extends Application {
         super.onCreate();
         AppFileHelper.initStoryPath();
         LocalPhotoManager.INSTANCE.registerContentObserver(null);
+        if (AppSetting.loadBooleanPreferenceByKey(AppSetting.APP_HAS_SCAN_IMG, false)) {
+            LocalPhotoManager.INSTANCE.scanImgAsync(null);
+        }
     }
 
     @Override
