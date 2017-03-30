@@ -10,6 +10,8 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
 ##### 【简略更新日志】
  - 2017/03/30
     + 修复LocalPhotoManager监听媒体库更新时插入过多数据的问题。
+    + 优化gridphotofragment和图片浏览的逻辑
+    + 增加图片预览activity，功能慢慢完善
 
  - 2017/03/29
     + 图片选择模块（包括相册部分）完成
