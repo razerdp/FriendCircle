@@ -1,15 +1,19 @@
 package razerdp.github.com.baselibrary.base;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.socks.library.KLog;
 
@@ -68,6 +72,28 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public Activity getActivity() {
         return BaseActivity.this;
+    }
+
+    /**
+     * 隐藏状态栏
+     * <p>
+     * 在setContentView前调用
+     */
+    protected void hideStatusBar() {
+        final int sdkVer = Build.VERSION.SDK_INT;
+        if (sdkVer < 16) {
+            //4.0及一下
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } else {
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+            ActionBar actionBar = getActionBar();
+            if (actionBar != null) {
+                actionBar.hide();
+            }
+        }
     }
 
 }

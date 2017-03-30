@@ -1,5 +1,7 @@
 package razerdp.github.com.photoselect.fragment;
 
+import android.content.Intent;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,8 +24,10 @@ import razerdp.github.com.baselibrary.manager.localphoto.LPException;
 import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
+import razerdp.github.com.baseuilib.baseadapter.OnRecyclerViewItemClickListener;
 import razerdp.github.com.baseuilib.baseadapter.itemdecoration.GridItemDecoration;
 import razerdp.github.com.baseuilib.widget.popup.PopupProgress;
+import razerdp.github.com.photoselect.PhotoMultiBrowserActivity;
 import razerdp.github.com.photoselect.R;
 
 /**
@@ -130,13 +134,28 @@ public class PhotoGridFragement extends BaseFragment {
         if (adapter == null) {
             final int itemDecoration = UIHelper.dipToPx(2);
             adapter = new PhotoSelectAdapter(getActivity(), itemDecoration, LocalPhotoManager.INSTANCE.getLocalImages(albumName));
+            initRecyclerViewItemClick(adapter);
             initSelectCountChangeListener();
-            vh.mPhotoContent.setLayoutManager(new GridLayoutManager(getActivity(), 4, LinearLayoutManager.VERTICAL, true));
+            vh.mPhotoContent.setLayoutManager(new GridLayoutManager(getActivity(), 4, LinearLayoutManager.VERTICAL, false));
             vh.mPhotoContent.addItemDecoration(new GridItemDecoration(itemDecoration));
             vh.mPhotoContent.setAdapter(adapter);
         } else {
             adapter.updateData(LocalPhotoManager.INSTANCE.getLocalImages(albumName));
             vh.setPhotoSlectCount(0);
+        }
+        vh.mPhotoContent.getLayoutManager().scrollToPosition(adapter.getItemCount()-1);
+    }
+
+    private void initRecyclerViewItemClick(PhotoSelectAdapter adapter) {
+        if (adapter.getOnRecyclerViewItemClickListener()==null){
+            adapter.setOnRecyclerViewItemClickListener(new OnRecyclerViewItemClickListener<LocalPhotoManager.ImageInfo>() {
+                @Override
+                public void onItemClick(View v, int position, LocalPhotoManager.ImageInfo data) {
+                    Intent intent=new Intent(getActivity(), PhotoMultiBrowserActivity.class);
+                    startActivity(intent);
+
+                }
+            });
         }
     }
 

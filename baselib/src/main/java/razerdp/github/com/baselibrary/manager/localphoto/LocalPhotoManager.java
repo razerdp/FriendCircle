@@ -39,7 +39,7 @@ public enum LocalPhotoManager {
     private static final String TAG = "LocalPhotoManager";
     public static final String LOCAL_FILE_NAME = "LocalPhotoFile";
     private static final String ALL_PHOTO_TITLE = "所有照片";
-    private static final String QUERY_ORDER = " DESC";
+    private static final String QUERY_ORDER = " ASC";
     private static final boolean SCAN_EXTERNAL_SD = true;
     //5天内不再扫描
     private static final long SCAN_INTERVAL = 5 * 24 * 60 * 60 * 1000;
@@ -154,10 +154,10 @@ public enum LocalPhotoManager {
         lastScanTime = System.currentTimeMillis();
         AppSetting.saveLongPreferenceByKey(AppSetting.APP_LAST_SCAN_IMG_TIME, lastScanTime);
         cursor.close();
-        reset();
         if (!callImmediately) {
             callFinish(listener);
         }
+        reset();
         //事实上io流的速度也是杠杠的，所以这里可以采取写入到本地文件的方法来存储扫描结果
         ThreadPoolManager.execute(new WriteToLocalRunnable());
     }
@@ -447,15 +447,14 @@ public enum LocalPhotoManager {
             // FIXME: 2017/3/24 没错。。。他喵的又是上面的重复步骤，有空把它抽取出来
             final String[] thumbWhereQuery = new String[1];
             List<ImageInfo> allImageInfoLists = sALBUM.get(ALL_PHOTO_TITLE);
-            cursor.moveToFirst();
-            while (cursor.moveToNext()) {
+            if (cursor.moveToLast()) {
                 int imgId = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID));
                 String imgPath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
                 int orientation = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.ImageColumns.ORIENTATION));
                 String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME));
                 long dateTaken = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATE_TAKEN));
 
-                if (!new File(imgPath).exists()) continue;
+                if (!new File(imgPath).exists()) return;
 
                 thumbWhereQuery[0] = String.valueOf(imgId);
                 String thumbImgPath = getThumbPath(thumbWhereQuery);
