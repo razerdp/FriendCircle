@@ -12,6 +12,11 @@ public class SimpleObjectPool<T> {
     private int size;
     private int curPointer = -1;
 
+
+    public SimpleObjectPool() {
+        this(8);
+    }
+
     public SimpleObjectPool(int size) {
         this.size = size;
         objsPool = (T[]) new Object[size];

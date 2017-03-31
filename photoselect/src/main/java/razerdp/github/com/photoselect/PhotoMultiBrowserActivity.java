@@ -2,9 +2,9 @@ package razerdp.github.com.photoselect;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.BounceInterpolator;
@@ -13,11 +13,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import razerdp.github.com.adapter.PhotoBrowserAdapter;
 import razerdp.github.com.baselibrary.base.BaseActivity;
+import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.widget.common.HackyViewPager;
 import razerdp.github.com.baseuilib.widget.imageview.CheckDrawable;
+import razerdp.github.com.model.PhotoBrowserInfo;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * Created by 大灯泡 on 2017/3/30.
@@ -28,26 +32,54 @@ import razerdp.github.com.baseuilib.widget.imageview.CheckDrawable;
  */
 
 public class PhotoMultiBrowserActivity extends BaseActivity {
+    private static final String TAG = "PhotoMultiBrowserActivi";
+
+    public static final String INTENT_BROWSERINFO = "intent_browserinfo";
+    private PhotoBrowserInfo browserInfo;
+    private PhotoBrowserAdapter adapter;
+
+
     @Override
     public void onHandleIntent(Intent intent) {
-
+        if (!intent.hasExtra(INTENT_BROWSERINFO)) {
+            finish();
+            return;
+        }
+        browserInfo = intent.getParcelableExtra(INTENT_BROWSERINFO);
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (browserInfo == null) {
+            finish();
+            return;
+        }
         hideStatusBar();
         setContentView(R.layout.activity_photo_multi_browser);
-        final ViewHolder vh = new ViewHolder();
-        final boolean[] selected = {false};
-        vh.selectedIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selected[0] = !selected[0];
-                vh.setSelected(selected[0]);
-            }
-        });
+        initView();
     }
+
+    private void initView() {
+        final ViewHolder vh = new ViewHolder();
+        if (TextUtils.isEmpty(browserInfo.getCurrentAlbumName())) {
+            adapter = new PhotoBrowserAdapter(this, browserInfo.getSelectedDatas());
+        } else {
+            adapter = new PhotoBrowserAdapter(this, LocalPhotoManager.INSTANCE.getLocalImages(browserInfo.getCurrentAlbumName()));
+        }
+        adapter.setOnViewTapListener(onViewTapListener);
+        vh.viewPager.setAdapter(adapter);
+        vh.viewPager.setCurrentItem(browserInfo.getCurPos());
+    }
+
+
+    private PhotoViewAttacher.OnViewTapListener onViewTapListener = new PhotoViewAttacher.OnViewTapListener() {
+        @Override
+        public void onViewTap(View view, float x, float y) {
+            // TODO: 2017/4/1 top bar和bottom bar隐藏
+
+        }
+    };
 
 
     class ViewHolder {

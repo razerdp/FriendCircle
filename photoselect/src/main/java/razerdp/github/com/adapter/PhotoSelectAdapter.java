@@ -178,6 +178,16 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
                 }
             }
         }
+
+        class InnerClickEventClass implements View.OnClickListener{
+
+            private int curPos;
+
+            @Override
+            public void onClick(View v) {
+
+            }
+        }
     }
 
     private OnSelectCountChangeLisntenr onSelectCountChangeLisntenr;

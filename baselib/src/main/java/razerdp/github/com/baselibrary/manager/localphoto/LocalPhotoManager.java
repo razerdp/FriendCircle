@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -363,7 +365,7 @@ public enum LocalPhotoManager {
         }
     }
 
-    public static class ImageInfo implements Serializable, Cloneable, Comparable<String> {
+    public static class ImageInfo implements Serializable, Parcelable, Cloneable, Comparable<String> {
         public final String imagePath;
         public final String thumbnailPath;
         public final String albumName;
@@ -377,6 +379,40 @@ public enum LocalPhotoManager {
             this.time = time;
             this.orientation = orientation;
         }
+
+        protected ImageInfo(Parcel in) {
+            imagePath = in.readString();
+            thumbnailPath = in.readString();
+            albumName = in.readString();
+            time = in.readLong();
+            orientation = in.readInt();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(imagePath);
+            dest.writeString(thumbnailPath);
+            dest.writeString(albumName);
+            dest.writeLong(time);
+            dest.writeInt(orientation);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public static final Creator<ImageInfo> CREATOR = new Creator<ImageInfo>() {
+            @Override
+            public ImageInfo createFromParcel(Parcel in) {
+                return new ImageInfo(in);
+            }
+
+            @Override
+            public ImageInfo[] newArray(int size) {
+                return new ImageInfo[size];
+            }
+        };
 
         public boolean checkValided() {
             return StringUtil.noEmpty(imagePath) || StringUtil.noEmpty(thumbnailPath);
@@ -412,6 +448,10 @@ public enum LocalPhotoManager {
                     ", time=" + time +
                     ", orientation=" + orientation +
                     '}';
+        }
+
+        public String getImagePath() {
+            return TextUtils.isEmpty(imagePath) ? thumbnailPath : imagePath;
         }
     }
 
