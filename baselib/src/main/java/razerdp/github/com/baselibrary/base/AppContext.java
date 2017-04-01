@@ -75,9 +75,10 @@ public class AppContext {
     }
 
     public static void initARouter(){
-        ARouter.init(getAppInstance());
         ARouter.openLog();
         ARouter.openDebug();
+        ARouter.printStackTrace();
+        ARouter.init(getAppInstance());
     }
 
 

@@ -26,6 +26,9 @@ android {
             resValue("string", "PORT_NUMBER", "8083")
         }
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
