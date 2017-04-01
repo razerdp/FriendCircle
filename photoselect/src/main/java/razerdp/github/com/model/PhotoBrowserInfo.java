@@ -72,4 +72,14 @@ public class PhotoBrowserInfo implements Parcelable {
     public void setSelectedDatas(List<LocalPhotoManager.ImageInfo> selectedDatas) {
         this.selectedDatas = selectedDatas;
     }
+
+    private PhotoBrowserInfo(int curPos, String currentAlbumName, List<LocalPhotoManager.ImageInfo> selectedDatas) {
+        this.curPos = curPos;
+        this.currentAlbumName = currentAlbumName;
+        this.selectedDatas = selectedDatas;
+    }
+
+    public static PhotoBrowserInfo create(int curPos, String currentAlbumName, List<LocalPhotoManager.ImageInfo> selectedDatas) {
+        return new PhotoBrowserInfo(curPos, currentAlbumName, selectedDatas);
+    }
 }

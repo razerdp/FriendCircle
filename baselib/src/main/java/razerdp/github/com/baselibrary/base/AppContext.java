@@ -7,6 +7,8 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.alibaba.android.arouter.launcher.ARouter;
+
 /**
  * Created by 大灯泡 on 2017/3/22.
  * <p>
@@ -70,6 +72,12 @@ public class AppContext {
     public static Resources getResources() {
         checkAppContext();
         return sApplication.getResources();
+    }
+
+    public static void initARouter(){
+        ARouter.init(getAppInstance());
+        ARouter.openLog();
+        ARouter.openDebug();
     }
 
 

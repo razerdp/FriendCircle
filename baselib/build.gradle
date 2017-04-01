@@ -11,7 +11,11 @@ android {
         versionName rootProject.ext.baselib.versionName
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [ moduleName : project.getName() ]
+            }
+        }
     }
     buildTypes {
         release {
@@ -51,5 +55,10 @@ dependencies {
         exclude group: 'glide-parent'
         exclude group: 'com.squareup.okhttp3'
     }
+
+    //ARouter
+    compile 'com.alibaba:arouter-api:1.2.0'
+    annotationProcessor 'com.alibaba:arouter-compiler:1.1.0'
+
     testCompile 'junit:junit:4.12'
 }

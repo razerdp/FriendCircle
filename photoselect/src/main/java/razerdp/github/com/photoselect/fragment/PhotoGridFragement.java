@@ -129,7 +129,7 @@ public class PhotoGridFragement extends BaseFragment {
 
     public void changeAlbum(String albumName) {
         if (TextUtils.isEmpty(albumName)) return;
-        if (TextUtils.equals(currentAlbumName,albumName))return;
+        if (TextUtils.equals(currentAlbumName, albumName)) return;
         currentAlbumName = albumName;
         if (adapter == null) {
             final int itemDecoration = UIHelper.dipToPx(2);
@@ -143,15 +143,16 @@ public class PhotoGridFragement extends BaseFragment {
             adapter.updateData(LocalPhotoManager.INSTANCE.getLocalImages(albumName));
             vh.setPhotoSlectCount(0);
         }
-        vh.mPhotoContent.getLayoutManager().scrollToPosition(adapter.getItemCount()-1);
+        adapter.setCurAlbumName(currentAlbumName);
+        vh.mPhotoContent.getLayoutManager().scrollToPosition(adapter.getItemCount() - 1);
     }
 
     private void initRecyclerViewItemClick(PhotoSelectAdapter adapter) {
-        if (adapter.getOnRecyclerViewItemClickListener()==null){
+        if (adapter.getOnRecyclerViewItemClickListener() == null) {
             adapter.setOnRecyclerViewItemClickListener(new OnRecyclerViewItemClickListener<LocalPhotoManager.ImageInfo>() {
                 @Override
                 public void onItemClick(View v, int position, LocalPhotoManager.ImageInfo data) {
-                    Intent intent=new Intent(getActivity(), PhotoMultiBrowserActivity.class);
+                    Intent intent = new Intent(getActivity(), PhotoMultiBrowserActivity.class);
                     startActivity(intent);
 
                 }

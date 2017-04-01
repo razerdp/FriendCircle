@@ -16,6 +16,12 @@ android {
         } else {
             buildConfigField 'boolean', 'isModule', 'false'
         }
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [ moduleName : project.getName() ]
+            }
+        }
     }
     buildTypes {
         release {

@@ -13,6 +13,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Autowired;
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
+
 import razerdp.github.com.adapter.PhotoBrowserAdapter;
 import razerdp.github.com.baselibrary.base.BaseActivity;
 import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
@@ -31,21 +35,17 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  * target:以后实现编辑功能。。。。
  */
 
+@Route(path = "/photo/browser")
 public class PhotoMultiBrowserActivity extends BaseActivity {
     private static final String TAG = "PhotoMultiBrowserActivi";
 
-    public static final String INTENT_BROWSERINFO = "intent_browserinfo";
+    @Autowired(name = "browserinfo")
     private PhotoBrowserInfo browserInfo;
     private PhotoBrowserAdapter adapter;
 
 
     @Override
     public void onHandleIntent(Intent intent) {
-        if (!intent.hasExtra(INTENT_BROWSERINFO)) {
-            finish();
-            return;
-        }
-        browserInfo = intent.getParcelableExtra(INTENT_BROWSERINFO);
     }
 
     @Override

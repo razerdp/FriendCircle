@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.socks.library.KLog;
 
 import java.util.Date;
@@ -21,6 +22,7 @@ import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewAdapter;
 import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewHolder;
 import razerdp.github.com.baseuilib.widget.imageview.CheckImageView;
+import razerdp.github.com.model.PhotoBrowserInfo;
 import razerdp.github.com.photoselect.R;
 
 /**
@@ -36,6 +38,7 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
     private LinkedList<LocalPhotoManager.ImageInfo> selectedRecordLists;
     private static final int MAX_COUNT = 9;
     private boolean selectable = true;
+    private String curAlbumName;
 
     public PhotoSelectAdapter(@NonNull Context context, int itemDecoration, @NonNull List<LocalPhotoManager.ImageInfo> datas) {
         super(context, datas);
@@ -96,7 +99,15 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
         super.updateData(datas);
     }
 
-    private void clearSelectRecord(){
+    public String getCurAlbumName() {
+        return curAlbumName;
+    }
+
+    public void setCurAlbumName(String curAlbumName) {
+        this.curAlbumName = curAlbumName;
+    }
+
+    private void clearSelectRecord() {
         selectedRecordLists.clear();
         selectable = true;
     }
@@ -105,6 +116,7 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
     private class InnerViewHolder extends BaseRecyclerViewHolder<LocalPhotoManager.ImageInfo> {
 
         private CheckImageView checkImageView;
+        private InnerClickEventClass clickEventClass;
         private View maskView;
 
         InnerViewHolder(View itemView, int viewType) {
@@ -112,6 +124,7 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
             checkImageView = (CheckImageView) findViewById(R.id.iv_photo_select);
             maskView = findViewById(R.id.iv_photo_mask);
             setCheckImageViewLayoutParams();
+            clickEventClass = new InnerClickEventClass();
         }
 
         /**
@@ -140,6 +153,9 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
             checkImageView.setSelected(isSelected);
             ImageLoadMnanger.INSTANCE.loadImage(checkImageView, url);
             setupSelectChangeListener(data);
+            clickEventClass.setCurPos(position);
+            checkImageView.setOnClickListener(clickEventClass);
+
         }
 
         private void setupSelectChangeListener(LocalPhotoManager.ImageInfo data) {
@@ -179,14 +195,24 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
             }
         }
 
-        class InnerClickEventClass implements View.OnClickListener{
+        class InnerClickEventClass implements View.OnClickListener {
 
             private int curPos;
 
             @Override
             public void onClick(View v) {
-
+                PhotoBrowserInfo info = PhotoBrowserInfo.create(curPos, curAlbumName, selectedRecordLists);
+                ARouter.getInstance().build("/photo/browser").withParcelable("browserinfo", info).navigation();
             }
+
+            public int getCurPos() {
+                return curPos;
+            }
+
+            public void setCurPos(int curPos) {
+                this.curPos = curPos;
+            }
+
         }
     }
 
