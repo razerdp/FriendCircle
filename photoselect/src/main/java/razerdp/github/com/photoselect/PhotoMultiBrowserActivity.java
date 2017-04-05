@@ -101,18 +101,14 @@ public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnCl
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.back:
-                finishWithoutSave();
-                break;
-            case R.id.photo_select_finish:
-                finish();
-                break;
-            case R.id.photo_edit:
-                UIHelper.ToastMessage("编辑功能大概要好长好长的一段时间后才会研究的啦~");
-                break;
-            default:
-                break;
+        int i = v.getId();
+
+        if (i == R.id.back) {
+            finishWithoutSave();
+        } else if (i == R.id.photo_select_finish) {
+            finish();
+        } else if (i == R.id.photo_edit) {
+            UIHelper.ToastMessage("编辑功能大概要好长好长的一段时间后才会研究的啦~");
         }
 
     }
