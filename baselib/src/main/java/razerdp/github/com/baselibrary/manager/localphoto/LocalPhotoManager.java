@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -81,10 +83,12 @@ public enum LocalPhotoManager {
         isScaning = true;
         lastScanTime = AppSetting.loadLongPreferenceByKey(AppSetting.APP_LAST_SCAN_IMG_TIME, 0);
         callStart(listener);
+
         boolean callImmediately = checkLocalSerializableFile();
         //如果本地文件已经有了，那么可以立即回调，提高用户体验。
         //然后再后台扫一次更新本地文件记录
         if (callImmediately) {
+            callProgress(listener, isAsync, 100);
             callFinish(listener);
         }
         long curTime = System.currentTimeMillis();
@@ -95,8 +99,6 @@ public enum LocalPhotoManager {
                 return;
             }
         }
-
-        final boolean isProgressListener = listener instanceof OnScanProgresslistener;
 
         Cursor cursor = AppContext.getAppContext()
                                   .getContentResolver()
@@ -147,9 +149,7 @@ public enum LocalPhotoManager {
                     imageInfoList.add(imageInfo);
                 }
             }
-            if (isProgressListener) {
-                callProgress((OnScanProgresslistener) listener, isAsync, (int) (cursor.getPosition() * 100.0f / cursorCount));
-            }
+            callProgress(listener, isAsync, (int) (cursor.getPosition() * 100.0f / cursorCount));
         }
         lastScanTime = System.currentTimeMillis();
         AppSetting.saveLongPreferenceByKey(AppSetting.APP_LAST_SCAN_IMG_TIME, lastScanTime);
@@ -286,16 +286,16 @@ public enum LocalPhotoManager {
         }
     }
 
-    private void callProgress(OnScanProgresslistener listener, boolean async, int progress) {
-        if (listener != null) {
+    private void callProgress(OnScanListener listener, boolean async, int progress) {
+        if (listener instanceof OnScanProgresslistener) {
             if (async) {
                 if (progressRunnable.getListener() == null) {
-                    progressRunnable.setListener(listener);
+                    progressRunnable.setListener((OnScanProgresslistener) listener);
                 }
                 progressRunnable.setProgress(progress);
                 handler.post(progressRunnable);
             } else {
-                listener.onProgress(progress);
+                ((OnScanProgresslistener) listener).onProgress(progress);
             }
         }
     }
@@ -363,7 +363,7 @@ public enum LocalPhotoManager {
         }
     }
 
-    public static class ImageInfo implements Serializable, Cloneable, Comparable<String> {
+    public static class ImageInfo implements Serializable, Parcelable, Cloneable, Comparable<ImageInfo> {
         public final String imagePath;
         public final String thumbnailPath;
         public final String albumName;
@@ -378,6 +378,40 @@ public enum LocalPhotoManager {
             this.orientation = orientation;
         }
 
+        protected ImageInfo(Parcel in) {
+            imagePath = in.readString();
+            thumbnailPath = in.readString();
+            albumName = in.readString();
+            time = in.readLong();
+            orientation = in.readInt();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(imagePath);
+            dest.writeString(thumbnailPath);
+            dest.writeString(albumName);
+            dest.writeLong(time);
+            dest.writeInt(orientation);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public static final Creator<ImageInfo> CREATOR = new Creator<ImageInfo>() {
+            @Override
+            public ImageInfo createFromParcel(Parcel in) {
+                return new ImageInfo(in);
+            }
+
+            @Override
+            public ImageInfo[] newArray(int size) {
+                return new ImageInfo[size];
+            }
+        };
+
         public boolean checkValided() {
             return StringUtil.noEmpty(imagePath) || StringUtil.noEmpty(thumbnailPath);
         }
@@ -389,9 +423,11 @@ public enum LocalPhotoManager {
         }
 
         @Override
-        public int compareTo(@NonNull String o) {
-            if (TextUtils.equals(o, imagePath)) return 0;
-            return 1;
+        public int compareTo(@NonNull ImageInfo o) {
+            if (o == null) return -1;
+            if (TextUtils.isEmpty(o.getImagePath())) return -1;
+            if (TextUtils.equals(o.getImagePath(), getImagePath())) return 0;
+            return -1;
         }
 
         //深复制，暂时不需要，另外利用流的方法的话，类需要实现Serializable接口
@@ -412,6 +448,10 @@ public enum LocalPhotoManager {
                     ", time=" + time +
                     ", orientation=" + orientation +
                     '}';
+        }
+
+        public String getImagePath() {
+            return TextUtils.isEmpty(imagePath) ? thumbnailPath : imagePath;
         }
     }
 

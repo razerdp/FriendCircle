@@ -29,6 +29,10 @@ public enum ImageLoadMnanger {
         loadImageByNormalConfig(imageView, imgUrl).placeholder(R.drawable.image_nophoto).into(imageView);
     }
 
+    public void loadImage(ImageView imageView, int placeHolderColor, String imgUrl) {
+        loadImageByNormalConfig(imageView, imgUrl).placeholder(new ColorDrawable(placeHolderColor)).into(imageView);
+    }
+
     public void loadImageDontAnimate(ImageView imageView, String imgUrl) {
         loadImageByNormalConfig(imageView, imgUrl).dontAnimate()
                                                   .into(imageView);

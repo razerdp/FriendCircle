@@ -1,6 +1,9 @@
 package razerdp.github.com.photoselect.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,9 +15,11 @@ import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.socks.library.KLog;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import razerdp.github.com.adapter.PhotoSelectAdapter;
@@ -26,9 +31,12 @@ import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.baseadapter.OnRecyclerViewItemClickListener;
 import razerdp.github.com.baseuilib.baseadapter.itemdecoration.GridItemDecoration;
+import razerdp.github.com.baseuilib.dialog.progress.ProgressDialogHelper;
 import razerdp.github.com.baseuilib.widget.popup.PopupProgress;
+import razerdp.github.com.model.PhotoBrowserInfo;
 import razerdp.github.com.photoselect.PhotoMultiBrowserActivity;
 import razerdp.github.com.photoselect.R;
+import razerdp.github.com.router.RouterList;
 
 /**
  * Created by 大灯泡 on 2017/3/29.
@@ -42,6 +50,7 @@ public class PhotoGridFragement extends BaseFragment {
     private ViewHolder vh;
     private PhotoSelectAdapter adapter;
     private String currentAlbumName;
+    public static final int MAX_COUNT = 9;
 
     @Override
     public int getLayoutResId() {
@@ -57,56 +66,47 @@ public class PhotoGridFragement extends BaseFragment {
         AppSetting.saveBooleanPreferenceByKey(AppSetting.APP_HAS_SCAN_IMG, true);
         final PopupProgress popupProgress = new PopupProgress(getActivity());
         popupProgress.setProgressTips("正在扫描系统相册...");
-        //popup在activity没初始化完成前可能无法展示，因此需要延迟一点。。。
-        getActivity().getWindow().getDecorView().postDelayed(new Runnable() {
+        LocalPhotoManager.INSTANCE.scanImgAsync(new LocalPhotoManager.OnScanProgresslistener() {
+
             @Override
-            public void run() {
-                LocalPhotoManager.INSTANCE.scanImgAsync(new LocalPhotoManager.OnScanProgresslistener() {
-
-                    @Override
-                    public void onStart() {
-                        popupProgress.showPopupWindow();
-                        KLog.i(TAG, "onStart");
-                    }
-
-                    @Override
-                    public void onProgress(int progress) {
-                        popupProgress.setProgress(progress);
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        KLog.i(TAG, "onFinish");
-                        AppSetting.saveBooleanPreferenceByKey(AppSetting.APP_HAS_SCAN_IMG, true);
-                        popupProgress.dismiss();
-                        initView();
-                    }
-
-                    @Override
-                    public void onError(LPException e) {
-                        KLog.e(TAG, e);
-                        UIHelper.ToastMessage(e.getMessage());
-                        popupProgress.dismiss();
-                    }
-                });
+            public void onStart() {
+                popupProgress.showPopupWindow();
+                popupProgress.setProgress(0);
+                KLog.i(TAG, "onStart");
             }
-        }, 500);
 
+            @Override
+            public void onProgress(int progress) {
+                popupProgress.setProgress(progress);
+            }
+
+            @Override
+            public void onFinish() {
+                KLog.i(TAG, "onFinish");
+                AppSetting.saveBooleanPreferenceByKey(AppSetting.APP_HAS_SCAN_IMG, true);
+                popupProgress.dismiss();
+                initView();
+            }
+
+            @Override
+            public void onError(LPException e) {
+                KLog.e(TAG, e);
+                UIHelper.ToastMessage(e.getMessage());
+                popupProgress.dismiss();
+            }
+        });
     }
 
     @Override
     protected void onInitView(View rootView) {
         vh = new ViewHolder();
-        boolean hasScanImg = AppSetting.loadBooleanPreferenceByKey(AppSetting.APP_HAS_SCAN_IMG, false);
-        if (!hasScanImg) {
-            scanImgSyncWithProgress();
-        } else {
-            if (LocalPhotoManager.INSTANCE.hasData()) {
-                initView();
-            } else {
+        //popup在activity没初始化完成前可能无法展示，因此需要延迟一点。。。
+        getActivity().getWindow().getDecorView().postDelayed(new Runnable() {
+            @Override
+            public void run() {
                 scanImgSyncWithProgress();
             }
-        }
+        }, 500);
     }
 
     private void initView() {
@@ -126,15 +126,13 @@ public class PhotoGridFragement extends BaseFragment {
         });
     }
 
-
     public void changeAlbum(String albumName) {
         if (TextUtils.isEmpty(albumName)) return;
-        if (TextUtils.equals(currentAlbumName,albumName))return;
+        if (TextUtils.equals(currentAlbumName, albumName)) return;
         currentAlbumName = albumName;
         if (adapter == null) {
             final int itemDecoration = UIHelper.dipToPx(2);
             adapter = new PhotoSelectAdapter(getActivity(), itemDecoration, LocalPhotoManager.INSTANCE.getLocalImages(albumName));
-            initRecyclerViewItemClick(adapter);
             initSelectCountChangeListener();
             vh.mPhotoContent.setLayoutManager(new GridLayoutManager(getActivity(), 4, LinearLayoutManager.VERTICAL, false));
             vh.mPhotoContent.addItemDecoration(new GridItemDecoration(itemDecoration));
@@ -143,19 +141,15 @@ public class PhotoGridFragement extends BaseFragment {
             adapter.updateData(LocalPhotoManager.INSTANCE.getLocalImages(albumName));
             vh.setPhotoSlectCount(0);
         }
-        vh.mPhotoContent.getLayoutManager().scrollToPosition(adapter.getItemCount()-1);
+        adapter.setCurAlbumName(currentAlbumName);
+        vh.mPhotoContent.getLayoutManager().scrollToPosition(adapter.getItemCount() - 1);
     }
 
-    private void initRecyclerViewItemClick(PhotoSelectAdapter adapter) {
-        if (adapter.getOnRecyclerViewItemClickListener()==null){
-            adapter.setOnRecyclerViewItemClickListener(new OnRecyclerViewItemClickListener<LocalPhotoManager.ImageInfo>() {
-                @Override
-                public void onItemClick(View v, int position, LocalPhotoManager.ImageInfo data) {
-                    Intent intent=new Intent(getActivity(), PhotoMultiBrowserActivity.class);
-                    startActivity(intent);
-
-                }
-            });
+    public void updateSelectList(List<LocalPhotoManager.ImageInfo> newDatas) {
+        if (adapter != null) {
+            adapter.updateSelections(newDatas);
+            vh.setPhotoSlectCount(newDatas.size());
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -170,8 +164,12 @@ public class PhotoGridFragement extends BaseFragment {
     private View.OnClickListener onPhotoPreviewClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            UIHelper.ToastMessage("预览");
-
+            PhotoBrowserInfo info = PhotoBrowserInfo.create(0, null, adapter.getSelectedRecordLists());
+            ARouter.getInstance()
+                   .build(RouterList.PhotoMultiBrowserActivity.path)
+                   .withParcelable(RouterList.PhotoMultiBrowserActivity.key_browserinfo, info)
+                   .withInt(RouterList.PhotoMultiBrowserActivity.key_maxSelectCount, MAX_COUNT)
+                   .navigation((Activity) getContext(), RouterList.PhotoMultiBrowserActivity.requestCode);
         }
     };
 

@@ -11,7 +11,11 @@ android {
         versionName rootProject.ext.baselib.versionName
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [ moduleName : project.getName() ]
+            }
+        }
     }
     buildTypes {
         release {
@@ -21,6 +25,9 @@ android {
         debug {
             resValue("string", "PORT_NUMBER", "8083")
         }
+    }
+    lintOptions {
+        abortOnError false
     }
 }
 
@@ -34,6 +41,7 @@ dependencies {
     compile rootProject.ext.dependencies.design
     compile rootProject.ext.dependencies.support_util
 
+    compile project(':router')
 
     compile 'com.github.razerdp:BasePopup:v1.6.3'
     //over scroller helper
@@ -51,5 +59,10 @@ dependencies {
         exclude group: 'glide-parent'
         exclude group: 'com.squareup.okhttp3'
     }
+
+    //ARouter
+    compile rootProject.ext.dependencies.arouter_api
+    annotationProcessor rootProject.ext.dependencies.arouter_compiler
+
     testCompile 'junit:junit:4.12'
 }

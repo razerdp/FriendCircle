@@ -3,10 +3,13 @@ package razerdp.friendcircle.app;
 import android.app.Application;
 import android.content.Context;
 
+import com.alibaba.android.arouter.launcher.ARouter;
+
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
 import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.config.Define;
+import razerdp.github.com.baselibrary.base.AppContext;
 import razerdp.github.com.baselibrary.helper.AppFileHelper;
 import razerdp.github.com.baselibrary.helper.AppSetting;
 import razerdp.github.com.baselibrary.manager.ThreadPoolManager;
@@ -23,6 +26,7 @@ public class FriendCircleApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        AppContext.initARouter();
         initBmob();
         initLocalHostInfo();
         AppFileHelper.initStoryPath();
@@ -50,9 +54,4 @@ public class FriendCircleApp extends Application {
         LocalHostManager.INSTANCE.init();
     }
 
-    @Override
-    public void onTerminate() {
-        LocalPhotoManager.INSTANCE.writeToLocal();
-        super.onTerminate();
-    }
 }

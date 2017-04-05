@@ -1,27 +1,32 @@
 package razerdp.github.com.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.socks.library.KLog;
 
-import java.util.Date;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import razerdp.github.com.baselibrary.imageloader.ImageLoadMnanger;
 import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
+import razerdp.github.com.baselibrary.utils.ToolUtil;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewAdapter;
 import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewHolder;
 import razerdp.github.com.baseuilib.widget.imageview.CheckImageView;
+import razerdp.github.com.model.PhotoBrowserInfo;
 import razerdp.github.com.photoselect.R;
+import razerdp.github.com.router.RouterList;
+
+import static razerdp.github.com.photoselect.fragment.PhotoGridFragement.MAX_COUNT;
 
 /**
  * Created by 大灯泡 on 2017/3/24.
@@ -33,14 +38,14 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
     private static final String TAG = "PhotoSelectAdapter";
 
     private final int itemDecoration;
-    private LinkedList<LocalPhotoManager.ImageInfo> selectedRecordLists;
-    private static final int MAX_COUNT = 9;
+    private List<LocalPhotoManager.ImageInfo> selectedRecordLists;
     private boolean selectable = true;
+    private String curAlbumName;
 
     public PhotoSelectAdapter(@NonNull Context context, int itemDecoration, @NonNull List<LocalPhotoManager.ImageInfo> datas) {
         super(context, datas);
         this.itemDecoration = itemDecoration;
-        this.selectedRecordLists = new LinkedList<>();
+        this.selectedRecordLists = new ArrayList<>();
     }
 
     @Override
@@ -85,7 +90,6 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
         }
     }
 
-
     private boolean checkSelectListLength() {
         return !(selectedRecordLists.size() >= MAX_COUNT || selectedRecordLists.size() < 0);
     }
@@ -96,15 +100,35 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
         super.updateData(datas);
     }
 
-    private void clearSelectRecord(){
+    public void updateSelections(List<LocalPhotoManager.ImageInfo> newDatas) {
+        if (newDatas != null) {
+            selectedRecordLists.clear();
+            selectedRecordLists.addAll(newDatas);
+            selectable = selectedRecordLists.size() != MAX_COUNT;
+        }
+    }
+
+    public String getCurAlbumName() {
+        return curAlbumName;
+    }
+
+    public void setCurAlbumName(String curAlbumName) {
+        this.curAlbumName = curAlbumName;
+    }
+
+    public List<LocalPhotoManager.ImageInfo> getSelectedRecordLists() {
+        return new ArrayList<>(selectedRecordLists);
+    }
+
+    private void clearSelectRecord() {
         selectedRecordLists.clear();
         selectable = true;
     }
 
-
     private class InnerViewHolder extends BaseRecyclerViewHolder<LocalPhotoManager.ImageInfo> {
 
         private CheckImageView checkImageView;
+        private InnerClickEventClass clickEventClass;
         private View maskView;
 
         InnerViewHolder(View itemView, int viewType) {
@@ -112,6 +136,7 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
             checkImageView = (CheckImageView) findViewById(R.id.iv_photo_select);
             maskView = findViewById(R.id.iv_photo_mask);
             setCheckImageViewLayoutParams();
+            clickEventClass = new InnerClickEventClass();
         }
 
         /**
@@ -134,12 +159,15 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
         public void onBindData(LocalPhotoManager.ImageInfo data, int position) {
             KLog.i(TAG, "pos  >>  " + position);
             String url = TextUtils.isEmpty(data.thumbnailPath) ? data.imagePath : data.thumbnailPath;
-            boolean isSelected = selectedRecordLists.contains(data);
+            boolean isSelected = checkIsSelect(data);
             checkImageView.setCanSelect(isSelected || selectable);
             ViewUtil.setViewsVisible((isSelected || selectable) ? View.GONE : View.VISIBLE, maskView);
             checkImageView.setSelected(isSelected);
             ImageLoadMnanger.INSTANCE.loadImage(checkImageView, url);
             setupSelectChangeListener(data);
+            clickEventClass.setCurPos(position);
+            checkImageView.setOnClickListener(clickEventClass);
+
         }
 
         private void setupSelectChangeListener(LocalPhotoManager.ImageInfo data) {
@@ -152,6 +180,17 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
                 innerSelectChangeClass = (InnerSelectChangeClass) listener;
             }
             innerSelectChangeClass.setData(data);
+        }
+
+        private boolean checkIsSelect(LocalPhotoManager.ImageInfo imageInfo) {
+            if (imageInfo == null) return false;
+            if (ToolUtil.isListEmpty(selectedRecordLists)) return false;
+            for (LocalPhotoManager.ImageInfo localSelectedPhoto : selectedRecordLists) {
+                if (localSelectedPhoto.compareTo(imageInfo) == 0) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         class InnerSelectChangeClass implements CheckImageView.OnSelectedChangeListener {
@@ -177,6 +216,26 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
                     onUnSelectPhoto(data);
                 }
             }
+        }
+
+        class InnerClickEventClass implements View.OnClickListener {
+
+            private int curPos;
+
+            @Override
+            public void onClick(View v) {
+                PhotoBrowserInfo info = PhotoBrowserInfo.create(curPos, curAlbumName, selectedRecordLists);
+                ARouter.getInstance()
+                       .build(RouterList.PhotoMultiBrowserActivity.path)
+                       .withParcelable(RouterList.PhotoMultiBrowserActivity.key_browserinfo, info)
+                       .withInt(RouterList.PhotoMultiBrowserActivity.key_maxSelectCount, MAX_COUNT)
+                       .navigation((Activity) getContext(), RouterList.PhotoMultiBrowserActivity.requestCode);
+            }
+
+            public void setCurPos(int curPos) {
+                this.curPos = curPos;
+            }
+
         }
     }
 

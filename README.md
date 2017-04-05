@@ -8,6 +8,11 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
 ##### 因为采取组件化（目前正在开发的组件：photoselect），所以可能push上来的是组件的build，如果您要build整个app，请把gradle.properties下的  isModule=true 切换为false并sync gradle
 
 ##### 【简略更新日志】
+ - 2017/04/05
+    + 修复ARouter失效的问题
+    + 图片选择预览页面实现
+    + 选择后退出的保存即页面的更新
+
  - 2017/03/30
     + 修复LocalPhotoManager监听媒体库更新时插入过多数据的问题。
     + 优化gridphotofragment和图片浏览的逻辑
@@ -42,12 +47,12 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
 [代码实现逻辑（简书合集）](http://www.jianshu.com/notebooks/3224048/latest)
 
 
-#### 【最新进度图片预览】
-##### 2017-03-28
+#### 【最新进度图片预览并选择】
+##### 2017-04-05
 
-图片选择模块完成！包含了选择的动画，交互按照iOS的哦~
+图片选择模块完成！
 
-![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2017-03-28%20%E5%9B%BE%E7%89%87%E9%80%89%E6%8B%A9.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2017_04_05photo_select.gif)
 
 ***
 

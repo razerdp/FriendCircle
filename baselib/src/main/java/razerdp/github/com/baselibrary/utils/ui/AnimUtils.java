@@ -2,9 +2,13 @@ package razerdp.github.com.baselibrary.utils.ui;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 
 /**
  * Created by 大灯泡 on 2017/2/28.
@@ -50,7 +54,31 @@ public class AnimUtils {
         return linear;
     }
 
-    public static abstract class SimpleAnimatorListener implements Animator.AnimatorListener{
+    public static TranslateAnimation getPortraitTranslateAnimation(int start, int end, int durationMillis) {
+        TranslateAnimation translateAnimation = new TranslateAnimation(0.0F, 0.0F, (float) start, (float) end);
+        translateAnimation.setDuration((long) durationMillis);
+        translateAnimation.setFillEnabled(true);
+        translateAnimation.setFillAfter(true);
+        return translateAnimation;
+    }
+
+    public static ScaleAnimation getScaleAnimation(float fromX, float toX, float fromY, float toY, int pivotXType, float pivotXValue, int pivotYType, float pivotYValue) {
+        ScaleAnimation scaleAnimation = new ScaleAnimation(fromX, toX, fromY, toY, pivotXType, pivotXValue, pivotYType, pivotYValue);
+        scaleAnimation.setDuration(300L);
+        scaleAnimation.setFillEnabled(true);
+        scaleAnimation.setFillAfter(true);
+        return scaleAnimation;
+    }
+
+    public static AlphaAnimation getAlphaAnimation(float start, float end, long durationMillis) {
+        AlphaAnimation alphaAnimation = new AlphaAnimation(start, end);
+        alphaAnimation.setDuration(durationMillis);
+        alphaAnimation.setFillEnabled(true);
+        alphaAnimation.setFillAfter(true);
+        return alphaAnimation;
+    }
+
+    public static abstract class SimpleAnimatorListener implements Animator.AnimatorListener {
 
         @Override
         public void onAnimationStart(Animator animation) {
@@ -69,6 +97,23 @@ public class AnimUtils {
 
         @Override
         public void onAnimationRepeat(Animator animation) {
+
+        }
+    }
+
+    public static abstract class SimpleAnimationListener implements Animation.AnimationListener {
+        @Override
+        public void onAnimationStart(Animation animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
 
         }
     }
