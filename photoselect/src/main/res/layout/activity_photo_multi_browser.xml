@@ -17,25 +17,36 @@
         android:layout_height="70dp"
         android:layout_gravity="top"
         android:background="@color/color_c5181818"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        >
 
-        <ImageView
+        <FrameLayout
             android:id="@+id/back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:src="@drawable/back_left"/>
+            android:layout_width="50dp"
+            android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/select"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/back_left"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/select_touch_delegate"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:padding="3dp"
-            tools:src="@drawable/ic_check"
-            />
+            >
+
+            <ImageView
+                android:id="@+id/select"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:padding="3dp"
+                tools:src="@drawable/ic_check"
+                />
+        </FrameLayout>
     </RelativeLayout>
 
     <RelativeLayout

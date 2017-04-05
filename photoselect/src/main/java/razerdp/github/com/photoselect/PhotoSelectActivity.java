@@ -9,6 +9,9 @@ import android.text.TextUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import razerdp.github.com.baselibrary.base.BaseFragment;
 import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
 import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
@@ -17,6 +20,7 @@ import razerdp.github.com.baseuilib.widget.common.TitleBar;
 import razerdp.github.com.bus.EventSelectAlbum;
 import razerdp.github.com.photoselect.fragment.PhotoAlbumFragement;
 import razerdp.github.com.photoselect.fragment.PhotoGridFragement;
+import razerdp.github.com.router.RouterList;
 
 import static android.R.attr.fragment;
 
@@ -110,6 +114,18 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RouterList.PhotoMultiBrowserActivity.requestCode) {
+            if (resultCode == RESULT_OK) {
+                if (gridFragement != null && data != null && data.hasExtra(RouterList.PhotoMultiBrowserActivity.key_result)) {
+                    List<LocalPhotoManager.ImageInfo> newDatas=data.getParcelableArrayListExtra(RouterList.PhotoMultiBrowserActivity.key_result);
+                    gridFragement.updateSelectList(newDatas);
+                }
+            }
+        }
+    }
 
     @Override
     public void onTitleLeftClick() {
@@ -132,6 +148,7 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        LocalPhotoManager.INSTANCE.writeToLocal();
         EventBus.getDefault().unregister(this);
     }
 }

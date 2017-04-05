@@ -2,6 +2,7 @@ package razerdp.github.com.photoselect;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import android.view.animation.AnimationSet;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,6 +35,7 @@ import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.widget.common.HackyViewPager;
 import razerdp.github.com.baseuilib.widget.imageview.CheckDrawable;
 import razerdp.github.com.model.PhotoBrowserInfo;
+import razerdp.github.com.router.RouterList;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
@@ -44,7 +47,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  */
 
 @Route(path = "/photo/browser")
-public class PhotoMultiBrowserActivity extends BaseActivity {
+public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "PhotoMultiBrowserActivi";
 
 
@@ -87,11 +90,31 @@ public class PhotoMultiBrowserActivity extends BaseActivity {
             localSelectedPhotos.addAll(browserInfo.getSelectedDatas());
         }
         checkAndSetPhotoSelectCount();
-        vh.selectedIcon.setOnClickListener(new InnerSelectPhotoListener());
+        vh.selectedTouchDelegate.setOnClickListener(new InnerSelectPhotoListener());
         adapter.setOnViewTapListener(onViewTapListener);
         vh.viewPager.setAdapter(adapter);
         vh.viewPager.addOnPageChangeListener(onPageChangeListener);
         vh.viewPager.setCurrentItem(browserInfo.getCurPos());
+        ViewUtil.setViewsClickListener(this, vh.back, vh.mFinish, vh.mPhotoEdit);
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.back:
+                finishWithoutSave();
+                break;
+            case R.id.photo_select_finish:
+                finish();
+                break;
+            case R.id.photo_edit:
+                UIHelper.ToastMessage("编辑功能大概要好长好长的一段时间后才会研究的啦~");
+                break;
+            default:
+                break;
+        }
+
     }
 
     private boolean checkPhotoSelectCountValided(boolean toast) {
@@ -153,14 +176,32 @@ public class PhotoMultiBrowserActivity extends BaseActivity {
         return false;
     }
 
+    public void finishWithoutSave() {
+        super.finish();
+    }
+
+    @Override
+    public void finish() {
+        Intent intent = new Intent();
+        intent.putParcelableArrayListExtra(RouterList.PhotoMultiBrowserActivity.key_result, (ArrayList<? extends Parcelable>) localSelectedPhotos);
+        setResult(RESULT_OK, intent);
+        super.finish();
+    }
+
 
     private class InnerSelectPhotoListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
             LocalPhotoManager.ImageInfo info = adapter.getImageInfo(vh.viewPager.getCurrentItem());
-            if (!checkAndSetPhotoSelectCount()) return;
+            boolean isMax = localSelectedPhotos.size() == maxSelectCount;
             boolean isSelected = checkIsSelect(info);
+            if (isMax) {
+                if (!isSelected) {
+                    UIHelper.ToastMessage("最多只能选" + maxSelectCount + "张照片哦");
+                    return;
+                }
+            }
             if (!isSelected) {
                 addSelect(info);
             } else {
@@ -196,7 +237,8 @@ public class PhotoMultiBrowserActivity extends BaseActivity {
 
     class ViewHolder {
         RelativeLayout mTopBar;
-        ImageView back;
+        FrameLayout back;
+        FrameLayout selectedTouchDelegate;
         ImageView selectedIcon;
         CheckDrawable checkDrawable;
 
@@ -223,6 +265,7 @@ public class PhotoMultiBrowserActivity extends BaseActivity {
             mTopBar = findView(R.id.browser_top_bar);
             back = findView(R.id.back);
             selectedIcon = findView(R.id.select);
+            selectedTouchDelegate=findView(R.id.select_touch_delegate);
             checkDrawable = new CheckDrawable(selectedIcon.getContext());
             selectedIcon.setImageDrawable(checkDrawable);
 
@@ -233,6 +276,8 @@ public class PhotoMultiBrowserActivity extends BaseActivity {
             mPhotoEdit = findView(R.id.photo_edit);
             mSelectCount = findView(R.id.photo_select_count);
             mFinish = findView(R.id.photo_select_finish);
+
+            ViewUtil.expandViewTouchDelegate(mFinish,20,20,20,20);
 
             mTopBar.setOnClickListener(new View.OnClickListener() {
                 @Override

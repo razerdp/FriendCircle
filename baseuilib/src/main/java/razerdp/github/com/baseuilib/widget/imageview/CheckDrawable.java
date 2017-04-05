@@ -67,6 +67,10 @@ public class CheckDrawable extends BitmapDrawable {
         this.needAnima = needAnima;
     }
 
+    public boolean isSelect() {
+        return isSelect;
+    }
+
     public boolean toggleSelected() {
         setSelected(!isSelect, true);
         return isSelect;

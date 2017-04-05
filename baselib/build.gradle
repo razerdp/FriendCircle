@@ -41,6 +41,7 @@ dependencies {
     compile rootProject.ext.dependencies.design
     compile rootProject.ext.dependencies.support_util
 
+    compile project(':router')
 
     compile 'com.github.razerdp:BasePopup:v1.6.3'
     //over scroller helper
@@ -60,8 +61,8 @@ dependencies {
     }
 
     //ARouter
-    compile 'com.alibaba:arouter-api:1.2.0'
-    annotationProcessor 'com.alibaba:arouter-compiler:1.1.0'
+    compile rootProject.ext.dependencies.arouter_api
+    annotationProcessor rootProject.ext.dependencies.arouter_compiler
 
     testCompile 'junit:junit:4.12'
 }

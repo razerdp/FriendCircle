@@ -27,9 +27,4 @@ public class BaseModuleApplication extends Application {
         }
     }
 
-    @Override
-    public void onTerminate() {
-        LocalPhotoManager.INSTANCE.writeToLocal();
-        super.onTerminate();
-    }
 }

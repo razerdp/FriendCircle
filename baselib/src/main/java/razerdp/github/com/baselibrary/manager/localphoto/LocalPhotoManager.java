@@ -83,10 +83,12 @@ public enum LocalPhotoManager {
         isScaning = true;
         lastScanTime = AppSetting.loadLongPreferenceByKey(AppSetting.APP_LAST_SCAN_IMG_TIME, 0);
         callStart(listener);
+
         boolean callImmediately = checkLocalSerializableFile();
         //如果本地文件已经有了，那么可以立即回调，提高用户体验。
         //然后再后台扫一次更新本地文件记录
         if (callImmediately) {
+            callProgress(listener, isAsync, 100);
             callFinish(listener);
         }
         long curTime = System.currentTimeMillis();
@@ -97,8 +99,6 @@ public enum LocalPhotoManager {
                 return;
             }
         }
-
-        final boolean isProgressListener = listener instanceof OnScanProgresslistener;
 
         Cursor cursor = AppContext.getAppContext()
                                   .getContentResolver()
@@ -149,9 +149,7 @@ public enum LocalPhotoManager {
                     imageInfoList.add(imageInfo);
                 }
             }
-            if (isProgressListener) {
-                callProgress((OnScanProgresslistener) listener, isAsync, (int) (cursor.getPosition() * 100.0f / cursorCount));
-            }
+            callProgress(listener, isAsync, (int) (cursor.getPosition() * 100.0f / cursorCount));
         }
         lastScanTime = System.currentTimeMillis();
         AppSetting.saveLongPreferenceByKey(AppSetting.APP_LAST_SCAN_IMG_TIME, lastScanTime);
@@ -288,16 +286,16 @@ public enum LocalPhotoManager {
         }
     }
 
-    private void callProgress(OnScanProgresslistener listener, boolean async, int progress) {
-        if (listener != null) {
+    private void callProgress(OnScanListener listener, boolean async, int progress) {
+        if (listener instanceof OnScanProgresslistener) {
             if (async) {
                 if (progressRunnable.getListener() == null) {
-                    progressRunnable.setListener(listener);
+                    progressRunnable.setListener((OnScanProgresslistener) listener);
                 }
                 progressRunnable.setProgress(progress);
                 handler.post(progressRunnable);
             } else {
-                listener.onProgress(progress);
+                ((OnScanProgresslistener) listener).onProgress(progress);
             }
         }
     }

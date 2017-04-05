@@ -54,9 +54,4 @@ public class FriendCircleApp extends Application {
         LocalHostManager.INSTANCE.init();
     }
 
-    @Override
-    public void onTerminate() {
-        LocalPhotoManager.INSTANCE.writeToLocal();
-        super.onTerminate();
-    }
 }

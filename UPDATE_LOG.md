@@ -3,6 +3,10 @@
 ## 017/04/05
   - 修复ARouter失效的问题
   - 图片预览页面实现
+  - 选择后退出的保存即页面的更新
+
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2017_04_05photo_select.gif)
+
 ## 2017/03/30
   - 修复LocalPhotoManager监听媒体库更新时插入过多数据的问题。
   - 优化gridphotofragment和图片浏览的逻辑

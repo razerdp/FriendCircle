@@ -34,9 +34,11 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
 
     public BaseRecyclerViewAdapter(@NonNull Context context, @NonNull List<T> datas) {
         this.context = context;
-        this.datas = new ArrayList<>();
+        this.datas=datas;
         if (datas != null) {
-            this.datas.addAll(datas);
+            this.datas = new ArrayList<>(datas);
+        } else {
+            this.datas = new ArrayList<>();
         }
         mInflater = LayoutInflater.from(context);
     }
