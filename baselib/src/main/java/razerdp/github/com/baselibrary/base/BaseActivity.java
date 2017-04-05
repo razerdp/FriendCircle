@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.socks.library.KLog;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         KLog.i("activity onCreate :  " + this.getClass().getSimpleName());
+        ARouter.getInstance().inject(this);
         onHandleIntent(getIntent());
     }
 

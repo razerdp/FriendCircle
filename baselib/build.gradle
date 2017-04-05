@@ -62,6 +62,7 @@ dependencies {
     //ARouter
     compile 'com.alibaba:arouter-api:1.2.0'
     annotationProcessor 'com.alibaba:arouter-compiler:1.1.0'
+    compile 'com.alibaba:arouter-annotation:1.0.3'
 
     testCompile 'junit:junit:4.12'
 }
