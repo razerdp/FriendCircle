@@ -365,7 +365,7 @@ public enum LocalPhotoManager {
         }
     }
 
-    public static class ImageInfo implements Serializable, Parcelable, Cloneable, Comparable<String> {
+    public static class ImageInfo implements Serializable, Parcelable, Cloneable, Comparable<ImageInfo> {
         public final String imagePath;
         public final String thumbnailPath;
         public final String albumName;
@@ -425,9 +425,11 @@ public enum LocalPhotoManager {
         }
 
         @Override
-        public int compareTo(@NonNull String o) {
-            if (TextUtils.equals(o, imagePath)) return 0;
-            return 1;
+        public int compareTo(@NonNull ImageInfo o) {
+            if (o == null) return -1;
+            if (TextUtils.isEmpty(o.getImagePath())) return -1;
+            if (TextUtils.equals(o.getImagePath(), getImagePath())) return 0;
+            return -1;
         }
 
         //深复制，暂时不需要，另外利用流的方法的话，类需要实现Serializable接口

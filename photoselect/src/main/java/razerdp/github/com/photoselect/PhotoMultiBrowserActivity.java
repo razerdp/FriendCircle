@@ -3,23 +3,31 @@ package razerdp.github.com.photoselect;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.alibaba.android.arouter.launcher.ARouter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import razerdp.github.com.adapter.PhotoBrowserAdapter;
 import razerdp.github.com.baselibrary.base.BaseActivity;
 import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
+import razerdp.github.com.baselibrary.utils.ToolUtil;
+import razerdp.github.com.baselibrary.utils.ui.AnimUtils;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.widget.common.HackyViewPager;
@@ -39,10 +47,17 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 public class PhotoMultiBrowserActivity extends BaseActivity {
     private static final String TAG = "PhotoMultiBrowserActivi";
 
-    @Autowired(name = "browserinfo")
-    private PhotoBrowserInfo browserInfo;
-    private PhotoBrowserAdapter adapter;
 
+    @Autowired(name = "maxSelectCount")
+    public int maxSelectCount;
+
+    @Autowired(name = "browserinfo")
+    public PhotoBrowserInfo browserInfo;
+
+    private PhotoBrowserAdapter adapter;
+    //记录本地图片选择情况
+    private List<LocalPhotoManager.ImageInfo> localSelectedPhotos;
+    ViewHolder vh;
 
     @Override
     public void onHandleIntent(Intent intent) {
@@ -61,26 +76,123 @@ public class PhotoMultiBrowserActivity extends BaseActivity {
     }
 
     private void initView() {
-        final ViewHolder vh = new ViewHolder();
+        vh = new ViewHolder();
+        localSelectedPhotos = new ArrayList<>();
         if (TextUtils.isEmpty(browserInfo.getCurrentAlbumName())) {
             adapter = new PhotoBrowserAdapter(this, browserInfo.getSelectedDatas());
         } else {
             adapter = new PhotoBrowserAdapter(this, LocalPhotoManager.INSTANCE.getLocalImages(browserInfo.getCurrentAlbumName()));
         }
+        if (!ToolUtil.isListEmpty(browserInfo.getSelectedDatas())) {
+            localSelectedPhotos.addAll(browserInfo.getSelectedDatas());
+        }
+        checkAndSetPhotoSelectCount();
+        vh.selectedIcon.setOnClickListener(new InnerSelectPhotoListener());
         adapter.setOnViewTapListener(onViewTapListener);
         vh.viewPager.setAdapter(adapter);
+        vh.viewPager.addOnPageChangeListener(onPageChangeListener);
         vh.viewPager.setCurrentItem(browserInfo.getCurPos());
+    }
+
+    private boolean checkPhotoSelectCountValided(boolean toast) {
+        boolean result = localSelectedPhotos.size() <= maxSelectCount;
+        if (toast && !result) {
+            UIHelper.ToastMessage("最多只能选" + maxSelectCount + "张照片哦");
+        }
+        return result;
+    }
+
+
+    private boolean checkAndSetPhotoSelectCount() {
+        if (!checkPhotoSelectCountValided(true)) {
+            return false;
+        }
+        vh.setPhotoSlectCount(localSelectedPhotos.size());
+        return true;
     }
 
 
     private PhotoViewAttacher.OnViewTapListener onViewTapListener = new PhotoViewAttacher.OnViewTapListener() {
         @Override
         public void onViewTap(View view, float x, float y) {
-            // TODO: 2017/4/1 top bar和bottom bar隐藏
+            vh.toggleActionBarAnima();
+        }
+    };
+
+    private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            boolean isSelected = checkIsSelect(position);
+            vh.setSelected(isSelected, false);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
 
         }
     };
 
+    private boolean checkIsSelect(int position) {
+        if (position < 0 || position >= adapter.getCount()) return false;
+        return checkIsSelect(adapter.getImageInfo(position));
+    }
+
+    private boolean checkIsSelect(LocalPhotoManager.ImageInfo imageInfo) {
+        if (imageInfo == null) return false;
+        if (ToolUtil.isListEmpty(localSelectedPhotos)) return false;
+        for (LocalPhotoManager.ImageInfo localSelectedPhoto : localSelectedPhotos) {
+            if (localSelectedPhoto.compareTo(imageInfo) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private class InnerSelectPhotoListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            LocalPhotoManager.ImageInfo info = adapter.getImageInfo(vh.viewPager.getCurrentItem());
+            if (!checkAndSetPhotoSelectCount()) return;
+            boolean isSelected = checkIsSelect(info);
+            if (!isSelected) {
+                addSelect(info);
+            } else {
+                removeSelect(info);
+            }
+        }
+
+
+        private void addSelect(LocalPhotoManager.ImageInfo imageInfo) {
+            if (checkPhotoSelectCountValided(true)) {
+                localSelectedPhotos.add(imageInfo);
+                vh.setSelected(true, true);
+                checkAndSetPhotoSelectCount();
+            }
+        }
+
+        private void removeSelect(LocalPhotoManager.ImageInfo imageInfo) {
+            boolean hasRemoved = false;
+            for (int i = 0; i < localSelectedPhotos.size(); i++) {
+                LocalPhotoManager.ImageInfo info = localSelectedPhotos.get(i);
+                if (info.compareTo(imageInfo) == 0) {
+                    localSelectedPhotos.remove(i);
+                    hasRemoved = true;
+                    break;
+                }
+            }
+            if (hasRemoved) {
+                vh.setSelected(false, false);
+                checkAndSetPhotoSelectCount();
+            }
+        }
+    }
 
     class ViewHolder {
         RelativeLayout mTopBar;
@@ -97,6 +209,15 @@ public class PhotoMultiBrowserActivity extends BaseActivity {
         TextView mFinish;
 
         ScaleAnimation scaleAnimation;
+        AnimationSet topBarHideAnimation;
+        AnimationSet topBarShowAnimation;
+
+        AnimationSet bottomBarHideAnimation;
+        AnimationSet bottomBarShowAnimation;
+
+
+        private boolean isHide;
+
 
         public ViewHolder() {
             mTopBar = findView(R.id.browser_top_bar);
@@ -112,8 +233,20 @@ public class PhotoMultiBrowserActivity extends BaseActivity {
             mPhotoEdit = findView(R.id.photo_edit);
             mSelectCount = findView(R.id.photo_select_count);
             mFinish = findView(R.id.photo_select_finish);
+
+            mTopBar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //这个clicklistener仅仅用来拦截事件，不让其传到viewpager触发隐藏动画
+                }
+            });
+            mBottomBar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //这个clicklistener仅仅用来拦截事件，不让其传到viewpager触发隐藏动画
+                }
+            });
             buildAnima();
-            setPhotoSlectCount(0);
         }
 
         private void buildAnima() {
@@ -122,6 +255,52 @@ public class PhotoMultiBrowserActivity extends BaseActivity {
                 scaleAnimation.setDuration(600);
                 scaleAnimation.setInterpolator(new BounceInterpolator());
             }
+            if (topBarHideAnimation == null) {
+                topBarHideAnimation = new AnimationSet(false);
+                TranslateAnimation topBarTranslateAnima = AnimUtils.getPortraitTranslateAnimation(0, UIHelper.dipToPx(-70), 600);
+                AlphaAnimation alphaAnimation = AnimUtils.getAlphaAnimation(1.0f, 0f, 600 * 3 / 2);
+                topBarHideAnimation.addAnimation(topBarTranslateAnima);
+                topBarHideAnimation.addAnimation(alphaAnimation);
+                topBarHideAnimation.setFillAfter(true);
+            }
+            if (topBarShowAnimation == null) {
+                topBarShowAnimation = new AnimationSet(false);
+                TranslateAnimation topBarTranslateAnima = AnimUtils.getPortraitTranslateAnimation(UIHelper.dipToPx(-70), 0, 600);
+                AlphaAnimation alphaAnimation = AnimUtils.getAlphaAnimation(0.0f, 1f, 600 * 3 / 2);
+                topBarShowAnimation.addAnimation(topBarTranslateAnima);
+                topBarShowAnimation.addAnimation(alphaAnimation);
+                topBarShowAnimation.setFillAfter(true);
+            }
+            if (bottomBarHideAnimation == null) {
+                bottomBarHideAnimation = new AnimationSet(false);
+                TranslateAnimation topBarTranslateAnima = AnimUtils.getPortraitTranslateAnimation(0, UIHelper.dipToPx(50), 600);
+                AlphaAnimation alphaAnimation = AnimUtils.getAlphaAnimation(1.0f, 0f, 600 * 3 / 2);
+                bottomBarHideAnimation.addAnimation(topBarTranslateAnima);
+                bottomBarHideAnimation.addAnimation(alphaAnimation);
+                bottomBarHideAnimation.setFillAfter(true);
+            }
+
+            if (bottomBarShowAnimation == null) {
+                bottomBarShowAnimation = new AnimationSet(false);
+                TranslateAnimation topBarTranslateAnima = AnimUtils.getPortraitTranslateAnimation(UIHelper.dipToPx(50), 0, 600);
+                AlphaAnimation alphaAnimation = AnimUtils.getAlphaAnimation(0f, 1f, 600 * 3 / 2);
+                bottomBarShowAnimation.addAnimation(topBarTranslateAnima);
+                bottomBarShowAnimation.addAnimation(alphaAnimation);
+                bottomBarShowAnimation.setFillAfter(true);
+            }
+        }
+
+        public void toggleActionBarAnima() {
+            mTopBar.clearAnimation();
+            mBottomBar.clearAnimation();
+            if (isHide) {
+                mTopBar.startAnimation(topBarShowAnimation);
+                mBottomBar.startAnimation(bottomBarShowAnimation);
+            } else {
+                mTopBar.startAnimation(topBarHideAnimation);
+                mBottomBar.startAnimation(bottomBarHideAnimation);
+            }
+            isHide = !isHide;
         }
 
         public void setPhotoSlectCount(int count) {
@@ -131,7 +310,6 @@ public class PhotoMultiBrowserActivity extends BaseActivity {
                 mSelectCount.setVisibility(View.GONE);
                 ViewUtil.setViewsEnableAndClickable(false, false, mPhotoEdit, mFinish);
             } else {
-                //如果选择的照片大于一张，是不允许编辑的(iOS版微信的交互如此设计)
                 mFinish.setTextColor(UIHelper.getResourceColor(R.color.wechat_green_bg));
                 mSelectCount.setVisibility(View.VISIBLE);
                 mSelectCount.clearAnimation();
@@ -143,8 +321,8 @@ public class PhotoMultiBrowserActivity extends BaseActivity {
 
         }
 
-        public void setSelected(boolean isSelected) {
-            checkDrawable.setSelected(isSelected, isSelected);
+        public void setSelected(boolean isSelected, boolean needAnima) {
+            checkDrawable.setSelected(isSelected, needAnima);
             selectedIcon.invalidateDrawable(checkDrawable);
         }
     }

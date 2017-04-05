@@ -202,7 +202,7 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
             @Override
             public void onClick(View v) {
                 PhotoBrowserInfo info = PhotoBrowserInfo.create(curPos, curAlbumName, selectedRecordLists);
-                ARouter.getInstance().build("/photo/browser").withParcelable("browserinfo", info).navigation();
+                ARouter.getInstance().build("/photo/browser").withParcelable("browserinfo", info).withInt("maxSelectCount", 9).navigation();
             }
 
             public int getCurPos() {

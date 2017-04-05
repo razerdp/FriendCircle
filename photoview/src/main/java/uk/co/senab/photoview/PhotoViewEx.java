@@ -301,7 +301,7 @@ public class PhotoViewEx extends ImageView implements IPhotoView {
 
     @Override
     protected void onDetachedFromWindow() {
-        if (isCacheInViewPager) {
+        if (!isCacheInViewPager) {
             mAttacher.cleanup();
         }
         super.onDetachedFromWindow();

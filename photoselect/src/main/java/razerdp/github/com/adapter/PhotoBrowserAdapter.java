@@ -39,6 +39,14 @@ public class PhotoBrowserAdapter extends PagerAdapter implements ClearMemoryObje
         return datas.size();
     }
 
+    public LocalPhotoManager.ImageInfo getImageInfo(int pos) {
+        try {
+            return datas.get(pos);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         final LocalPhotoManager.ImageInfo info = datas.get(position);
@@ -59,7 +67,7 @@ public class PhotoBrowserAdapter extends PagerAdapter implements ClearMemoryObje
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         if (object instanceof PhotoViewEx) {
-            ((PhotoViewEx) object).setImageBitmap(null);
+//            ((PhotoViewEx) object).setImageBitmap(null);
             container.removeView((View) object);
             viewPool.put((PhotoViewEx) object);
         }

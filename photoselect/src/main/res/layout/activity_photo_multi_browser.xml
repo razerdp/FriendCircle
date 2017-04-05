@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_gravity="top"
-        android:background="@color/color_181818"
+        android:background="@color/color_c5181818"
         android:paddingLeft="16dp"
         android:paddingRight="16dp">
 
@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_gravity="bottom"
-        android:background="@color/color_181818"
+        android:background="@color/color_c5181818"
         android:gravity="center_vertical"
         android:paddingLeft="16dp"
         android:paddingRight="16dp">
