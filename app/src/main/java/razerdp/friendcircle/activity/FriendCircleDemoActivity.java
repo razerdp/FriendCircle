@@ -21,6 +21,7 @@ import cn.bmob.v3.exception.BmobException;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.bmob.BmobInitHelper;
 import razerdp.friendcircle.app.manager.LocalHostManager;
+import razerdp.friendcircle.app.manager.UpdateInfoManager;
 import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
@@ -77,6 +78,7 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        UpdateInfoManager.INSTANCE.init(this);
         momentsInfoList = new ArrayList<>();
         momentsRequest = new MomentsRequest();
         initView();
@@ -378,9 +380,12 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
                 @Override
                 public void onSuccess(UserInfo userInfo) {
                     hostViewHolder.loadHostData(userInfo);
+                    UpdateInfoManager.INSTANCE.showUpdateInfo();
                 }
             });
             registerPopup.showPopupWindow();
+        }else {
+            UpdateInfoManager.INSTANCE.showUpdateInfo();
         }
     }
 

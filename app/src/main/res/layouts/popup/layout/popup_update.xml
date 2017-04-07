@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#9f000000"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+    <FrameLayout
+        android:id="@+id/popup_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_rect_background">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/update_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:textColor="@color/green_dark"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="升级日志"/>
+
+                <View
+                    style="@style/base_divider"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"/>
+
+                <TextView
+                    android:id="@+id/update_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:lineSpacingExtra="2dp"
+                    android:lineSpacingMultiplier="1.2"
+                    android:padding="8dp"
+                    android:textColor="@color/black"
+                    tools:text="升级日志\n升级日志\n升级日志\n升级日志\n"/>
+
+                <View style="@style/base_divider_top_10"/>
+
+                <TextView
+                    android:id="@+id/tv_ok"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:text="OK"
+                    android:textColor="@color/green"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+        </ScrollView>
+
+    </FrameLayout>
+
+</RelativeLayout>

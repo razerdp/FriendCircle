@@ -134,7 +134,9 @@ public class PhotoGridFragement extends BaseFragment {
             final int itemDecoration = UIHelper.dipToPx(2);
             adapter = new PhotoSelectAdapter(getActivity(), itemDecoration, LocalPhotoManager.INSTANCE.getLocalImages(albumName));
             initSelectCountChangeListener();
-            vh.mPhotoContent.setLayoutManager(new GridLayoutManager(getActivity(), 4, LinearLayoutManager.VERTICAL, false));
+            GridLayoutManager manager=new GridLayoutManager(getActivity(), 4, LinearLayoutManager.VERTICAL, false);
+            vh.mPhotoContent.setLayoutManager(manager);
+            manager.setItemPrefetchEnabled(true);
             vh.mPhotoContent.addItemDecoration(new GridItemDecoration(itemDecoration));
             vh.mPhotoContent.setAdapter(adapter);
         } else {
