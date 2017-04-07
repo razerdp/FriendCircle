@@ -83,6 +83,8 @@ public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnCl
         localSelectedPhotos = new ArrayList<>();
         if (TextUtils.isEmpty(browserInfo.getCurrentAlbumName())) {
             adapter = new PhotoBrowserAdapter(this, browserInfo.getSelectedDatas());
+            //注释看下面
+            vh.setSelected(true,false);
         } else {
             adapter = new PhotoBrowserAdapter(this, LocalPhotoManager.INSTANCE.getLocalImages(browserInfo.getCurrentAlbumName()));
         }
@@ -94,6 +96,9 @@ public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnCl
         adapter.setOnViewTapListener(onViewTapListener);
         vh.viewPager.setAdapter(adapter);
         vh.viewPager.addOnPageChangeListener(onPageChangeListener);
+        //如果初始值为0的话，不会触发pagechangelistener里面的pageselected，所以对于预览模式需要手动设定
+        //详看源码(api:25.2.0)viewpager:line657
+        //final boolean dispatchSelected = mCurItem != item;
         vh.viewPager.setCurrentItem(browserInfo.getCurPos());
         ViewUtil.setViewsClickListener(this, vh.back, vh.mFinish, vh.mPhotoEdit);
     }

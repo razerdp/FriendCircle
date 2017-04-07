@@ -135,6 +135,8 @@ public class CircleRecyclerView extends FrameLayout {
             //recyclerView = new RecyclerView(context);
             recyclerView.setBackgroundColor(Color.WHITE);
             linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+            //渲染优化，放到render thread做，（prefetch在v25之后可用），机型在萝莉炮(lollipop)后才可以享受此优化（事实上默认是开启的）
+            linearLayoutManager.setItemPrefetchEnabled(true);
             recyclerView.setLayoutManager(linearLayoutManager);
         }
         //取消默认item变更动画
