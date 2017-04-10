@@ -30,6 +30,8 @@ public class MomentsRequest extends BaseRequestClient<List<MomentsInfo>> {
     private int count = 10;
     private int curPage = 0;
 
+    private static boolean isFirstRequest = true;
+
     public MomentsRequest() {
     }
 
@@ -51,6 +53,7 @@ public class MomentsRequest extends BaseRequestClient<List<MomentsInfo>> {
         query.include(MomentsFields.AUTHOR_USER + "," + MomentsFields.HOST);
         query.setLimit(count);
         query.setSkip(curPage * count);
+        query.setCachePolicy(isFirstRequest? BmobQuery.CachePolicy.CACHE_ELSE_NETWORK: BmobQuery.CachePolicy.NETWORK_ELSE_CACHE);
         query.findObjects(new FindListener<MomentsInfo>() {
             @Override
             public void done(List<MomentsInfo> list, BmobException e) {
@@ -66,7 +69,6 @@ public class MomentsRequest extends BaseRequestClient<List<MomentsInfo>> {
         /**
          * 因为bmob不支持在查询时把关系表也一起填充查询，因此需要手动再查一次，同时分页也要手动实现。。
          * oRz，果然没有自己写服务器来的简单，好吧，都是在下没钱的原因，我的锅
-         *
          */
         final List<CommentInfo> commentInfoList = new ArrayList<>();
         final List<LikesInfo> likesInfoList = new ArrayList<>();
@@ -82,6 +84,8 @@ public class MomentsRequest extends BaseRequestClient<List<MomentsInfo>> {
         }
         commentQuery.addWhereContainedIn(CommentInfo.CommentFields.MOMENT, id);
         commentQuery.order("createdAt");
+        commentQuery.setLimit(1000);//默认只有100条数据，最多1000条
+        commentQuery.setCachePolicy(isFirstRequest? BmobQuery.CachePolicy.CACHE_ELSE_NETWORK: BmobQuery.CachePolicy.NETWORK_ELSE_CACHE);
         commentQuery.findObjects(new FindListener<CommentInfo>() {
             @Override
             public void done(List<CommentInfo> list, BmobException e) {
@@ -97,6 +101,8 @@ public class MomentsRequest extends BaseRequestClient<List<MomentsInfo>> {
         likesInfoBmobQuery.include(LikesInfo.LikesField.MOMENTID + "," + LikesInfo.LikesField.USERID);
         likesInfoBmobQuery.addWhereContainedIn(LikesInfo.LikesField.MOMENTID, id);
         likesInfoBmobQuery.order("createdAt");
+        likesInfoBmobQuery.setLimit(1000);
+        likesInfoBmobQuery.setCachePolicy(isFirstRequest? BmobQuery.CachePolicy.CACHE_ELSE_NETWORK: BmobQuery.CachePolicy.NETWORK_ELSE_CACHE);
         likesInfoBmobQuery.findObjects(new FindListener<LikesInfo>() {
             @Override
             public void done(List<LikesInfo> list, BmobException e) {
@@ -147,9 +153,13 @@ public class MomentsRequest extends BaseRequestClient<List<MomentsInfo>> {
             }
         }
 
-
         onResponseSuccess(momentsList, getRequestType());
 
     }
 
+    @Override
+    protected void onResponseSuccess(List<MomentsInfo> response, int requestType) {
+        super.onResponseSuccess(response, requestType);
+        isFirstRequest = false;
+    }
 }

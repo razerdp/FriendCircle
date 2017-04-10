@@ -8,6 +8,10 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
 ##### 因为采取组件化（目前正在开发的组件：photoselect），所以可能push上来的是组件的build，如果您要build整个app，请把gradle.properties下的  isModule=true 切换为false并sync gradle
 
 ##### 【简略更新日志】
+ - 2017/04/10
+    + 修复了Bmob后台查询记录只有100条的截断问题
+    + 增加查询缓存
+
  - 2017/04/05
     + 修复ARouter失效的问题
     + 图片选择预览页面实现
@@ -21,22 +25,6 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
  - 2017/03/29
     + 图片选择模块（包括相册部分）完成
     + 图片选择模块封入fragment
-
- - 2017/03/28
-    + 图片选择模块完成
-    + 动画交互完成
-    + 添加gif预览
-    + 重构Bmob的点赞表等，现在查询所有动态已经是不再有那么多请求了，fix #38
-    + 图片选择模块合并到app中
-
- - 2017/03/24
-    + 扫描系统媒体库Manager完成
-    + 图片选择页面的扫描进度完成
-    + 增加媒体库图片更新的监听
-
- - 2017/03/23
-    + 开始photoselect的初步搭建
-    + baselib的本地图片扫面完成
 
  - 更多日志请看 → [更新日志](https://github.com/razerdp/FriendCircle/blob/master/UPDATE_LOG.md)
 
