@@ -16,8 +16,16 @@ public interface RouterList {
         String path = "/photo/browser";
         String key_browserinfo = "browserinfo";
         String key_maxSelectCount = "maxSelectCount";
-        String key_result ="selectedphoto";
+        String key_result = "selectedphoto";
         int requestCode = 0x10;
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @interface PublishActivity {
+        String path = "/publish/edit";
+        String key_mode = "mode";
+        int MODE_TEXT = 0x10;
+        int MODE_MULTI = 0x11;
     }
 
 }

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:paddingLeft="@dimen/common_padding"
+                android:paddingRight="10dp"
+                tools:background="@color/color_c6c6c6">
+
+    <ImageView
+        android:id="@+id/menu_ic_left"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        tools:src="@drawable/ic_camera"/>
+
+    <TextView
+        android:id="@+id/menu_tx_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/common_padding"
+        android:layout_toRightOf="@id/menu_ic_left"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        tools:text="主要内容"/>
+
+    <ImageView
+        android:id="@+id/menu_ic_right"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/arrow_gray"/>
+    <TextView
+        android:id="@+id/menu_tx_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/menu_ic_right"
+        android:textColor="@color/text_dark_gray"
+        android:textSize="18sp"
+        tools:text="主要内容"/>
+</RelativeLayout>
