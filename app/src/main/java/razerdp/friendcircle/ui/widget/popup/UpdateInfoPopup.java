@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
+import razerdp.github.com.baselibrary.utils.ToolUtil;
+import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 
 /**
  * Created by 大灯泡 on 2017/4/7.
@@ -22,11 +24,18 @@ public class UpdateInfoPopup extends BasePopupWindow {
     private TextView title;
     private TextView content;
 
-    public UpdateInfoPopup(Activity context) {
+    public UpdateInfoPopup(final Activity context) {
         super(context);
         title = (TextView) findViewById(R.id.update_title);
         content = (TextView) findViewById(R.id.update_content);
         setBackPressEnable(false);
+        content.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ToolUtil.copyToClipboardAndToast(context, content.getText().toString().trim());
+                return true;
+            }
+        });
     }
 
     @Override

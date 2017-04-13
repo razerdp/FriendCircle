@@ -8,6 +8,11 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
 ##### 因为采取组件化（目前正在开发的组件：photoselect），所以可能push上来的是组件的build，如果您要build整个app，请把gradle.properties下的  isModule=true 切换为false并sync gradle
 
 ##### 【简略更新日志】
+ - 2017/04/13
+    + 修复了LocalPhotoManager扫描媒体库偶尔会出现不全的问题（原来我竟然在回调后没有return，从而导致一直扫描下去orz...这是个大问题额
+    + 修复了选择图片页面在进入预览里取消选择后，返回来再取消选择时数量不准确的问题 **(详见PhotoSelectAdapter#onUnSelectPhoto)**
+    + 其实我偷偷的加了一个长按这个popup文字可以复制的功能（虽然没鸟用）
+
  - 2017/04/10
     + 修复了Bmob后台查询记录只有100条的截断问题
     + 增加查询缓存

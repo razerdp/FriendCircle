@@ -18,14 +18,14 @@ public enum UpdateInfoManager {
     private UpdateInfoPopup popup;
     private boolean hasShow;
 
-    final String title = "开发日志(2017/04/10)";
-    final String content = "1 - 修复了Bmob后台查询记录只有100条的截断问题，原来默认是100条，最多查询1000条(太好了，不用重构后台的数据库表了哈哈^_^)"
+    final String title = "开发日志(2017/04/13)";
+    final String content = "1 - 修复了LocalPhotoManager扫描媒体库偶尔会出现不全的问题（原来我竟然在回调后没有return，从而导致一直扫描下去orz...这是个大问题额"
             + '\n'
             + '\n'
-            + "2 - LocalPhotoManager扫描出的系统媒体库似乎有点问题，具体表现在刚打开程序就去选择照片会有较大几率无法查看完整的“所有照片”，返回后回来又完整了。这个稍后修复"
+            + "2 - 修复了选择图片页面在进入预览里取消选择后，返回来再取消选择时数量不准确的问题(详见PhotoSelectAdapter#onUnSelectPhoto)"
             + '\n'
             + '\n'
-            + "3 - 增加了Bmob查询缓存（反正本身就支持），至于能不能用呢？不知道诶，我也没测试哦"
+            + "3 - 其实我偷偷的加了一个长按这个popup文字可以复制的功能（虽然没鸟用）"
             + '\n'
             + '\n'
             + "4 - 接下来会开发发布动态页面，发票圈的日子不远了，期待吗？~期待就打赏或star啊亲-V-";
@@ -40,7 +40,7 @@ public enum UpdateInfoManager {
     public void showUpdateInfo() {
         if (!hasShow) {
             popup.setTitle(title);
-            popup.setContent(StringUtil.highLightKeyWord("(太好了，不用重构后台的数据库表了哈哈^_^)", Color.RED, content));
+            popup.setContent(StringUtil.highLightKeyWord("(详见PhotoSelectAdapter#onUnSelectPhoto)", Color.RED, content));
             popup.showPopupWindow();
         }
     }

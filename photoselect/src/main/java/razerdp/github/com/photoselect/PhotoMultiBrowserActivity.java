@@ -104,7 +104,6 @@ public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnCl
         ViewUtil.setViewsClickListener(this, vh.back, vh.mFinish, vh.mPhotoEdit);
     }
 
-
     @Override
     public void onClick(View v) {
         int i = v.getId();
@@ -127,7 +126,6 @@ public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnCl
         return result;
     }
 
-
     private boolean checkAndSetPhotoSelectCount() {
         if (!checkPhotoSelectCountValided(true)) {
             return false;
@@ -135,7 +133,6 @@ public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnCl
         vh.setPhotoSlectCount(localSelectedPhotos.size());
         return true;
     }
-
 
     private PhotoViewAttacher.OnViewTapListener onViewTapListener = new PhotoViewAttacher.OnViewTapListener() {
         @Override

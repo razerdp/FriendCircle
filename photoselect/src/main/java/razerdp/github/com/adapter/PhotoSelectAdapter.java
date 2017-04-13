@@ -23,6 +23,7 @@ import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewAdapter;
 import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewHolder;
 import razerdp.github.com.baseuilib.widget.imageview.CheckImageView;
 import razerdp.github.com.model.PhotoBrowserInfo;
+import razerdp.github.com.photoselect.PhotoMultiBrowserActivity;
 import razerdp.github.com.photoselect.R;
 import razerdp.github.com.router.RouterList;
 
@@ -70,10 +71,22 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
         callSelectListenerChange();
     }
 
+    /**
+     *
+     * 这里不可以用list.remove(Object)，因为当进行过选择之后，内部的实例不一定是同一个对象了。
+     *
+     * {@link razerdp.github.com.photoselect.fragment.PhotoGridFragement#updateSelectList(List)}以及{@link PhotoMultiBrowserActivity#finish()}
+     */
     private void onUnSelectPhoto(LocalPhotoManager.ImageInfo info) {
         if (info == null) return;
         if (selectedRecordLists.size() <= 0) return;
-        selectedRecordLists.remove(info);
+        for (int i = 0; i < selectedRecordLists.size(); i++) {
+            LocalPhotoManager.ImageInfo selectedInfo = selectedRecordLists.get(i);
+            if (selectedInfo.compareTo(info) == 0) {
+                selectedRecordLists.remove(i);
+                break;
+            }
+        }
         callSelectListenerChange();
     }
 
@@ -175,10 +188,10 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
             InnerSelectChangeClass innerSelectChangeClass;
             if (!(listener instanceof InnerSelectChangeClass)) {
                 innerSelectChangeClass = new InnerSelectChangeClass();
-                checkImageView.setOnSelectedChangeListener(innerSelectChangeClass);
             } else {
                 innerSelectChangeClass = (InnerSelectChangeClass) listener;
             }
+            checkImageView.setOnSelectedChangeListener(innerSelectChangeClass);
             innerSelectChangeClass.setData(data);
         }
 

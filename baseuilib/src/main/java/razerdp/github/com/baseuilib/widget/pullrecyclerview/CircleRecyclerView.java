@@ -26,12 +26,14 @@ import com.socks.library.KLog;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+import java.util.List;
 
 import me.everything.android.ui.overscroll.IOverScrollDecor;
 import me.everything.android.ui.overscroll.IOverScrollStateListener;
 import me.everything.android.ui.overscroll.IOverScrollUpdateListener;
 import me.everything.android.ui.overscroll.VerticalOverScrollBounceEffectDecorator;
 import me.everything.android.ui.overscroll.adapters.RecyclerViewOverScrollDecorAdapter;
+import razerdp.github.com.baselibrary.utils.ToolUtil;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baseuilib.R;
 import razerdp.github.com.baseuilib.widget.pullrecyclerview.wrapperadapter.FixedViewInfo;
@@ -495,7 +497,9 @@ public class CircleRecyclerView extends FrameLayout {
         if (mHeaderViewInfos.size() == Math.abs(ITEM_VIEW_TYPE_FOOTER_START - ITEM_VIEW_TYPE_HEADER_START)) {
             mHeaderViewInfos.remove(mHeaderViewInfos.size() - 1);
         }
-        mHeaderViewInfos.add(info);
+        if (checkFixedViewInfoNotAdded(info, mHeaderViewInfos)) {
+            mHeaderViewInfos.add(info);
+        }
         checkAndNotifyWrappedViewAdd(recyclerView.getAdapter(), info, true);
 
     }
@@ -516,8 +520,25 @@ public class CircleRecyclerView extends FrameLayout {
 
     public void addFooterView(View footerView) {
         final FixedViewInfo info = new FixedViewInfo(footerView, ITEM_VIEW_TYPE_FOOTER_START - mFooterViewInfos.size());
-        mFooterViewInfos.add(info);
+        if (checkFixedViewInfoNotAdded(info, mFooterViewInfos)) {
+            mFooterViewInfos.add(info);
+        }
         checkAndNotifyWrappedViewAdd(recyclerView.getAdapter(), info, false);
+    }
+
+    private boolean checkFixedViewInfoNotAdded(FixedViewInfo info, List<FixedViewInfo> infoList) {
+        boolean result = true;
+        if (ToolUtil.isListEmpty(infoList) || info == null) {
+            result = true;
+        } else {
+            for (FixedViewInfo fixedViewInfo : infoList) {
+                if (fixedViewInfo.view == info.view) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     public int getHeaderViewCount() {

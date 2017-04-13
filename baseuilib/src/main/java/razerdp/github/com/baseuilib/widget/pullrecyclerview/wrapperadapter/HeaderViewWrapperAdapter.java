@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
 
+import com.socks.library.KLog;
+
 import java.util.ArrayList;
 
 import static razerdp.github.com.baseuilib.widget.pullrecyclerview.wrapperadapter.FixedViewInfo.ITEM_VIEW_TYPE_FOOTER_START;
@@ -64,7 +66,12 @@ public class HeaderViewWrapperAdapter extends RecyclerView.Adapter implements Wr
                                     ArrayList<FixedViewInfo> mFooterViewInfos) {
         this.recyclerView = recyclerView;
         this.mWrappedAdapter = mWrappedAdapter;
-        this.mWrappedAdapter.registerAdapterDataObserver(mDataObserver);
+        try {
+            mWrappedAdapter.registerAdapterDataObserver(mDataObserver);
+        }catch (IllegalStateException e){
+            //maybe observer is added
+            KLog.w(e);
+        }
         if (mHeaderViewInfos == null) {
             this.mHeaderViewInfos = EMPTY_INFO_LIST;
         } else {

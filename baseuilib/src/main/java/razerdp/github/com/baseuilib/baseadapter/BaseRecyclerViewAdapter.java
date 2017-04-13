@@ -34,7 +34,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
 
     public BaseRecyclerViewAdapter(@NonNull Context context, @NonNull List<T> datas) {
         this.context = context;
-        this.datas=datas;
+        this.datas = datas;
         if (datas != null) {
             this.datas = new ArrayList<>(datas);
         } else {
@@ -113,6 +113,10 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
             this.datas.addAll(datas);
             notifyDataSetChanged();
         }
+    }
+
+    public List<T> getDatas() {
+        return datas;
     }
 
     public void addData(int pos, @NonNull T data) {

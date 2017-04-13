@@ -43,8 +43,8 @@ public enum LocalPhotoManager {
     private static final String ALL_PHOTO_TITLE = "所有照片";
     private static final String QUERY_ORDER = " ASC";
     private static final boolean SCAN_EXTERNAL_SD = true;
-    //5天内不再扫描
-    private static final long SCAN_INTERVAL = 5 * 24 * 60 * 60 * 1000;
+    //1分钟内不再扫描
+    private static final long SCAN_INTERVAL = 60 * 1000;
 
     private WeakHandler handler = new WeakHandler();
 
@@ -65,7 +65,7 @@ public enum LocalPhotoManager {
 
     private final ProgressRunnable progressRunnable = new ProgressRunnable();
 
-    private boolean isAsync;
+    private volatile boolean isAsync;
 
 
     public synchronized void scanImgAsync(@Nullable final OnScanListener listener) {
@@ -79,10 +79,13 @@ public enum LocalPhotoManager {
     }
 
     public synchronized void scanImg(@Nullable OnScanListener listener) {
-        if (isScaning) return;
+        if (isScaning) {
+            callError(listener, "scan task is running", new LPException("scan task is running"));
+            return;
+        }
         isScaning = true;
-        lastScanTime = AppSetting.loadLongPreferenceByKey(AppSetting.APP_LAST_SCAN_IMG_TIME, 0);
         callStart(listener);
+        lastScanTime = AppSetting.loadLongPreferenceByKey(AppSetting.APP_LAST_SCAN_IMG_TIME, 0);
 
         boolean callImmediately = checkLocalSerializableFile();
         //如果本地文件已经有了，那么可以立即回调，提高用户体验。
@@ -90,11 +93,13 @@ public enum LocalPhotoManager {
         if (callImmediately) {
             callProgress(listener, isAsync, 100);
             callFinish(listener);
+            reset();
+            return;
         }
         long curTime = System.currentTimeMillis();
         if (curTime - lastScanTime <= SCAN_INTERVAL) {
-            if (new File(AppFileHelper.getAppDataPath().concat(LOCAL_FILE_NAME)).exists() && !callImmediately) {
-                callError(listener, "5天内不应该再次扫描", new IllegalStateException("5天内不应该再次扫描"));
+            if (new File(AppFileHelper.getAppDataPath().concat(LOCAL_FILE_NAME)).exists()) {
+                callError(listener, "1分钟内不应该再次扫描", new IllegalStateException("1分钟内不应该再次扫描"));
                 reset();
                 return;
             }
@@ -165,9 +170,7 @@ public enum LocalPhotoManager {
     private void reset() {
         isScaning = false;
         isAsync = false;
-        if (progressRunnable != null) {
-            progressRunnable.reset();
-        }
+        progressRunnable.reset();
     }
 
     public void registerContentObserver(Handler handler) {
