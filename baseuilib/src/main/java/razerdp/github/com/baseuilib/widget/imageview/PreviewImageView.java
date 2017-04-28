@@ -66,6 +66,13 @@ public class PreviewImageView<T> extends FrameLayout {
     private void callToUpdateData() {
         if (isListEmpty(datas)) {
             clearViews();
+        } else {
+            tableLayout.removeAllViewsInLayout();
+            tableLayout.requestLayout();
+            TableRow[] tableRows = generateTableRows();
+            for (int i = 0; i < tableRows.length; i++) {
+                tableLayout.addView(tableRows[i]);
+            }
         }
     }
 
@@ -95,9 +102,27 @@ public class PreviewImageView<T> extends FrameLayout {
                 }
                 layout.addView(getImageViewWithOutParent(imageView));
                 tableRow.addView(layout);
+                checkAndSetAddImage(tableRows, rowIndex, tableRow, addImage);
             }
         }
         return tableRows;
+    }
+
+    private void checkAndSetAddImage(TableRow[] tableRows, int currentRowIndex, TableRow currentTableRow, boolean addImage) {
+        if (!addImage) return;
+        if (currentTableRow.getChildCount() == 4) {
+            //当前row count满
+            int rowIndex = currentRowIndex + 1;
+            if (rowIndex > 3) return;
+            TableRow nextRow = tableRows[rowIndex];
+            if (nextRow == null) {
+                nextRow = new TableRow(getContext());
+                tableRows[rowIndex] = nextRow;
+            }
+            nextRow.addView(getImageViewWithOutParent(addImageView));
+        } else {
+            currentTableRow.addView(getImageViewWithOutParent(addImageView));
+        }
     }
 
 
