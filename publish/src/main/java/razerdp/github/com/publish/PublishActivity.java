@@ -2,19 +2,14 @@ package razerdp.github.com.publish;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IntDef;
 
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baseuilib.base.BaseTitleBarActivity;
 import razerdp.github.com.baseuilib.widget.common.TitleBar;
-import razerdp.github.com.photoselect.R;
 import razerdp.github.com.router.RouterList;
 
 

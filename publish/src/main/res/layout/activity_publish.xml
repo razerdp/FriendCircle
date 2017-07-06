@@ -32,12 +32,12 @@
                 android:textColorHint="@color/text_gray"
                 android:textSize="16sp"/>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/publish_photo_content"
+            <razerdp.github.com.baseuilib.widget.imageview.PreviewImageView
+                android:id="@+id/preview_image_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/common_padding"
-                android:scrollbars="none"/>
+                />
 
         </LinearLayout>
 

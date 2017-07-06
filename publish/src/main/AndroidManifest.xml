@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="extramessage.rekall.com.publish">
+          package="razerdp.github.com.publish">
 
     <application
         android:allowBackup="true"
