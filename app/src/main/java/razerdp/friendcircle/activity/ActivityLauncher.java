@@ -4,11 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import razerdp.friendcircle.app.mvp.model.uimodel.PhotoBrowseInfo;
 import razerdp.friendcircle.activity.gallery.PhotoBrowseActivity;
-import razerdp.friendcircle.activity.publish.PublishActivity;
+import razerdp.friendcircle.app.mvp.model.uimodel.PhotoBrowseInfo;
 import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
 import razerdp.github.com.photoselect.PhotoSelectActivity;
+import razerdp.github.com.publish.PublishActivity;
+import razerdp.github.com.router.RouterList;
 
 /**
  * Created by 大灯泡 on 2017/3/1.
@@ -25,7 +26,7 @@ public class ActivityLauncher {
      * @param mode
      * @param requestCode
      */
-    public static void startToPublishActivityWithResult(Activity act, @PublishActivity.Mode int mode, int requestCode) {
+    public static void startToPublishActivityWithResult(Activity act, @RouterList.PublishActivity int mode, int requestCode) {
         Intent intent = new Intent(act, PublishActivity.class);
         intent.putExtra(PublishActivity.TAG_MODE, mode);
         act.startActivityForResult(intent, requestCode);

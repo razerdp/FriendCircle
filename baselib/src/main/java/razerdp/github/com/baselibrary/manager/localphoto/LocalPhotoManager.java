@@ -66,14 +66,10 @@ public enum LocalPhotoManager {
 
     private final ProgressRunnable progressRunnable = new ProgressRunnable();
 
-    private volatile boolean isAsync;
-
-
     public synchronized void scanImgAsync(@Nullable final OnScanListener listener) {
         ThreadPoolManager.execute(new Runnable() {
             @Override
             public void run() {
-                isAsync = true;
                 scanImg(listener);
             }
         });
@@ -92,7 +88,7 @@ public enum LocalPhotoManager {
         //如果本地文件已经有了，那么可以立即回调，提高用户体验。
         //然后再后台扫一次更新本地文件记录
         if (callImmediately) {
-            callProgress(listener, isAsync, 100);
+            callProgress(listener, 100);
             callFinish(listener);
             reset();
             return;
@@ -160,7 +156,7 @@ public enum LocalPhotoManager {
                     imageInfoList.add(imageInfo);
                 }
             }
-            callProgress(listener, isAsync, (int) (cursor.getPosition() * 100.0f / cursorCount));
+            callProgress(listener, (int) (cursor.getPosition() * 100.0f / cursorCount));
         }
         lastScanTime = System.currentTimeMillis();
         AppSetting.saveLongPreferenceByKey(AppSetting.APP_LAST_SCAN_IMG_TIME, lastScanTime);
@@ -178,7 +174,6 @@ public enum LocalPhotoManager {
 
     private void reset() {
         isScaning = false;
-        isAsync = false;
         progressRunnable.reset();
     }
 
@@ -230,14 +225,13 @@ public enum LocalPhotoManager {
                                           MediaStore.Images.Thumbnails.IMAGE_ID.concat(" = ?"),
                                           whereQuery,
                                           null);
+        if (cursor == null) return null;
 
-        if (cursor != null && cursor.getCount() > 0) {
+        if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             result = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Thumbnails.DATA));
         }
-
         cursor.close();
-
         return result;
     }
 
@@ -264,60 +258,44 @@ public enum LocalPhotoManager {
 
     private void callStart(final OnScanListener listener) {
         if (listener != null) {
-            if (isAsync) {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        listener.onStart();
-                    }
-                });
-            } else {
-                listener.onStart();
-            }
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onStart();
+                }
+            });
         }
     }
 
     private void callFinish(final OnScanListener listener) {
         if (listener != null) {
-            if (isAsync) {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        listener.onFinish();
-                    }
-                });
-            } else {
-                listener.onFinish();
-            }
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onFinish();
+                }
+            });
         }
     }
 
     private void callError(final OnScanListener listener, final String message, final Exception e) {
         if (listener != null) {
-            if (isAsync) {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        listener.onError(new LPException(message, e));
-                    }
-                });
-            } else {
-                listener.onError(new LPException(message, e));
-            }
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onError(new LPException(message, e));
+                }
+            });
         }
     }
 
-    private void callProgress(OnScanListener listener, boolean async, int progress) {
+    private void callProgress(OnScanListener listener, int progress) {
         if (listener instanceof OnScanProgresslistener) {
-            if (async) {
-                if (progressRunnable.getListener() == null) {
-                    progressRunnable.setListener((OnScanProgresslistener) listener);
-                }
-                progressRunnable.setProgress(progress);
-                handler.post(progressRunnable);
-            } else {
-                ((OnScanProgresslistener) listener).onProgress(progress);
+            if (progressRunnable.getListener() == null) {
+                progressRunnable.setListener((OnScanProgresslistener) listener);
             }
+            progressRunnable.setProgress(progress);
+            handler.post(progressRunnable);
         }
     }
 

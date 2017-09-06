@@ -39,8 +39,6 @@ public class CommentBox extends FrameLayout {
 
     private CommentInfo commentInfo;
     private String momentid;
-    private int dataPos;
-    private CommentWidget commentWidget;
 
 
     @Retention(RetentionPolicy.SOURCE)
@@ -75,9 +73,9 @@ public class CommentBox extends FrameLayout {
             public void onClick(View v) {
                 if (onCommentSendClickListener != null)
                     onCommentSendClickListener.onCommentSendClick(v,
-                                                                  momentid,
-                                                                  commentInfo == null ? null : commentInfo.getAuthor().getUserid(),
-                                                                  mInputContent.getText().toString().trim());
+                            momentid,
+                            commentInfo == null ? null : commentInfo.getAuthor().getUserid(),
+                            mInputContent.getText().toString().trim());
             }
         });
         setVisibility(GONE);
@@ -162,25 +160,9 @@ public class CommentBox extends FrameLayout {
         return commentInfo != null;
     }
 
-    public int getDataPos() {
-        return dataPos;
-    }
-
-    public void setDataPos(int dataPos) {
-        this.dataPos = dataPos;
-    }
-
     @CommentType
     public int getCommentType() {
         return commentInfo == null ? CommentType.TYPE_CREATE : CommentType.TYPE_REPLY;
-    }
-
-    public CommentWidget getCommentWidget() {
-        return commentWidget;
-    }
-
-    public void setCommentWidget(CommentWidget commentWidget) {
-        this.commentWidget = commentWidget;
     }
 
     @Override
