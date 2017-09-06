@@ -18,7 +18,7 @@ import razerdp.github.com.baselibrary.helper.AppFileHelper;
 
 
 /**
- * Created by 大灯泡 on 2016/11/1.
+ * Created by 大灯泡 on 2017/7/5.
  * Glide全局配置文件
  */
 public class GlobalGlideConfiguration implements GlideModule {

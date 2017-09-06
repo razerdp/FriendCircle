@@ -19,7 +19,6 @@ import java.util.List;
 
 import cn.bmob.v3.exception.BmobException;
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.bmob.BmobInitHelper;
 import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.app.manager.UpdateInfoManager;
 import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;

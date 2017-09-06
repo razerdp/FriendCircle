@@ -32,7 +32,7 @@
             android:theme="@style/Transparent"/>
 
         <activity
-            android:name=".activity.publish.PublishActivity"
+            android:name="razerdp.github.com.publish.PublishActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>

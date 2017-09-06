@@ -1,17 +1,17 @@
-package razerdp.friendcircle.activity.publish;
+package razerdp.github.com.publish;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IntDef;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import com.alibaba.android.arouter.facade.annotation.Autowired;
+import com.alibaba.android.arouter.facade.annotation.Route;
 
-import razerdp.friendcircle.R;
-import razerdp.github.com.baseuilib.base.BaseTitleBarActivity;
-import razerdp.github.com.baseuilib.widget.common.TitleBar;
 import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
+import razerdp.github.com.baseuilib.base.BaseTitleBarActivity;
+import razerdp.github.com.baseuilib.widget.common.TitleBar;
+import razerdp.github.com.router.RouterList;
+
 
 /**
  * Created by 大灯泡 on 2017/3/1.
@@ -19,28 +19,19 @@ import razerdp.github.com.baselibrary.utils.ui.UIHelper;
  * 发布朋友圈页面
  */
 
+@Route(path = "/publish/edit")
 public class PublishActivity extends BaseTitleBarActivity {
 
     public static final String TAG_MODE = "tag_mode";
 
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({Mode.TEXT, Mode.MULTI})
-    public @interface Mode {
-
-        //文字
-        int TEXT = 0x10;
-        //图文
-        int MULTI = 0x11;
-    }
-
-    int mode;
+    @Autowired(name = "mode")
+    int mode = -1;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_publish);
-        mode = getIntent().getIntExtra(TAG_MODE, -1);
         if (mode == -1) {
             finish();
             return;
@@ -60,8 +51,8 @@ public class PublishActivity extends BaseTitleBarActivity {
 
     //title init
     private void initTitle() {
-        setTitle(mode == Mode.TEXT ? "发表文字" : null);
-        setTitleRightTextColor(mode != Mode.TEXT);
+        setTitle(mode == RouterList.PublishActivity.MODE_TEXT ? "发表文字" : null);
+        setTitleRightTextColor(mode != RouterList.PublishActivity.MODE_TEXT);
         setTitleMode(TitleBar.MODE_BOTH);
         setTitleLeftText("取消");
         setTitleLeftIcon(0);
