@@ -6,6 +6,9 @@ import android.text.TextUtils;
 import com.socks.library.KLog;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import razerdp.github.com.baselibrary.base.AppContext;
 import razerdp.github.com.baselibrary.utils.FileUtil;
@@ -95,6 +98,24 @@ public class AppFileHelper {
 
     public static String getAppTempPath() {
         return storagePath.concat(TEMP_PATH);
+    }
+
+    public static String createShareImageName() {
+        return createImageName(false);
+    }
+
+    public static String createImageName(boolean isJpg) {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyyMMdd_HHmmss", Locale.US);
+        return dateFormat.format(date) + (isJpg ? ".jpg" : ".png");
+    }
+
+    public static String createCropImageName() {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyyMMdd_HHmmss", Locale.US);
+        return dateFormat.format(date) + "_crop.png";
     }
 
 }

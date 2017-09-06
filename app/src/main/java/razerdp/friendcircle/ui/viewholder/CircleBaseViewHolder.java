@@ -228,7 +228,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
             if (commentInfo.canDelete()) {
                 deleteCommentPopup.showPopupWindow(commentInfo);
             } else {
-                momentPresenter.showCommentBox(itemPosition, momentsInfo.getMomentid(), (CommentWidget) v);
+                momentPresenter.showCommentBox(null, itemPosition, momentsInfo.getMomentid(), (CommentWidget) v);
             }
         }
     };
@@ -272,7 +272,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
 
         @Override
         public void onCommentClick(View v, @NonNull MomentsInfo info) {
-            momentPresenter.showCommentBox(itemPosition, info.getMomentid(), null);
+            momentPresenter.showCommentBox(itemView, itemPosition, info.getMomentid(), null);
         }
     };
 

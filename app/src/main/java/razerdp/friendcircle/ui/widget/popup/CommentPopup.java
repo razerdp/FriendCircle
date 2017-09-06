@@ -19,10 +19,9 @@ import razerdp.friendcircle.R;
 import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
 import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.thirdpart.WeakHandler;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
+import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 
 /**
  * Created by 大灯泡 on 2016/3/6.
@@ -50,7 +49,6 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
     public CommentPopup(Activity context) {
         super(context, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         setNeedPopupFade(false);
-        setRelativeToAnchorView(true);
         handler = new WeakHandler();
 
         mLikeView = (ImageView) findViewById(R.id.iv_like);
@@ -130,8 +128,8 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
 
     @Override
     public void showPopupWindow(View v) {
-        setOffsetX(-getPopupViewWidth() - 10);
-        setOffsetY(-v.getHeight());
+        setOffsetX(-getWidth() - 10);
+        setOffsetY(-getHeight()*2/3);
         super.showPopupWindow(v);
     }
 

@@ -61,8 +61,8 @@ dependencies {
         compile project(':baseuilib')
         compile project(path: ':network')
         compile project(':photoselect')
+        compile project(path: ':publish')
         annotationProcessor rootProject.ext.dependencies.arouter_compiler
-
 
     } else {
         compile project(':baselib')

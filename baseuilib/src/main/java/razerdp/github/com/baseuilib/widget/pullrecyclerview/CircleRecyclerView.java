@@ -138,7 +138,7 @@ public class CircleRecyclerView extends FrameLayout {
             recyclerView.setBackgroundColor(Color.WHITE);
             linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
             //渲染优化，放到render thread做，（prefetch在v25之后可用），机型在萝莉炮(lollipop)后才可以享受此优化（事实上默认是开启的）
-            linearLayoutManager.setItemPrefetchEnabled(true);
+            //linearLayoutManager.setItemPrefetchEnabled(true);
             recyclerView.setLayoutManager(linearLayoutManager);
         }
         //取消默认item变更动画
@@ -195,18 +195,6 @@ public class CircleRecyclerView extends FrameLayout {
         setCurrentStatus(REFRESHING);
         iconObserver.autoRefresh();
         onRefreshListener.onRefresh();
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        Log.d(TAG, "onMeasure() called with: widthMeasureSpec = [" + widthMeasureSpec + "], heightMeasureSpec = [" + heightMeasureSpec + "]");
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        Log.d(TAG, "onLayout: ");
     }
 
     @Override
@@ -348,7 +336,7 @@ public class CircleRecyclerView extends FrameLayout {
             super.onScrolled(recyclerView, dx, dy);
             if (isScrollToBottom() && currentStatus != REFRESHING) {
                 onRefreshListener.onLoadMore();
-                KLog.i("loadmoretag", "loadmore");
+                Log.i("loadmoretag", "loadmore");
                 pullMode = FROM_BOTTOM;
                 setCurrentStatus(REFRESHING);
                 footerView.onRefreshing();

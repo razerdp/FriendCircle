@@ -2,6 +2,7 @@ package razerdp.friendcircle.app.mvp.presenter;
 
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.socks.library.KLog;
 
@@ -9,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import cn.bmob.v3.BmobObject;
 import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.app.mvp.callback.OnCommentChangeCallback;
 import razerdp.friendcircle.app.mvp.callback.OnLikeChangeCallback;
@@ -17,11 +17,10 @@ import razerdp.friendcircle.app.mvp.model.CommentImpl;
 import razerdp.friendcircle.app.mvp.model.LikeImpl;
 import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
 import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.mvp.view.IMomentView;
+import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
 import razerdp.github.com.baselibrary.mvp.IBasePresenter;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
-import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
 
 /**
  * Created by 大灯泡 on 2016/12/7.
@@ -172,9 +171,9 @@ public class MomentPresenter implements IMomentPresenter {
     }
 
 
-    public void showCommentBox(int itemPos, String momentid, @Nullable CommentWidget commentWidget) {
+    public void showCommentBox(@Nullable View viewHolderRootView, int itemPos, String momentid, @Nullable CommentWidget commentWidget) {
         if (momentView != null) {
-            momentView.showCommentBox(itemPos, momentid, commentWidget);
+            momentView.showCommentBox(viewHolderRootView, itemPos, momentid, commentWidget);
         }
     }
 
