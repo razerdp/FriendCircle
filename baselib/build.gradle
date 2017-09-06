@@ -43,7 +43,7 @@ dependencies {
 
     compile project(':router')
 
-    compile 'com.github.razerdp:BasePopup:v1.7.0'
+    compile 'com.github.razerdp:BasePopup:1.8.2'
     //over scroller helper
     compile 'me.everything:overscroll-decor-android:1.0.3'
     //bmob

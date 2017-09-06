@@ -8,6 +8,9 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
 ##### 因为采取组件化（目前正在开发的组件：photoselect），所以可能push上来的是组件的build，如果您要build整个app，请把gradle.properties下的  isModule=true 切换为false并sync gradle
 
 ##### 【简略更新日志】
+ - 2017/09/06
+    + 切换许可为GPLV3.0，开始恢复维护
+
  - 2017/06/08
     + 因为有点忙，打算8月份开始再继续维护。
 
@@ -19,26 +22,12 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
  - 2017/04/10
     + 修复了Bmob后台查询记录只有100条的截断问题
     + 增加查询缓存
-
- - 2017/04/05
-    + 修复ARouter失效的问题
-    + 图片选择预览页面实现
-    + 选择后退出的保存即页面的更新
-
- - 2017/03/30
-    + 修复LocalPhotoManager监听媒体库更新时插入过多数据的问题。
-    + 优化gridphotofragment和图片浏览的逻辑
-    + 增加图片预览activity，功能慢慢完善
-
- - 2017/03/29
-    + 图片选择模块（包括相册部分）完成
-    + 图片选择模块封入fragment
-
+    
  - 更多日志请看 → [更新日志](https://github.com/razerdp/FriendCircle/blob/master/UPDATE_LOG.md)
 
 ---
 
-**本项目的一切实现思路以及逻辑都有记录，它们都有在我的简书文集记载：**
+**本项目的一切实现思路以及逻辑都有记录，它们都有在我的简书文集记载：自4月份起停止更新，如果您感兴趣，可以加我QQ好友联系探讨（164701463），请注明一下朋友圈项目**
 
 [代码实现逻辑（简书合集）](http://www.jianshu.com/notebooks/3224048/latest)
 
@@ -89,4 +78,4 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
 
 ## LICENSE：
 ***
-[MIT](https://github.com/razerdp/FriendCircle/blob/master/LICENSE)
+[GPL3.0](https://github.com/razerdp/FriendCircle/blob/master/LICENSE)
