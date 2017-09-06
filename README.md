@@ -61,13 +61,13 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
 
 如果您感兴趣，欢迎加群一起讨论，本群新创建，暂时没有什么特别的要求哈，大家都是因为兴趣-V-
 
-![](https://github.com/razerdp/FriendCircle/blob/main-dev/qqgroup.png)
+![](https://github.com/razerdp/FriendCircle/blob/master/qqgroup.png)
 
 
 
 如果您愿意捐助一下项目，可以通过微信捐助哟~
 
-![](https://github.com/razerdp/FriendCircle/blob/main-dev/wechat.jpg)
+![](https://github.com/razerdp/FriendCircle/blob/master/wechat.jpg)
 
 
 
