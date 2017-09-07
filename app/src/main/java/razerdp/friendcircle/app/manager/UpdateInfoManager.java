@@ -18,9 +18,8 @@ public enum UpdateInfoManager {
     private UpdateInfoPopup popup;
     private boolean hasShow;
 
-    final String title = "开发日志(2017/09/06)";
-    final String content = "诸位亲，在忙了一段时间后。。。终于可以回来继续更新了！！！\n\n这次因为00CEO的事件，所以我将协议切换为GPL,接下来将会开发发布朋友圈哦~" +
-            "\n\n同时。。。因为Bmob服务器有更改，所以这次将打赏金额提高到5元，希望得到您的支持与鼓励。\n\n本项目会持续更新的。";
+    final String title = "开发日志(2017/09/07)";
+    final String content = "嗯。。。解决了6.0的权限问题。。。。";
 
 
     public void init(Activity act) {

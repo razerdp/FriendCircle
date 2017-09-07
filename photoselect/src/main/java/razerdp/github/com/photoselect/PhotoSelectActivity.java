@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import razerdp.github.com.baselibrary.base.BaseFragment;
@@ -21,8 +20,6 @@ import razerdp.github.com.bus.EventSelectAlbum;
 import razerdp.github.com.photoselect.fragment.PhotoAlbumFragement;
 import razerdp.github.com.photoselect.fragment.PhotoGridFragement;
 import razerdp.github.com.router.RouterList;
-
-import static android.R.attr.fragment;
 
 /**
  * Created by 大灯泡 on 2017/3/22.
@@ -146,7 +143,7 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         LocalPhotoManager.INSTANCE.writeToLocal();
         EventBus.getDefault().unregister(this);

@@ -1,17 +1,17 @@
 package razerdp.github.com.baselibrary.base;
 
 import android.app.Activity;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.logging.Logger;
+import razerdp.github.com.baselibrary.helper.PermissionHelper;
 
 /**
  * Created by 大灯泡 on 2017/3/29.
@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 public abstract class BaseFragment extends Fragment {
     private View rootView;
     protected Activity mActivity;
+    private PermissionHelper mPermissionHelper;
 
 
     @Override
@@ -46,6 +47,9 @@ public abstract class BaseFragment extends Fragment {
         if (mActivity == null) {
             mActivity = getActivity();
         }
+        if (mPermissionHelper == null) {
+            mPermissionHelper = new PermissionHelper(this);
+        }
         rootView = inflater.inflate(getLayoutResId(), container, false);
         if (rootView != null) {
             onInitData();
@@ -60,6 +64,27 @@ public abstract class BaseFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         onVisibleChange(isVisibleToUser);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (mPermissionHelper != null) {
+            mPermissionHelper.handlePermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    protected PermissionHelper getPermissionHelper() {
+        return mPermissionHelper;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mPermissionHelper!=null){
+            mPermissionHelper.handleDestroy();
+        }
+        mPermissionHelper=null;
     }
 
     @LayoutRes

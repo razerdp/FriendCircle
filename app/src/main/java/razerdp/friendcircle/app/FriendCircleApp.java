@@ -1,9 +1,6 @@
 package razerdp.friendcircle.app;
 
 import android.app.Application;
-import android.content.Context;
-
-import com.alibaba.android.arouter.launcher.ARouter;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
@@ -11,8 +8,6 @@ import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.config.Define;
 import razerdp.github.com.baselibrary.base.AppContext;
 import razerdp.github.com.baselibrary.helper.AppFileHelper;
-import razerdp.github.com.baselibrary.helper.AppSetting;
-import razerdp.github.com.baselibrary.manager.ThreadPoolManager;
 import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
 
 /**
@@ -31,9 +26,6 @@ public class FriendCircleApp extends Application {
         initLocalHostInfo();
         AppFileHelper.initStoryPath();
         LocalPhotoManager.INSTANCE.registerContentObserver(null);
-        if (AppSetting.loadBooleanPreferenceByKey(AppSetting.APP_HAS_SCAN_IMG, false)) {
-            LocalPhotoManager.INSTANCE.scanImgAsync(null);
-        }
     }
 
     private void initBmob() {

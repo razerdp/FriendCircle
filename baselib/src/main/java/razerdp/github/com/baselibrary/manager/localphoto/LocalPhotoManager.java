@@ -66,16 +66,16 @@ public enum LocalPhotoManager {
 
     private final ProgressRunnable progressRunnable = new ProgressRunnable();
 
-    public synchronized void scanImgAsync(@Nullable final OnScanListener listener) {
+    public synchronized void scanImg(@Nullable final OnScanListener listener) {
         ThreadPoolManager.execute(new Runnable() {
             @Override
             public void run() {
-                scanImg(listener);
+                scanImgInternal(listener);
             }
         });
     }
 
-    public synchronized void scanImg(@Nullable OnScanListener listener) {
+    private synchronized void scanImgInternal(@Nullable OnScanListener listener) {
         if (isScaning) {
             callError(listener, "scan task is running", new LPException("scan task is running"));
             return;

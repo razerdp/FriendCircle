@@ -2,6 +2,7 @@ package razerdp.github.com.baselibrary.helper;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,17 +10,20 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.IntDef;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
-import com.socks.library.KLog;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +35,11 @@ import razerdp.github.com.baselibrary.R;
 
 public class PermissionHelper {
     private static final String TAG = "PermissionHelper";
+    private WeakReference<Object> mWeakReference;
+    private OnPermissionGrantListener mOnPermissionGrantListener;
+
+    private static final HashMap<Integer, String> PERMISSION_MAP = new HashMap<>();
+
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({CODE_RECORD_AUDIO, CODE_GET_ACCOUNTS, CODE_READ_PHONE_STATE, CODE_CALL_PHONE, CODE_CAMERA, CODE_ACCESS_FINE_LOCATION,
@@ -50,92 +59,82 @@ public class PermissionHelper {
     public static final int CODE_MULTI_PERMISSION = 100;
 
 
-    private static final String PERMISSION_RECORD_AUDIO = Manifest.permission.RECORD_AUDIO;
-    private static final String PERMISSION_GET_ACCOUNTS = Manifest.permission.GET_ACCOUNTS;
-    private static final String PERMISSION_READ_PHONE_STATE = Manifest.permission.READ_PHONE_STATE;
-    private static final String PERMISSION_CALL_PHONE = Manifest.permission.CALL_PHONE;
-    private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
-    private static final String PERMISSION_ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
-    private static final String PERMISSION_ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
-    private static final String PERMISSION_READ_EXTERNAL_STORAGE = Manifest.permission.READ_EXTERNAL_STORAGE;
-    private static final String PERMISSION_WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
-    private static final String[] requestPermissions = {
-            PERMISSION_RECORD_AUDIO,
-            PERMISSION_GET_ACCOUNTS,
-            PERMISSION_READ_PHONE_STATE,
-            PERMISSION_CALL_PHONE,
-            PERMISSION_CAMERA,
-            PERMISSION_ACCESS_FINE_LOCATION,
-            PERMISSION_ACCESS_COARSE_LOCATION,
-            PERMISSION_READ_EXTERNAL_STORAGE,
-            PERMISSION_WRITE_EXTERNAL_STORAGE
-    };
-
-    public interface OnPermissionGrantListener {
-        void onPermissionGranted(int requestCode);
+    static {
+        PERMISSION_MAP.put(CODE_RECORD_AUDIO, Manifest.permission.RECORD_AUDIO);
+        PERMISSION_MAP.put(CODE_GET_ACCOUNTS, Manifest.permission.GET_ACCOUNTS);
+        PERMISSION_MAP.put(CODE_READ_PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
+        PERMISSION_MAP.put(CODE_CALL_PHONE, Manifest.permission.CALL_PHONE);
+        PERMISSION_MAP.put(CODE_CAMERA, Manifest.permission.CAMERA);
+        PERMISSION_MAP.put(CODE_ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION);
+        PERMISSION_MAP.put(CODE_ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION);
+        PERMISSION_MAP.put(CODE_READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
+        PERMISSION_MAP.put(CODE_WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
-    private static void callPermissionGranted(OnPermissionGrantListener listener, int requestCode) {
-        if (listener != null) {
-            listener.onPermissionGranted(requestCode);
-        }
+    public static String getPermissionString(@PermissionResultCode int code) {
+        return PERMISSION_MAP.get(code);
     }
 
-    public static void requestPermission(final Activity activity, @PermissionResultCode final int requestCode, OnPermissionGrantListener onPermissionGrantListener) {
-        if (activity == null) {
+    public PermissionHelper(Activity activity) {
+        mWeakReference = new WeakReference<Object>(activity);
+    }
+
+    public PermissionHelper(Fragment fragment) {
+        mWeakReference = new WeakReference<Object>(fragment);
+    }
+
+    public void requestPermission(@PermissionResultCode final int requestCode, OnPermissionGrantListener listener) {
+        setOnPermissionGrantListener(listener);
+        //低于23的直接返回
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            callPermissionGranted(requestCode);
             return;
         }
 
-        KLog.i(TAG, "requestPermission requestCode:" + requestCode);
-        if (requestCode < 0 || requestCode >= requestPermissions.length) {
-            KLog.i(TAG, "requestPermission illegal requestCode:" + requestCode);
+        if (getContext() == null) {
             return;
         }
 
-        final String requestPermission = requestPermissions[requestCode];
-
-        //如果是6.0以下的手机，ActivityCompat.checkSelfPermission()会始终等于PERMISSION_GRANTED，
-        // 但是，如果用户关闭了你申请的权限，ActivityCompat.checkSelfPermission(),会导致程序崩溃(java.lang.RuntimeException: Unknown exception code: 1 msg null)，
-        // 你可以使用try{}catch(){},处理异常，也可以在这个地方，低于23就什么都不做，
-        // 个人建议try{}catch(){}单独处理，提示用户开启权限。
-        if (Build.VERSION.SDK_INT < 23) {
-            callPermissionGranted(onPermissionGrantListener, requestCode);
+        if (requestCode < 0 || !PERMISSION_MAP.containsKey(requestCode)) {
+            Log.e(TAG, "非法rquestCode，请传入@PermissionResultCode里面的值");
+            callPermissionDenied(requestCode);
             return;
         }
 
+        final String requestPermission = PERMISSION_MAP.get(requestCode);
         int checkSelfPermission;
         try {
-            checkSelfPermission = ActivityCompat.checkSelfPermission(activity, requestPermission);
+            checkSelfPermission = ContextCompat.checkSelfPermission(getContext(), requestPermission);
         } catch (RuntimeException e) {
-            KLog.e(TAG, e);
+            Log.e(TAG, e.getMessage());
+            openSettingActivity(getContext(), "需要手动授权以下权限");
             return;
         }
 
         if (checkSelfPermission != PackageManager.PERMISSION_GRANTED) {
-            KLog.i(TAG, "ActivityCompat.checkSelfPermission != PackageManager.PERMISSION_GRANTED");
-
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, requestPermission)) {
-                shouldShowRationale(activity, requestCode, requestPermission);
-
+            if (shouldShowRequestPermissionRationale(requestPermission)) {
+                shouldShowRationale(getContext(), requestCode, requestPermission);
             } else {
-                ActivityCompat.requestPermissions(activity, new String[]{requestPermission}, requestCode);
+                requestPermissionsInternal(new String[]{requestPermission}, requestCode);
             }
-
         } else {
-            callPermissionGranted(onPermissionGrantListener, requestCode);
+            callPermissionGranted(requestCode);
         }
     }
 
-    private static void requestMultiResult(Activity activity, String[] permissions, int[] grantResults, OnPermissionGrantListener onPermissionGrantListener) {
+    private void requestMultiResult(String[] permissions, int[] grantResults, OnPermissionGrantListener onPermissionGrantListener) {
+        setOnPermissionGrantListener(onPermissionGrantListener);
+        //低于23的直接返回
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            callPermissionGranted(CODE_MULTI_PERMISSION);
+            return;
+        }
 
-        if (activity == null) {
+        if (getContext() == null) {
             return;
         }
 
         Map<String, Integer> perms = new HashMap<>();
-
         ArrayList<String> notGranted = new ArrayList<>();
         for (int i = 0; i < permissions.length; i++) {
             perms.put(permissions[i], grantResults[i]);
@@ -145,56 +144,67 @@ public class PermissionHelper {
         }
 
         if (notGranted.size() == 0) {
-            callPermissionGranted(onPermissionGrantListener, CODE_MULTI_PERMISSION);
+            callPermissionGranted(CODE_MULTI_PERMISSION);
         } else {
-            openSettingActivity(activity, "需要手动授权以下权限");
+            openSettingActivity(getContext(), "需要手动授权权限");
         }
-
     }
-
 
     /**
      * 自行申请没有的权限
      */
-    public static void autoRequestPermissions(final Activity activity, OnPermissionGrantListener grant) {
-
-        final List<String> permissionsList = getNoGrantedPermission(activity, false);
-        final List<String> shouldRationalePermissionsList = getNoGrantedPermission(activity, true);
+    public void autoRequestPermissions(OnPermissionGrantListener listener) {
+        setOnPermissionGrantListener(listener);
+        if (getContext() == null) {
+            callPermissionDenied(CODE_MULTI_PERMISSION);
+            return;
+        }
+        final List<String> permissionsList = getNoGrantedPermission(getContext(), false);
+        final List<String> shouldRationalePermissionsList = getNoGrantedPermission(getContext(), true);
 
         if (permissionsList == null || shouldRationalePermissionsList == null) {
             return;
         }
 
         if (permissionsList.size() > 0) {
-            ActivityCompat.requestPermissions(activity, permissionsList.toArray(new String[permissionsList.size()]),
-                    CODE_MULTI_PERMISSION);
+            requestPermissionsInternal(permissionsList.toArray(new String[permissionsList.size()]), CODE_MULTI_PERMISSION);
 
         } else if (shouldRationalePermissionsList.size() > 0) {
-            shoMessageDialog(activity, "需要权限", "确定", new DialogInterface.OnClickListener() {
+            shoMessageDialog(getContext(), "需要权限", "确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ActivityCompat.requestPermissions(activity, shouldRationalePermissionsList.toArray(new String[shouldRationalePermissionsList.size()]), CODE_MULTI_PERMISSION);
+                    requestPermissionsInternal(shouldRationalePermissionsList.toArray(new String[shouldRationalePermissionsList.size()]),
+                            CODE_MULTI_PERMISSION);
                 }
             });
         } else {
-            callPermissionGranted(grant, CODE_MULTI_PERMISSION);
+            callPermissionGranted(CODE_MULTI_PERMISSION);
+        }
+    }
+
+    private void requestPermissions(final @NonNull String[] permissions, final @IntRange(from = 0) int requestCode) {
+        Object object = mWeakReference == null ? null : mWeakReference.get();
+        if (object == null) return;
+        if (object instanceof Activity) {
+            ActivityCompat.requestPermissions(((Activity) object), permissions, requestCode);
+        } else if (object instanceof Fragment) {
+            ((Fragment) object).requestPermissions(permissions, requestCode);
         }
 
     }
 
 
-    private static void shouldShowRationale(final Activity activity, final int requestCode, final String requestPermission) {
-        //TODO
+    private void shouldShowRationale(final Context activity, final int requestCode, final String requestPermission) {
         String[] permissionsHint = activity.getResources().getStringArray(R.array.permissions);
         shoMessageDialog(activity, "Rationale: " + permissionsHint[requestCode], "确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ActivityCompat.requestPermissions(activity, new String[]{requestPermission}, requestCode);
+                requestPermissionsInternal(new String[]{requestPermission}, requestCode);
             }
         });
     }
 
-    private static void shoMessageDialog(final Activity context, String message, String buttonText, final DialogInterface.OnClickListener
+    private static void shoMessageDialog(final Context context, String message, String buttonText, final DialogInterface.OnClickListener
             dialogButtonClickListener) {
         new AlertDialog.Builder(context)
                 .setTitle(message)
@@ -203,89 +213,151 @@ public class PermissionHelper {
                 .show();
     }
 
-    /**
-     * @param activity
-     * @param requestCode  Need consistent with requestPermission
-     * @param permissions
-     * @param grantResults
-     */
-    public static void handlePermissionsResult(final Activity activity, final int requestCode, @NonNull String[] permissions,
-                                               @NonNull int[] grantResults, OnPermissionGrantListener onPermissionGrantListener) {
+    public void handlePermissionsResult(final int requestCode, @NonNull String[] permissions,
+                                        @NonNull int[] grantResults) {
 
-        if (activity == null) {
+        if (getContext() == null) {
             return;
         }
-        Log.i(TAG, "requestPermissionsResult requestCode:" + requestCode);
-
         if (requestCode == CODE_MULTI_PERMISSION) {
-            requestMultiResult(activity, permissions, grantResults, onPermissionGrantListener);
+            requestMultiResult(permissions, grantResults, mOnPermissionGrantListener);
             return;
         }
 
-        if (requestCode < 0 || requestCode >= requestPermissions.length) {
-            Log.w(TAG, "requestPermissionsResult illegal requestCode:" + requestCode);
+        if (requestCode < 0 || !PERMISSION_MAP.containsKey(requestCode)) {
+            Log.e(TAG, "非法rquestCode，请传入@PermissionResultCode里面的值");
             return;
         }
-
-        Log.i(TAG, "onRequestPermissionsResult requestCode:" + requestCode + ",permissions:" + permissions.toString()
-                + ",grantResults:" + grantResults.toString() + ",length:" + grantResults.length);
 
         if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            callPermissionGranted(onPermissionGrantListener, requestCode);
+            callPermissionGranted(requestCode);
         } else {
-            String[] permissionsHint = activity.getResources().getStringArray(R.array.permissions);
-            openSettingActivity(activity, "Result" + permissionsHint[requestCode]);
+            String[] permissionsHint = getContext().getResources().getStringArray(R.array.permissions);
+            openSettingActivity(getContext(), "Result" + permissionsHint[requestCode]);
         }
 
     }
 
-    private static void openSettingActivity(final Activity activity, String message) {
+    private static void openSettingActivity(final Context context, String message) {
 
-        shoMessageDialog(activity, message, "前往设置", new DialogInterface.OnClickListener() {
+        shoMessageDialog(context, "手动授权", message, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent();
                 intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
+                Uri uri = Uri.fromParts("package", context.getPackageName(), null);
                 intent.setData(uri);
-                activity.startActivity(intent);
+                context.startActivity(intent);
             }
         });
     }
 
 
-    public static ArrayList<String> getNoGrantedPermission(Activity activity, boolean isShouldRationale) {
+    private ArrayList<String> getNoGrantedPermission(Context activity, boolean isShouldRationale) {
 
         ArrayList<String> permissions = new ArrayList<>();
 
-        for (int i = 0; i < requestPermissions.length; i++) {
-            String requestPermission = requestPermissions[i];
-
-
+        Iterator iterator = PERMISSION_MAP.entrySet().iterator();
+        while (iterator.hasNext()) {
+            HashMap.Entry<Integer, String> entry = (HashMap.Entry<Integer, String>) iterator.next();
+            String requestPermission = entry.getValue();
             int checkSelfPermission = -1;
             try {
-                checkSelfPermission = ActivityCompat.checkSelfPermission(activity, requestPermission);
+                checkSelfPermission = ContextCompat.checkSelfPermission(activity, requestPermission);
             } catch (RuntimeException e) {
                 Log.e(TAG, "RuntimeException:" + e.getMessage());
                 return null;
             }
 
             if (checkSelfPermission != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(activity, requestPermission)) {
+                if (shouldShowRequestPermissionRationale(requestPermission)) {
                     if (isShouldRationale) {
                         permissions.add(requestPermission);
                     }
-
                 } else {
                     if (!isShouldRationale) {
                         permissions.add(requestPermission);
                     }
                 }
-
             }
         }
-
         return permissions;
+    }
+
+    public Context getContext() {
+        Activity activity = getActivity();
+        Fragment fragment = getFragment();
+        if (activity == null && fragment == null) {
+            return null;
+        }
+        if (activity == null) {
+            return fragment.getContext();
+        }
+        if (fragment == null) {
+            return activity;
+        }
+        return null;
+    }
+
+    private Fragment getFragment() {
+        Object object = mWeakReference == null ? null : mWeakReference.get();
+        return object instanceof Fragment ? ((Fragment) object) : null;
+    }
+
+    private Activity getActivity() {
+        Object object = mWeakReference == null ? null : mWeakReference.get();
+        return object instanceof Activity ? ((Activity) object) : null;
+    }
+
+    private void requestPermissionsInternal(final @NonNull String[] permissions, final @IntRange(from = 0) int requestCode) {
+        if (getActivity() != null) {
+            ActivityCompat.requestPermissions(getActivity(), permissions, requestCode);
+        } else if (getFragment() != null) {
+            getFragment().requestPermissions(permissions, requestCode);
+        }
+    }
+
+    private boolean shouldShowRequestPermissionRationale(@NonNull String permission) {
+        if (getActivity() != null) {
+            return ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), permission);
+        } else if (getFragment() != null) {
+            return getFragment().shouldShowRequestPermissionRationale(permission);
+        }
+        return false;
+    }
+
+    private void callPermissionGranted(int requestCode) {
+        if (mOnPermissionGrantListener != null) {
+            mOnPermissionGrantListener.onPermissionGranted(requestCode);
+        }
+    }
+
+    private void callPermissionDenied(int requestCode) {
+        if (mOnPermissionGrantListener != null) {
+            mOnPermissionGrantListener.onPermissionsDenied(requestCode);
+        }
+    }
+
+    public void handleDestroy() {
+        if (mWeakReference != null) {
+            mWeakReference.clear();
+        }
+        mOnPermissionGrantListener = null;
+        mWeakReference = null;
+    }
+
+    public OnPermissionGrantListener getOnPermissionGrantListener() {
+        return mOnPermissionGrantListener;
+    }
+
+    public void setOnPermissionGrantListener(OnPermissionGrantListener onPermissionGrantListener) {
+        mOnPermissionGrantListener = onPermissionGrantListener;
+    }
+
+    public interface OnPermissionGrantListener {
+        void onPermissionGranted(@PermissionResultCode int requestCode);
+
+        void onPermissionsDenied(@PermissionResultCode int requestCode);
     }
 
 }

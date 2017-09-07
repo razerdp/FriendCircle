@@ -48,7 +48,7 @@ public class PhotoHelper {
     }
 
     public static void fromCamera(Activity activity, boolean needCrop) {
-        fromCameraInternal(activity, needCrop);
+        checkAndRequestCameraPermission(activity, needCrop);
     }
 
     public static void fromAlbum(Activity activity) {
@@ -72,7 +72,7 @@ public class PhotoHelper {
     }
 
     public static void fromCamera(Fragment fragment, boolean needCrop) {
-        fromCameraInternal(fragment, needCrop);
+        checkAndRequestCameraPermission(fragment, needCrop);
     }
 
     public static void fromAlbum(Fragment fragment) {
@@ -101,15 +101,32 @@ public class PhotoHelper {
         }
     }
 
+    private static void checkAndRequestCameraPermission(final Object object, final boolean needCrop) {
+        PermissionHelper permissionHelper = null;
+        PermissionHelper.OnPermissionGrantListener onPermissionGrantListener = new PermissionHelper.OnPermissionGrantListener() {
+            @Override
+            public void onPermissionGranted(@PermissionHelper.PermissionResultCode int requestCode) {
+                fromCameraInternal(object, needCrop);
+            }
+
+            @Override
+            public void onPermissionsDenied(@PermissionHelper.PermissionResultCode int requestCode) {
+
+            }
+        };
+        if (object instanceof Activity) {
+            permissionHelper = new PermissionHelper((Activity) object);
+        } else if (object instanceof Fragment) {
+            permissionHelper = new PermissionHelper(((Fragment) object).getActivity());
+        }
+        if (permissionHelper != null) {
+            permissionHelper.requestPermission(PermissionHelper.CODE_CAMERA, onPermissionGrantListener);
+        }
+
+    }
+
     private static void fromCameraInternal(Object object, boolean needCrop) {
         if (object == null) return;
-        if (object instanceof Activity) {
-            PermissionHelper.requestPermission(((Activity) object), PermissionHelper.CODE_CAMERA, null);
-            PermissionHelper.requestPermission(((Activity) object), PermissionHelper.CODE_READ_EXTERNAL_STORAGE, null);
-        } else if (object instanceof Fragment) {
-            PermissionHelper.requestPermission(((Fragment) object).getActivity(), PermissionHelper.CODE_CAMERA, null);
-            PermissionHelper.requestPermission(((Fragment) object).getActivity(), PermissionHelper.CODE_READ_EXTERNAL_STORAGE, null);
-        }
         cropPath = getCropImagePath();
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         curTempPhotoPath = AppFileHelper.getAppPicPath() + AppFileHelper.createShareImageName();

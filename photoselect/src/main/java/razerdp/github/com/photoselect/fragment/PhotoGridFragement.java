@@ -1,10 +1,6 @@
 package razerdp.github.com.photoselect.fragment;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,23 +14,19 @@ import android.widget.TextView;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.socks.library.KLog;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import razerdp.github.com.adapter.PhotoSelectAdapter;
 import razerdp.github.com.baselibrary.base.BaseFragment;
 import razerdp.github.com.baselibrary.helper.AppSetting;
+import razerdp.github.com.baselibrary.helper.PermissionHelper;
 import razerdp.github.com.baselibrary.manager.localphoto.LPException;
 import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
-import razerdp.github.com.baseuilib.baseadapter.OnRecyclerViewItemClickListener;
 import razerdp.github.com.baseuilib.baseadapter.itemdecoration.GridItemDecoration;
-import razerdp.github.com.baseuilib.dialog.progress.ProgressDialogHelper;
 import razerdp.github.com.baseuilib.widget.popup.PopupProgress;
 import razerdp.github.com.model.PhotoBrowserInfo;
-import razerdp.github.com.photoselect.PhotoMultiBrowserActivity;
 import razerdp.github.com.photoselect.R;
 import razerdp.github.com.router.RouterList;
 
@@ -66,7 +58,7 @@ public class PhotoGridFragement extends BaseFragment {
         AppSetting.saveBooleanPreferenceByKey(AppSetting.APP_HAS_SCAN_IMG, true);
         final PopupProgress popupProgress = new PopupProgress(getActivity());
         popupProgress.setProgressTips("正在扫描系统相册...");
-        LocalPhotoManager.INSTANCE.scanImgAsync(new LocalPhotoManager.OnScanProgresslistener() {
+        LocalPhotoManager.INSTANCE.scanImg(new LocalPhotoManager.OnScanProgresslistener() {
 
             @Override
             public void onStart() {
@@ -104,7 +96,17 @@ public class PhotoGridFragement extends BaseFragment {
         getActivity().getWindow().getDecorView().postDelayed(new Runnable() {
             @Override
             public void run() {
-                scanImgSyncWithProgress();
+                getPermissionHelper().requestPermission(PermissionHelper.CODE_READ_EXTERNAL_STORAGE, new PermissionHelper.OnPermissionGrantListener() {
+                    @Override
+                    public void onPermissionGranted(@PermissionHelper.PermissionResultCode int requestCode) {
+                        scanImgSyncWithProgress();
+                    }
+
+                    @Override
+                    public void onPermissionsDenied(@PermissionHelper.PermissionResultCode int requestCode) {
+
+                    }
+                });
             }
         }, 500);
     }
@@ -134,7 +136,7 @@ public class PhotoGridFragement extends BaseFragment {
             final int itemDecoration = UIHelper.dipToPx(2);
             adapter = new PhotoSelectAdapter(getActivity(), itemDecoration, LocalPhotoManager.INSTANCE.getLocalImages(albumName));
             initSelectCountChangeListener();
-            GridLayoutManager manager=new GridLayoutManager(getActivity(), 4, LinearLayoutManager.VERTICAL, false);
+            GridLayoutManager manager = new GridLayoutManager(getActivity(), 4, LinearLayoutManager.VERTICAL, false);
             vh.mPhotoContent.setLayoutManager(manager);
             manager.setItemPrefetchEnabled(true);
             vh.mPhotoContent.addItemDecoration(new GridItemDecoration(itemDecoration));

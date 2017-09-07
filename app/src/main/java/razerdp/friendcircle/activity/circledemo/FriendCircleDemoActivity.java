@@ -86,6 +86,20 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         initView();
         initKeyboardHeightObserver();
 
+      /*  if (!AppSetting.loadBooleanPreferenceByKey(AppSetting.APP_HAS_SCAN_IMG, false)) {
+            getPermissionHelper().requestPermission(PermissionHelper.CODE_READ_EXTERNAL_STORAGE, new PermissionHelper.OnPermissionGrantListener() {
+                @Override
+                public void onPermissionGranted(@PermissionHelper.PermissionResultCode int requestCode) {
+                    LocalPhotoManager.INSTANCE.scanImg(null);
+                }
+
+                @Override
+                public void onPermissionsDenied(@PermissionHelper.PermissionResultCode int requestCode) {
+
+                }
+            });
+        }*/
+
     }
 
     @Override
@@ -137,11 +151,11 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
                 int commentType = commentBox.getCommentType();
                 if (isVisible) {
                     //定位评论框到view
-                    anchorView =mViewHelper.alignCommentBoxToView(circleRecyclerView,commentBox,commentType);
+                    anchorView = mViewHelper.alignCommentBoxToView(circleRecyclerView, commentBox, commentType);
                 } else {
                     //定位到底部
                     commentBox.dismissCommentBox(false);
-                    mViewHelper.alignCommentBoxToViewWhenDismiss(circleRecyclerView,commentBox,commentType, anchorView);
+                    mViewHelper.alignCommentBoxToViewWhenDismiss(circleRecyclerView, commentBox, commentType, anchorView);
                 }
             }
         });
@@ -200,7 +214,7 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         new SelectPhotoMenuPopup(this).setOnSelectPhotoMenuClickListener(new SelectPhotoMenuPopup.OnSelectPhotoMenuClickListener() {
             @Override
             public void onShootClick() {
-                PhotoHelper.fromCamera(FriendCircleDemoActivity.this,false);
+                PhotoHelper.fromCamera(FriendCircleDemoActivity.this, false);
             }
 
             @Override

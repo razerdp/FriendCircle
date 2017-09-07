@@ -95,7 +95,7 @@ public class PhotoBrowseActivity extends BaseActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         if (!ToolUtil.isListEmpty(viewBuckets)) {
             for (PhotoView photoView : viewBuckets) {
                 photoView.destroy();
