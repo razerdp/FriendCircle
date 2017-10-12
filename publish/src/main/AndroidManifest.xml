@@ -1,12 +1,17 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="razerdp.github.com.publish">
+<manifest package="razerdp.github.com.publish"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true"
         >
-
+        <activity
+            android:name=".PublishActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
     </application>
 
 </manifest>

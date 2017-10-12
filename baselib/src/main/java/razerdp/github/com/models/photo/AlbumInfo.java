@@ -1,4 +1,4 @@
-package razerdp.github.com.model;
+package razerdp.github.com.models.photo;
 
 import java.io.Serializable;
 

@@ -2,11 +2,17 @@ package razerdp.friendcircle.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import razerdp.friendcircle.activity.gallery.PhotoBrowseActivity;
 import razerdp.friendcircle.app.mvp.model.uimodel.PhotoBrowseInfo;
 import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
+import razerdp.github.com.models.localphotomanager.ImageInfo;
 import razerdp.github.com.photoselect.PhotoSelectActivity;
 import razerdp.github.com.publish.PublishActivity;
 import razerdp.github.com.router.RouterList;
@@ -26,9 +32,12 @@ public class ActivityLauncher {
      * @param mode
      * @param requestCode
      */
-    public static void startToPublishActivityWithResult(Activity act, @RouterList.PublishActivity int mode, int requestCode) {
+    public static void startToPublishActivityWithResult(Activity act, @RouterList.PublishActivity int mode, @Nullable List<ImageInfo> selectedPhotos, int requestCode) {
         Intent intent = new Intent(act, PublishActivity.class);
-        intent.putExtra(PublishActivity.TAG_MODE, mode);
+        intent.putExtra(RouterList.PublishActivity.key_mode, mode);
+        if (selectedPhotos != null) {
+            intent.putParcelableArrayListExtra(RouterList.PublishActivity.key_photoList, (ArrayList<? extends Parcelable>) selectedPhotos);
+        }
         act.startActivityForResult(intent, requestCode);
         SwitchActivityTransitionUtil.transitionVerticalIn(act);
     }
@@ -44,9 +53,9 @@ public class ActivityLauncher {
      *
      * @param act
      */
-    public static void startToPhotoSelectActivity(Activity act){
-        Intent intent=new Intent(act, PhotoSelectActivity.class);
-        act.startActivity(intent);
+    public static void startToPhotoSelectActivity(Activity act, int requestCode) {
+        Intent intent = new Intent(act, PhotoSelectActivity.class);
+        act.startActivityForResult(intent, requestCode);
         SwitchActivityTransitionUtil.transitionVerticalIn(act);
 
     }

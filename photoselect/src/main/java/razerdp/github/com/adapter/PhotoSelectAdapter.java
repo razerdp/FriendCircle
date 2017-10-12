@@ -9,20 +9,19 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.socks.library.KLog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import razerdp.github.com.baselibrary.imageloader.ImageLoadMnanger;
-import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewAdapter;
 import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewHolder;
 import razerdp.github.com.baseuilib.widget.imageview.CheckImageView;
-import razerdp.github.com.model.PhotoBrowserInfo;
+import razerdp.github.com.models.photo.PhotoBrowserInfo;
+import razerdp.github.com.models.localphotomanager.ImageInfo;
 import razerdp.github.com.photoselect.PhotoMultiBrowserActivity;
 import razerdp.github.com.photoselect.R;
 import razerdp.github.com.router.RouterList;
@@ -35,22 +34,22 @@ import static razerdp.github.com.photoselect.fragment.PhotoGridFragement.MAX_COU
  * 图片选择adapter
  */
 
-public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManager.ImageInfo> {
+public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<ImageInfo> {
     private static final String TAG = "PhotoSelectAdapter";
 
     private final int itemDecoration;
-    private List<LocalPhotoManager.ImageInfo> selectedRecordLists;
+    private List<ImageInfo> selectedRecordLists;
     private boolean selectable = true;
     private String curAlbumName;
 
-    public PhotoSelectAdapter(@NonNull Context context, int itemDecoration, @NonNull List<LocalPhotoManager.ImageInfo> datas) {
+    public PhotoSelectAdapter(@NonNull Context context, int itemDecoration, @NonNull List<ImageInfo> datas) {
         super(context, datas);
         this.itemDecoration = itemDecoration;
         this.selectedRecordLists = new ArrayList<>();
     }
 
     @Override
-    protected int getViewType(int position, @NonNull LocalPhotoManager.ImageInfo data) {
+    protected int getViewType(int position, @NonNull ImageInfo data) {
         return 0;
     }
 
@@ -64,7 +63,7 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
         return new InnerViewHolder(rootView, viewType);
     }
 
-    private void onSelectPhoto(LocalPhotoManager.ImageInfo info) {
+    private void onSelectPhoto(ImageInfo info) {
         if (info == null) return;
         if (!checkSelectListLength()) return;
         selectedRecordLists.add(info);
@@ -77,11 +76,11 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
      *
      * {@link razerdp.github.com.photoselect.fragment.PhotoGridFragement#updateSelectList(List)}以及{@link PhotoMultiBrowserActivity#finish()}
      */
-    private void onUnSelectPhoto(LocalPhotoManager.ImageInfo info) {
+    private void onUnSelectPhoto(ImageInfo info) {
         if (info == null) return;
         if (selectedRecordLists.size() <= 0) return;
         for (int i = 0; i < selectedRecordLists.size(); i++) {
-            LocalPhotoManager.ImageInfo selectedInfo = selectedRecordLists.get(i);
+            ImageInfo selectedInfo = selectedRecordLists.get(i);
             if (selectedInfo.compareTo(info) == 0) {
                 selectedRecordLists.remove(i);
                 break;
@@ -108,12 +107,12 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
     }
 
     @Override
-    public void updateData(List<LocalPhotoManager.ImageInfo> datas) {
+    public void updateData(List<ImageInfo> datas) {
         clearSelectRecord();
         super.updateData(datas);
     }
 
-    public void updateSelections(List<LocalPhotoManager.ImageInfo> newDatas) {
+    public void updateSelections(List<ImageInfo> newDatas) {
         if (newDatas != null) {
             selectedRecordLists.clear();
             selectedRecordLists.addAll(newDatas);
@@ -129,7 +128,7 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
         this.curAlbumName = curAlbumName;
     }
 
-    public List<LocalPhotoManager.ImageInfo> getSelectedRecordLists() {
+    public List<ImageInfo> getSelectedRecordLists() {
         return new ArrayList<>(selectedRecordLists);
     }
 
@@ -138,7 +137,7 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
         selectable = true;
     }
 
-    private class InnerViewHolder extends BaseRecyclerViewHolder<LocalPhotoManager.ImageInfo> {
+    private class InnerViewHolder extends BaseRecyclerViewHolder<ImageInfo> {
 
         private CheckImageView checkImageView;
         private InnerClickEventClass clickEventClass;
@@ -169,8 +168,7 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
         }
 
         @Override
-        public void onBindData(LocalPhotoManager.ImageInfo data, int position) {
-            KLog.i(TAG, "pos  >>  " + position);
+        public void onBindData(ImageInfo data, int position) {
             String url = TextUtils.isEmpty(data.thumbnailPath) ? data.imagePath : data.thumbnailPath;
             boolean isSelected = checkIsSelect(data);
             checkImageView.setCanSelect(isSelected || selectable);
@@ -183,7 +181,7 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
 
         }
 
-        private void setupSelectChangeListener(LocalPhotoManager.ImageInfo data) {
+        private void setupSelectChangeListener(ImageInfo data) {
             CheckImageView.OnSelectedChangeListener listener = checkImageView.getOnSelectedChangeListener();
             InnerSelectChangeClass innerSelectChangeClass;
             if (!(listener instanceof InnerSelectChangeClass)) {
@@ -195,10 +193,10 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
             innerSelectChangeClass.setData(data);
         }
 
-        private boolean checkIsSelect(LocalPhotoManager.ImageInfo imageInfo) {
+        private boolean checkIsSelect(ImageInfo imageInfo) {
             if (imageInfo == null) return false;
             if (ToolUtil.isListEmpty(selectedRecordLists)) return false;
-            for (LocalPhotoManager.ImageInfo localSelectedPhoto : selectedRecordLists) {
+            for (ImageInfo localSelectedPhoto : selectedRecordLists) {
                 if (localSelectedPhoto.compareTo(imageInfo) == 0) {
                     return true;
                 }
@@ -208,16 +206,16 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<LocalPhotoManage
 
         class InnerSelectChangeClass implements CheckImageView.OnSelectedChangeListener {
 
-            private LocalPhotoManager.ImageInfo data;
+            private ImageInfo data;
 
             public InnerSelectChangeClass() {
             }
 
-            public LocalPhotoManager.ImageInfo getData() {
+            public ImageInfo getData() {
                 return data;
             }
 
-            public void setData(LocalPhotoManager.ImageInfo data) {
+            public void setData(ImageInfo data) {
                 this.data = data;
             }
 

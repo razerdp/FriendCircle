@@ -2,6 +2,7 @@ package razerdp.github.com.photoselect;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
@@ -9,14 +10,17 @@ import android.text.TextUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import razerdp.github.com.baselibrary.base.BaseFragment;
 import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
+import razerdp.github.com.baselibrary.utils.ToolUtil;
 import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
 import razerdp.github.com.baseuilib.base.BaseTitleBarActivity;
 import razerdp.github.com.baseuilib.widget.common.TitleBar;
 import razerdp.github.com.bus.EventSelectAlbum;
+import razerdp.github.com.models.localphotomanager.ImageInfo;
 import razerdp.github.com.photoselect.fragment.PhotoAlbumFragement;
 import razerdp.github.com.photoselect.fragment.PhotoGridFragement;
 import razerdp.github.com.router.RouterList;
@@ -117,7 +121,7 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
         if (requestCode == RouterList.PhotoMultiBrowserActivity.requestCode) {
             if (resultCode == RESULT_OK) {
                 if (gridFragement != null && data != null && data.hasExtra(RouterList.PhotoMultiBrowserActivity.key_result)) {
-                    List<LocalPhotoManager.ImageInfo> newDatas=data.getParcelableArrayListExtra(RouterList.PhotoMultiBrowserActivity.key_result);
+                    List<ImageInfo> newDatas = data.getParcelableArrayListExtra(RouterList.PhotoMultiBrowserActivity.key_result);
                     gridFragement.updateSelectList(newDatas);
                 }
             }
@@ -134,6 +138,19 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
     @Override
     public void onTitleRightClick() {
         finish();
+    }
+
+    public void finish(List<ImageInfo> selectedPhoto) {
+        if (!ToolUtil.isListEmpty(selectedPhoto)) {
+            Intent intent = new Intent();
+            intent.putParcelableArrayListExtra(RouterList.PhotoSelectActivity.key_result, (ArrayList<? extends Parcelable>) selectedPhoto);
+            setResult(RESULT_OK, intent);
+            finish();
+        } else {
+            Intent intent = new Intent();
+            setResult(RESULT_CANCELED, intent);
+            finish();
+        }
     }
 
     @Override

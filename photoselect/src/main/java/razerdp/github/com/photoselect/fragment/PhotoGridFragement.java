@@ -26,7 +26,9 @@ import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.baseadapter.itemdecoration.GridItemDecoration;
 import razerdp.github.com.baseuilib.widget.popup.PopupProgress;
-import razerdp.github.com.model.PhotoBrowserInfo;
+import razerdp.github.com.models.photo.PhotoBrowserInfo;
+import razerdp.github.com.models.localphotomanager.ImageInfo;
+import razerdp.github.com.photoselect.PhotoSelectActivity;
 import razerdp.github.com.photoselect.R;
 import razerdp.github.com.router.RouterList;
 
@@ -149,7 +151,7 @@ public class PhotoGridFragement extends BaseFragment {
         vh.mPhotoContent.getLayoutManager().scrollToPosition(adapter.getItemCount() - 1);
     }
 
-    public void updateSelectList(List<LocalPhotoManager.ImageInfo> newDatas) {
+    public void updateSelectList(List<ImageInfo> newDatas) {
         if (adapter != null) {
             adapter.updateSelections(newDatas);
             vh.setPhotoSlectCount(newDatas.size());
@@ -180,7 +182,9 @@ public class PhotoGridFragement extends BaseFragment {
     private View.OnClickListener onFinishClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            UIHelper.ToastMessage("finish");
+            if (getActivity() instanceof PhotoSelectActivity) {
+                ((PhotoSelectActivity) getActivity()).finish(adapter.getSelectedRecordLists());
+            }
         }
     };
 

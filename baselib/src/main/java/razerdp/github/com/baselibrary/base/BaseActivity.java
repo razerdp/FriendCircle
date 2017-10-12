@@ -34,7 +34,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        KLog.i("activity onCreate :  " + this.getClass().getSimpleName());
+        KLog.i("当前打开 :  " + this.getClass().getSimpleName());
         if (mPermissionHelper == null) {
             mPermissionHelper = new PermissionHelper(this);
         }
@@ -101,7 +101,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (sdkVer < 16) {
             //4.0及一下
             requestWindowFeature(Window.FEATURE_NO_TITLE);
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         } else {
             View decorView = getWindow().getDecorView();
             int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;

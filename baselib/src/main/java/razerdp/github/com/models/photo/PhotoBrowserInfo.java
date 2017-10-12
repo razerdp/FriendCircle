@@ -1,11 +1,11 @@
-package razerdp.github.com.model;
+package razerdp.github.com.models.photo;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.List;
 
-import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
+import razerdp.github.com.models.localphotomanager.ImageInfo;
 
 /**
  * Created by 大灯泡 on 2017/4/1.
@@ -16,13 +16,13 @@ import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
 public class PhotoBrowserInfo implements Parcelable {
     private int curPos;
     private String currentAlbumName;
-    private List<LocalPhotoManager.ImageInfo> selectedDatas;
+    private List<ImageInfo> selectedDatas;
 
 
     protected PhotoBrowserInfo(Parcel in) {
         curPos = in.readInt();
         currentAlbumName = in.readString();
-        selectedDatas = in.createTypedArrayList(LocalPhotoManager.ImageInfo.CREATOR);
+        selectedDatas = in.createTypedArrayList(ImageInfo.CREATOR);
     }
 
     @Override
@@ -65,21 +65,21 @@ public class PhotoBrowserInfo implements Parcelable {
         this.currentAlbumName = currentAlbumName;
     }
 
-    public List<LocalPhotoManager.ImageInfo> getSelectedDatas() {
+    public List<ImageInfo> getSelectedDatas() {
         return selectedDatas;
     }
 
-    public void setSelectedDatas(List<LocalPhotoManager.ImageInfo> selectedDatas) {
+    public void setSelectedDatas(List<ImageInfo> selectedDatas) {
         this.selectedDatas = selectedDatas;
     }
 
-    private PhotoBrowserInfo(int curPos, String currentAlbumName, List<LocalPhotoManager.ImageInfo> selectedDatas) {
+    private PhotoBrowserInfo(int curPos, String currentAlbumName, List<ImageInfo> selectedDatas) {
         this.curPos = curPos;
         this.currentAlbumName = currentAlbumName;
         this.selectedDatas = selectedDatas;
     }
 
-    public static PhotoBrowserInfo create(int curPos, String currentAlbumName, List<LocalPhotoManager.ImageInfo> selectedDatas) {
+    public static PhotoBrowserInfo create(int curPos, String currentAlbumName, List<ImageInfo> selectedDatas) {
         return new PhotoBrowserInfo(curPos, currentAlbumName, selectedDatas);
     }
 }

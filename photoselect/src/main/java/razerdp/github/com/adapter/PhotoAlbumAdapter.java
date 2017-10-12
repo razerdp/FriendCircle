@@ -13,7 +13,7 @@ import java.util.Locale;
 import razerdp.github.com.baselibrary.imageloader.ImageLoadMnanger;
 import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewAdapter;
 import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewHolder;
-import razerdp.github.com.model.AlbumInfo;
+import razerdp.github.com.models.photo.AlbumInfo;
 import razerdp.github.com.photoselect.R;
 
 /**

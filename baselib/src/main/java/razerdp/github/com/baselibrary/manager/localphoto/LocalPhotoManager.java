@@ -4,18 +4,13 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
 import com.socks.library.KLog;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,8 +22,8 @@ import razerdp.github.com.baselibrary.manager.ThreadPoolManager;
 import razerdp.github.com.baselibrary.thirdpart.WeakHandler;
 import razerdp.github.com.baselibrary.utils.FileUtil;
 import razerdp.github.com.baselibrary.utils.GsonUtil;
-import razerdp.github.com.baselibrary.utils.StringUtil;
 import razerdp.github.com.baselibrary.utils.TimeUtil;
+import razerdp.github.com.models.localphotomanager.ImageInfo;
 
 /**
  * Created by 大灯泡 on 2017/3/23.
@@ -367,98 +362,6 @@ public enum LocalPhotoManager {
             if (!write.isEmpty()) {
                 FileUtil.writeToFile(AppFileHelper.getAppDataPath().concat(LOCAL_FILE_NAME), GsonUtil.INSTANCE.toString(write).getBytes());
             }
-        }
-    }
-
-    public static class ImageInfo implements Serializable, Parcelable, Cloneable, Comparable<ImageInfo> {
-        public final String imagePath;
-        public final String thumbnailPath;
-        public final String albumName;
-        public final long time;
-        public final int orientation;
-
-        public ImageInfo(String imagePath, String thumbnailPath, String albumName, long time, int orientation) {
-            this.imagePath = imagePath;
-            this.thumbnailPath = thumbnailPath;
-            this.albumName = albumName;
-            this.time = time;
-            this.orientation = orientation;
-        }
-
-        protected ImageInfo(Parcel in) {
-            imagePath = in.readString();
-            thumbnailPath = in.readString();
-            albumName = in.readString();
-            time = in.readLong();
-            orientation = in.readInt();
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(imagePath);
-            dest.writeString(thumbnailPath);
-            dest.writeString(albumName);
-            dest.writeLong(time);
-            dest.writeInt(orientation);
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        public static final Creator<ImageInfo> CREATOR = new Creator<ImageInfo>() {
-            @Override
-            public ImageInfo createFromParcel(Parcel in) {
-                return new ImageInfo(in);
-            }
-
-            @Override
-            public ImageInfo[] newArray(int size) {
-                return new ImageInfo[size];
-            }
-        };
-
-        public boolean checkValided() {
-            return StringUtil.noEmpty(imagePath) || StringUtil.noEmpty(thumbnailPath);
-        }
-
-        @Override
-        protected ImageInfo clone() throws CloneNotSupportedException {
-            //因为这里只有一些基础数据，所以就浅复制足够了
-            return (ImageInfo) super.clone();
-        }
-
-        @Override
-        public int compareTo(@NonNull ImageInfo o) {
-            if (o == null) return -1;
-            if (TextUtils.isEmpty(o.getImagePath())) return -1;
-            if (TextUtils.equals(o.getImagePath(), getImagePath())) return 0;
-            return -1;
-        }
-
-        //深复制，暂时不需要，另外利用流的方法的话，类需要实现Serializable接口
-       /* public Object cloneDeepInternal() throws IOException, ClassNotFoundException {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(bos);
-            oos.writeObject(this);
-            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
-            return ois.readObject();
-        }*/
-
-        @Override
-        public String toString() {
-            return "ImageInfo{" +
-                    "imagePath='" + imagePath + '\'' +
-                    ", thumbnailPath='" + thumbnailPath + '\'' +
-                    ", albumName='" + albumName + '\'' +
-                    ", time=" + time +
-                    ", orientation=" + orientation +
-                    '}';
-        }
-
-        public String getImagePath() {
-            return TextUtils.isEmpty(imagePath) ? thumbnailPath : imagePath;
         }
     }
 

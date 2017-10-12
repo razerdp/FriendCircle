@@ -15,8 +15,6 @@ import razerdp.github.com.baselibrary.utils.ui.AnimUtils;
 import razerdp.github.com.baseuilib.R;
 import razerdp.github.com.baseuilib.interpolator.SpringInterpolator;
 
-import static android.R.attr.animation;
-
 /**
  * Created by 大灯泡 on 2017/3/24.
  */
@@ -92,7 +90,6 @@ public class CheckDrawable extends BitmapDrawable {
         final int cy = getBounds().centerY();
         final int radius = getBounds().width() / 2;
         if (needAnima) {
-            KLog.i(TAG, "draw in drawable with anima");
             if (!isPlayingAnima) {
                 animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override

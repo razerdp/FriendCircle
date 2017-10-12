@@ -34,7 +34,8 @@ import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.widget.common.HackyViewPager;
 import razerdp.github.com.baseuilib.widget.imageview.CheckDrawable;
-import razerdp.github.com.model.PhotoBrowserInfo;
+import razerdp.github.com.models.photo.PhotoBrowserInfo;
+import razerdp.github.com.models.localphotomanager.ImageInfo;
 import razerdp.github.com.router.RouterList;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -59,7 +60,7 @@ public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnCl
 
     private PhotoBrowserAdapter adapter;
     //记录本地图片选择情况
-    private List<LocalPhotoManager.ImageInfo> localSelectedPhotos;
+    private List<ImageInfo> localSelectedPhotos;
     ViewHolder vh;
 
     @Override
@@ -68,12 +69,12 @@ public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnCl
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        hideStatusBar();
         super.onCreate(savedInstanceState);
         if (browserInfo == null) {
             finish();
             return;
         }
-        hideStatusBar();
         setContentView(R.layout.activity_photo_multi_browser);
         initView();
     }
@@ -164,10 +165,10 @@ public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnCl
         return checkIsSelect(adapter.getImageInfo(position));
     }
 
-    private boolean checkIsSelect(LocalPhotoManager.ImageInfo imageInfo) {
+    private boolean checkIsSelect(ImageInfo imageInfo) {
         if (imageInfo == null) return false;
         if (ToolUtil.isListEmpty(localSelectedPhotos)) return false;
-        for (LocalPhotoManager.ImageInfo localSelectedPhoto : localSelectedPhotos) {
+        for (ImageInfo localSelectedPhoto : localSelectedPhotos) {
             if (localSelectedPhoto.compareTo(imageInfo) == 0) {
                 return true;
             }
@@ -192,7 +193,7 @@ public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnCl
 
         @Override
         public void onClick(View v) {
-            LocalPhotoManager.ImageInfo info = adapter.getImageInfo(vh.viewPager.getCurrentItem());
+            ImageInfo info = adapter.getImageInfo(vh.viewPager.getCurrentItem());
             boolean isMax = localSelectedPhotos.size() == maxSelectCount;
             boolean isSelected = checkIsSelect(info);
             if (isMax) {
@@ -209,7 +210,7 @@ public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnCl
         }
 
 
-        private void addSelect(LocalPhotoManager.ImageInfo imageInfo) {
+        private void addSelect(ImageInfo imageInfo) {
             if (checkPhotoSelectCountValided(true)) {
                 localSelectedPhotos.add(imageInfo);
                 vh.setSelected(true, true);
@@ -217,10 +218,10 @@ public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnCl
             }
         }
 
-        private void removeSelect(LocalPhotoManager.ImageInfo imageInfo) {
+        private void removeSelect(ImageInfo imageInfo) {
             boolean hasRemoved = false;
             for (int i = 0; i < localSelectedPhotos.size(); i++) {
-                LocalPhotoManager.ImageInfo info = localSelectedPhotos.get(i);
+                ImageInfo info = localSelectedPhotos.get(i);
                 if (info.compareTo(imageInfo) == 0) {
                     localSelectedPhotos.remove(i);
                     hasRemoved = true;

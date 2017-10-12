@@ -7,10 +7,9 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
+
+import org.apmem.tools.layouts.FlowLayout;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ import razerdp.github.com.baseuilib.R;
  * 发布动态的预览图片控件
  */
 
-public class PreviewImageView<T> extends FrameLayout {
+public class PreviewImageView<T> extends FlowLayout implements ViewGroup.OnHierarchyChangeListener {
 
     private static final String TAG = "PreviewImageView";
     private static final int DEFAULT_MAX_PHOTO_COUNT = 9;
@@ -31,9 +30,12 @@ public class PreviewImageView<T> extends FrameLayout {
     private static final int DEFAULT_PADDING = 16;
 
     private SimpleObjectPool<ImageView> ivPool;
-    private TableLayout tableLayout;
     private List<T> datas;
     private ImageView addImageView;
+    private int mImageSize;
+    private volatile boolean fillViewInMeasure = false;
+    private OnLoadPhotoListener onLoadPhotoListener;
+    private OnPhotoClickListener mOnPhotoClickListener;
 
     public PreviewImageView(@NonNull Context context) {
         this(context, null);
@@ -49,13 +51,30 @@ public class PreviewImageView<T> extends FrameLayout {
     }
 
     private void initView(Context context) {
-        tableLayout = new TableLayout(context);
-        addView(tableLayout);
-        addImageView.setImageResource(R.drawable.ic_add_photo);
-        addImageView.setId(ADD_IMAGE_ID);
+        setOrientation(HORIZONTAL);
+        setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        setOnHierarchyChangeListener(this);
         ivPool = new SimpleObjectPool<>(DEFAULT_MAX_PHOTO_COUNT);
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        if (mImageSize == 0) {
+            mImageSize = width / 4 - DEFAULT_PADDING * 2;
+        }
+        if (addImageView == null) {
+            addImageView = new ImageView(getContext());
+            addImageView.setImageResource(R.drawable.ic_add_photo);
+            addImageView.setId(ADD_IMAGE_ID);
+            addView(addImageView, generateDefaultImageSizeLayoutParams());
+        }
+        if (fillViewInMeasure) {
+            fillViewInMeasure = false;
+            fillView();
+        }
+    }
 
     public void setDatas(List<T> datas, @NonNull OnLoadPhotoListener<T> onLoadPhotoListener) {
         this.datas = datas;
@@ -66,74 +85,63 @@ public class PreviewImageView<T> extends FrameLayout {
     private void callToUpdateData() {
         if (isListEmpty(datas)) {
             clearViews();
+            if (checkAddActionImageView()) {
+                addView(getImageViewWithOutParent(addImageView));
+            }
         } else {
-            tableLayout.removeAllViewsInLayout();
-            tableLayout.requestLayout();
-            TableRow[] tableRows = generateTableRows();
-            for (int i = 0; i < tableRows.length; i++) {
-                tableLayout.addView(tableRows[i]);
+            if (mImageSize == 0) {
+                fillViewInMeasure = true;
+            } else {
+                fillViewInMeasure = false;
+                fillView();
             }
         }
     }
 
-    private TableRow[] generateTableRows() {
-        TableRow[] tableRows = new TableRow[3];
-        if (isListEmpty(datas)) {
-            TableRow tableRow = new TableRow(getContext());
-            FrameLayout layout = new FrameLayout(getContext());
-            layout.setPadding(DEFAULT_PADDING, DEFAULT_PADDING, DEFAULT_PADDING, DEFAULT_PADDING);
-            layout.addView(getImageViewWithOutParent(addImageView));
-            tableRow.addView(layout);
-        } else {
-            boolean addImage = checkNeedAddImageView();
-            for (int i = 0; i < datas.size(); i++) {
-                final int rowIndex = i / 4;
-                final T data = datas.get(i);
-                TableRow tableRow = tableRows[rowIndex];
-                if (tableRow == null) {
-                    tableRow = new TableRow(getContext());
-                    tableRows[rowIndex] = tableRow;
+    private void fillView() {
+        if (onLoadPhotoListener == null) {
+            throw new NullPointerException("OnLoadPhotoListener must not be null,please check");
+        }
+        removeAllViewsInLayout();
+        int addImageViewPos = -1;
+        for (int i = 0; i < datas.size(); i++) {
+            ImageView iv = ivPool.get();
+            if (iv == null) {
+                iv = new ImageView(getContext());
+                iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            }
+            final int pos = i;
+            final ImageView targetImageView = iv;
+            final T data = datas.get(pos);
+            onLoadPhotoListener.onPhotoLoading(pos, data, targetImageView);
+            addViewInLayout(targetImageView, pos, generateDefaultImageSizeLayoutParams(), true);
+            addImageViewPos = pos;
+            iv.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnPhotoClickListener != null) {
+                        mOnPhotoClickListener.onPhotoClickListener(pos, data, targetImageView);
+                    }
                 }
-                ImageView imageView = ivPool.get();
-                FrameLayout layout = new FrameLayout(getContext());
-                layout.setPadding(DEFAULT_PADDING, DEFAULT_PADDING, DEFAULT_PADDING, DEFAULT_PADDING);
-                if (onLoadPhotoListener != null) {
-                    imageView = onLoadPhotoListener.onPhotoLoading(i, data, imageView);
-                }
-                layout.addView(getImageViewWithOutParent(imageView));
-                tableRow.addView(layout);
-                checkAndSetAddImage(tableRows, rowIndex, tableRow, addImage);
-            }
+            });
         }
-        return tableRows;
+        if (checkAddActionImageView()) {
+            addViewInLayout(addImageView, addImageViewPos + 1, generateDefaultImageSizeLayoutParams(), true);
+        }
+        requestLayout();
     }
 
-    private void checkAndSetAddImage(TableRow[] tableRows, int currentRowIndex, TableRow currentTableRow, boolean addImage) {
-        if (!addImage) return;
-        if (currentTableRow.getChildCount() == 4) {
-            //当前row count满
-            int rowIndex = currentRowIndex + 1;
-            if (rowIndex > 3) return;
-            TableRow nextRow = tableRows[rowIndex];
-            if (nextRow == null) {
-                nextRow = new TableRow(getContext());
-                tableRows[rowIndex] = nextRow;
-            }
-            nextRow.addView(getImageViewWithOutParent(addImageView));
-        } else {
-            currentTableRow.addView(getImageViewWithOutParent(addImageView));
-        }
-    }
-
-
-    private boolean checkNeedAddImageView() {
-        return isListEmpty(datas) || datas.size() < DEFAULT_MAX_PHOTO_COUNT;
+    private FlowLayout.LayoutParams generateDefaultImageSizeLayoutParams() {
+        FlowLayout.LayoutParams params = new FlowLayout.LayoutParams(mImageSize, mImageSize);
+        params.leftMargin = DEFAULT_PADDING;
+        params.topMargin = DEFAULT_PADDING;
+        return params;
     }
 
     public void clearViews() {
-        tableLayout.removeAllViewsInLayout();
+        removeAllViewsInLayout();
         getImageViewWithOutParent(addImageView);
-        tableLayout.requestLayout();
+        requestLayout();
     }
 
     public ImageView getImageViewWithOutParent(ImageView imageView) {
@@ -147,19 +155,58 @@ public class PreviewImageView<T> extends FrameLayout {
         return datas == null || datas.size() <= 0;
     }
 
-
-    private OnLoadPhotoListener onLoadPhotoListener;
+    private boolean checkAddActionImageView() {
+        if (addImageView == null) {
+            addImageView = new ImageView(getContext());
+            addImageView.setImageResource(R.drawable.ic_add_photo);
+            addImageView.setId(ADD_IMAGE_ID);
+        }
+        return isListEmpty(datas) || (datas != null && datas.size() < 9);
+    }
 
     public OnLoadPhotoListener getOnLoadPhotoListener() {
         return onLoadPhotoListener;
     }
 
-    public void setOnLoadPhotoListener(OnLoadPhotoListener onLoadPhotoListener) {
+    public void setOnLoadPhotoListener(OnLoadPhotoListener<T> onLoadPhotoListener) {
         this.onLoadPhotoListener = onLoadPhotoListener;
     }
 
+    public OnPhotoClickListener getOnPhotoClickListener() {
+        return mOnPhotoClickListener;
+    }
+
+    public void setOnPhotoClickListener(OnPhotoClickListener<T> onPhotoClickListener) {
+        mOnPhotoClickListener = onPhotoClickListener;
+    }
+
+    @Override
+    public void onChildViewAdded(View parent, View child) {
+
+    }
+
+    @Override
+    public void onChildViewRemoved(View parent, View child) {
+        if (child instanceof ImageView) {
+            ImageView iv = (ImageView) child;
+            if (iv != addImageView) {
+                ivPool.put(iv);
+            }
+        }
+    }
+
     public interface OnLoadPhotoListener<T> {
-        ImageView onPhotoLoading(int pos, T data, ImageView imageView);
+        void onPhotoLoading(int pos, T data, @NonNull ImageView imageView);
+    }
+
+    public interface OnPhotoClickListener<T> {
+        void onPhotoClickListener(int pos, T data, @NonNull ImageView imageView);
+    }
+
+    public void setOnAddPhotoClickListener(OnClickListener onAddPhotoClickListener) {
+        if (addImageView != null) {
+            addImageView.setOnClickListener(onAddPhotoClickListener);
+        }
     }
 
 }

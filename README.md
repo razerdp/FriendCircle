@@ -8,6 +8,10 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
 ##### 因为采取组件化（目前正在开发的组件：photoselect），所以可能push上来的是组件的build，如果您要build整个app，请把gradle.properties下的  isModule=true 切换为false并sync gradle
 
 ##### 【简略更新日志】
+ - 2017/10/12
+    + 重新构建了选择图片的代码
+    + 初步完成发布动态（仅完成选择图片）
+
  - 2017/09/07
     + 增加了权限兼容（到7.0）
 

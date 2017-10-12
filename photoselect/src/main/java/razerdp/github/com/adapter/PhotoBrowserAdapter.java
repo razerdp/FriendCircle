@@ -9,9 +9,8 @@ import java.util.List;
 
 import razerdp.github.com.baselibrary.imageloader.ImageLoadMnanger;
 import razerdp.github.com.baselibrary.interfaces.ClearMemoryObject;
-import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
 import razerdp.github.com.baselibrary.utils.SimpleObjectPool;
-import uk.co.senab.photoview.PhotoView;
+import razerdp.github.com.models.localphotomanager.ImageInfo;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import uk.co.senab.photoview.PhotoViewEx;
 
@@ -23,12 +22,12 @@ import uk.co.senab.photoview.PhotoViewEx;
 
 public class PhotoBrowserAdapter extends PagerAdapter implements ClearMemoryObject {
 
-    private List<LocalPhotoManager.ImageInfo> datas;
+    private List<ImageInfo> datas;
     private Context context;
     private SimpleObjectPool<PhotoViewEx> viewPool;
     private PhotoViewAttacher.OnViewTapListener onViewTapListener;
 
-    public PhotoBrowserAdapter(Context context, List<LocalPhotoManager.ImageInfo> datas) {
+    public PhotoBrowserAdapter(Context context, List<ImageInfo> datas) {
         viewPool = new SimpleObjectPool<>();
         this.context = context;
         this.datas = datas;
@@ -39,7 +38,7 @@ public class PhotoBrowserAdapter extends PagerAdapter implements ClearMemoryObje
         return datas.size();
     }
 
-    public LocalPhotoManager.ImageInfo getImageInfo(int pos) {
+    public ImageInfo getImageInfo(int pos) {
         try {
             return datas.get(pos);
         } catch (Exception e) {
@@ -49,7 +48,7 @@ public class PhotoBrowserAdapter extends PagerAdapter implements ClearMemoryObje
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        final LocalPhotoManager.ImageInfo info = datas.get(position);
+        final ImageInfo info = datas.get(position);
         PhotoViewEx photoView = viewPool.get();
         if (photoView == null) {
             photoView = new PhotoViewEx(context);

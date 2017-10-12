@@ -18,8 +18,8 @@ public enum UpdateInfoManager {
     private UpdateInfoPopup popup;
     private boolean hasShow;
 
-    final String title = "开发日志(2017/09/07)";
-    final String content = "嗯。。。解决了6.0的权限问题。。。。";
+    final String title = "开发日志(2017/10/12)";
+    final String content = "1 - 重新构建了选择图片的代码\n\n2 - 右上角发布图片可以正常使用了哦~不过发布代码还没完善完。。继续努力嘿\n\n3 - 弱弱的打上一个打赏二维码不会被喷吧，在下会认真维护的！！！（虽然时间不是很多。。。）";
 
 
     public void init(Activity act) {

@@ -50,6 +50,7 @@ import razerdp.github.com.baseuilib.widget.common.TitleBar;
 import razerdp.github.com.baseuilib.widget.pullrecyclerview.CircleRecyclerView;
 import razerdp.github.com.baseuilib.widget.pullrecyclerview.CircleRecyclerView.OnPreDispatchTouchListener;
 import razerdp.github.com.baseuilib.widget.pullrecyclerview.interfaces.OnRefreshListener2;
+import razerdp.github.com.models.localphotomanager.ImageInfo;
 import razerdp.github.com.router.RouterList;
 
 /**
@@ -219,14 +220,14 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
 
             @Override
             public void onAlbumClick() {
-                ActivityLauncher.startToPhotoSelectActivity(getActivity());
+                ActivityLauncher.startToPhotoSelectActivity(getActivity(), RouterList.PhotoSelectActivity.requestCode);
             }
         }).showPopupWindow();
     }
 
     @Override
     public boolean onTitleRightLongClick() {
-        ActivityLauncher.startToPublishActivityWithResult(this, RouterList.PublishActivity.MODE_TEXT, 0);
+        ActivityLauncher.startToPublishActivityWithResult(this, RouterList.PublishActivity.MODE_TEXT, null, RouterList.PublishActivity.requestCode);
         return true;
     }
 
@@ -236,14 +237,25 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         PhotoHelper.handleActivityResult(this, requestCode, resultCode, data, new PhotoHelper.PhotoCallback() {
             @Override
             public void onFinish(String filePath) {
-
+                List<ImageInfo> selectedPhotos = new ArrayList<ImageInfo>();
+                selectedPhotos.add(new ImageInfo(filePath, null, null, 0, 0));
+                ActivityLauncher.startToPublishActivityWithResult(FriendCircleDemoActivity.this,
+                                                                  RouterList.PublishActivity.MODE_MULTI,
+                                                                  selectedPhotos,
+                                                                  RouterList.PublishActivity.requestCode);
             }
 
             @Override
             public void onError(String msg) {
-
+                UIHelper.ToastMessage(msg);
             }
         });
+        if (requestCode == RouterList.PhotoSelectActivity.requestCode && resultCode == RESULT_OK) {
+            List<ImageInfo> selectedPhotos = data.getParcelableArrayListExtra(RouterList.PhotoSelectActivity.key_result);
+            if (selectedPhotos != null) {
+                ActivityLauncher.startToPublishActivityWithResult(this, RouterList.PublishActivity.MODE_MULTI, selectedPhotos, RouterList.PublishActivity.requestCode);
+            }
+        }
     }
 
     //request

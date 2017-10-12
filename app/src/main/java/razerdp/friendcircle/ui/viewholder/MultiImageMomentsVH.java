@@ -88,7 +88,6 @@ public class MultiImageMomentsVH extends CircleBaseViewHolder implements PhotoCo
 
         @Override
         public void onBindData(int position, @NonNull ImageView convertView) {
-            KLog.i(datas.get(position));
             ImageLoadMnanger.INSTANCE.loadImage(convertView, datas.get(position));
         }
 

@@ -19,7 +19,8 @@ import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
 import razerdp.github.com.baseuilib.baseadapter.OnRecyclerViewItemClickListener;
 import razerdp.github.com.bus.EventSelectAlbum;
-import razerdp.github.com.model.AlbumInfo;
+import razerdp.github.com.models.photo.AlbumInfo;
+import razerdp.github.com.models.localphotomanager.ImageInfo;
 import razerdp.github.com.photoselect.R;
 
 /**
@@ -66,18 +67,18 @@ public class PhotoAlbumFragement extends BaseFragment {
         if (datas == null) {
             datas = new ArrayList<>();
         }
-        LinkedHashMap<String, List<LocalPhotoManager.ImageInfo>> map = LocalPhotoManager.INSTANCE.getLocalImagesMap();
+        LinkedHashMap<String, List<ImageInfo>> map = LocalPhotoManager.INSTANCE.getLocalImagesMap();
         Iterator iterator = map.entrySet().iterator();
         datas.clear();
         while (iterator.hasNext()) {
-            Map.Entry<String, List<LocalPhotoManager.ImageInfo>> entry = (Map.Entry<String, List<LocalPhotoManager.ImageInfo>>) iterator.next();
+            Map.Entry<String, List<ImageInfo>> entry = (Map.Entry<String, List<ImageInfo>>) iterator.next();
             String albumName = entry.getKey();
-            List<LocalPhotoManager.ImageInfo> photos = entry.getValue();
+            List<ImageInfo> photos = entry.getValue();
             AlbumInfo info = new AlbumInfo();
             info.setAlbumName(albumName);
             info.setPhotoCounts(photos.size());
             if (!ToolUtil.isListEmpty(photos)) {
-                LocalPhotoManager.ImageInfo lastInfo = photos.get(photos.size() - 1);
+                ImageInfo lastInfo = photos.get(photos.size() - 1);
                 String firstPhoto = TextUtils.isEmpty(lastInfo.thumbnailPath) ? lastInfo.imagePath : lastInfo.thumbnailPath;
                 info.setFirstPhoto(firstPhoto);
             }
