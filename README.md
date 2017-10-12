@@ -42,11 +42,11 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
 
 
 #### 【最新进度图片预览并选择】
-##### 2017-04-05
+##### 2017-10-12
 
-图片选择模块完成！
+发布页面初步完成（图片选择）
 
-![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2017_04_05photo_select.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2017_10_12_preview_image.gif)
 
 ***
 
