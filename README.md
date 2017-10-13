@@ -46,7 +46,7 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
 
 发布页面初步完成（图片选择）
 
-![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/2017_10_12_preview_image.gif)
+![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/record.gif)
 
 ***
 
