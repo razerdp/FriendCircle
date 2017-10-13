@@ -1,4 +1,4 @@
-package razerdp.friendcircle.app.helper;
+package razerdp.github.com.baseuilib.helper;
 
 import android.content.ContentValues;
 import android.content.Context;

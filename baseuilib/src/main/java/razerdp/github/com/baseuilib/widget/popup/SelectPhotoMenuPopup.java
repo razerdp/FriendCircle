@@ -1,12 +1,12 @@
-package razerdp.friendcircle.ui.widget.popup;
+package razerdp.github.com.baseuilib.widget.popup;
 
 import android.app.Activity;
 import android.view.View;
 import android.view.animation.Animation;
 
 import razerdp.basepopup.BasePopupWindow;
-import razerdp.friendcircle.R;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
+import razerdp.github.com.baseuilib.R;
 
 /**
  * Created by 大灯泡 on 2017/3/2.
@@ -68,22 +68,22 @@ public class SelectPhotoMenuPopup extends BasePopupWindow implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.shoot:
-                if (listener != null) {
-                    listener.onShootClick();
-                }
-                dismissWithOutAnima();
-                break;
-            case R.id.album:
-                if (listener != null) {
-                    listener.onAlbumClick();
-                }
-                dismissWithOutAnima();
-                break;
-            case R.id.cancel:
-                dismiss();
-                break;
+        int i = v.getId();
+        if (i == R.id.shoot) {
+            if (listener != null) {
+                listener.onShootClick();
+            }
+            dismissWithOutAnima();
+
+        } else if (i == R.id.album) {
+            if (listener != null) {
+                listener.onAlbumClick();
+            }
+            dismissWithOutAnima();
+
+        } else if (i == R.id.cancel) {
+            dismiss();
+
         }
     }
 

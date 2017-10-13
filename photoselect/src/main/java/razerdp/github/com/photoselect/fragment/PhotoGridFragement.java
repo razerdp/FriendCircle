@@ -1,6 +1,8 @@
 package razerdp.github.com.photoselect.fragment;
 
 import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,6 +47,24 @@ public class PhotoGridFragement extends BaseFragment {
     private PhotoSelectAdapter adapter;
     private String currentAlbumName;
     public static final int MAX_COUNT = 9;
+    private int maxCount = MAX_COUNT;
+
+    public static PhotoGridFragement newInstance(int maxCount) {
+        Bundle args = new Bundle();
+        args.putInt("maxCount", (maxCount <= 0 || maxCount > 9) ? MAX_COUNT : maxCount);
+        PhotoGridFragement fragment = new PhotoGridFragement();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            maxCount = bundle.getInt("maxCount", MAX_COUNT);
+        }
+    }
 
     @Override
     public int getLayoutResId() {
@@ -136,7 +156,7 @@ public class PhotoGridFragement extends BaseFragment {
         currentAlbumName = albumName;
         if (adapter == null) {
             final int itemDecoration = UIHelper.dipToPx(2);
-            adapter = new PhotoSelectAdapter(getActivity(), itemDecoration, LocalPhotoManager.INSTANCE.getLocalImages(albumName));
+            adapter = new PhotoSelectAdapter(getActivity(), itemDecoration, LocalPhotoManager.INSTANCE.getLocalImages(albumName), maxCount);
             initSelectCountChangeListener();
             GridLayoutManager manager = new GridLayoutManager(getActivity(), 4, LinearLayoutManager.VERTICAL, false);
             vh.mPhotoContent.setLayoutManager(manager);
@@ -174,7 +194,7 @@ public class PhotoGridFragement extends BaseFragment {
             ARouter.getInstance()
                    .build(RouterList.PhotoMultiBrowserActivity.path)
                    .withParcelable(RouterList.PhotoMultiBrowserActivity.key_browserinfo, info)
-                   .withInt(RouterList.PhotoMultiBrowserActivity.key_maxSelectCount, MAX_COUNT)
+                   .withInt(RouterList.PhotoMultiBrowserActivity.key_maxSelectCount, maxCount)
                    .navigation((Activity) getContext(), RouterList.PhotoMultiBrowserActivity.requestCode);
         }
     };

@@ -20,8 +20,10 @@ import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.base.BaseTitleBarActivity;
+import razerdp.github.com.baseuilib.helper.PhotoHelper;
 import razerdp.github.com.baseuilib.widget.common.TitleBar;
 import razerdp.github.com.baseuilib.widget.imageview.PreviewImageView;
+import razerdp.github.com.baseuilib.widget.popup.SelectPhotoMenuPopup;
 import razerdp.github.com.models.localphotomanager.ImageInfo;
 import razerdp.github.com.models.photo.PhotoBrowserInfo;
 import razerdp.github.com.router.RouterList;
@@ -44,6 +46,7 @@ public class PublishActivity extends BaseTitleBarActivity {
     private EditText mInputContent;
     private PreviewImageView<ImageInfo> mPreviewImageView;
 
+    private SelectPhotoMenuPopup mSelectPhotoMenuPopup;
 
     @Override
     public void onHandleIntent(Intent intent) {
@@ -82,17 +85,12 @@ public class PublishActivity extends BaseTitleBarActivity {
                 }
             }
         });
+        initPreviewImageView();
         loadImage();
 
     }
 
-    private void loadImage() {
-        mPreviewImageView.setDatas(selectedPhotos, new PreviewImageView.OnLoadPhotoListener<ImageInfo>() {
-            @Override
-            public void onPhotoLoading(int pos, ImageInfo data, @NonNull ImageView imageView) {
-                ImageLoadMnanger.INSTANCE.loadImage(imageView, data.getImagePath());
-            }
-        });
+    private void initPreviewImageView() {
         mPreviewImageView.setOnPhotoClickListener(new PreviewImageView.OnPhotoClickListener<ImageInfo>() {
             @Override
             public void onPhotoClickListener(int pos, ImageInfo data, @NonNull ImageView imageView) {
@@ -104,6 +102,42 @@ public class PublishActivity extends BaseTitleBarActivity {
                        .navigation(PublishActivity.this, RouterList.PhotoMultiBrowserActivity.requestCode);
             }
         });
+        mPreviewImageView.setOnAddPhotoClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSelectPhotoPopup();
+            }
+        });
+    }
+
+    private void loadImage() {
+        mPreviewImageView.setDatas(selectedPhotos, new PreviewImageView.OnLoadPhotoListener<ImageInfo>() {
+            @Override
+            public void onPhotoLoading(int pos, ImageInfo data, @NonNull ImageView imageView) {
+                ImageLoadMnanger.INSTANCE.loadImage(imageView, data.getImagePath());
+            }
+        });
+    }
+
+    private void showSelectPhotoPopup() {
+        if (mSelectPhotoMenuPopup==null){
+            mSelectPhotoMenuPopup=new SelectPhotoMenuPopup(this);
+            mSelectPhotoMenuPopup.setOnSelectPhotoMenuClickListener(new SelectPhotoMenuPopup.OnSelectPhotoMenuClickListener() {
+                @Override
+                public void onShootClick() {
+                    PhotoHelper.fromCamera(PublishActivity.this, false);
+                }
+
+                @Override
+                public void onAlbumClick() {
+                    ARouter.getInstance()
+                           .build(RouterList.PhotoSelectActivity.path)
+                           .withInt(RouterList.PhotoSelectActivity.key_maxSelectCount,mPreviewImageView.getRestPhotoCount())
+                           .navigation(PublishActivity.this, RouterList.PhotoSelectActivity.requestCode);
+                }
+            });
+        }
+        mSelectPhotoMenuPopup.showPopupWindow();
     }
 
     //title init
@@ -121,6 +155,28 @@ public class PublishActivity extends BaseTitleBarActivity {
     private void setTitleRightTextColor(boolean canClick) {
         setRightTextColor(canClick ? UIHelper.getResourceColor(R.color.wechat_green_bg) : UIHelper.getResourceColor(R.color.wechat_green_transparent));
         canTitleRightClick = canClick;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        PhotoHelper.handleActivityResult(this, requestCode, resultCode, data, new PhotoHelper.PhotoCallback() {
+            @Override
+            public void onFinish(String filePath) {
+                mPreviewImageView.addData(new ImageInfo(filePath, null, null, 0, 0));
+            }
+
+            @Override
+            public void onError(String msg) {
+                UIHelper.ToastMessage(msg);
+            }
+        });
+        if (requestCode == RouterList.PhotoSelectActivity.requestCode && resultCode == RESULT_OK) {
+            List<ImageInfo> result = data.getParcelableArrayListExtra(RouterList.PhotoSelectActivity.key_result);
+            if (result != null) {
+                mPreviewImageView.addData(result);
+            }
+        }
     }
 
     @Override

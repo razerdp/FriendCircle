@@ -7,6 +7,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 
+import com.alibaba.android.arouter.facade.annotation.Autowired;
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.socks.library.KLog;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -31,8 +35,13 @@ import razerdp.github.com.router.RouterList;
  * 图片选择器
  */
 
+@Route(path = RouterList.PhotoSelectActivity.path)
 public class PhotoSelectActivity extends BaseTitleBarActivity {
     private static final String TAG = "PhotoSelectActivity";
+
+
+    @Autowired(name = RouterList.PhotoSelectActivity.key_maxSelectCount)
+    int maxCount;
 
     private PhotoGridFragement gridFragement;
     private PhotoAlbumFragement albumFragement;
@@ -79,16 +88,14 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
 
     private void initFrag() {
         if (gridFragement == null) {
-            gridFragement = new PhotoGridFragement();
+            KLog.i(TAG, "maxCount = " + maxCount);
+            gridFragement = PhotoGridFragement.newInstance(maxCount);
         }
         if (albumFragement == null) {
             albumFragement = new PhotoAlbumFragement();
         }
-
         changeFragment(currentFragment, gridFragement, false);
-
     }
-
 
     private void changeFragment(BaseFragment from, BaseFragment to, boolean needAnima) {
         if (to == null) return;

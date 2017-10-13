@@ -41,11 +41,17 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<ImageInfo> {
     private List<ImageInfo> selectedRecordLists;
     private boolean selectable = true;
     private String curAlbumName;
+    private int maxCount = MAX_COUNT;
 
     public PhotoSelectAdapter(@NonNull Context context, int itemDecoration, @NonNull List<ImageInfo> datas) {
+        this(context, itemDecoration, datas, MAX_COUNT);
+    }
+
+    public PhotoSelectAdapter(@NonNull Context context, int itemDecoration, @NonNull List<ImageInfo> datas, int maxCount) {
         super(context, datas);
         this.itemDecoration = itemDecoration;
         this.selectedRecordLists = new ArrayList<>();
+        this.maxCount = maxCount;
     }
 
     @Override
@@ -71,9 +77,8 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<ImageInfo> {
     }
 
     /**
-     *
      * 这里不可以用list.remove(Object)，因为当进行过选择之后，内部的实例不一定是同一个对象了。
-     *
+     * <p>
      * {@link razerdp.github.com.photoselect.fragment.PhotoGridFragement#updateSelectList(List)}以及{@link PhotoMultiBrowserActivity#finish()}
      */
     private void onUnSelectPhoto(ImageInfo info) {
@@ -103,7 +108,7 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<ImageInfo> {
     }
 
     private boolean checkSelectListLength() {
-        return !(selectedRecordLists.size() >= MAX_COUNT || selectedRecordLists.size() < 0);
+        return !(selectedRecordLists.size() >= maxCount || selectedRecordLists.size() < 0);
     }
 
     @Override
@@ -116,7 +121,7 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<ImageInfo> {
         if (newDatas != null) {
             selectedRecordLists.clear();
             selectedRecordLists.addAll(newDatas);
-            selectable = selectedRecordLists.size() != MAX_COUNT;
+            selectable = selectedRecordLists.size() != maxCount;
         }
     }
 
@@ -239,7 +244,7 @@ public class PhotoSelectAdapter extends BaseRecyclerViewAdapter<ImageInfo> {
                 ARouter.getInstance()
                        .build(RouterList.PhotoMultiBrowserActivity.path)
                        .withParcelable(RouterList.PhotoMultiBrowserActivity.key_browserinfo, info)
-                       .withInt(RouterList.PhotoMultiBrowserActivity.key_maxSelectCount, MAX_COUNT)
+                       .withInt(RouterList.PhotoMultiBrowserActivity.key_maxSelectCount, maxCount)
                        .navigation((Activity) getContext(), RouterList.PhotoMultiBrowserActivity.requestCode);
             }
 

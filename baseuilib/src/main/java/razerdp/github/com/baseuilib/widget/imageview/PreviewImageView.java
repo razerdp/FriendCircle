@@ -14,6 +14,7 @@ import org.apmem.tools.layouts.FlowLayout;
 import java.util.List;
 
 import razerdp.github.com.baselibrary.utils.SimpleObjectPool;
+import razerdp.github.com.baselibrary.utils.ToolUtil;
 import razerdp.github.com.baseuilib.R;
 
 /**
@@ -36,6 +37,7 @@ public class PreviewImageView<T> extends FlowLayout implements ViewGroup.OnHiera
     private volatile boolean fillViewInMeasure = false;
     private OnLoadPhotoListener onLoadPhotoListener;
     private OnPhotoClickListener mOnPhotoClickListener;
+    private OnClickListener mOnAddImageClickListener;
 
     public PreviewImageView(@NonNull Context context) {
         this(context, null);
@@ -65,9 +67,7 @@ public class PreviewImageView<T> extends FlowLayout implements ViewGroup.OnHiera
             mImageSize = width / 4 - DEFAULT_PADDING * 2;
         }
         if (addImageView == null) {
-            addImageView = new ImageView(getContext());
-            addImageView.setImageResource(R.drawable.ic_add_photo);
-            addImageView.setId(ADD_IMAGE_ID);
+            initAddImageView();
             addView(addImageView, generateDefaultImageSizeLayoutParams());
         }
         if (fillViewInMeasure) {
@@ -80,6 +80,40 @@ public class PreviewImageView<T> extends FlowLayout implements ViewGroup.OnHiera
         this.datas = datas;
         setOnLoadPhotoListener(onLoadPhotoListener);
         callToUpdateData();
+    }
+
+
+    public void deleteData(int pos) {
+        if (datas == null) return;
+        if (pos < 0 || pos > datas.size()) return;
+        datas.remove(pos);
+        callToUpdateData();
+    }
+
+
+    public void addData(List<T> datas) {
+        if (ToolUtil.isListEmpty(datas)) return;
+        final boolean hasRest = DEFAULT_MAX_PHOTO_COUNT - this.datas.size() > 0;
+        if (!hasRest) return;
+        for (T data : datas) {
+            addData(data, false);
+        }
+        callToUpdateData();
+    }
+
+    public void addData(T data) {
+        addData(data, true);
+    }
+
+    private void addData(T data, boolean needUpdataView) {
+        this.datas.add(data);
+        if (needUpdataView) {
+            callToUpdateData();
+        }
+    }
+
+    public int getRestPhotoCount() {
+        return DEFAULT_MAX_PHOTO_COUNT - datas.size();
     }
 
     private void callToUpdateData() {
@@ -156,12 +190,24 @@ public class PreviewImageView<T> extends FlowLayout implements ViewGroup.OnHiera
     }
 
     private boolean checkAddActionImageView() {
+        initAddImageView();
+        return isListEmpty(datas) || (datas != null && datas.size() < 9);
+    }
+
+    private void initAddImageView() {
         if (addImageView == null) {
             addImageView = new ImageView(getContext());
             addImageView.setImageResource(R.drawable.ic_add_photo);
             addImageView.setId(ADD_IMAGE_ID);
+            addImageView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnAddImageClickListener != null) {
+                        mOnAddImageClickListener.onClick(v);
+                    }
+                }
+            });
         }
-        return isListEmpty(datas) || (datas != null && datas.size() < 9);
     }
 
     public OnLoadPhotoListener getOnLoadPhotoListener() {
@@ -204,9 +250,7 @@ public class PreviewImageView<T> extends FlowLayout implements ViewGroup.OnHiera
     }
 
     public void setOnAddPhotoClickListener(OnClickListener onAddPhotoClickListener) {
-        if (addImageView != null) {
-            addImageView.setOnClickListener(onAddPhotoClickListener);
-        }
+        mOnAddImageClickListener = onAddPhotoClickListener;
     }
 
 }
