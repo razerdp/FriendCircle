@@ -157,15 +157,14 @@ public class HeaderViewWrapperAdapter extends RecyclerView.Adapter implements Wr
     private void checkAndSetRecyclerViewLayoutParams(View child) {
         if (child == null) return;
         LayoutParams p = child.getLayoutParams();
-        LayoutParams params = null;
         if (p == null) {
-            params = new LayoutParams(new MarginLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)));
+            p = new LayoutParams(new MarginLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)));
         } else {
             if (!(p instanceof RecyclerView.LayoutParams)) {
-                params = recyclerView.getLayoutManager().generateLayoutParams(p);
+                p = recyclerView.getLayoutManager().generateLayoutParams(p);
             }
         }
-        child.setLayoutParams(params);
+        child.setLayoutParams(p);
 
     }
 
