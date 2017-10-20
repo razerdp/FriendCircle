@@ -1,7 +1,9 @@
 package razerdp.github.com.baseuilib.widget.pullrecyclerview.wrapperadapter;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -168,6 +170,17 @@ public class HeaderViewWrapperAdapter extends RecyclerView.Adapter implements Wr
 
     }
 
+    private boolean isHeader(int position) {
+        int numHeaders = getHeadersCount();
+        return position < numHeaders;
+    }
+
+    private boolean isFooter(int position) {
+        int numHeaders = getHeadersCount();
+        int adapterCount = mWrappedAdapter.getItemCount();
+        return position > (numHeaders + adapterCount - 1);
+    }
+
     @Override
     public int getItemCount() {
         if (mWrappedAdapter != null) {
@@ -234,6 +247,45 @@ public class HeaderViewWrapperAdapter extends RecyclerView.Adapter implements Wr
             }
         }
         return -1;
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        fixLayoutManager(recyclerView.getLayoutManager());
+    }
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        fixStaggredGridLayoutManager(holder);
+    }
+
+    private void fixLayoutManager(RecyclerView.LayoutManager layoutManager) {
+        if (layoutManager == null) return;
+        if (layoutManager instanceof GridLayoutManager) {
+            fixGridLayoutManager((GridLayoutManager) layoutManager);
+        }
+    }
+
+    private void fixGridLayoutManager(final GridLayoutManager layoutManager) {
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return isHeader(position) || isFooter(position) ? layoutManager.getSpanCount() : 1;
+            }
+        });
+    }
+
+    private void fixStaggredGridLayoutManager(RecyclerView.ViewHolder holder) {
+        final int position = holder.getLayoutPosition();
+        if (isHeader(position) || isFooter(position)) {
+            ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
+            if (lp != null && lp instanceof StaggeredGridLayoutManager.LayoutParams) {
+                StaggeredGridLayoutManager.LayoutParams p = (StaggeredGridLayoutManager.LayoutParams) lp;
+                p.setFullSpan(true);
+            }
+        }
     }
 
 
