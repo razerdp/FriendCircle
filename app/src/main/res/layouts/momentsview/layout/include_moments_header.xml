@@ -28,13 +28,4 @@
         android:textStyle="bold"
         tools:text="羽翼君"/>
 
-    <razerdp.github.com.baseuilib.widget.common.ClickShowMoreLayout
-        android:id="@+id/item_text_field"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/nick"
-        android:layout_below="@id/nick"
-        android:layout_marginTop="8dp"
-        app:show_line="5"
-        app:text_color="@color/normal_font_color"/>
 </RelativeLayout>

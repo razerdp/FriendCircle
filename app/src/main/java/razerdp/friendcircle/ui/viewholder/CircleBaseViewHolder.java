@@ -3,6 +3,7 @@ package razerdp.friendcircle.ui.viewholder;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import razerdp.friendcircle.ui.widget.popup.DeleteCommentPopup;
 import razerdp.friendcircle.ui.widget.praisewidget.PraiseWidget;
 import razerdp.github.com.baselibrary.imageloader.ImageLoadMnanger;
 import razerdp.github.com.baselibrary.utils.SimpleObjectPool;
+import razerdp.github.com.baselibrary.utils.StringUtil;
 import razerdp.github.com.baselibrary.utils.TimeUtil;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
@@ -59,7 +61,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
     protected LinearLayout commentLayout;
 
     //内容区
-    protected RelativeLayout contentLayout;
+    protected LinearLayout contentLayout;
 
     //评论区的view对象池
     private static final SimpleObjectPool<CommentWidget> COMMENT_TEXT_POOL = new SimpleObjectPool<CommentWidget>(35);
@@ -91,7 +93,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         line = findView(line, R.id.divider);
         commentLayout = (LinearLayout) findView(commentLayout, R.id.comment_layout);
         //content
-        contentLayout = (RelativeLayout) findView(contentLayout, R.id.content);
+        contentLayout = (LinearLayout) findView(contentLayout, R.id.content);
 
         if (commentPopup == null) {
             commentPopup = new CommentPopup((Activity) getContext());
@@ -137,6 +139,8 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         ImageLoadMnanger.INSTANCE.loadImage(avatar, data.getAuthor().getAvatar());
         nick.setText(data.getAuthor().getNick());
         userText.setText(data.getContent().getText());
+        ViewUtil.setViewsVisible(StringUtil.noEmpty(data.getContent().getText()) ?
+                                         View.VISIBLE : View.GONE, userText);
 
         //bottom
         createTime.setText(TimeUtil.getTimeStringFromBmob(data.getCreatedAt()));

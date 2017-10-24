@@ -19,7 +19,7 @@ public enum UpdateInfoManager {
     private boolean hasShow;
 
     final String title = "开发日志(2017/10/24)";
-    final String content = "1 - 嗯，，，现在可以发布动态了\n\n2 - 部分modules进行了位置调整和整合\n\n3 - 增加删除动态功能";
+    final String content = "1 - 嗯，，，现在可以发布动态了\n\n2 - 部分modules进行了位置调整和整合\n\n3 - 增加删除动态功能\n\n4 - 调整动态布局，看起来更和谐";
 
 
     public void init(Activity act) {
