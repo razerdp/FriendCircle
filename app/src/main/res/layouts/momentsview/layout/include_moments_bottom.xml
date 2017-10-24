@@ -23,6 +23,19 @@
             android:textSize="@dimen/small_font"
             tools:text="3小时前"/>
 
+        <TextView
+            android:id="@+id/tv_delete_moment"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_toRightOf="@id/create_time"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="删除"
+            android:textColor="@color/nick"
+            android:textSize="@dimen/small_font"
+            android:visibility="gone"/>
+
         <FrameLayout
             android:id="@+id/menu_button"
             android:layout_width="60dp"
@@ -55,10 +68,10 @@
             android:layout_height="wrap_content"
             android:lineSpacingExtra="2dp"
             android:lineSpacingMultiplier="1"
+            android:paddingBottom="3dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:paddingTop="3dp"
-            android:paddingBottom="3dp"
             app:click_bg_color="@color/comment_click_bg"
             />
 

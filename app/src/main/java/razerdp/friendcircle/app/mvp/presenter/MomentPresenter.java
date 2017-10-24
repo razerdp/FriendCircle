@@ -1,6 +1,10 @@
 package razerdp.friendcircle.app.mvp.presenter;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -10,9 +14,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.UpdateListener;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
 import razerdp.github.com.baselibrary.mvp.IBasePresenter;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
+import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.common.manager.LocalHostManager;
 import razerdp.github.com.common.mvp.callback.OnCommentChangeCallback;
 import razerdp.github.com.common.mvp.callback.OnLikeChangeCallback;
@@ -21,6 +28,7 @@ import razerdp.github.com.common.mvp.models.LikeImpl;
 import razerdp.github.com.common.mvp.models.entity.CommentInfo;
 import razerdp.github.com.common.mvp.models.entity.LikesInfo;
 import razerdp.friendcircle.app.mvp.view.IMomentView;
+import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
 
 /**
  * Created by 大灯泡 on 2016/12/7.
@@ -168,6 +176,31 @@ public class MomentPresenter implements IMomentPresenter {
             }
         });
 
+    }
+
+    @Override
+    public void deleteMoments(Context context, @NonNull final MomentsInfo momentsInfo) {
+        assert momentsInfo != null : "momentsInfo为空";
+        new AlertDialog.Builder(context)
+                .setTitle("删除动态")
+                .setMessage("确定删除吗？")
+                .setNegativeButton("取消", null)
+                .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        momentsInfo.delete(new UpdateListener() {
+                            @Override
+                            public void done(BmobException e) {
+                                if (e == null && momentView != null) {
+                                    momentView.onDeleteMomentsInfo(momentsInfo);
+                                } else {
+                                    UIHelper.ToastMessage("删除失败");
+                                }
+                            }
+                        });
+                    }
+                }).show();
     }
 
 

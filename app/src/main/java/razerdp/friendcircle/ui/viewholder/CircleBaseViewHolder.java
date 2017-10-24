@@ -3,6 +3,7 @@ package razerdp.friendcircle.ui.viewholder;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -26,8 +27,10 @@ import razerdp.github.com.baselibrary.utils.SimpleObjectPool;
 import razerdp.github.com.baselibrary.utils.TimeUtil;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
+import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewHolder;
 import razerdp.github.com.baseuilib.widget.common.ClickShowMoreLayout;
+import razerdp.github.com.common.manager.LocalHostManager;
 import razerdp.github.com.common.mvp.models.entity.CommentInfo;
 import razerdp.github.com.common.mvp.models.entity.LikesInfo;
 import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
@@ -47,6 +50,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
 
     //底部
     protected TextView createTime;
+    protected TextView deleteMoments;
     protected ImageView commentImage;
     protected FrameLayout menuButton;
     protected LinearLayout commentAndPraiseLayout;
@@ -79,6 +83,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
 
         //bottom
         createTime = (TextView) findView(createTime, R.id.create_time);
+        deleteMoments = (TextView) findView(deleteMoments, R.id.tv_delete_moment);
         commentImage = (ImageView) findView(commentImage, R.id.menu_img);
         menuButton = (FrameLayout) findView(menuButton, R.id.menu_button);
         commentAndPraiseLayout = (LinearLayout) findView(commentAndPraiseLayout, R.id.comment_praise_layout);
@@ -122,6 +127,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         //点击事件
         menuButton.setOnClickListener(onMenuButtonClickListener);
         menuButton.setTag(R.id.momentinfo_data_tag_id, data);
+        deleteMoments.setOnClickListener(onDeleteMomentClickListener);
         //传递到子类
         onBindDataToView(data, position, getViewType());
     }
@@ -134,6 +140,8 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
 
         //bottom
         createTime.setText(TimeUtil.getTimeStringFromBmob(data.getCreatedAt()));
+        ViewUtil.setViewsVisible(TextUtils.equals(momentsInfo.getAuthor().getUserid(), LocalHostManager.INSTANCE.getUserid()) ?
+                                         View.VISIBLE : View.GONE, deleteMoments);
         boolean needPraiseData = addLikes(data.getLikesList());
         boolean needCommentData = addComment(data.getCommentList());
         praiseWidget.setVisibility(needPraiseData ? View.VISIBLE : View.GONE);
@@ -237,6 +245,13 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         @Override
         public void onDelClick(CommentInfo commentInfo) {
             momentPresenter.deleteComment(itemPosition, commentInfo.getCommentid(), momentsInfo.getCommentList());
+        }
+    };
+
+    private View.OnClickListener onDeleteMomentClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            momentPresenter.deleteMoments(v.getContext(), momentsInfo);
         }
     };
 

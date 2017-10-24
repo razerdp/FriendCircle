@@ -3,6 +3,7 @@ package razerdp.friendcircle.activity.circledemo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -131,11 +132,11 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
 
         CircleMomentsAdapter.Builder<MomentsInfo> builder = new CircleMomentsAdapter.Builder<>(this);
         builder.addType(EmptyMomentsVH.class, MomentsType.EMPTY_CONTENT, R.layout.moments_empty_content)
-                .addType(MultiImageMomentsVH.class, MomentsType.MULTI_IMAGES, R.layout.moments_multi_image)
-                .addType(TextOnlyMomentsVH.class, MomentsType.TEXT_ONLY, R.layout.moments_only_text)
-                .addType(WebMomentsVH.class, MomentsType.WEB, R.layout.moments_web)
-                .setData(momentsInfoList)
-                .setPresenter(presenter);
+               .addType(MultiImageMomentsVH.class, MomentsType.MULTI_IMAGES, R.layout.moments_multi_image)
+               .addType(TextOnlyMomentsVH.class, MomentsType.TEXT_ONLY, R.layout.moments_only_text)
+               .addType(WebMomentsVH.class, MomentsType.WEB, R.layout.moments_web)
+               .setData(momentsInfoList)
+               .setPresenter(presenter);
         adapter = builder.build();
         circleRecyclerView.setAdapter(adapter);
         circleRecyclerView.autoRefresh();
@@ -240,9 +241,9 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
                 List<ImageInfo> selectedPhotos = new ArrayList<ImageInfo>();
                 selectedPhotos.add(new ImageInfo(filePath, null, null, 0, 0));
                 ActivityLauncher.startToPublishActivityWithResult(FriendCircleDemoActivity.this,
-                        RouterList.PublishActivity.MODE_MULTI,
-                        selectedPhotos,
-                        RouterList.PublishActivity.requestCode);
+                                                                  RouterList.PublishActivity.MODE_MULTI,
+                                                                  selectedPhotos,
+                                                                  RouterList.PublishActivity.requestCode);
             }
 
             @Override
@@ -319,6 +320,13 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         }
         mViewHelper.setCommentItemDataPosition(itemPos);
         commentBox.toggleCommentBox(momentid, commentWidget == null ? null : commentWidget.getData(), false);
+    }
+
+    @Override
+    public void onDeleteMomentsInfo(@NonNull MomentsInfo momentsInfo) {
+        int pos = adapter.getDatas().indexOf(momentsInfo);
+        if (pos < 0) return;
+        adapter.deleteData(pos);
     }
 
     @Override
