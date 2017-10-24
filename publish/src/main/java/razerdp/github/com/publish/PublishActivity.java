@@ -83,9 +83,6 @@ public class PublishActivity extends BaseTitleBarActivity {
     private void initView() {
         initTitle();
         mInputContent = findView(R.id.publish_input);
-        if (mode == RouterList.PublishActivity.MODE_TEXT) {
-            UIHelper.showInputMethod(mInputContent);
-        }
         mPreviewImageView = findView(R.id.preview_image_content);
         ViewUtil.setViewsVisible(mode == RouterList.PublishActivity.MODE_TEXT ? View.GONE : View.VISIBLE, mPreviewImageView);
         mInputContent.setHint(mode == RouterList.PublishActivity.MODE_MULTI ? "这一刻的想法..." : null);
@@ -96,8 +93,14 @@ public class PublishActivity extends BaseTitleBarActivity {
             }
         });
 
-        initPreviewImageView();
-        loadImage();
+        if (mode == RouterList.PublishActivity.MODE_TEXT) {
+            UIHelper.showInputMethod(mInputContent, 300);
+        }
+
+        if (mode == RouterList.PublishActivity.MODE_MULTI) {
+            initPreviewImageView();
+            loadImage();
+        }
         refreshTitleRightClickable();
     }
 
@@ -107,10 +110,10 @@ public class PublishActivity extends BaseTitleBarActivity {
             public void onPhotoClickListener(int pos, ImageInfo data, @NonNull ImageView imageView) {
                 PhotoBrowserInfo info = PhotoBrowserInfo.create(pos, null, selectedPhotos);
                 ARouter.getInstance()
-                        .build(RouterList.PhotoMultiBrowserActivity.path)
-                        .withParcelable(RouterList.PhotoMultiBrowserActivity.key_browserinfo, info)
-                        .withInt(RouterList.PhotoMultiBrowserActivity.key_maxSelectCount, selectedPhotos.size())
-                        .navigation(PublishActivity.this, RouterList.PhotoMultiBrowserActivity.requestCode);
+                       .build(RouterList.PhotoMultiBrowserActivity.path)
+                       .withParcelable(RouterList.PhotoMultiBrowserActivity.key_browserinfo, info)
+                       .withInt(RouterList.PhotoMultiBrowserActivity.key_maxSelectCount, selectedPhotos.size())
+                       .navigation(PublishActivity.this, RouterList.PhotoMultiBrowserActivity.requestCode);
             }
         });
         mPreviewImageView.setOnAddPhotoClickListener(new View.OnClickListener() {
@@ -143,9 +146,9 @@ public class PublishActivity extends BaseTitleBarActivity {
                 @Override
                 public void onAlbumClick() {
                     ARouter.getInstance()
-                            .build(RouterList.PhotoSelectActivity.path)
-                            .withInt(RouterList.PhotoSelectActivity.key_maxSelectCount, mPreviewImageView.getRestPhotoCount())
-                            .navigation(PublishActivity.this, RouterList.PhotoSelectActivity.requestCode);
+                           .build(RouterList.PhotoSelectActivity.path)
+                           .withInt(RouterList.PhotoSelectActivity.key_maxSelectCount, mPreviewImageView.getRestPhotoCount())
+                           .navigation(PublishActivity.this, RouterList.PhotoSelectActivity.requestCode);
                 }
             });
         }
@@ -226,12 +229,12 @@ public class PublishActivity extends BaseTitleBarActivity {
         List<ImageInfo> datas = mPreviewImageView.getDatas();
         final boolean hasImage = !ToolUtil.isListEmpty(datas);
         final String inputContent = mInputContent.getText().toString();
+        if (mPopupProgress == null) {
+            mPopupProgress = new PopupProgress(this);
+        }
 
         final String[] uploadTaskPaths;
         if (hasImage) {
-            if (mPopupProgress == null) {
-                mPopupProgress = new PopupProgress(this);
-            }
             uploadTaskPaths = new String[datas.size()];
             for (int i = 0; i < datas.size(); i++) {
                 uploadTaskPaths[i] = datas.get(i).getImagePath();
@@ -265,16 +268,21 @@ public class PublishActivity extends BaseTitleBarActivity {
                     UIHelper.ToastMessage(s);
                 }
             });
+        } else {
+            publishInternal(inputContent, null);
         }
     }
 
     private void publishInternal(String input, List<String> uploadPicPaths) {
         mPopupProgress.setProgressTips("正在发布");
+        if (!mPopupProgress.isShowing()) {
+            mPopupProgress.showPopupWindow();
+        }
         AddMomentsRequest addMomentsRequest = new AddMomentsRequest();
         addMomentsRequest.setAuthId(LocalHostManager.INSTANCE.getUserid())
-                //暂时Host强制使用开发者id
-                .setHostId(AppSetting.loadStringPreferenceByKey(AppSetting.HOST_ID, "MMbKLCCU"))
-                .addText(input);
+                         //暂时Host强制使用开发者id
+                         .setHostId(AppSetting.loadStringPreferenceByKey(AppSetting.HOST_ID, "MMbKLCCU"))
+                         .addText(input);
         if (!ToolUtil.isListEmpty(uploadPicPaths)) {
             for (String uploadPicPath : uploadPicPaths) {
                 addMomentsRequest.addPicture(uploadPicPath);

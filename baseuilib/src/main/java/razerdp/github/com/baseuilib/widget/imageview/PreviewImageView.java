@@ -185,6 +185,7 @@ public class PreviewImageView<T> extends FlowLayout implements ViewGroup.OnHiera
     }
 
     public ImageView getImageViewWithOutParent(ImageView imageView) {
+        if (imageView == null) return null;
         if (imageView.getParent() != null) {
             ((ViewGroup) imageView.getParent()).removeView(imageView);
         }
