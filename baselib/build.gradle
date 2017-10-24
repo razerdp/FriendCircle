@@ -43,11 +43,11 @@ dependencies {
     compile rootProject.ext.dependencies.design
     compile rootProject.ext.dependencies.support_util
 
-    compile 'com.github.razerdp:BasePopup:1.8.2'
+    compile 'com.github.razerdp:BasePopup:1.8.4'
     //over scroller helper
     compile 'me.everything:overscroll-decor-android:1.0.3'
     //bmob
-    compile 'cn.bmob.android:bmob-sdk:3.5.0'
+    compile 'cn.bmob.android:bmob-sdk:3.5.8'
     //log
     compile 'com.github.zhaokaiqiang.klog:library:1.5.0'
     //eventbus
