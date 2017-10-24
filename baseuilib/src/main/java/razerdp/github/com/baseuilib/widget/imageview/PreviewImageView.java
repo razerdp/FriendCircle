@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import org.apmem.tools.layouts.FlowLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import razerdp.github.com.baselibrary.utils.SimpleObjectPool;
@@ -176,6 +177,11 @@ public class PreviewImageView<T> extends FlowLayout implements ViewGroup.OnHiera
         removeAllViewsInLayout();
         getImageViewWithOutParent(addImageView);
         requestLayout();
+    }
+
+    public List<T> getDatas() {
+        if (datas == null) return null;
+        return new ArrayList<>(datas);
     }
 
     public ImageView getImageViewWithOutParent(ImageView imageView) {

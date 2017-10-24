@@ -10,17 +10,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import razerdp.friendcircle.app.manager.LocalHostManager;
-import razerdp.friendcircle.app.mvp.callback.OnCommentChangeCallback;
-import razerdp.friendcircle.app.mvp.callback.OnLikeChangeCallback;
-import razerdp.friendcircle.app.mvp.model.CommentImpl;
-import razerdp.friendcircle.app.mvp.model.LikeImpl;
-import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
-import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
-import razerdp.friendcircle.app.mvp.view.IMomentView;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
 import razerdp.github.com.baselibrary.mvp.IBasePresenter;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
+import razerdp.github.com.common.manager.LocalHostManager;
+import razerdp.github.com.common.mvp.callback.OnCommentChangeCallback;
+import razerdp.github.com.common.mvp.callback.OnLikeChangeCallback;
+import razerdp.github.com.common.mvp.models.CommentImpl;
+import razerdp.github.com.common.mvp.models.LikeImpl;
+import razerdp.github.com.common.mvp.models.entity.CommentInfo;
+import razerdp.github.com.common.mvp.models.entity.LikesInfo;
+import razerdp.friendcircle.app.mvp.view.IMomentView;
 
 /**
  * Created by 大灯泡 on 2016/12/7.

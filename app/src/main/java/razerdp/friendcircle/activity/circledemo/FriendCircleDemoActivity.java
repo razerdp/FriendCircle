@@ -19,18 +19,10 @@ import java.util.List;
 import cn.bmob.v3.exception.BmobException;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.activity.ActivityLauncher;
-import razerdp.github.com.baseuilib.helper.PhotoHelper;
-import razerdp.friendcircle.app.manager.LocalHostManager;
 import razerdp.friendcircle.app.manager.UpdateInfoManager;
-import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
-import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
-import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.friendcircle.app.mvp.presenter.MomentPresenter;
 import razerdp.friendcircle.app.mvp.view.IMomentView;
-import razerdp.friendcircle.app.net.request.MomentsRequest;
-import razerdp.friendcircle.app.net.request.SimpleResponseListener;
-import razerdp.friendcircle.config.MomentsType;
+import razerdp.github.com.common.mvp.models.MomentsType;
 import razerdp.friendcircle.ui.adapter.CircleMomentsAdapter;
 import razerdp.friendcircle.ui.viewholder.EmptyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.MultiImageMomentsVH;
@@ -39,19 +31,27 @@ import razerdp.friendcircle.ui.viewholder.WebMomentsVH;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentBox;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
 import razerdp.friendcircle.ui.widget.popup.RegisterPopup;
-import razerdp.github.com.baseuilib.widget.popup.SelectPhotoMenuPopup;
 import razerdp.github.com.baselibrary.helper.AppSetting;
 import razerdp.github.com.baselibrary.imageloader.ImageLoadMnanger;
 import razerdp.github.com.baselibrary.manager.KeyboardControlMnanager;
+import razerdp.github.com.baselibrary.net.base.OnResponseListener;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baseuilib.base.BaseTitleBarActivity;
+import razerdp.github.com.baseuilib.helper.PhotoHelper;
 import razerdp.github.com.baseuilib.widget.common.TitleBar;
+import razerdp.github.com.baseuilib.widget.popup.SelectPhotoMenuPopup;
 import razerdp.github.com.baseuilib.widget.pullrecyclerview.CircleRecyclerView;
 import razerdp.github.com.baseuilib.widget.pullrecyclerview.CircleRecyclerView.OnPreDispatchTouchListener;
 import razerdp.github.com.baseuilib.widget.pullrecyclerview.interfaces.OnRefreshListener2;
-import razerdp.github.com.models.localphotomanager.ImageInfo;
-import razerdp.github.com.router.RouterList;
+import razerdp.github.com.common.manager.LocalHostManager;
+import razerdp.github.com.common.mvp.models.entity.CommentInfo;
+import razerdp.github.com.common.mvp.models.entity.LikesInfo;
+import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
+import razerdp.github.com.common.mvp.models.entity.UserInfo;
+import razerdp.github.com.common.mvp.models.localphotomanager.ImageInfo;
+import razerdp.github.com.common.request.MomentsRequest;
+import razerdp.github.com.common.router.RouterList;
 
 /**
  * Created by 大灯泡 on 2016/10/26.
@@ -131,11 +131,11 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
 
         CircleMomentsAdapter.Builder<MomentsInfo> builder = new CircleMomentsAdapter.Builder<>(this);
         builder.addType(EmptyMomentsVH.class, MomentsType.EMPTY_CONTENT, R.layout.moments_empty_content)
-               .addType(MultiImageMomentsVH.class, MomentsType.MULTI_IMAGES, R.layout.moments_multi_image)
-               .addType(TextOnlyMomentsVH.class, MomentsType.TEXT_ONLY, R.layout.moments_only_text)
-               .addType(WebMomentsVH.class, MomentsType.WEB, R.layout.moments_web)
-               .setData(momentsInfoList)
-               .setPresenter(presenter);
+                .addType(MultiImageMomentsVH.class, MomentsType.MULTI_IMAGES, R.layout.moments_multi_image)
+                .addType(TextOnlyMomentsVH.class, MomentsType.TEXT_ONLY, R.layout.moments_only_text)
+                .addType(WebMomentsVH.class, MomentsType.WEB, R.layout.moments_web)
+                .setData(momentsInfoList)
+                .setPresenter(presenter);
         adapter = builder.build();
         circleRecyclerView.setAdapter(adapter);
         circleRecyclerView.autoRefresh();
@@ -240,9 +240,9 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
                 List<ImageInfo> selectedPhotos = new ArrayList<ImageInfo>();
                 selectedPhotos.add(new ImageInfo(filePath, null, null, 0, 0));
                 ActivityLauncher.startToPublishActivityWithResult(FriendCircleDemoActivity.this,
-                                                                  RouterList.PublishActivity.MODE_MULTI,
-                                                                  selectedPhotos,
-                                                                  RouterList.PublishActivity.requestCode);
+                        RouterList.PublishActivity.MODE_MULTI,
+                        selectedPhotos,
+                        RouterList.PublishActivity.requestCode);
             }
 
             @Override
@@ -256,11 +256,15 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
                 ActivityLauncher.startToPublishActivityWithResult(this, RouterList.PublishActivity.MODE_MULTI, selectedPhotos, RouterList.PublishActivity.requestCode);
             }
         }
+
+        if (requestCode == RouterList.PublishActivity.requestCode && resultCode == RESULT_OK) {
+            circleRecyclerView.autoRefresh();
+        }
     }
 
     //request
     //==============================================
-    private SimpleResponseListener<List<MomentsInfo>> momentsRequestCallBack = new SimpleResponseListener<List<MomentsInfo>>() {
+    private OnResponseListener.SimpleResponseListener<List<MomentsInfo>> momentsRequestCallBack = new OnResponseListener.SimpleResponseListener<List<MomentsInfo>>() {
         @Override
         public void onSuccess(List<MomentsInfo> response, int requestType) {
             circleRecyclerView.compelete();

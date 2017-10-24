@@ -16,12 +16,12 @@ import android.widget.TextView;
 
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.manager.LocalHostManager;
-import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
-import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.github.com.baselibrary.thirdpart.WeakHandler;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
+import razerdp.github.com.common.manager.LocalHostManager;
+import razerdp.github.com.common.mvp.models.entity.LikesInfo;
+import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
 
 /**
  * Created by 大灯泡 on 2016/3/6.

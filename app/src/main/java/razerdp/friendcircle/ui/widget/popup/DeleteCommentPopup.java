@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
+import razerdp.github.com.common.mvp.models.entity.CommentInfo;
 
 /**
  * Created by 大灯泡 on 2016/4/22.

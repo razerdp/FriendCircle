@@ -20,11 +20,11 @@ import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewAdapter;
 import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewHolder;
 import razerdp.github.com.baseuilib.widget.imageview.CheckImageView;
-import razerdp.github.com.models.photo.PhotoBrowserInfo;
-import razerdp.github.com.models.localphotomanager.ImageInfo;
+import razerdp.github.com.common.mvp.models.localphotomanager.ImageInfo;
+import razerdp.github.com.common.mvp.models.photo.PhotoBrowserInfo;
+import razerdp.github.com.common.router.RouterList;
 import razerdp.github.com.photoselect.PhotoMultiBrowserActivity;
 import razerdp.github.com.photoselect.R;
-import razerdp.github.com.router.RouterList;
 
 import static razerdp.github.com.photoselect.fragment.PhotoGridFragement.MAX_COUNT;
 

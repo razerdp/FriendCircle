@@ -34,9 +34,9 @@ import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.widget.common.HackyViewPager;
 import razerdp.github.com.baseuilib.widget.imageview.CheckDrawable;
-import razerdp.github.com.models.photo.PhotoBrowserInfo;
-import razerdp.github.com.models.localphotomanager.ImageInfo;
-import razerdp.github.com.router.RouterList;
+import razerdp.github.com.common.mvp.models.localphotomanager.ImageInfo;
+import razerdp.github.com.common.mvp.models.photo.PhotoBrowserInfo;
+import razerdp.github.com.common.router.RouterList;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**

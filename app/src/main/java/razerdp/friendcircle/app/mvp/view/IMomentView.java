@@ -5,8 +5,8 @@ import android.view.View;
 
 import java.util.List;
 
-import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
-import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
+import razerdp.github.com.common.mvp.models.entity.CommentInfo;
+import razerdp.github.com.common.mvp.models.entity.LikesInfo;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
 import razerdp.github.com.baselibrary.mvp.IBaseView;
 

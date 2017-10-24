@@ -16,21 +16,21 @@ import com.socks.library.KLog;
 import java.util.List;
 
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
-import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
-import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.presenter.MomentPresenter;
-import razerdp.github.com.baselibrary.utils.ui.UIHelper;
-import razerdp.github.com.baselibrary.utils.SimpleObjectPool;
-import razerdp.github.com.baselibrary.utils.TimeUtil;
-import razerdp.github.com.baselibrary.utils.ToolUtil;
-import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewHolder;
 import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
-import razerdp.github.com.baseuilib.widget.common.ClickShowMoreLayout;
 import razerdp.friendcircle.ui.widget.popup.CommentPopup;
 import razerdp.friendcircle.ui.widget.popup.DeleteCommentPopup;
 import razerdp.friendcircle.ui.widget.praisewidget.PraiseWidget;
 import razerdp.github.com.baselibrary.imageloader.ImageLoadMnanger;
+import razerdp.github.com.baselibrary.utils.SimpleObjectPool;
+import razerdp.github.com.baselibrary.utils.TimeUtil;
+import razerdp.github.com.baselibrary.utils.ToolUtil;
+import razerdp.github.com.baselibrary.utils.ui.UIHelper;
+import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewHolder;
+import razerdp.github.com.baseuilib.widget.common.ClickShowMoreLayout;
+import razerdp.github.com.common.mvp.models.entity.CommentInfo;
+import razerdp.github.com.common.mvp.models.entity.LikesInfo;
+import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
 
 /**
  * Created by 大灯泡 on 2016/11/1.

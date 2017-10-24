@@ -2,9 +2,8 @@ package razerdp.friendcircle.app.mvp.presenter;
 
 import java.util.List;
 
-import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
-import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
+import razerdp.github.com.common.mvp.models.entity.CommentInfo;
+import razerdp.github.com.common.mvp.models.entity.LikesInfo;
 import razerdp.friendcircle.app.mvp.view.IMomentView;
 import razerdp.github.com.baselibrary.mvp.IBasePresenter;
 

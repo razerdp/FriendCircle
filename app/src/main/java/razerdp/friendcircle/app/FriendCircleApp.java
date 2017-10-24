@@ -4,7 +4,7 @@ import android.app.Application;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
-import razerdp.friendcircle.app.manager.LocalHostManager;
+import razerdp.github.com.common.manager.LocalHostManager;
 import razerdp.friendcircle.config.Define;
 import razerdp.github.com.baselibrary.base.AppContext;
 import razerdp.github.com.baselibrary.helper.AppFileHelper;

@@ -23,7 +23,7 @@ import razerdp.github.com.baselibrary.thirdpart.WeakHandler;
 import razerdp.github.com.baselibrary.utils.FileUtil;
 import razerdp.github.com.baselibrary.utils.GsonUtil;
 import razerdp.github.com.baselibrary.utils.TimeUtil;
-import razerdp.github.com.models.localphotomanager.ImageInfo;
+import razerdp.github.com.common.mvp.models.localphotomanager.ImageInfo;
 
 /**
  * Created by 大灯泡 on 2017/3/23.

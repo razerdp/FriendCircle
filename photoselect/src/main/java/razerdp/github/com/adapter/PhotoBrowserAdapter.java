@@ -10,7 +10,7 @@ import java.util.List;
 import razerdp.github.com.baselibrary.imageloader.ImageLoadMnanger;
 import razerdp.github.com.baselibrary.interfaces.ClearMemoryObject;
 import razerdp.github.com.baselibrary.utils.SimpleObjectPool;
-import razerdp.github.com.models.localphotomanager.ImageInfo;
+import razerdp.github.com.common.mvp.models.localphotomanager.ImageInfo;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import uk.co.senab.photoview.PhotoViewEx;
 

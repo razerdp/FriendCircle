@@ -11,15 +11,16 @@ import java.util.Random;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
-import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.app.net.request.AddCommentRequest;
-import razerdp.friendcircle.app.net.request.AddLikeRequest;
-import razerdp.friendcircle.app.net.request.AddMomentsRequest;
-import razerdp.friendcircle.app.net.request.SimpleResponseListener;
+import razerdp.github.com.baselibrary.net.base.OnResponseListener;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
-import razerdp.github.com.net.base.OnResponseListener;
+import razerdp.github.com.common.mvp.models.entity.CommentInfo;
+import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
+import razerdp.github.com.common.mvp.models.entity.UserInfo;
+import razerdp.github.com.common.request.AddCommentRequest;
+import razerdp.github.com.common.request.AddLikeRequest;
+import razerdp.github.com.common.request.AddMomentsRequest;
+
+import static razerdp.github.com.baselibrary.net.base.OnResponseListener.*;
 
 /**
  * Created by 大灯泡 on 2016/10/28.

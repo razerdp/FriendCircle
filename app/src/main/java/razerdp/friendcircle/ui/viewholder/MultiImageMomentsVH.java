@@ -13,11 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
-import razerdp.friendcircle.app.mvp.model.uimodel.PhotoBrowseInfo;
-import razerdp.github.com.baselibrary.imageloader.ImageLoadMnanger;
 import razerdp.friendcircle.activity.ActivityLauncher;
+import razerdp.github.com.baselibrary.imageloader.ImageLoadMnanger;
 import razerdp.github.com.baseuilib.widget.imageview.ForceClickImageView;
+import razerdp.github.com.common.mvp.models.MomentsType;
+import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
+import razerdp.github.com.common.mvp.models.uimodel.PhotoBrowseInfo;
 import razerdp.github.com.widget.PhotoContents;
 import razerdp.github.com.widget.adapter.PhotoContentsBaseAdapter;
 
@@ -26,7 +27,7 @@ import razerdp.github.com.widget.adapter.PhotoContentsBaseAdapter;
  * <p>
  * 九宮格圖片的vh
  *
- * @see razerdp.friendcircle.config.MomentsType
+ * @see MomentsType
  */
 
 public class MultiImageMomentsVH extends CircleBaseViewHolder implements PhotoContents.OnItemClickListener {

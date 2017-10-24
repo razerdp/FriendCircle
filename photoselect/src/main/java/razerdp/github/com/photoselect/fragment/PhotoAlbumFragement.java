@@ -19,8 +19,8 @@ import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
 import razerdp.github.com.baseuilib.baseadapter.OnRecyclerViewItemClickListener;
 import razerdp.github.com.bus.EventSelectAlbum;
-import razerdp.github.com.models.localphotomanager.ImageInfo;
-import razerdp.github.com.models.photo.AlbumInfo;
+import razerdp.github.com.common.mvp.models.localphotomanager.ImageInfo;
+import razerdp.github.com.common.mvp.models.photo.AlbumInfo;
 import razerdp.github.com.photoselect.R;
 
 /**

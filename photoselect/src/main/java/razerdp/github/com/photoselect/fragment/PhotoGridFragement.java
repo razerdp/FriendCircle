@@ -28,11 +28,11 @@ import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
 import razerdp.github.com.baseuilib.baseadapter.itemdecoration.GridItemDecoration;
 import razerdp.github.com.baseuilib.widget.popup.PopupProgress;
-import razerdp.github.com.models.photo.PhotoBrowserInfo;
-import razerdp.github.com.models.localphotomanager.ImageInfo;
+import razerdp.github.com.common.mvp.models.localphotomanager.ImageInfo;
+import razerdp.github.com.common.mvp.models.photo.PhotoBrowserInfo;
+import razerdp.github.com.common.router.RouterList;
 import razerdp.github.com.photoselect.PhotoSelectActivity;
 import razerdp.github.com.photoselect.R;
-import razerdp.github.com.router.RouterList;
 
 /**
  * Created by 大灯泡 on 2017/3/29.

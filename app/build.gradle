@@ -19,7 +19,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [ moduleName : project.getName() ]
+                arguments = [moduleName: project.getName()]
             }
         }
     }
@@ -56,15 +56,13 @@ dependencies {
     if (!isModule.toBoolean()) {
         compile project(':baselib')
         compile project(':baseuilib')
-        compile project(path: ':network')
         compile project(':photoselect')
-        compile project(path: ':publish')
+        compile project(':publish')
         annotationProcessor rootProject.ext.dependencies.arouter_compiler
 
     } else {
         compile project(':baselib')
         compile project(':baseuilib')
-        compile project(path: ':network')
     }
 
 }

@@ -5,7 +5,8 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
+import razerdp.github.com.common.mvp.models.MomentsType;
+import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
 
 
 /**
@@ -13,7 +14,7 @@ import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
  *
  * 網頁vh
  *
- * @see razerdp.friendcircle.config.MomentsType
+ * @see MomentsType
  */
 
 public class WebMomentsVH extends CircleBaseViewHolder {

@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import razerdp.friendcircle.activity.gallery.PhotoBrowseActivity;
-import razerdp.friendcircle.app.mvp.model.uimodel.PhotoBrowseInfo;
 import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
-import razerdp.github.com.models.localphotomanager.ImageInfo;
+import razerdp.github.com.common.mvp.models.localphotomanager.ImageInfo;
+import razerdp.github.com.common.mvp.models.uimodel.PhotoBrowseInfo;
+import razerdp.github.com.common.router.RouterList;
 import razerdp.github.com.photoselect.PhotoSelectActivity;
 import razerdp.github.com.publish.PublishActivity;
-import razerdp.github.com.router.RouterList;
 
 /**
  * Created by 大灯泡 on 2017/3/1.

@@ -13,10 +13,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import razerdp.friendcircle.app.mvp.model.entity.MomentsInfo;
 import razerdp.friendcircle.app.mvp.presenter.MomentPresenter;
 import razerdp.friendcircle.ui.viewholder.CircleBaseViewHolder;
 import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewAdapter;
+import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
 
 /**
  * Created by 大灯泡 on 2016/11/1.

@@ -7,9 +7,9 @@ import android.text.TextPaint;
 import android.view.View;
 import android.widget.Toast;
 
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baseuilib.widget.span.ClickableSpanEx;
+import razerdp.github.com.common.mvp.models.entity.UserInfo;
 
 /**
  * Created by 大灯泡 on 2016/2/23.

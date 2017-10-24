@@ -15,11 +15,10 @@ import android.widget.TextView;
 import java.util.List;
 
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.mvp.model.entity.LikesInfo;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
+import razerdp.github.com.baseuilib.widget.span.ClickableSpanEx;
 import razerdp.github.com.baseuilib.widget.span.CustomImageSpan;
 import razerdp.github.com.baseuilib.widget.span.SpannableStringBuilderCompat;
-import razerdp.github.com.baseuilib.widget.span.ClickableSpanEx;
+import razerdp.github.com.common.mvp.models.entity.LikesInfo;
 
 /**
  * Created by 大灯泡 on 2016/2/21.
@@ -83,8 +82,7 @@ public class PraiseWidget extends TextView {
     public boolean onPreDraw() {
         if (datas == null || datas.size() == 0) {
             return super.onPreDraw();
-        }
-        else {
+        } else {
             createSpanStringBuilder(datas);
             return true;
         }
@@ -105,12 +103,12 @@ public class PraiseWidget extends TextView {
             spanStrBuilder.append(" ");
             for (int i = 0; i < datas.size(); i++) {
                 PraiseClick praiseClick = new PraiseClick.Builder(getContext(), datas.get(i).getUserInfo()).setTextSize(textSize)
-                                                                                             .setColor(textColor)
-                                                                                             .setClickEventColor(clickBg)
-                                                                                             .build();
+                        .setColor(textColor)
+                        .setClickEventColor(clickBg)
+                        .build();
                 try {
                     spanStrBuilder.append(datas.get(i).getUserInfo().getNick(), praiseClick, 0);
-                }catch (NullPointerException e){
+                } catch (NullPointerException e) {
                     e.printStackTrace();
                     Log.e(TAG, "praiseUserInfo是空的哦");
                 }

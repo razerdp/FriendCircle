@@ -9,9 +9,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.TextView;
 
-import razerdp.friendcircle.app.mvp.model.entity.CommentInfo;
-import razerdp.github.com.baseuilib.widget.span.SpannableStringBuilderCompat;
 import razerdp.github.com.baseuilib.widget.span.ClickableSpanEx;
+import razerdp.github.com.baseuilib.widget.span.SpannableStringBuilderCompat;
+import razerdp.github.com.common.mvp.models.entity.CommentInfo;
 
 /**
  * Created by 大灯泡 on 2016/2/23.

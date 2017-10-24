@@ -15,13 +15,13 @@ import android.widget.RelativeLayout;
 import cn.bmob.v3.exception.BmobException;
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.manager.LocalHostManager;
-import razerdp.friendcircle.app.mvp.model.entity.UserInfo;
-import razerdp.friendcircle.app.net.request.RegisterRequest;
+import razerdp.github.com.baselibrary.helper.AppSetting;
+import razerdp.github.com.baselibrary.net.base.OnResponseListener;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baseuilib.widget.common.LoadingView;
-import razerdp.github.com.baselibrary.helper.AppSetting;
-import razerdp.github.com.net.base.OnResponseListener;
+import razerdp.github.com.common.manager.LocalHostManager;
+import razerdp.github.com.common.mvp.models.entity.UserInfo;
+import razerdp.github.com.common.request.RegisterRequest;
 
 /**
  * Created by 大灯泡 on 2016/12/14.

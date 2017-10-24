@@ -11,11 +11,19 @@ import android.widget.ImageView;
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.socks.library.KLog;
 
 import java.util.List;
 
+import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.UploadBatchListener;
+import razerdp.github.com.baselibrary.helper.AppSetting;
 import razerdp.github.com.baselibrary.imageloader.ImageLoadMnanger;
 import razerdp.github.com.baselibrary.interfaces.adapter.TextWatcherAdapter;
+import razerdp.github.com.baselibrary.net.base.OnResponseListener;
+import razerdp.github.com.baselibrary.utils.StringUtil;
+import razerdp.github.com.baselibrary.utils.ToolUtil;
 import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baselibrary.utils.ui.ViewUtil;
@@ -23,10 +31,13 @@ import razerdp.github.com.baseuilib.base.BaseTitleBarActivity;
 import razerdp.github.com.baseuilib.helper.PhotoHelper;
 import razerdp.github.com.baseuilib.widget.common.TitleBar;
 import razerdp.github.com.baseuilib.widget.imageview.PreviewImageView;
+import razerdp.github.com.baseuilib.widget.popup.PopupProgress;
 import razerdp.github.com.baseuilib.widget.popup.SelectPhotoMenuPopup;
-import razerdp.github.com.models.localphotomanager.ImageInfo;
-import razerdp.github.com.models.photo.PhotoBrowserInfo;
-import razerdp.github.com.router.RouterList;
+import razerdp.github.com.common.manager.LocalHostManager;
+import razerdp.github.com.common.mvp.models.localphotomanager.ImageInfo;
+import razerdp.github.com.common.mvp.models.photo.PhotoBrowserInfo;
+import razerdp.github.com.common.request.AddMomentsRequest;
+import razerdp.github.com.common.router.RouterList;
 
 
 /**
@@ -35,9 +46,9 @@ import razerdp.github.com.router.RouterList;
  * 发布朋友圈页面
  */
 
-@Route(path = "/publish/edit")
+@Route(path = RouterList.PublishActivity.path)
 public class PublishActivity extends BaseTitleBarActivity {
-    @Autowired(name = "mode")
+    @Autowired(name = RouterList.PublishActivity.key_mode)
     int mode = -1;
 
     private boolean canTitleRightClick = false;
@@ -47,6 +58,7 @@ public class PublishActivity extends BaseTitleBarActivity {
     private PreviewImageView<ImageInfo> mPreviewImageView;
 
     private SelectPhotoMenuPopup mSelectPhotoMenuPopup;
+    private PopupProgress mPopupProgress;
 
     @Override
     public void onHandleIntent(Intent intent) {
@@ -80,14 +92,13 @@ public class PublishActivity extends BaseTitleBarActivity {
         mInputContent.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void afterTextChanged(Editable s) {
-                if (mode == RouterList.PublishActivity.MODE_TEXT) {
-                    setTitleRightTextColor(mInputContent.getText().toString().length() > 0);
-                }
+                refreshTitleRightClickable();
             }
         });
+
         initPreviewImageView();
         loadImage();
-
+        refreshTitleRightClickable();
     }
 
     private void initPreviewImageView() {
@@ -96,10 +107,10 @@ public class PublishActivity extends BaseTitleBarActivity {
             public void onPhotoClickListener(int pos, ImageInfo data, @NonNull ImageView imageView) {
                 PhotoBrowserInfo info = PhotoBrowserInfo.create(pos, null, selectedPhotos);
                 ARouter.getInstance()
-                       .build(RouterList.PhotoMultiBrowserActivity.path)
-                       .withParcelable(RouterList.PhotoMultiBrowserActivity.key_browserinfo, info)
-                       .withInt(RouterList.PhotoMultiBrowserActivity.key_maxSelectCount, selectedPhotos.size())
-                       .navigation(PublishActivity.this, RouterList.PhotoMultiBrowserActivity.requestCode);
+                        .build(RouterList.PhotoMultiBrowserActivity.path)
+                        .withParcelable(RouterList.PhotoMultiBrowserActivity.key_browserinfo, info)
+                        .withInt(RouterList.PhotoMultiBrowserActivity.key_maxSelectCount, selectedPhotos.size())
+                        .navigation(PublishActivity.this, RouterList.PhotoMultiBrowserActivity.requestCode);
             }
         });
         mPreviewImageView.setOnAddPhotoClickListener(new View.OnClickListener() {
@@ -114,14 +125,15 @@ public class PublishActivity extends BaseTitleBarActivity {
         mPreviewImageView.setDatas(selectedPhotos, new PreviewImageView.OnLoadPhotoListener<ImageInfo>() {
             @Override
             public void onPhotoLoading(int pos, ImageInfo data, @NonNull ImageView imageView) {
+                KLog.i(data.getImagePath());
                 ImageLoadMnanger.INSTANCE.loadImage(imageView, data.getImagePath());
             }
         });
     }
 
     private void showSelectPhotoPopup() {
-        if (mSelectPhotoMenuPopup==null){
-            mSelectPhotoMenuPopup=new SelectPhotoMenuPopup(this);
+        if (mSelectPhotoMenuPopup == null) {
+            mSelectPhotoMenuPopup = new SelectPhotoMenuPopup(this);
             mSelectPhotoMenuPopup.setOnSelectPhotoMenuClickListener(new SelectPhotoMenuPopup.OnSelectPhotoMenuClickListener() {
                 @Override
                 public void onShootClick() {
@@ -131,9 +143,9 @@ public class PublishActivity extends BaseTitleBarActivity {
                 @Override
                 public void onAlbumClick() {
                     ARouter.getInstance()
-                           .build(RouterList.PhotoSelectActivity.path)
-                           .withInt(RouterList.PhotoSelectActivity.key_maxSelectCount,mPreviewImageView.getRestPhotoCount())
-                           .navigation(PublishActivity.this, RouterList.PhotoSelectActivity.requestCode);
+                            .build(RouterList.PhotoSelectActivity.path)
+                            .withInt(RouterList.PhotoSelectActivity.key_maxSelectCount, mPreviewImageView.getRestPhotoCount())
+                            .navigation(PublishActivity.this, RouterList.PhotoSelectActivity.requestCode);
                 }
             });
         }
@@ -164,6 +176,7 @@ public class PublishActivity extends BaseTitleBarActivity {
             @Override
             public void onFinish(String filePath) {
                 mPreviewImageView.addData(new ImageInfo(filePath, null, null, 0, 0));
+                refreshTitleRightClickable();
             }
 
             @Override
@@ -176,17 +189,111 @@ public class PublishActivity extends BaseTitleBarActivity {
             if (result != null) {
                 mPreviewImageView.addData(result);
             }
+            refreshTitleRightClickable();
         }
     }
 
     @Override
     public void onTitleRightClick() {
         if (!canTitleRightClick) return;
+        publish();
+    }
+
+    private void refreshTitleRightClickable() {
+        String inputContent = mInputContent.getText().toString();
+        switch (mode) {
+            case RouterList.PublishActivity.MODE_MULTI:
+                setTitleRightTextColor(!ToolUtil.isListEmpty(mPreviewImageView.getDatas()) && StringUtil.noEmpty(inputContent));
+                break;
+            case RouterList.PublishActivity.MODE_TEXT:
+                setTitleRightTextColor(StringUtil.noEmpty(inputContent));
+                break;
+        }
+
     }
 
     @Override
     public void finish() {
         super.finish();
+        if (mPopupProgress != null) {
+            mPopupProgress.dismiss();
+        }
         SwitchActivityTransitionUtil.transitionVerticalOnFinish(this);
+    }
+
+    private void publish() {
+        UIHelper.hideInputMethod(mInputContent);
+        List<ImageInfo> datas = mPreviewImageView.getDatas();
+        final boolean hasImage = !ToolUtil.isListEmpty(datas);
+        final String inputContent = mInputContent.getText().toString();
+
+        final String[] uploadTaskPaths;
+        if (hasImage) {
+            if (mPopupProgress == null) {
+                mPopupProgress = new PopupProgress(this);
+            }
+            uploadTaskPaths = new String[datas.size()];
+            for (int i = 0; i < datas.size(); i++) {
+                uploadTaskPaths[i] = datas.get(i).getImagePath();
+            }
+            BmobFile.uploadBatch(uploadTaskPaths, new UploadBatchListener() {
+                @Override
+                public void onSuccess(List<BmobFile> list, List<String> list1) {
+                    //1、有多少个文件上传，onSuccess方法就会执行多少次;
+                    //2、通过onSuccess回调方法中的files或urls集合的大小与上传的总文件个数比较，如果一样，则表示全部文件上传成功。
+                    if (!ToolUtil.isListEmpty(list1) && list1.size() == uploadTaskPaths.length) {
+                        publishInternal(inputContent, list1);
+                    }
+                }
+
+                @Override
+                public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
+                    //1、curIndex--表示当前第几个文件正在上传
+                    //2、curPercent--表示当前上传文件的进度值（百分比）
+                    //3、total--表示总的上传文件数
+                    //4、totalPercent--表示总的上传进度（百分比）
+                    mPopupProgress.setProgressTips("正在上传第" + curIndex + "/" + total + "张图片");
+                    mPopupProgress.setProgress(totalPercent);
+                    if (!mPopupProgress.isShowing()) {
+                        mPopupProgress.showPopupWindow();
+                    }
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    mPopupProgress.dismiss();
+                    UIHelper.ToastMessage(s);
+                }
+            });
+        }
+    }
+
+    private void publishInternal(String input, List<String> uploadPicPaths) {
+        mPopupProgress.setProgressTips("正在发布");
+        AddMomentsRequest addMomentsRequest = new AddMomentsRequest();
+        addMomentsRequest.setAuthId(LocalHostManager.INSTANCE.getUserid())
+                //暂时Host强制使用开发者id
+                .setHostId(AppSetting.loadStringPreferenceByKey(AppSetting.HOST_ID, "MMbKLCCU"))
+                .addText(input);
+        if (!ToolUtil.isListEmpty(uploadPicPaths)) {
+            for (String uploadPicPath : uploadPicPaths) {
+                addMomentsRequest.addPicture(uploadPicPath);
+            }
+        }
+        addMomentsRequest.setOnResponseListener(new OnResponseListener.SimpleResponseListener<String>() {
+            @Override
+            public void onSuccess(String response, int requestType) {
+                mPopupProgress.dismiss();
+                UIHelper.ToastMessage("发布成功");
+                setResult(RESULT_OK);
+                finish();
+            }
+
+            @Override
+            public void onError(BmobException e, int requestType) {
+                UIHelper.ToastMessage(e.toString());
+            }
+        });
+        addMomentsRequest.execute();
     }
 }

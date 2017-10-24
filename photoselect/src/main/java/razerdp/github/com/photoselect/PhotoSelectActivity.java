@@ -24,10 +24,10 @@ import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
 import razerdp.github.com.baseuilib.base.BaseTitleBarActivity;
 import razerdp.github.com.baseuilib.widget.common.TitleBar;
 import razerdp.github.com.bus.EventSelectAlbum;
-import razerdp.github.com.models.localphotomanager.ImageInfo;
+import razerdp.github.com.common.mvp.models.localphotomanager.ImageInfo;
+import razerdp.github.com.common.router.RouterList;
 import razerdp.github.com.photoselect.fragment.PhotoAlbumFragement;
 import razerdp.github.com.photoselect.fragment.PhotoGridFragement;
-import razerdp.github.com.router.RouterList;
 
 /**
  * Created by 大灯泡 on 2017/3/22.
