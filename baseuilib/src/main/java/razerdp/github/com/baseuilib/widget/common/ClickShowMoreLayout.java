@@ -36,10 +36,6 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
     private int showLine;
     private String clickText;
 
-    private boolean hasMore;
-    private boolean hasGetLineCount = false;
-
-
     private static final SparseIntArray TEXT_STATE = new SparseIntArray();
 
     public ClickShowMoreLayout(Context context) {
@@ -78,7 +74,7 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
         mClickToShow.setText(clickText);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                                                                         ViewGroup.LayoutParams.WRAP_CONTENT);
+                ViewGroup.LayoutParams.WRAP_CONTENT);
         params.topMargin = UIHelper.dipToPx(10f);
         mClickToShow.setLayoutParams(params);
         mClickToShow.setOnClickListener(this);
@@ -110,25 +106,17 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
     }
 
     public void setText(String str) {
-        if (hasGetLineCount) {
-            restoreState(str);
-            mTextView.setText(str);
-        } else {
-            mTextView.setText(str);
-            mTextView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    if (!hasGetLineCount) {
-                        hasMore = mTextView.getLineCount() > showLine;
-                        hasGetLineCount = true;
-                    }
-                    mClickToShow.setVisibility(hasMore ? VISIBLE : GONE);
-                    mTextView.getViewTreeObserver().removeOnPreDrawListener(this);
-                    return true;
-                }
-            });
-            setState(CLOSE);
-        }
+        restoreState(str);
+        mTextView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                boolean hasMore = mTextView.getLineCount() > showLine;
+                mClickToShow.setVisibility(hasMore ? VISIBLE : GONE);
+                mTextView.getViewTreeObserver().removeOnPreDrawListener(this);
+                return true;
+            }
+        });
+        mTextView.setText(str);
     }
 
     private void restoreState(String str) {

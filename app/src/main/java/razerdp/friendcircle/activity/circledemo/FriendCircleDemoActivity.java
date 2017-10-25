@@ -87,20 +87,7 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         momentsRequest = new MomentsRequest();
         initView();
         initKeyboardHeightObserver();
-
-      /*  if (!AppSetting.loadBooleanPreferenceByKey(AppSetting.APP_HAS_SCAN_IMG, false)) {
-            getPermissionHelper().requestPermission(PermissionHelper.CODE_READ_EXTERNAL_STORAGE, new PermissionHelper.OnPermissionGrantListener() {
-                @Override
-                public void onPermissionGranted(@PermissionHelper.PermissionResultCode int requestCode) {
-                    LocalPhotoManager.INSTANCE.scanImg(null);
-                }
-
-                @Override
-                public void onPermissionsDenied(@PermissionHelper.PermissionResultCode int requestCode) {
-
-                }
-            });
-        }*/
+        UIHelper.ToastMessage("请不要上传黄图，谢谢");
 
     }
 
