@@ -2,14 +2,22 @@ package razerdp.github.com.baseuilib.widget.common;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.preference.PreferenceManager;
+import android.support.annotation.IntDef;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.socks.library.KLog;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
 import razerdp.github.com.baseuilib.R;
@@ -21,6 +29,11 @@ import razerdp.github.com.baseuilib.R;
 public class ClickShowMoreLayout extends LinearLayout implements View.OnClickListener {
     private static final String TAG = "ClickShowMoreLayout";
 
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({CLOSE, OPEN})
+    public @interface State {
+
+    }
 
     public static final int CLOSE = 0;
     public static final int OPEN = 1;
@@ -74,7 +87,7 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
         mClickToShow.setText(clickText);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+                                                                         ViewGroup.LayoutParams.WRAP_CONTENT);
         params.topMargin = UIHelper.dipToPx(10f);
         mClickToShow.setLayoutParams(params);
         mClickToShow.setOnClickListener(this);
@@ -91,7 +104,11 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
     }
 
 
-    public void setState(int state) {
+    public void setState(@State int state) {
+        setStateInternal(getStateKey(getText().toString()), state);
+    }
+
+    private void setStateInternal(int key, int state) {
         switch (state) {
             case CLOSE:
                 mTextView.setMaxLines(showLine);
@@ -102,7 +119,7 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
                 mClickToShow.setText("收起");
                 break;
         }
-        TEXT_STATE.put(getText().toString().hashCode(), state);
+        TEXT_STATE.put(key, state);
     }
 
     public void setText(String str) {
@@ -121,13 +138,24 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
 
     private void restoreState(String str) {
         int state = CLOSE;
-        int holderState = TEXT_STATE.get(str.hashCode(), -1);
-        if (holderState == -1) {
-            TEXT_STATE.put(str.hashCode(), state);
-        } else {
+        final int keyId = getStateKey(str);
+        int holderState = TEXT_STATE.get(keyId, -1);
+        if (holderState != -1) {
             state = holderState;
+            KLog.i(TAG, "找到状态,put >>>  key = " + keyId + "  state = " + (state == CLOSE ? "折起" : "展开"));
         }
         setState(state);
+    }
+
+    private int getStateKey(String str) {
+        //通过viewParent生成key，相当于该控件的string与viewParent绑定
+        //但是在列表中似乎因为复用问题会导致状态不准确
+        ViewParent parent = getParent();
+        int parentId = 0;
+        if (parent != null) {
+            parentId = parent.hashCode();
+        }
+        return str.hashCode() + parentId;
     }
 
     public CharSequence getText() {
