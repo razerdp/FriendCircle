@@ -47,7 +47,9 @@ dependencies {
     //over scroller helper
     compile 'me.everything:overscroll-decor-android:1.0.3'
     //bmob
-    compile 'cn.bmob.android:bmob-sdk:3.5.8'
+    compile('cn.bmob.android:bmob-sdk:3.5.8') {
+        exclude group: 'com.google.code.gson'
+    }
     //log
     compile 'com.github.zhaokaiqiang.klog:library:1.5.0'
     //eventbus
@@ -65,5 +67,4 @@ dependencies {
     annotationProcessor rootProject.ext.dependencies.arouter_compiler
     //朋友圈图片控件
     compile 'com.github.razerdp:PhotoContents:v1.4.2'
-    compile 'org.greenrobot:eventbus:3.0.0'
 }
