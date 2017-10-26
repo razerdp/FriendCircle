@@ -3,7 +3,13 @@
 
 欢迎来到本项目，这个项目是一个尝试性项目，目的在于从无到有撸出一个微信朋友圈。</br>
 
-##### 在更新了Gradle 3.0后，可能会出现dexMerge错误，定位知道是bmob的sdk内含gson与gson2.8的冲突，事实上暂时来说我不知道哪里引用了gson2.8（打印dependences Tree也找不到），所以如果出现这个情况，请删除bmob包下的gson-2.6.2.jar【具体方法：切换到Project标签，定位到External Libraries，找到cn.bmob.android:bmob-sdk-xxx，展开，找到gson-2.6.2.jar，右键delete即可】
+#### 在更新了Gradle 3.0后，可能会出现dexMerge错误，定位知道是bmob的sdk内含gson与gson2.8的冲突
+#### 事实上暂时来说我不知道哪里引用了gson2.8（打印dependences Tree也找不到），所以如果出现这个情况，请删除bmob包下的gson-2.6.2.jar
+>具体方法：
+    - 切换到Project标签
+    - 定位到External Libraries
+    - 找到cn.bmob.android:bmob-sdk-xxx，展开
+    - 找到gson-2.6.2.jar，右键delete即可】
 
 
 ##### 因为采取组件化，所以可能push上来的是组件的build，如果您要build整个app，请把gradle.properties下的  isModule=true 切换为false并sync gradle
