@@ -3,9 +3,10 @@
 
 欢迎来到本项目，这个项目是一个尝试性项目，目的在于从无到有撸出一个微信朋友圈。</br>
 
-ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp/FriendCircle/tree/main-dev)分支哦
+##### 在更新了Gradle 3.0后，可能会出现dexMerge错误，定位知道是bmob的sdk内含gson与gson2.8的冲突，事实上暂时来说我不知道哪里引用了gson2.8（打印dependences Tree也找不到），所以如果出现这个情况，请删除bmob包下的gson-2.6.2.jar【具体方法：切换到Project标签，定位到External Libraries，找到cn.bmob.android:bmob-sdk-xxx，展开，找到gson-2.6.2.jar，右键delete即可】
 
-##### 因为采取组件化（目前正在开发的组件：photoselect），所以可能push上来的是组件的build，如果您要build整个app，请把gradle.properties下的  isModule=true 切换为false并sync gradle
+
+##### 因为采取组件化，所以可能push上来的是组件的build，如果您要build整个app，请把gradle.properties下的  isModule=true 切换为false并sync gradle
 
 ##### 【简略更新日志】
  - 2017/10/24
@@ -20,22 +21,7 @@ ps:所有最新进度基本都会先push到[main-dev](https://github.com/razerdp
  - 2017/09/07
     + 增加了权限兼容（到7.0）
 
- - 2017/09/06
-    + 切换许可为GPLV3.0，开始恢复维护
-    + 修复了点击评论有时候无法定位到item的问题
-    + 增加了权限帮助类、拍照帮助类等
-
- - 2017/06/08
-    +  因为有点忙，打算8月份开始再继续维护。
-
- - 2017/04/13
-    + 修复了LocalPhotoManager扫描媒体库偶尔会出现不全的问题（原来我竟然在回调后没有return，从而导致一直扫描下去orz...这是个大问题额
-    + 修复了选择图片页面在进入预览里取消选择后，返回来再取消选择时数量不准确的问题 **(详见PhotoSelectAdapter#onUnSelectPhoto)**
-    + 其实我偷偷的加了一个长按这个popup文字可以复制的功能（虽然没鸟用）
-
- - 2017/04/10
-    + 修复了Bmob后台查询记录只有100条的截断问题
-    + 增加查询缓存
+ - ...more
     
  - 更多日志请看 → [更新日志](https://github.com/razerdp/FriendCircle/blob/master/UPDATE_LOG.md)
 
