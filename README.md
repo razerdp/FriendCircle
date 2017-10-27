@@ -15,6 +15,13 @@
 ##### 因为采取组件化，所以可能push上来的是组件的build，如果您要build整个app，请把gradle.properties下的  isModule=true 切换为false并sync gradle
 
 ##### 【简略更新日志】
+
+ - 2017/10/27
+    + 再次修复长文字折叠问题
+    + 增加test分支（用于测试）
+    + 修复相册扫描没有进度条的问题
+    + 增加kotlin分支（用于学习并逐渐转换到kotlin）
+
  - 2017/10/24
     + 现在可以发布动态了哦~
     + 增加删除动态功能

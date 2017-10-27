@@ -2,7 +2,7 @@ package razerdp.github.com.baseuilib.widget.common;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.preference.PreferenceManager;
+import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -13,8 +13,6 @@ import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.socks.library.KLog;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -50,6 +48,8 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
     private String clickText;
 
     private static final SparseIntArray TEXT_STATE = new SparseIntArray();
+
+    private OnStateKeyGenerateListener mOnStateKeyGenerateListener;
 
     public ClickShowMoreLayout(Context context) {
         this(context, null);
@@ -87,7 +87,7 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
         mClickToShow.setText(clickText);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                                                                         ViewGroup.LayoutParams.WRAP_CONTENT);
+                ViewGroup.LayoutParams.WRAP_CONTENT);
         params.topMargin = UIHelper.dipToPx(10f);
         mClickToShow.setLayoutParams(params);
         mClickToShow.setOnClickListener(this);
@@ -130,7 +130,7 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
                 boolean hasMore = mTextView.getLineCount() > showLine;
                 mClickToShow.setVisibility(hasMore ? VISIBLE : GONE);
                 mTextView.getViewTreeObserver().removeOnPreDrawListener(this);
-                return true;
+                return false;
             }
         });
         mTextView.setText(str);
@@ -142,12 +142,12 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
         int holderState = TEXT_STATE.get(keyId, -1);
         if (holderState != -1) {
             state = holderState;
-            KLog.i(TAG, "找到状态,put >>>  key = " + keyId + "  state = " + (state == CLOSE ? "折起" : "展开"));
         }
-        setState(state);
+        setStateInternal(keyId, state);
     }
 
     private int getStateKey(String str) {
+        if (str == null) return -1;
         //通过viewParent生成key，相当于该控件的string与viewParent绑定
         //但是在列表中似乎因为复用问题会导致状态不准确
         ViewParent parent = getParent();
@@ -155,11 +155,62 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
         if (parent != null) {
             parentId = parent.hashCode();
         }
-        return str.hashCode() + parentId;
+        int result = str.hashCode() + parentId;
+        if (mOnStateKeyGenerateListener != null) {
+            result = mOnStateKeyGenerateListener.onStateKeyGenerated(result);
+        }
+        return result;
     }
 
     public CharSequence getText() {
         return mTextView.getText();
     }
 
+    public int getTextColor() {
+        return textColor;
+    }
+
+    public void setTextColor(int textColor) {
+        this.textColor = textColor;
+        if (mTextView != null) {
+            mTextView.setTextColor(textColor);
+        }
+    }
+
+    public int getTextSize() {
+        return textSize;
+    }
+
+    public void setTextSize(int textSize) {
+        this.textSize = textSize;
+    }
+
+    public String getClickText() {
+        return clickText;
+    }
+
+    public void setClickText(String clickText) {
+        this.clickText = clickText;
+        if (mClickToShow != null) {
+            mClickToShow.setText(clickText);
+        }
+    }
+
+    public void setClickTextColor(@ColorInt int color) {
+        if (mClickToShow != null) {
+            mClickToShow.setTextColor(color);
+        }
+    }
+
+    public OnStateKeyGenerateListener getOnStateKeyGenerateListener() {
+        return mOnStateKeyGenerateListener;
+    }
+
+    public void setOnStateKeyGenerateListener(OnStateKeyGenerateListener onStateKeyGenerateListener) {
+        mOnStateKeyGenerateListener = onStateKeyGenerateListener;
+    }
+
+    public interface OnStateKeyGenerateListener {
+        int onStateKeyGenerated(int originKey);
+    }
 }

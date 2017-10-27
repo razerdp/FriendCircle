@@ -18,8 +18,11 @@ public enum UpdateInfoManager {
     private UpdateInfoPopup popup;
     private boolean hasShow;
 
-    final String title = "开发日志(2017/10/24)";
-    final String content = "1 - 嗯，，，现在可以发布动态了\n\n2 - 部分modules进行了位置调整和整合\n\n3 - 增加删除动态功能\n\n4 - 调整动态布局，看起来更和谐";
+    final String title = "开发日志(2017/10/27)";
+    final String content = "  +   再次修复长文字折叠问题\n\n" +
+            "  +   增加test分支（用于测试）\n\n" +
+            "  +   修复相册扫描没有进度条的问题\n\n"+
+            "  +   增加kotlin分支（用于学习并逐渐转换到kotlin）\n";
 
 
     public void init(Activity act) {

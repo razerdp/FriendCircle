@@ -3,14 +3,12 @@ package razerdp.friendcircle.ui.viewholder;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.socks.library.KLog;
@@ -82,6 +80,12 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         avatar = (ImageView) findView(avatar, R.id.avatar);
         nick = (TextView) findView(nick, R.id.nick);
         userText = (ClickShowMoreLayout) findView(userText, R.id.item_text_field);
+        userText.setOnStateKeyGenerateListener(new ClickShowMoreLayout.OnStateKeyGenerateListener() {
+            @Override
+            public int onStateKeyGenerated(int originKey) {
+                return originKey + itemPosition;
+            }
+        });
 
         //bottom
         createTime = (TextView) findView(createTime, R.id.create_time);
@@ -140,12 +144,12 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         nick.setText(data.getAuthor().getNick());
         userText.setText(data.getContent().getText());
         ViewUtil.setViewsVisible(StringUtil.noEmpty(data.getContent().getText()) ?
-                                         View.VISIBLE : View.GONE, userText);
+                View.VISIBLE : View.GONE, userText);
 
         //bottom
         createTime.setText(TimeUtil.getTimeStringFromBmob(data.getCreatedAt()));
         ViewUtil.setViewsVisible(TextUtils.equals(momentsInfo.getAuthor().getUserid(), LocalHostManager.INSTANCE.getUserid()) ?
-                                         View.VISIBLE : View.GONE, deleteMoments);
+                View.VISIBLE : View.GONE, deleteMoments);
         boolean needPraiseData = addLikes(data.getLikesList());
         boolean needCommentData = addComment(data.getCommentList());
         praiseWidget.setVisibility(needPraiseData ? View.VISIBLE : View.GONE);

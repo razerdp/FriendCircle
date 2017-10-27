@@ -99,16 +99,25 @@ public enum LocalPhotoManager {
         scan(sALBUM, listener);
     }
 
+    private void scanAsync(final LinkedHashMap<String, List<ImageInfo>> sALBUM, @Nullable final OnScanListener listener) {
+        ThreadPoolManager.execute(new Runnable() {
+            @Override
+            public void run() {
+                scan(sALBUM, listener);
+            }
+        });
+    }
+
     private void scan(LinkedHashMap<String, List<ImageInfo>> sALBUM, @Nullable OnScanListener listener) {
         if (sALBUM == null) return;
         KLog.i(TAG, "isWrite  >>  " + (sALBUM == sWRITE_ALBUM));
         Cursor cursor = AppContext.getAppContext()
-                                  .getContentResolver()
-                                  .query(SCAN_EXTERNAL_SD ? MediaStore.Images.Media.EXTERNAL_CONTENT_URI : MediaStore.Images.Media.INTERNAL_CONTENT_URI,
-                                          STORE_IMGS,
-                                          null,
-                                          null,
-                                          MediaStore.Images.ImageColumns.DATE_TAKEN.concat(QUERY_ORDER));
+                .getContentResolver()
+                .query(SCAN_EXTERNAL_SD ? MediaStore.Images.Media.EXTERNAL_CONTENT_URI : MediaStore.Images.Media.INTERNAL_CONTENT_URI,
+                        STORE_IMGS,
+                        null,
+                        null,
+                        MediaStore.Images.ImageColumns.DATE_TAKEN.concat(QUERY_ORDER));
         if (cursor == null) {
             callError(listener, "cursor为空", null);
             reset();
@@ -174,18 +183,21 @@ public enum LocalPhotoManager {
 
     public void registerContentObserver(Handler handler) {
         AppContext.getAppContext()
-                  .getContentResolver()
-                  .registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, false, new MediaImageContentObserver(handler));
+                .getContentResolver()
+                .registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, false, new MediaImageContentObserver(handler));
     }
 
     private boolean checkLocalSerializableFile() {
         if (!sALBUM.isEmpty()) return true;
         File file = new File(AppFileHelper.getAppDataPath().concat(LOCAL_FILE_NAME));
         if (file.exists()) {
-            KLog.i(TAG, "curTime  >>>  " + TimeUtil.longToTimeStr(System.currentTimeMillis(), TimeUtil.YYYYMMDDHHMMSS));
-            KLog.i(TAG, "fileTime  >>>  " + TimeUtil.longToTimeStr(file.lastModified(), TimeUtil.YYYYMMDDHHMMSS));
-            boolean reScan = System.currentTimeMillis() - file.lastModified() > 30 * TimeUtil.MINUTE * 1000;
-            KLog.i(TAG, "reScan  >>>  " + reScan);
+            KLog.i(TAG, "当前时间  >>>  " + TimeUtil.longToTimeStr(System.currentTimeMillis(), TimeUtil.YYYYMMDDHHMMSS));
+            KLog.i(TAG, "文件修改时间  >>>  " + TimeUtil.longToTimeStr(file.lastModified(), TimeUtil.YYYYMMDDHHMMSS));
+            //每30分钟进行一次静默扫描
+            boolean reScanSilent = System.currentTimeMillis() - file.lastModified() > 30 * TimeUtil.MINUTE * 1000;
+            //每周进行一次回调扫描
+            boolean reScanFullAndCallBack = System.currentTimeMillis() - file.lastModified() > 24 * 7 * TimeUtil.HOUR * 1000;
+            KLog.i(TAG, "需要重新扫描？  >>>  " + reScanSilent);
             try {
                 LinkedHashMap<String, List<ImageInfo>> map = GsonUtil.INSTANCE.toLinkHashMap(FileUtil.Read(file.getAbsolutePath()),
                         new TypeToken<LinkedHashMap<String, List<ImageInfo>>>() {
@@ -193,8 +205,13 @@ public enum LocalPhotoManager {
                 if (!map.isEmpty()) {
                     sALBUM.clear();
                     sALBUM.putAll(map);
-                    if (reScan) {
-                        scan(sWRITE_ALBUM, null);
+                    if (reScanFullAndCallBack) {
+                        KLog.i(TAG, "全量回调扫描");
+                        return false;
+                    }
+                    if (reScanSilent) {
+                        KLog.i(TAG, "静默扫描");
+                        scanAsync(sWRITE_ALBUM, null);
                     }
                     return true;
                 }
@@ -214,12 +231,12 @@ public enum LocalPhotoManager {
         String result = null;
         //通过大图的id，并且构造cursor的查询语句来获取大图对应的小图
         Cursor cursor = AppContext.getAppContext()
-                                  .getContentResolver()
-                                  .query(SCAN_EXTERNAL_SD ? MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI : MediaStore.Images.Thumbnails.INTERNAL_CONTENT_URI,
-                                          THUMBNAIL_STORE_IMAGE,
-                                          MediaStore.Images.Thumbnails.IMAGE_ID.concat(" = ?"),
-                                          whereQuery,
-                                          null);
+                .getContentResolver()
+                .query(SCAN_EXTERNAL_SD ? MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI : MediaStore.Images.Thumbnails.INTERNAL_CONTENT_URI,
+                        THUMBNAIL_STORE_IMAGE,
+                        MediaStore.Images.Thumbnails.IMAGE_ID.concat(" = ?"),
+                        whereQuery,
+                        null);
         if (cursor == null) return null;
 
         if (cursor.getCount() > 0) {
@@ -285,6 +302,7 @@ public enum LocalPhotoManager {
     }
 
     private void callProgress(OnScanListener listener, int progress) {
+        KLog.i(TAG, "progress  >>  " + progress);
         if (listener instanceof OnScanProgresslistener) {
             if (progressRunnable.getListener() == null) {
                 progressRunnable.setListener((OnScanProgresslistener) listener);
@@ -391,9 +409,9 @@ public enum LocalPhotoManager {
 
 
             Cursor cursor = AppContext.getAppContext()
-                                      .getContentResolver()
-                                      .query(uri, STORE_IMGS, MediaStore.Images.ImageColumns.DATE_TAKEN.concat(" > ?"),
-                                              whereQuery, MediaStore.Images.ImageColumns.DATE_TAKEN.concat(QUERY_ORDER));
+                    .getContentResolver()
+                    .query(uri, STORE_IMGS, MediaStore.Images.ImageColumns.DATE_TAKEN.concat(" > ?"),
+                            whereQuery, MediaStore.Images.ImageColumns.DATE_TAKEN.concat(QUERY_ORDER));
             if (cursor == null) return;
             KLog.i(TAG, "查询到  >>  " + cursor.getCount() + " 条数据");
             // FIXME: 2017/3/24 没错。。。他喵的又是上面的重复步骤，有空把它抽取出来
