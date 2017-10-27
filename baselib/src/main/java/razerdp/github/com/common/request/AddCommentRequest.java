@@ -75,7 +75,7 @@ public class AddCommentRequest extends BaseRequestClient<CommentInfo> {
             public void done(String s, BmobException e) {
                 if (e == null) {
                     BmobQuery<CommentInfo> commentQuery = new BmobQuery<CommentInfo>();
-                    commentQuery.include(CommentFields.AUTHOR_USER + "," + CommentFields.REPLY_USER + "," + CommentFields.MOMENT);
+                    commentQuery.include(CommentFields.Companion.getAUTHOR_USER() + "," + CommentFields.Companion.getREPLY_USER() + "," + CommentFields.Companion.getMOMENT());
                     commentQuery.getObject(s, new QueryListener<CommentInfo>() {
                         @Override
                         public void done(CommentInfo commentInfo, BmobException e) {

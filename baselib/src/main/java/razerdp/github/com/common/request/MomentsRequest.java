@@ -77,12 +77,12 @@ public class MomentsRequest extends BaseRequestClient<List<MomentsInfo>> {
         final boolean[] isLikesRequestFin = {false};
 
         BmobQuery<CommentInfo> commentQuery = new BmobQuery<>();
-        commentQuery.include(MOMENT + "," + REPLY_USER + "," + AUTHOR_USER);
+        commentQuery.include(Companion.getMOMENT() + "," + Companion.getREPLY_USER() + "," + Companion.getAUTHOR_USER());
         List<String> id = new ArrayList<>();
         for (MomentsInfo momentsInfo : momentsList) {
             id.add(momentsInfo.getObjectId());
         }
-        commentQuery.addWhereContainedIn(CommentInfo.CommentFields.MOMENT, id);
+        commentQuery.addWhereContainedIn(CommentInfo.CommentFields.Companion.getMOMENT(), id);
         commentQuery.order("createdAt");
         commentQuery.setLimit(1000);//默认只有100条数据，最多1000条
         commentQuery.setCachePolicy(isFirstRequest? BmobQuery.CachePolicy.CACHE_ELSE_NETWORK: BmobQuery.CachePolicy.NETWORK_ELSE_CACHE);

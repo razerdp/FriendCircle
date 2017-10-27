@@ -1,5 +1,4 @@
 ext {
-
     android = [
             compileSdkVersion: 25,
             buildToolsVersion: "26.0.2",
