@@ -87,7 +87,7 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         momentsRequest = new MomentsRequest();
         initView();
         initKeyboardHeightObserver();
-        UIHelper.ToastMessage("请不要上传黄图，谢谢");
+        UIHelper.ToastMessage("请尽量不要上传黄图，谢谢");
 
     }
 

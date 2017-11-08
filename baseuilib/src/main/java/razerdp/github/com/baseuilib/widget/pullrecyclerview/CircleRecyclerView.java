@@ -34,20 +34,20 @@ import me.everything.android.ui.overscroll.IOverScrollUpdateListener;
 import me.everything.android.ui.overscroll.VerticalOverScrollBounceEffectDecorator;
 import me.everything.android.ui.overscroll.adapters.RecyclerViewOverScrollDecorAdapter;
 import razerdp.github.com.baselibrary.utils.ToolUtil;
+import razerdp.github.com.baselibrary.utils.ui.AnimUtils;
 import razerdp.github.com.baselibrary.utils.ui.UIHelper;
+import razerdp.github.com.baselibrary.utils.ui.ViewOffsetHelper;
 import razerdp.github.com.baseuilib.R;
+import razerdp.github.com.baseuilib.widget.pullrecyclerview.interfaces.OnRefreshListener2;
+import razerdp.github.com.baseuilib.widget.pullrecyclerview.mode.Mode;
+import razerdp.github.com.baseuilib.widget.pullrecyclerview.mode.PullMode;
 import razerdp.github.com.baseuilib.widget.pullrecyclerview.wrapperadapter.FixedViewInfo;
 import razerdp.github.com.baseuilib.widget.pullrecyclerview.wrapperadapter.HeaderViewWrapperAdapter;
-import razerdp.github.com.baselibrary.utils.ui.AnimUtils;
-import razerdp.github.com.baseuilib.widget.pullrecyclerview.interfaces.OnRefreshListener2;
-import razerdp.github.com.baselibrary.utils.ui.ViewOffsetHelper;
 
 import static me.everything.android.ui.overscroll.IOverScrollState.STATE_BOUNCE_BACK;
 import static me.everything.android.ui.overscroll.IOverScrollState.STATE_DRAG_END_SIDE;
 import static me.everything.android.ui.overscroll.IOverScrollState.STATE_DRAG_START_SIDE;
 import static me.everything.android.ui.overscroll.IOverScrollState.STATE_IDLE;
-import static razerdp.github.com.baseuilib.widget.pullrecyclerview.CircleRecyclerView.Mode.FROM_BOTTOM;
-import static razerdp.github.com.baseuilib.widget.pullrecyclerview.CircleRecyclerView.Mode.FROM_START;
 import static razerdp.github.com.baseuilib.widget.pullrecyclerview.CircleRecyclerView.Status.DEFAULT;
 import static razerdp.github.com.baseuilib.widget.pullrecyclerview.CircleRecyclerView.Status.REFRESHING;
 
@@ -85,19 +85,12 @@ public class CircleRecyclerView extends FrameLayout {
         int REFRESHING = 1;
     }
 
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({FROM_START, FROM_BOTTOM})
-    @interface Mode {
-        int FROM_START = 0;
-        int FROM_BOTTOM = 1;
-    }
-
     @Status
     private int currentStatus;
 
-    @Mode
-    private int pullMode;
+    private PullMode pullMode;
 
+    private Mode mode = Mode.BOTH;
 
     //observer
     private InnerRefreshIconObserver iconObserver;
@@ -111,6 +104,9 @@ public class CircleRecyclerView extends FrameLayout {
 
     private int refreshPosition;
     private PullRefreshFooter footerView;
+
+    private boolean canPull;
+    private boolean canLoadMore;
 
 
     public CircleRecyclerView(Context context) {
@@ -163,7 +159,7 @@ public class CircleRecyclerView extends FrameLayout {
 
         addFooterView(footerView);
 
-        recyclerView.addOnScrollListener(onScrollListener);
+        setMode(Mode.BOTH);
     }
 
     @Override
@@ -180,18 +176,19 @@ public class CircleRecyclerView extends FrameLayout {
 
     public void compelete() {
         Log.i(TAG, "compelete");
-        if (pullMode == FROM_START && iconObserver != null) {
+        if (pullMode == PullMode.FROM_START && iconObserver != null) {
             iconObserver.catchResetEvent();
         }
-        if (pullMode == FROM_BOTTOM && footerView != null) {
+        if (pullMode == PullMode.FROM_BOTTOM && footerView != null) {
             footerView.onFinish();
         }
         setCurrentStatus(DEFAULT);
     }
 
     public void autoRefresh() {
-        if (currentStatus == REFRESHING || pullMode == FROM_BOTTOM || iconObserver == null || onRefreshListener == null) return;
-        pullMode = FROM_START;
+        if (!canRefresh() || iconObserver == null || onRefreshListener == null)
+            return;
+        setPullMode(PullMode.FROM_START);
         setCurrentStatus(REFRESHING);
         iconObserver.autoRefresh();
         onRefreshListener.onRefresh();
@@ -203,6 +200,18 @@ public class CircleRecyclerView extends FrameLayout {
             onPreDispatchTouchListener.onPreTouch(ev);
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    boolean canRefresh() {
+        return canPull && currentStatus != REFRESHING && (mode == Mode.REFRESH || mode == Mode.BOTH);
+    }
+
+    boolean canLoadMore() {
+        return canLoadMore && currentStatus != REFRESHING && (mode == Mode.LOADMORE || mode == Mode.BOTH);
+    }
+
+    private void setPullMode(PullMode pullMode) {
+        this.pullMode = pullMode;
     }
 
     //------------------------------------------get/set-----------------------------------------------
@@ -237,6 +246,40 @@ public class CircleRecyclerView extends FrameLayout {
         }
         initOverScroll();
     }
+
+    public void setCanPull(boolean canPull) {
+        this.canPull = canPull;
+    }
+
+    public void setLoadMoreEnable(boolean canLoadMore) {
+        if (recyclerView == null) return;
+        this.canLoadMore = canLoadMore;
+        if (canLoadMore) {
+            recyclerView.addOnScrollListener(onScrollListener);
+        } else {
+            footerView.onFinish();
+            recyclerView.removeOnScrollListener(onScrollListener);
+        }
+    }
+
+    public void setMode(Mode mode) {
+        this.mode = mode;
+        switch (mode) {
+            case REFRESH:
+                setCanPull(true);
+                setLoadMoreEnable(false);
+                break;
+            case BOTH:
+                setCanPull(true);
+                setLoadMoreEnable(true);
+                break;
+            case LOADMORE:
+                setCanPull(false);
+                setLoadMoreEnable(true);
+                break;
+        }
+    }
+
 
     private void initOverScroll() {
         IOverScrollDecor decor = new VerticalOverScrollBounceEffectDecorator(new RecyclerViewOverScrollDecorAdapter(
@@ -273,7 +316,7 @@ public class CircleRecyclerView extends FrameLayout {
             @Override
             public void onOverScrollUpdate(IOverScrollDecor decor, int state, float offset) {
                 if (offset > 0) {
-                    if (currentStatus == REFRESHING) return;
+                    if (!canRefresh()) return;
                     iconObserver.catchPullEvent(offset);
                     if (offset >= refreshPosition && state == STATE_BOUNCE_BACK) {
                         if (currentStatus != REFRESHING) {
@@ -282,7 +325,7 @@ public class CircleRecyclerView extends FrameLayout {
                                 Log.i(TAG, "refresh");
                                 onRefreshListener.onRefresh();
                             }
-                            pullMode = FROM_START;
+                            setPullMode(PullMode.FROM_START);
                             iconObserver.catchRefreshEvent();
                         }
                     }
@@ -334,10 +377,10 @@ public class CircleRecyclerView extends FrameLayout {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            if (isScrollToBottom() && currentStatus != REFRESHING) {
+            if (isScrollToBottom() && canLoadMore()) {
                 onRefreshListener.onLoadMore();
                 Log.i("loadmoretag", "loadmore");
-                pullMode = FROM_BOTTOM;
+                setPullMode(PullMode.FROM_BOTTOM);
                 setCurrentStatus(REFRESHING);
                 footerView.onRefreshing();
             }
