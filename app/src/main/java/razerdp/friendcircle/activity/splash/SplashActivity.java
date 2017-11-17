@@ -3,7 +3,7 @@ package razerdp.friendcircle.activity.splash;
 
 import android.content.Intent;
 
-import razerdp.github.com.baselibrary.base.BaseActivity;
+import razerdp.github.com.lib.base.BaseActivity;
 
 /**
  * Created by 大灯泡 on 2016/10/28.

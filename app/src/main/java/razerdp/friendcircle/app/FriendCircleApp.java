@@ -6,9 +6,9 @@ import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
 import razerdp.github.com.common.manager.LocalHostManager;
 import razerdp.friendcircle.config.Define;
-import razerdp.github.com.baselibrary.base.AppContext;
-import razerdp.github.com.baselibrary.helper.AppFileHelper;
-import razerdp.github.com.baselibrary.manager.localphoto.LocalPhotoManager;
+import razerdp.github.com.lib.api.AppContext;
+import razerdp.github.com.lib.helper.AppFileHelper;
+import razerdp.github.com.lib.manager.localphoto.LocalPhotoManager;
 
 /**
  * Created by 大灯泡 on 2016/10/26.

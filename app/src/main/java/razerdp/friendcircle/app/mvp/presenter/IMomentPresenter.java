@@ -8,7 +8,7 @@ import java.util.List;
 import razerdp.github.com.common.mvp.models.entity.CommentInfo;
 import razerdp.github.com.common.mvp.models.entity.LikesInfo;
 import razerdp.friendcircle.app.mvp.view.IMomentView;
-import razerdp.github.com.baselibrary.mvp.IBasePresenter;
+import razerdp.github.com.lib.mvp.IBasePresenter;
 import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
 
 /**

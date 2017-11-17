@@ -15,9 +15,9 @@ import android.widget.TextView;
 import java.util.List;
 
 import razerdp.friendcircle.R;
-import razerdp.github.com.baseuilib.widget.span.ClickableSpanEx;
-import razerdp.github.com.baseuilib.widget.span.CustomImageSpan;
-import razerdp.github.com.baseuilib.widget.span.SpannableStringBuilderCompat;
+import razerdp.github.com.ui.widget.span.ClickableSpanEx;
+import razerdp.github.com.ui.widget.span.CustomImageSpan;
+import razerdp.github.com.ui.widget.span.SpannableStringBuilderCompat;
 import razerdp.github.com.common.mvp.models.entity.LikesInfo;
 
 /**

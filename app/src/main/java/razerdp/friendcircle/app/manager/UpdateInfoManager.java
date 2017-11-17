@@ -5,7 +5,7 @@ import android.graphics.Color;
 
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.ui.widget.popup.UpdateInfoPopup;
-import razerdp.github.com.baselibrary.utils.StringUtil;
+import razerdp.github.com.lib.utils.StringUtil;
 
 /**
  * Created by 大灯泡 on 2017/4/7.

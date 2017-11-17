@@ -15,7 +15,7 @@ import java.util.List;
 
 import razerdp.friendcircle.app.mvp.presenter.MomentPresenter;
 import razerdp.friendcircle.ui.viewholder.CircleBaseViewHolder;
-import razerdp.github.com.baseuilib.baseadapter.BaseRecyclerViewAdapter;
+import razerdp.github.com.ui.base.adapter.BaseRecyclerViewAdapter;
 import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
 
 /**

@@ -5,10 +5,10 @@ import android.view.View;
 
 import com.socks.library.KLog;
 
-import razerdp.friendcircle.ui.widget.commentwidget.CommentBox;
-import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
-import razerdp.github.com.baselibrary.utils.ui.UIHelper;
-import razerdp.github.com.baseuilib.widget.pullrecyclerview.CircleRecyclerView;
+import razerdp.github.com.ui.widget.commentwidget.CommentBox;
+import razerdp.github.com.ui.widget.commentwidget.CommentWidget;
+import razerdp.github.com.ui.util.UIHelper;
+import razerdp.github.com.ui.widget.pullrecyclerview.CircleRecyclerView;
 
 /**
  * Created by 大灯泡 on 2017/9/6.
@@ -19,7 +19,7 @@ public class CircleViewHelper {
 
     //评论时对应的参照View
     /**
-     * @see razerdp.friendcircle.ui.widget.commentwidget.CommentBox.CommentType
+     * @see razerdp.github.com.ui.widget.commentwidget.CommentBox.CommentType
      * <p>
      * {@link razerdp.friendcircle.ui.viewholder.CircleBaseViewHolder#onCommentWidgetClickListener}
      * {@link razerdp.friendcircle.ui.viewholder.CircleBaseViewHolder#onCommentPopupClickListener}

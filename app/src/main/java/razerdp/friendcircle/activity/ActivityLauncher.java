@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import razerdp.friendcircle.activity.gallery.PhotoBrowseActivity;
-import razerdp.github.com.baselibrary.utils.ui.SwitchActivityTransitionUtil;
-import razerdp.github.com.common.mvp.models.localphotomanager.ImageInfo;
+import razerdp.github.com.ui.util.SwitchActivityTransitionUtil;
+import razerdp.github.com.lib.common.entity.ImageInfo;
 import razerdp.github.com.common.mvp.models.uimodel.PhotoBrowseInfo;
 import razerdp.github.com.common.router.RouterList;
 import razerdp.github.com.photoselect.PhotoSelectActivity;

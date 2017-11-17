@@ -11,8 +11,7 @@ import android.widget.TextView;
 
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
-import razerdp.github.com.baselibrary.utils.ToolUtil;
-import razerdp.github.com.baselibrary.utils.ui.UIHelper;
+import razerdp.github.com.lib.utils.ToolUtil;
 
 /**
  * Created by 大灯泡 on 2017/4/7.

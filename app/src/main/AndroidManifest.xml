@@ -44,7 +44,7 @@
 
         <!--glide-->
         <meta-data
-            android:name="razerdp.github.com.baselibrary.imageloader.glide.GlobalGlideConfiguration"
+            android:name="razerdp.github.com.ui.imageloader.glide.GlobalGlideConfiguration"
             android:value="GlideModule"/>
     </application>
 

@@ -8,8 +8,8 @@ import java.util.List;
 
 import razerdp.github.com.common.mvp.models.entity.CommentInfo;
 import razerdp.github.com.common.mvp.models.entity.LikesInfo;
-import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
-import razerdp.github.com.baselibrary.mvp.IBaseView;
+import razerdp.github.com.ui.widget.commentwidget.CommentWidget;
+import razerdp.github.com.lib.mvp.IBaseView;
 import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
 
 /**

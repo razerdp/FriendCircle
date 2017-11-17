@@ -33,20 +33,6 @@ android {
     lintOptions {
         abortOnError false
     }
-
-    sourceSets {
-        main {
-            res.srcDirs =
-                    [
-                            'src/main/res/layouts/activity',
-                            'src/main/res/layouts/momentsview',
-                            'src/main/res/layouts/popup',
-                            'src/main/res/layouts/widget',
-                            'src/main/res/layouts',
-                            'src/main/res'
-                    ]
-        }
-    }
 }
 
 dependencies {
@@ -54,15 +40,15 @@ dependencies {
     testCompile 'junit:junit:4.12'
     //图片选择模块尚未完成，所以暂时不需要分开依赖
     if (!isModule.toBoolean()) {
-        compile project(':baselib')
-        compile project(':baseuilib')
-        compile project(':photoselect')
-        compile project(':publish')
+        compile project(':circle_base_library')
+        compile project(':circle_base_ui')
+        compile project(':circle_photoselect')
+        compile project(':circle_publish')
         annotationProcessor rootProject.ext.dependencies.arouter_compiler
 
     } else {
-        compile project(':baselib')
-        compile project(':baseuilib')
+        compile project(':circle_base_library')
+        compile project(':circle_base_ui')
     }
 
 }

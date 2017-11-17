@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+    >
+
+    <razerdp.github.com.ui.widget.common.TitleBar
+        android:id="@id/title_bar_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/publish_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:gravity="left|top"
+                android:hint="这一刻的想法..."
+                android:minLines="4"
+                android:padding="@dimen/common_padding"
+                android:textColorHint="@color/text_gray"
+                android:textSize="16sp"/>
+
+            <razerdp.github.com.ui.widget.imageview.PreviewImageView
+                android:id="@+id/preview_image_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </LinearLayout>
+
+    </ScrollView>
+</LinearLayout>

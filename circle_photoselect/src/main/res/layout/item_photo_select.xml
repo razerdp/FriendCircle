@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content">
+
+    <razerdp.github.com.ui.widget.imageview.CheckImageView
+        android:id="@+id/iv_photo_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"/>
+
+    <View
+        android:id="@+id/iv_photo_mask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white_light"
+        android:visibility="gone"/>
+
+</FrameLayout>

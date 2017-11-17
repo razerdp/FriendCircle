@@ -16,10 +16,10 @@ import java.util.List;
 
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.UpdateListener;
-import razerdp.friendcircle.ui.widget.commentwidget.CommentWidget;
-import razerdp.github.com.baselibrary.mvp.IBasePresenter;
-import razerdp.github.com.baselibrary.utils.ToolUtil;
-import razerdp.github.com.baselibrary.utils.ui.UIHelper;
+import razerdp.github.com.ui.widget.commentwidget.CommentWidget;
+import razerdp.github.com.lib.mvp.IBasePresenter;
+import razerdp.github.com.lib.utils.ToolUtil;
+import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.common.manager.LocalHostManager;
 import razerdp.github.com.common.mvp.callback.OnCommentChangeCallback;
 import razerdp.github.com.common.mvp.callback.OnLikeChangeCallback;

@@ -16,9 +16,9 @@ import android.widget.TextView;
 
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
-import razerdp.github.com.baselibrary.thirdpart.WeakHandler;
-import razerdp.github.com.baselibrary.utils.ToolUtil;
-import razerdp.github.com.baselibrary.utils.ui.UIHelper;
+import razerdp.github.com.lib.thirdpart.WeakHandler;
+import razerdp.github.com.lib.utils.ToolUtil;
+import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.common.manager.LocalHostManager;
 import razerdp.github.com.common.mvp.models.entity.LikesInfo;
 import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
