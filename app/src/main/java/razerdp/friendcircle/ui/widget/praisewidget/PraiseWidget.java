@@ -12,13 +12,14 @@ import android.util.Log;
 import android.util.LruCache;
 import android.widget.TextView;
 
+import com.razerdp.github.com.common.entity.LikesInfo;
+
 import java.util.List;
 
 import razerdp.friendcircle.R;
 import razerdp.github.com.ui.widget.span.ClickableSpanEx;
 import razerdp.github.com.ui.widget.span.CustomImageSpan;
 import razerdp.github.com.ui.widget.span.SpannableStringBuilderCompat;
-import razerdp.github.com.common.mvp.models.entity.LikesInfo;
 
 /**
  * Created by 大灯泡 on 2016/2/21.

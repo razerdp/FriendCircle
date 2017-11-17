@@ -12,6 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
+import com.razerdp.github.com.common.entity.UserInfo;
+import com.razerdp.github.com.common.manager.LocalHostManager;
+import com.razerdp.github.com.common.request.RegisterRequest;
+
 import cn.bmob.v3.exception.BmobException;
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
@@ -19,9 +23,6 @@ import razerdp.github.com.lib.helper.AppSetting;
 import razerdp.github.com.lib.network.base.OnResponseListener;
 import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.ui.widget.common.LoadingView;
-import razerdp.github.com.common.manager.LocalHostManager;
-import razerdp.github.com.common.mvp.models.entity.UserInfo;
-import razerdp.github.com.common.request.RegisterRequest;
 
 /**
  * Created by 大灯泡 on 2016/12/14.

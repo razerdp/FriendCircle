@@ -5,11 +5,11 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Build;
+import android.widget.Toast;
 
 import java.util.List;
 
 import razerdp.github.com.lib.api.AppContext;
-import razerdp.github.com.lib.utils.ui.UIHelper;
 
 /**
  * Created by 大灯泡 on 2016/10/27.
@@ -45,12 +45,12 @@ public class ToolUtil {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             android.text.ClipboardManager clipboard = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
             clipboard.setText(sourceText);
-            UIHelper.ToastMessage("复制成功");
+            Toast.makeText(context,"copy success",Toast.LENGTH_SHORT).show();
         } else {
             ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("Copied Text", sourceText);
             clipboard.setPrimaryClip(clip);
-            UIHelper.ToastMessage("复制成功");
+            Toast.makeText(context,"copy success",Toast.LENGTH_SHORT).show();
         }
     }
 }

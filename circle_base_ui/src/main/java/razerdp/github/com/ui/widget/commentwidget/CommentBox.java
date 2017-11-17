@@ -14,10 +14,9 @@ import android.widget.TextView;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import razerdp.friendcircle.R;
+import razerdp.github.com.baseuilib.R;
 import razerdp.github.com.lib.utils.StringUtil;
 import razerdp.github.com.ui.util.UIHelper;
-import razerdp.github.com.common.mvp.models.entity.CommentInfo;
 
 /**
  * Created by 大灯泡 on 2016/12/8.
@@ -37,7 +36,7 @@ public class CommentBox extends FrameLayout {
     //草稿
     private String draftString;
 
-    private CommentInfo commentInfo;
+    private IComment mIComment;
     private String momentid;
 
 
@@ -74,21 +73,21 @@ public class CommentBox extends FrameLayout {
                 if (onCommentSendClickListener != null)
                     onCommentSendClickListener.onCommentSendClick(v,
                             momentid,
-                            commentInfo == null ? null : commentInfo.getAuthor().getUserid(),
+                            mIComment == null ? null : mIComment.getCommentCreatorName(),
                             mInputContent.getText().toString().trim());
             }
         });
         setVisibility(GONE);
     }
 
-    public void showCommentBox(@NonNull String momentid, @Nullable CommentInfo commentInfo) {
+    public void showCommentBox(@NonNull String momentid, @Nullable IComment commentInfo) {
         if (TextUtils.isEmpty(momentid)) return;
         if (isShowing) return;
         this.isShowing = true;
-        this.commentInfo = commentInfo;
+        this.mIComment = commentInfo;
         //对不同的回复动作执行不同的
-        if (this.commentInfo != null) {
-            mInputContent.setHint("回复 " + commentInfo.getAuthor().getNick() + ":");
+        if (mIComment != null) {
+            mInputContent.setHint("回复 " + mIComment.getCommentCreatorName() + ":");
         } else {
             mInputContent.setHint("评论");
         }
@@ -123,7 +122,7 @@ public class CommentBox extends FrameLayout {
      * @param commentInfo
      * @param clearDraft  是否清除草稿
      */
-    public void toggleCommentBox(@NonNull String momentid, @Nullable CommentInfo commentInfo, boolean clearDraft) {
+    public void toggleCommentBox(@NonNull String momentid, @Nullable IComment commentInfo, boolean clearDraft) {
         if (isShowing) {
             dismissCommentBox(clearDraft);
         } else {
@@ -148,21 +147,21 @@ public class CommentBox extends FrameLayout {
         this.momentid = momentid;
     }
 
-    public CommentInfo getCommentInfo() {
-        return commentInfo;
+    public IComment getCommentInfo() {
+        return mIComment;
     }
 
-    public void setCommentInfo(CommentInfo commentInfo) {
-        this.commentInfo = commentInfo;
+    public void setCommentInfo(IComment commentInfo) {
+        this.mIComment = commentInfo;
     }
 
     public boolean isReply() {
-        return commentInfo != null;
+        return mIComment != null && !TextUtils.isEmpty(mIComment.getReplyerName());
     }
 
     @CommentType
     public int getCommentType() {
-        return commentInfo == null ? CommentType.TYPE_CREATE : CommentType.TYPE_REPLY;
+        return mIComment == null ? CommentType.TYPE_CREATE : CommentType.TYPE_REPLY;
     }
 
     @Override

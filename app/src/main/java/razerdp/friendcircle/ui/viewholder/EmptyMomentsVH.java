@@ -5,8 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import razerdp.github.com.common.mvp.models.MomentsType;
-import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
+import com.razerdp.github.com.common.entity.MomentsInfo;
 
 
 /**

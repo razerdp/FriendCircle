@@ -14,14 +14,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.razerdp.github.com.common.entity.LikesInfo;
+import com.razerdp.github.com.common.entity.MomentsInfo;
+import com.razerdp.github.com.common.manager.LocalHostManager;
+
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
 import razerdp.github.com.lib.thirdpart.WeakHandler;
 import razerdp.github.com.lib.utils.ToolUtil;
 import razerdp.github.com.ui.util.UIHelper;
-import razerdp.github.com.common.manager.LocalHostManager;
-import razerdp.github.com.common.mvp.models.entity.LikesInfo;
-import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
 
 /**
  * Created by 大灯泡 on 2016/3/6.

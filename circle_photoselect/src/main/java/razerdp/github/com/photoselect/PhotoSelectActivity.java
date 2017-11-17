@@ -25,7 +25,7 @@ import razerdp.github.com.ui.base.BaseTitleBarActivity;
 import razerdp.github.com.ui.widget.common.TitleBar;
 import razerdp.github.com.bus.EventSelectAlbum;
 import razerdp.github.com.lib.common.entity.ImageInfo;
-import razerdp.github.com.common.router.RouterList;
+import com.razerdp.github.com.common.router.RouterList;
 import razerdp.github.com.photoselect.fragment.PhotoAlbumFragement;
 import razerdp.github.com.photoselect.fragment.PhotoGridFragement;
 

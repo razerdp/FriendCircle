@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/root_container"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/transparent"
+             android:fitsSystemWindows="true"
+    >
+
+    <View
+        android:id="@+id/v_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"/>
+
+    <razerdp.github.com.ui.widget.common.HackyViewPager
+        android:id="@+id/photo_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <razerdp.github.com.ui.widget.indicator.DotIndicator
+        android:id="@+id/dot_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="15dp"
+        />
+
+</FrameLayout>

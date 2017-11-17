@@ -6,6 +6,7 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.razerdp.github.com.common.entity.MomentsInfo;
 import com.socks.library.KLog;
 
 import java.lang.reflect.Constructor;
@@ -13,10 +14,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import razerdp.friendcircle.app.mvp.presenter.MomentPresenter;
+import razerdp.friendcircle.app.mvp.presenter.impl.MomentPresenter;
 import razerdp.friendcircle.ui.viewholder.CircleBaseViewHolder;
 import razerdp.github.com.ui.base.adapter.BaseRecyclerViewAdapter;
-import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
 
 /**
  * Created by 大灯泡 on 2016/11/1.

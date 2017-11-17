@@ -29,8 +29,8 @@ import razerdp.github.com.ui.util.ViewUtil;
 import razerdp.github.com.ui.itemdecoration.GridItemDecoration;
 import razerdp.github.com.ui.widget.popup.PopupProgress;
 import razerdp.github.com.lib.common.entity.ImageInfo;
-import razerdp.github.com.common.mvp.models.photo.PhotoBrowserInfo;
-import razerdp.github.com.common.router.RouterList;
+import com.razerdp.github.com.common.entity.photo.PhotoBrowserInfo;
+import com.razerdp.github.com.common.router.RouterList;
 import razerdp.github.com.photoselect.PhotoSelectActivity;
 import razerdp.github.com.photoselect.R;
 

@@ -33,11 +33,11 @@ import razerdp.github.com.ui.widget.common.TitleBar;
 import razerdp.github.com.ui.widget.imageview.PreviewImageView;
 import razerdp.github.com.ui.widget.popup.PopupProgress;
 import razerdp.github.com.ui.widget.popup.SelectPhotoMenuPopup;
-import razerdp.github.com.common.manager.LocalHostManager;
+import com.razerdp.github.com.common.manager.LocalHostManager;
 import razerdp.github.com.lib.common.entity.ImageInfo;
-import razerdp.github.com.common.mvp.models.photo.PhotoBrowserInfo;
-import razerdp.github.com.common.request.AddMomentsRequest;
-import razerdp.github.com.common.router.RouterList;
+import com.razerdp.github.com.common.entity.photo.PhotoBrowserInfo;
+import com.razerdp.github.com.common.request.AddMomentsRequest;
+import com.razerdp.github.com.common.router.RouterList;
 
 
 /**

@@ -63,7 +63,7 @@ dependencies {
     })
 
     testCompile 'junit:junit:4.12'
-    compile project(':circle_base_ui')
+    compile project(':circle_common')
     annotationProcessor rootProject.ext.dependencies.arouter_compiler
 
 }

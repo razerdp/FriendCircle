@@ -3,7 +3,7 @@ package razerdp.github.com.ui.util;
 import android.app.Activity;
 import android.content.Context;
 
-import razerdp.github.com.lib.R;
+import razerdp.github.com.baseuilib.R;
 
 
 public class SwitchActivityTransitionUtil {

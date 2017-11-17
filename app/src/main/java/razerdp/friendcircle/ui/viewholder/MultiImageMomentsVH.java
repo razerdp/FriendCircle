@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.razerdp.github.com.common.entity.MomentsInfo;
+import com.razerdp.github.com.common.entity.PhotoBrowseInfo;
 import com.socks.library.KLog;
 
 import java.util.ArrayList;
@@ -16,9 +18,6 @@ import razerdp.friendcircle.R;
 import razerdp.friendcircle.activity.ActivityLauncher;
 import razerdp.github.com.ui.imageloader.ImageLoadMnanger;
 import razerdp.github.com.ui.widget.imageview.ForceClickImageView;
-import razerdp.github.com.common.mvp.models.MomentsType;
-import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
-import razerdp.github.com.common.mvp.models.uimodel.PhotoBrowseInfo;
 import razerdp.github.com.widget.PhotoContents;
 import razerdp.github.com.widget.adapter.PhotoContentsBaseAdapter;
 

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical">
+
+    <include layout="@layout/include_moments_header"/>
+
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="74dp"
+        android:layout_marginRight="@dimen/item_padding"
+        android:layout_marginTop="-35dp"
+        android:background="#f1f1f1"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <razerdp.github.com.ui.widget.common.ClickShowMoreLayout
+            android:id="@+id/item_text_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:show_line="5"
+            app:text_color="@color/normal_font_color"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <ImageView
+                android:id="@+id/web_thumb"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/test_avatar"/>
+
+            <TextView
+                android:id="@+id/web_title"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/web_thumb"
+                android:ellipsize="end"
+                android:gravity="left|center_vertical"
+                android:maxLines="2"
+                android:textColor="@color/normal_font_color"
+                android:textSize="@dimen/normal_font"
+                tools:text="啦啦啦啦啦啦~啦啦啦啦啦啦~啦啦啦啦啦啦~"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <include layout="@layout/include_moments_bottom"/>
+    <!--点赞控件/评论控件-->
+
+</LinearLayout>

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.razerdp.github.com.common.entity.PhotoBrowseInfo;
 import com.socks.library.KLog;
 
 import java.util.LinkedList;
@@ -20,12 +21,11 @@ import java.util.List;
 
 import razerdp.friendcircle.R;
 import razerdp.github.com.lib.base.BaseActivity;
-import razerdp.github.com.ui.imageloader.ImageLoadMnanger;
 import razerdp.github.com.lib.utils.ToolUtil;
+import razerdp.github.com.ui.imageloader.ImageLoadMnanger;
 import razerdp.github.com.ui.widget.common.HackyViewPager;
 import razerdp.github.com.ui.widget.imageview.GalleryPhotoView;
 import razerdp.github.com.ui.widget.indicator.DotIndicator;
-import razerdp.github.com.common.mvp.models.uimodel.PhotoBrowseInfo;
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 

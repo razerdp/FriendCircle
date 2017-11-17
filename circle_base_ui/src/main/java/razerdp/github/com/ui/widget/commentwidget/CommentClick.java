@@ -43,6 +43,10 @@ public class CommentClick extends ClickableSpanEx {
         ds.setTypeface(Typeface.DEFAULT_BOLD);
     }
 
+    public void setOnCommentUserClickListener(OnCommentUserClickListener listener) {
+        this.mOnCommentUserClickListener = listener;
+    }
+
     public static class Builder {
         private int color;
         private Context mContext;

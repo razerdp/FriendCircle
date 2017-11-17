@@ -5,9 +5,10 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.widget.TextView;
 
+import com.razerdp.github.com.common.entity.CommentInfo;
+
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
-import razerdp.github.com.common.mvp.models.entity.CommentInfo;
 
 /**
  * Created by 大灯泡 on 2016/4/22.

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#9f000000"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+    <FrameLayout
+        android:id="@+id/popup_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_rect_background">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/register_guide"/>
+
+            <EditText
+                android:id="@+id/ed_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="15dp"
+                android:inputType="text"
+                android:background="@drawable/bg_input_edittext"
+                android:hint="用户名"
+                android:padding="8dp"
+                android:textSize="14sp"/>
+
+            <EditText
+                android:id="@+id/ed_pass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:inputType="numberPassword"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/bg_input_edittext"
+                android:hint="密码"
+                android:padding="8dp"
+                android:textSize="14sp"/>
+
+            <EditText
+                android:id="@+id/ed_nick"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/bg_input_edittext"
+                android:hint="昵称"
+                android:padding="8dp"
+                android:textSize="14sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <Button
+                    android:id="@+id/cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/red_button_selector"
+                    android:padding="3dp"
+                    android:text="不想注册，使用开发者帐号"/>
+
+                <Button
+                    android:id="@+id/ok"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/green_button_selector"
+                    android:padding="3dp"
+                    android:text="提交"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/round_rect_background_trans_black"
+            android:visibility="gone">
+
+            <razerdp.github.com.ui.widget.common.LoadingView
+                android:id="@+id/view_loading"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+    </FrameLayout>
+
+</RelativeLayout>

@@ -25,36 +25,4 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
-    <style name="base_divider">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">0.5dp</item>
-        <item name="android:background">@color/gray_divider</item>
-    </style>
-
-    <style name="dark_divider" parent="base_divider">
-        <item name="android:background">@color/dark_gray_divider</item>
-    </style>
-
-    <style name="base_divider_top_10" parent="base_divider">
-        <item name="android:layout_marginTop">10dp</item>
-    </style>
-
-    <style name="base_divider_top_20" parent="base_divider">
-        <item name="android:layout_marginTop">20dp</item>
-    </style>
-
-    <style name="base_divider_top_30" parent="base_divider">
-        <item name="android:layout_marginTop">30dp</item>
-    </style>
-
-    <style name="dark_divider_top_10" parent="dark_divider">
-        <item name="android:layout_marginTop">10dp</item>
-    </style>
-
-    <style name="timeline_bold_divider_10">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">10dp</item>
-        <item name="android:background">@color/timeline_background</item>
-    </style>
-
 </resources>

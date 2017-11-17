@@ -2,6 +2,12 @@ package razerdp.friendcircle.app.bmob;
 
 import android.os.SystemClock;
 
+import com.razerdp.github.com.common.entity.CommentInfo;
+import com.razerdp.github.com.common.entity.MomentsInfo;
+import com.razerdp.github.com.common.entity.UserInfo;
+import com.razerdp.github.com.common.request.AddCommentRequest;
+import com.razerdp.github.com.common.request.AddLikeRequest;
+import com.razerdp.github.com.common.request.AddMomentsRequest;
 import com.socks.library.KLog;
 
 import java.util.ArrayList;
@@ -13,14 +19,8 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import razerdp.github.com.lib.network.base.OnResponseListener;
 import razerdp.github.com.lib.utils.ToolUtil;
-import razerdp.github.com.common.mvp.models.entity.CommentInfo;
-import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
-import razerdp.github.com.common.mvp.models.entity.UserInfo;
-import razerdp.github.com.common.request.AddCommentRequest;
-import razerdp.github.com.common.request.AddLikeRequest;
-import razerdp.github.com.common.request.AddMomentsRequest;
 
-import static razerdp.github.com.lib.network.base.OnResponseListener.*;
+import static razerdp.github.com.lib.network.base.OnResponseListener.SimpleResponseListener;
 
 /**
  * Created by 大灯泡 on 2016/10/28.

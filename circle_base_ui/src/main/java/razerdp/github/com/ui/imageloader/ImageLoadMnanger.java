@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.BitmapRequestBuilder;
 import com.bumptech.glide.Glide;
 
-import razerdp.github.com.lib.R;
+import razerdp.github.com.baseuilib.R;
 import razerdp.github.com.lib.api.AppContext;
 
 

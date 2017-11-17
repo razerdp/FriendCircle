@@ -11,29 +11,31 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.razerdp.github.com.common.entity.CommentInfo;
+import com.razerdp.github.com.common.entity.LikesInfo;
+import com.razerdp.github.com.common.entity.MomentsInfo;
+import com.razerdp.github.com.common.manager.LocalHostManager;
 import com.socks.library.KLog;
 
 import java.util.List;
 
 import razerdp.friendcircle.R;
-import razerdp.friendcircle.app.mvp.presenter.MomentPresenter;
-import razerdp.github.com.ui.widget.commentwidget.CommentWidget;
+import razerdp.friendcircle.app.mvp.presenter.impl.MomentPresenter;
 import razerdp.friendcircle.ui.widget.popup.CommentPopup;
 import razerdp.friendcircle.ui.widget.popup.DeleteCommentPopup;
 import razerdp.friendcircle.ui.widget.praisewidget.PraiseWidget;
-import razerdp.github.com.ui.imageloader.ImageLoadMnanger;
 import razerdp.github.com.lib.utils.SimpleObjectPool;
 import razerdp.github.com.lib.utils.StringUtil;
 import razerdp.github.com.lib.utils.TimeUtil;
 import razerdp.github.com.lib.utils.ToolUtil;
+import razerdp.github.com.ui.base.adapter.BaseRecyclerViewHolder;
+import razerdp.github.com.ui.imageloader.ImageLoadMnanger;
 import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.ui.util.ViewUtil;
-import razerdp.github.com.ui.base.adapter.BaseRecyclerViewHolder;
+import razerdp.github.com.ui.widget.commentwidget.CommentWidget;
+import razerdp.github.com.ui.widget.commentwidget.IComment;
+import razerdp.github.com.ui.widget.commentwidget.OnCommentUserClickListener;
 import razerdp.github.com.ui.widget.common.ClickShowMoreLayout;
-import razerdp.github.com.common.manager.LocalHostManager;
-import razerdp.github.com.common.mvp.models.entity.CommentInfo;
-import razerdp.github.com.common.mvp.models.entity.LikesInfo;
-import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
 
 /**
  * Created by 大灯泡 on 2016/11/1.
@@ -202,6 +204,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
                 commentWidget.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.common_selector));
                 commentWidget.setOnClickListener(onCommentWidgetClickListener);
                 commentWidget.setOnLongClickListener(onCommentLongClickListener);
+                commentWidget.setOnCommentUserClickListener(mOnCommentUserClickListener);
                 commentLayout.addView(commentWidget);
             }
         } else if (childCount > commentList.size()) {
@@ -235,11 +238,23 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
      * ==================  click listener block
      */
 
+    private OnCommentUserClickListener mOnCommentUserClickListener = new OnCommentUserClickListener() {
+        @Override
+        public void onCommentClicked(@NonNull IComment comment) {
+            String name = TextUtils.isEmpty(comment.getReplyerName()) ? comment.getCommentCreatorName() : comment.getReplyerName();
+            UIHelper.ToastMessage("点击的用户 ： 【 " + name + " 】");
+        }
+    };
+
     private View.OnClickListener onCommentWidgetClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (!(v instanceof CommentWidget)) return;
-            CommentInfo commentInfo = ((CommentWidget) v).getData();
+            IComment comment = ((CommentWidget) v).getData();
+            CommentInfo commentInfo = null;
+            if (comment instanceof CommentInfo) {
+                commentInfo = (CommentInfo) comment;
+            }
             if (commentInfo == null) return;
             if (commentInfo.canDelete()) {
                 deleteCommentPopup.showPopupWindow(commentInfo);

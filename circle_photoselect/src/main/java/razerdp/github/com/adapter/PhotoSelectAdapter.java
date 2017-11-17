@@ -21,8 +21,8 @@ import razerdp.github.com.ui.base.adapter.BaseRecyclerViewAdapter;
 import razerdp.github.com.ui.base.adapter.BaseRecyclerViewHolder;
 import razerdp.github.com.ui.widget.imageview.CheckImageView;
 import razerdp.github.com.lib.common.entity.ImageInfo;
-import razerdp.github.com.common.mvp.models.photo.PhotoBrowserInfo;
-import razerdp.github.com.common.router.RouterList;
+import com.razerdp.github.com.common.entity.photo.PhotoBrowserInfo;
+import com.razerdp.github.com.common.router.RouterList;
 import razerdp.github.com.photoselect.PhotoMultiBrowserActivity;
 import razerdp.github.com.photoselect.R;
 

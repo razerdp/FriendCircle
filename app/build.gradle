@@ -30,6 +30,15 @@ android {
         }
     }
 
+    //jni
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+            jni.srcDirs = [] //disable automatic ndk-build call
+        }
+
+    }
+
     lintOptions {
         abortOnError false
     }
@@ -49,6 +58,7 @@ dependencies {
     } else {
         compile project(':circle_base_library')
         compile project(':circle_base_ui')
+        compile project(':circle_common')
     }
 
 }

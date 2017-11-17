@@ -3,13 +3,15 @@ package razerdp.friendcircle.app.mvp.presenter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.razerdp.github.com.common.entity.CommentInfo;
+import com.razerdp.github.com.common.entity.LikesInfo;
+import com.razerdp.github.com.common.entity.MomentsInfo;
+
 import java.util.List;
 
-import razerdp.github.com.common.mvp.models.entity.CommentInfo;
-import razerdp.github.com.common.mvp.models.entity.LikesInfo;
 import razerdp.friendcircle.app.mvp.view.IMomentView;
 import razerdp.github.com.lib.mvp.IBasePresenter;
-import razerdp.github.com.common.mvp.models.entity.MomentsInfo;
+
 
 /**
  * Created by 大灯泡 on 2016/12/7.

@@ -20,7 +20,7 @@ import razerdp.github.com.lib.utils.ToolUtil;
 import razerdp.github.com.ui.base.adapter.OnRecyclerViewItemClickListener;
 import razerdp.github.com.bus.EventSelectAlbum;
 import razerdp.github.com.lib.common.entity.ImageInfo;
-import razerdp.github.com.common.mvp.models.photo.AlbumInfo;
+import com.razerdp.github.com.common.entity.photo.AlbumInfo;
 import razerdp.github.com.photoselect.R;
 
 /**

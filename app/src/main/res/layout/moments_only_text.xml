@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical">
+
+    <include layout="@layout/include_moments_header"/>
+
+
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="74dp"
+        android:layout_marginRight="@dimen/item_padding"
+        android:layout_marginTop="-35dp"
+        android:orientation="vertical"
+        tools:background="@android:color/holo_red_light">
+
+        <razerdp.github.com.ui.widget.common.ClickShowMoreLayout
+            android:id="@+id/item_text_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:show_line="5"
+            app:text_color="@color/normal_font_color"/>
+    </LinearLayout>
+
+
+    <include layout="@layout/include_moments_bottom"/>
+    <!--点赞控件/评论控件-->
+
+</LinearLayout>

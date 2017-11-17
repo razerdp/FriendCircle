@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import razerdp.github.com.ui.widget.span.ClickableSpanEx;
 import razerdp.github.com.ui.widget.span.SpannableStringBuilderCompat;
-import razerdp.github.com.common.mvp.models.entity.CommentInfo;
 
 /**
  * Created by 大灯泡 on 2016/2/23.
@@ -76,6 +75,7 @@ public class CommentWidget extends TextView {
             CommentClick userA = new CommentClick.Builder(getContext(), info).setColor(0xff517fae)
                     .setClickEventColor(0xffc6c6c6)
                     .setTextSize(textSize)
+                    .setClickListener(mOnCommentUserClickListener)
                     .build();
             mSpannableStringBuilderCompat.append(info.getCommentCreatorName(), userA, 0);
             mSpannableStringBuilderCompat.append(content);
@@ -84,12 +84,14 @@ public class CommentWidget extends TextView {
             CommentClick userA = new CommentClick.Builder(getContext(), info).setColor(0xff517fae)
                     .setClickEventColor(0xffc6c6c6)
                     .setTextSize(textSize)
+                    .setClickListener(mOnCommentUserClickListener)
                     .build();
             mSpannableStringBuilderCompat.append(info.getCommentCreatorName(), userA, 0);
             mSpannableStringBuilderCompat.append(" 回复 ");
             CommentClick userB = new CommentClick.Builder(getContext(), info).setColor(0xff517fae)
                     .setClickEventColor(0xffc6c6c6)
                     .setTextSize(textSize)
+                    .setClickListener(mOnCommentUserClickListener)
                     .build();
             mSpannableStringBuilderCompat.append(info.getReplyerName(), userB, 0);
             mSpannableStringBuilderCompat.append(content);
@@ -97,8 +99,8 @@ public class CommentWidget extends TextView {
         setText(mSpannableStringBuilderCompat);
     }
 
-    public CommentInfo getData() throws ClassCastException {
-        return (CommentInfo) getTag();
+    public IComment getData() throws ClassCastException {
+        return (IComment) getTag();
     }
 
     public OnCommentUserClickListener getOnCommentUserClickListener() {
@@ -107,6 +109,14 @@ public class CommentWidget extends TextView {
 
     public void setOnCommentUserClickListener(OnCommentUserClickListener onCommentUserClickListener) {
         mOnCommentUserClickListener = onCommentUserClickListener;
+        if (mSpannableStringBuilderCompat != null) {
+            CommentClick[] spans = mSpannableStringBuilderCompat.getSpans(0, mSpannableStringBuilderCompat.length(), CommentClick.class);
+            if (spans != null && spans.length > 0) {
+                for (CommentClick span : spans) {
+                    span.setOnCommentUserClickListener(mOnCommentUserClickListener);
+                }
+            }
+        }
     }
 
 }
