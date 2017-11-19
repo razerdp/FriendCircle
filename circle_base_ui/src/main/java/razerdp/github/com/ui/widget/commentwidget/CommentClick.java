@@ -26,7 +26,8 @@ public class CommentClick extends ClickableSpanEx {
         super(builder.color, builder.clickEventColor);
         mContext = builder.mContext;
         mComment = builder.mComment;
-        this.textSize = builder.textSize;
+        mOnCommentUserClickListener=builder.mListener;
+        textSize = builder.textSize;
     }
 
     @Override
