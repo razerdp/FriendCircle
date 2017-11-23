@@ -51,7 +51,7 @@ dependencies {
         exclude group: 'com.google.code.gson'
     }
     //log
-    compile 'com.github.zhaokaiqiang.klog:library:1.5.0'
+    compile 'com.github.zhaokaiqiang.klog:library:1.6.0'
     //eventbus
     compile 'org.greenrobot:eventbus:3.0.0'
     //网页查看数据库，sp
@@ -66,5 +66,6 @@ dependencies {
     compile rootProject.ext.dependencies.arouter_api
     annotationProcessor rootProject.ext.dependencies.arouter_compiler
     //朋友圈图片控件
+
     compile 'com.github.razerdp:PhotoContents:v1.4.2'
 }

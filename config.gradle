@@ -38,7 +38,7 @@ ext {
             appcompat_v7    : 'com.android.support:appcompat-v7:25.2.0',
             design          : 'com.android.support:design:25.2.0',
             support_util    : 'com.android.support:support-core-utils:25.1.0',
-            arouter_api     : 'com.alibaba:arouter-api:1.2.2',
-            arouter_compiler: 'com.alibaba:arouter-compiler:1.1.3'
+            arouter_api     : 'com.alibaba:arouter-api:1.2.4',
+            arouter_compiler: 'com.alibaba:arouter-compiler:1.1.4'
     ]
 }
