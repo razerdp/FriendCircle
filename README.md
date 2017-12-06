@@ -9,8 +9,9 @@
 >  - 切换到Project标签
 >  - 定位到External Libraries
 >  - 找到cn.bmob.android:bmob-sdk-xxx，展开
->  - 找到gson-2.6.2.jar，右键delete即可】
+>  - 找到gson-2.6.2.jar，右键delete即可
 
+##### 如果您需要bmob的后台数据查看，可以提交issue，留下用户名或者邮箱，我拉你进团队管理（无修改权限）
 
 ##### 因为采取组件化，所以可能push上来的是组件的build，如果您要build整个app，请把gradle.properties下的  isModule=true 切换为false并sync gradle
 
