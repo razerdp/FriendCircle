@@ -32,6 +32,7 @@ import razerdp.github.com.ui.base.adapter.BaseRecyclerViewHolder;
 import razerdp.github.com.ui.imageloader.ImageLoadMnanger;
 import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.ui.util.ViewUtil;
+import razerdp.github.com.ui.widget.commentwidget.CommentContentsLayout;
 import razerdp.github.com.ui.widget.commentwidget.CommentWidget;
 import razerdp.github.com.ui.widget.commentwidget.IComment;
 import razerdp.github.com.ui.widget.commentwidget.OnCommentUserClickListener;
@@ -42,7 +43,7 @@ import razerdp.github.com.ui.widget.common.ClickShowMoreLayout;
  * <p>
  * 朋友圈基本item
  */
-public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<MomentsInfo> implements BaseMomentVH<MomentsInfo>, ViewGroup.OnHierarchyChangeListener {
+public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<MomentsInfo> implements BaseMomentVH<MomentsInfo> {
 
 
     //头部
@@ -58,13 +59,10 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
     protected LinearLayout commentAndPraiseLayout;
     protected PraiseWidget praiseWidget;
     protected View line;
-    protected LinearLayout commentLayout;
+    protected CommentContentsLayout commentLayout;
 
     //内容区
     protected LinearLayout contentLayout;
-
-    //评论区的view对象池
-    private static final SimpleObjectPool<CommentWidget> COMMENT_TEXT_POOL = new SimpleObjectPool<CommentWidget>(35);
 
     private CommentPopup commentPopup;
     private DeleteCommentPopup deleteCommentPopup;
@@ -97,7 +95,10 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         commentAndPraiseLayout = (LinearLayout) findView(commentAndPraiseLayout, R.id.comment_praise_layout);
         praiseWidget = (PraiseWidget) findView(praiseWidget, R.id.praise);
         line = findView(line, R.id.divider);
-        commentLayout = (LinearLayout) findView(commentLayout, R.id.comment_layout);
+        commentLayout = (CommentContentsLayout) findView(commentLayout, R.id.comment_layout);
+        commentLayout.setOnCommentItemClickListener(onCommentItemClickListener);
+        commentLayout.setOnCommentItemLongClickListener(onCommentItemLongClickListener);
+        commentLayout.setOnCommentWidgetItemClickListener(onCommentWidgetItemClickListener);
         //content
         contentLayout = (LinearLayout) findView(contentLayout, R.id.content);
 
@@ -146,14 +147,14 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         nick.setText(data.getAuthor().getNick());
         userText.setText(data.getContent().getText());
         ViewUtil.setViewsVisible(StringUtil.noEmpty(data.getContent().getText()) ?
-                View.VISIBLE : View.GONE, userText);
+                                         View.VISIBLE : View.GONE, userText);
 
         //bottom
         createTime.setText(TimeUtil.getTimeStringFromBmob(data.getCreatedAt()));
         ViewUtil.setViewsVisible(TextUtils.equals(momentsInfo.getAuthor().getUserid(), LocalHostManager.INSTANCE.getUserid()) ?
-                View.VISIBLE : View.GONE, deleteMoments);
+                                         View.VISIBLE : View.GONE, deleteMoments);
         boolean needPraiseData = addLikes(data.getLikesList());
-        boolean needCommentData = addComment(data.getCommentList());
+        boolean needCommentData = commentLayout.addComments(data.getCommentList());
         praiseWidget.setVisibility(needPraiseData ? View.VISIBLE : View.GONE);
         commentLayout.setVisibility(needCommentData ? View.VISIBLE : View.GONE);
         line.setVisibility(needPraiseData && needCommentData ? View.VISIBLE : View.GONE);
@@ -176,81 +177,22 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         return true;
     }
 
-
-    private int commentLeftAndPaddintRight = UIHelper.dipToPx(8f);
-    private int commentTopAndPaddintBottom = UIHelper.dipToPx(3f);
-
-    /**
-     * 添加评论
-     *
-     * @param commentList
-     * @return ture=显示评论，false=不显示评论
-     */
-    private boolean addComment(List<CommentInfo> commentList) {
-        if (ToolUtil.isListEmpty(commentList)) {
-            return false;
-        }
-        final int childCount = commentLayout.getChildCount();
-        if (childCount < commentList.size()) {
-            //当前的view少于list的长度，则补充相差的view
-            int subCount = commentList.size() - childCount;
-            for (int i = 0; i < subCount; i++) {
-                CommentWidget commentWidget = COMMENT_TEXT_POOL.get();
-                if (commentWidget == null) {
-                    commentWidget = new CommentWidget(getContext());
-                    commentWidget.setPadding(commentLeftAndPaddintRight, commentTopAndPaddintBottom, commentLeftAndPaddintRight, commentTopAndPaddintBottom);
-                    commentWidget.setLineSpacing(4, 1);
-                }
-                commentWidget.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.common_selector));
-                commentWidget.setOnClickListener(onCommentWidgetClickListener);
-                commentWidget.setOnLongClickListener(onCommentLongClickListener);
-                commentWidget.setOnCommentUserClickListener(mOnCommentUserClickListener);
-                commentLayout.addView(commentWidget);
-            }
-        } else if (childCount > commentList.size()) {
-            //当前的view的数目比list的长度大，则减去对应的view
-            commentLayout.removeViews(commentList.size(), childCount - commentList.size());
-        }
-        //绑定数据
-        for (int n = 0; n < commentList.size(); n++) {
-            CommentWidget commentWidget = (CommentWidget) commentLayout.getChildAt(n);
-            if (commentWidget != null) commentWidget.setCommentText(commentList.get(n));
-        }
-        return true;
-    }
-
-
-    @Override
-    public void onChildViewAdded(View parent, View child) {
-
-    }
-
-    @Override
-    public void onChildViewRemoved(View parent, View child) {
-        if (child instanceof CommentWidget) COMMENT_TEXT_POOL.put((CommentWidget) child);
-    }
-
-    public void clearCommentPool() {
-        COMMENT_TEXT_POOL.clearPool();
-    }
-
     /**
      * ==================  click listener block
      */
 
-    private OnCommentUserClickListener mOnCommentUserClickListener = new OnCommentUserClickListener() {
+    private CommentContentsLayout.OnCommentWidgetItemClickListener onCommentWidgetItemClickListener = new CommentContentsLayout.OnCommentWidgetItemClickListener() {
         @Override
-        public void onCommentClicked(@NonNull IComment comment) {
+        public void onCommentItemClicked(@NonNull IComment comment) {
             String name = TextUtils.isEmpty(comment.getReplyerName()) ? comment.getCommentCreatorName() : comment.getReplyerName();
             UIHelper.ToastMessage("点击的用户 ： 【 " + name + " 】");
         }
     };
 
-    private View.OnClickListener onCommentWidgetClickListener = new View.OnClickListener() {
+    private CommentContentsLayout.OnCommentItemClickListener onCommentItemClickListener = new CommentContentsLayout.OnCommentItemClickListener() {
         @Override
-        public void onClick(View v) {
-            if (!(v instanceof CommentWidget)) return;
-            IComment comment = ((CommentWidget) v).getData();
+        public void onCommentWidgetClick(@NonNull CommentWidget widget) {
+            IComment comment = widget.getData();
             CommentInfo commentInfo = null;
             if (comment instanceof CommentInfo) {
                 commentInfo = (CommentInfo) comment;
@@ -259,8 +201,15 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
             if (commentInfo.canDelete()) {
                 deleteCommentPopup.showPopupWindow(commentInfo);
             } else {
-                momentPresenter.showCommentBox(null, itemPosition, momentsInfo.getMomentid(), (CommentWidget) v);
+                momentPresenter.showCommentBox(null, itemPosition, momentsInfo.getMomentid(), widget);
             }
+        }
+    };
+
+    private CommentContentsLayout.OnCommentItemLongClickListener onCommentItemLongClickListener = new CommentContentsLayout.OnCommentItemLongClickListener() {
+        @Override
+        public boolean onCommentWidgetLongClick(@NonNull CommentWidget widget) {
+            return false;
         }
     };
 
@@ -278,12 +227,6 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         }
     };
 
-    private View.OnLongClickListener onCommentLongClickListener = new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View v) {
-            return false;
-        }
-    };
 
     private View.OnClickListener onMenuButtonClickListener = new View.OnClickListener() {
         @Override

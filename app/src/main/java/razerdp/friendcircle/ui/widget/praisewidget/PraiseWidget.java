@@ -37,8 +37,6 @@ public class PraiseWidget extends TextView {
     //默认点击背景
     private int clickBg = 0x00000000;
 
-    private List<LikesInfo> datas;
-
     private static final LruCache<String, SpannableStringBuilderCompat> praiseCache
             = new LruCache<String, SpannableStringBuilderCompat>(50) {
         @Override
@@ -76,18 +74,9 @@ public class PraiseWidget extends TextView {
     }
 
     public void setDatas(List<LikesInfo> datas) {
-        this.datas = datas;
+        createSpanStringBuilder(datas);
     }
 
-    @Override
-    public boolean onPreDraw() {
-        if (datas == null || datas.size() == 0) {
-            return super.onPreDraw();
-        } else {
-            createSpanStringBuilder(datas);
-            return true;
-        }
-    }
 
     private void createSpanStringBuilder(List<LikesInfo> datas) {
         if (datas == null || datas.size() == 0) return;

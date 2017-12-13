@@ -85,7 +85,7 @@
             android:background="@color/line_bg"
             />
 
-        <LinearLayout
+        <razerdp.github.com.ui.widget.commentwidget.CommentContentsLayout
             android:id="@+id/comment_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
