@@ -5,11 +5,16 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.socks.library.KLog;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -73,8 +78,7 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
 
     private void initView() {
         setOrientation(VERTICAL);
-        COMMENT_TEXT_POOL = new SimpleWeakObjectPool<CommentWidget>(35);
-        setOnHierarchyChangeListener(this);
+        COMMENT_TEXT_POOL = new SimpleWeakObjectPool<CommentWidget>();
     }
 
     private void initShowTextView() {
@@ -140,6 +144,10 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
     public void setMode(@Mode int mode) {
         if (this.mode == mode) return;
         this.mode = mode;
+        onModeChanged(mode);
+    }
+
+    private void onModeChanged(@Mode int mode) {
         switch (mode) {
             case Mode.NORMAL:
                 if (show != null) {
@@ -167,7 +175,10 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
 
     @Override
     public void onChildViewRemoved(View parent, View child) {
-        if (child instanceof CommentWidget) COMMENT_TEXT_POOL.put((CommentWidget) child);
+        if (child instanceof CommentWidget) {
+            KLog.i(TAG, "捕获到一个评论removed，缓存池+1，当前缓存量  >>>  " + COMMENT_TEXT_POOL.size());
+            COMMENT_TEXT_POOL.put((CommentWidget) child);
+        }
     }
 
     public void clearCommentPool() {
@@ -182,48 +193,6 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
 
         }
     };
-
-    final class SimpleWeakObjectPool<T> {
-
-        private WeakReference<T>[] objsPool;
-        private int size;
-        private int curPointer = -1;
-
-
-        public SimpleWeakObjectPool() {
-            this(8);
-        }
-
-        public SimpleWeakObjectPool(int size) {
-            this.size = size;
-            objsPool = (WeakReference<T>[]) Array.newInstance(WeakReference.class, size);
-        }
-
-        public synchronized T get() {
-            if (curPointer == -1 || curPointer > objsPool.length) return null;
-            T obj = objsPool[curPointer].get();
-            objsPool[curPointer] = null;
-            curPointer--;
-            return obj;
-        }
-
-        public synchronized boolean put(T t) {
-            if (curPointer == -1 || curPointer < objsPool.length - 1) {
-                curPointer++;
-                objsPool[curPointer] = new WeakReference<T>(t);
-                return true;
-            }
-            return false;
-        }
-
-        public void clearPool() {
-            for (int i = 0; i < objsPool.length; i++) {
-                objsPool[i].clear();
-                objsPool[i] = null;
-            }
-            curPointer = -1;
-        }
-    }
 
 
     private OnClickListener onCommentWidgetClickListener = new OnClickListener() {
@@ -286,5 +255,68 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
 
     public interface OnCommentWidgetItemClickListener {
         void onCommentItemClicked(@NonNull IComment comment);
+    }
+
+
+    final class SimpleWeakObjectPool<T> {
+
+        private WeakReference<T>[] objsPool;
+        private int size;
+        private int curPointer = -1;
+
+
+        public SimpleWeakObjectPool() {
+            this(5);
+        }
+
+        public SimpleWeakObjectPool(int size) {
+            this.size = size;
+            objsPool = (WeakReference<T>[]) Array.newInstance(WeakReference.class, size);
+        }
+
+        public synchronized T get() {
+            if (curPointer == -1 || curPointer > objsPool.length) return null;
+            T obj = objsPool[curPointer].get();
+            objsPool[curPointer] = null;
+            curPointer--;
+            return obj;
+        }
+
+        public synchronized boolean put(T t) {
+            if (curPointer == -1 || curPointer < objsPool.length - 1) {
+                curPointer++;
+                objsPool[curPointer] = new WeakReference<T>(t);
+                return true;
+            }
+            return false;
+        }
+
+        public void clearPool() {
+            for (int i = 0; i < objsPool.length; i++) {
+                objsPool[i].clear();
+                objsPool[i] = null;
+            }
+            curPointer = -1;
+        }
+
+        public int size() {
+            return objsPool == null ? 0 : objsPool.length;
+        }
+    }
+
+    final class InnerExpandableAnimation extends Animation {
+
+        private int targetHeight;
+        private boolean isOpen;
+
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            super.applyTransformation(interpolatedTime, t);
+        }
+
+        @Override
+        public boolean willChangeBounds() {
+            return true;
+        }
     }
 }
