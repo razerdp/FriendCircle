@@ -137,7 +137,8 @@ public enum LocalPhotoManager {
             String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME));
             long dateTaken = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATE_TAKEN));
 
-            if (!new File(imgPath).exists()) continue;
+            File imageFile = new File(imgPath);
+            if (!imageFile.exists() || imageFile.isDirectory() || imageFile.length() <= 0) continue;
 
             thumbWhereQuery[0] = String.valueOf(imgId);
             String thumbImgPath = getThumbPath(thumbWhereQuery);

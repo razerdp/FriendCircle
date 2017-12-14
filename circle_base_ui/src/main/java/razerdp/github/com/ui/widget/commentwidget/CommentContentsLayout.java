@@ -1,13 +1,18 @@
 package razerdp.github.com.ui.widget.commentwidget;
 
 import android.content.Context;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;
 import java.util.List;
@@ -23,6 +28,20 @@ import razerdp.github.com.ui.util.UIHelper;
 
 public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnHierarchyChangeListener {
     private static final String TAG = "CommentContentsLayout";
+    private static final int DEFAULT_WRAP_COUNT = 10;
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({Mode.NORMAL, Mode.WRAP})
+    public @interface Mode {
+        int NORMAL = 0;
+        int WRAP = 1;
+    }
+
+    @Mode
+    private int mode = Mode.NORMAL;
+    private int mWrapCount = DEFAULT_WRAP_COUNT;
+    private boolean showMore = false;
+    private boolean wrapAnimation = true;
 
     //评论区的view对象池
     private SimpleWeakObjectPool<CommentWidget> COMMENT_TEXT_POOL;
@@ -33,6 +52,9 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
     private OnCommentItemClickListener onCommentItemClickListener;
     private OnCommentItemLongClickListener onCommentItemLongClickListener;
     private OnCommentWidgetItemClickListener onCommentWidgetItemClickListener;
+
+    private TextView show;
+
 
     public CommentContentsLayout(Context context) {
         super(context);
@@ -53,6 +75,17 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
         setOrientation(VERTICAL);
         COMMENT_TEXT_POOL = new SimpleWeakObjectPool<CommentWidget>(35);
         setOnHierarchyChangeListener(this);
+    }
+
+    private void initShowTextView() {
+        if (show == null) {
+            show = new TextView(getContext());
+            show.setText("更多评论↓");
+            show.setTextSize(12);
+            show.setTextColor(0xff1a1a1a);
+            show.setPadding(32, 32, 32, 32);
+        }
+        show.setOnClickListener(onShowClickListener);
     }
 
     /**
@@ -104,6 +137,29 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
         return datas == null || datas.size() <= 0;
     }
 
+    public void setMode(@Mode int mode) {
+        if (this.mode == mode) return;
+        this.mode = mode;
+        switch (mode) {
+            case Mode.NORMAL:
+                if (show != null) {
+                    removeView(show);
+                }
+                break;
+            case Mode.WRAP:
+                if (show == null) initShowTextView();
+                ViewGroup.LayoutParams params = show.getLayoutParams();
+                if (params == null || !(params instanceof LinearLayout.LayoutParams)) {
+                    params = generateDefaultLayoutParams();
+                }
+                ((LayoutParams) params).gravity = Gravity.CENTER_HORIZONTAL;
+                if (show.getParent() != null) {
+                    addView(show, params);
+                }
+                break;
+        }
+    }
+
     @Override
     public void onChildViewAdded(View parent, View child) {
 
@@ -117,6 +173,15 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
     public void clearCommentPool() {
         COMMENT_TEXT_POOL.clearPool();
     }
+
+    private OnClickListener onShowClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (mode != Mode.WRAP) return;
+            showMore = !showMore;
+
+        }
+    };
 
     final class SimpleWeakObjectPool<T> {
 
