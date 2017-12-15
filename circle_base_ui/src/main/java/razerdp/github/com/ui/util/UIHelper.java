@@ -1,10 +1,15 @@
 package razerdp.github.com.ui.util;
 
+import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.annotation.FloatRange;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -70,10 +75,10 @@ public class UIHelper {
     public static int getStatusBarHeight(Context context) {
         int result = 0;
         int resourceId = context.getResources()
-                                .getIdentifier("status_bar_height", "dimen", "android");
+                .getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
             result = context.getResources()
-                            .getDimensionPixelSize(resourceId);
+                    .getDimensionPixelSize(resourceId);
         }
         return result;
     }
@@ -84,7 +89,7 @@ public class UIHelper {
     public static void hideInputMethod(View view) {
         try {
             InputMethodManager imm = (InputMethodManager) view.getContext()
-                                                              .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm != null) {
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
@@ -110,7 +115,7 @@ public class UIHelper {
         if (view == null) return;
         if (view instanceof EditText) view.requestFocus();
         InputMethodManager imm = (InputMethodManager) view.getContext()
-                                                          .getSystemService(Context.INPUT_METHOD_SERVICE);
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             boolean success = imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
             KLog.i("showSoftKeyboard", " isSuccess   >>>   " + success);
@@ -148,6 +153,29 @@ public class UIHelper {
      */
     public static void ToastMessage(String msg) {
         Toast.makeText(AppContext.getAppContext(), msg, Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * 调整窗口的透明度
+     *
+     * @param from
+     * @param to
+     */
+    private void dimBackground(Activity act, @FloatRange(from = 0.0f, to = 1.0f) final float from, @FloatRange(from = 0.0f, to = 1.0f) final float to) {
+        if (act == null || act.isFinishing()) return;
+        final Window window = act.getWindow();
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(from, to);
+        valueAnimator.setDuration(500);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                WindowManager.LayoutParams params = window.getAttributes();
+                params.alpha = (Float) animation.getAnimatedValue();
+                window.setAttributes(params);
+            }
+        });
+
+        valueAnimator.start();
     }
 
 
