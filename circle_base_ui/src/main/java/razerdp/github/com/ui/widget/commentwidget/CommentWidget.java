@@ -70,8 +70,8 @@ public class CommentWidget extends TextView {
         String content = ": " + info.getCommentContent() + "\0";
         boolean isApply = !TextUtils.isEmpty(info.getReplyerName());
 
-        if (isApply) {
-            //如果是一条回复评论
+        if (!isApply) {
+            //用户A，B不空，证明是回复评论
             CommentClick userA = new CommentClick.Builder(getContext(), info).setColor(0xff517fae)
                     .setClickEventColor(0xffc6c6c6)
                     .setTextSize(textSize)
@@ -80,7 +80,7 @@ public class CommentWidget extends TextView {
             mSpannableStringBuilderCompat.append(info.getCommentCreatorName(), userA, 0);
             mSpannableStringBuilderCompat.append(content);
         } else {
-            //用户A，B不空，证明是回复评论
+            //如果是一条回复评论
             CommentClick userA = new CommentClick.Builder(getContext(), info).setColor(0xff517fae)
                     .setClickEventColor(0xffc6c6c6)
                     .setTextSize(textSize)
