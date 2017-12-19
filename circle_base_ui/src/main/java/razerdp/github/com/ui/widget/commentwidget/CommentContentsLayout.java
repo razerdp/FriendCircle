@@ -1,17 +1,22 @@
 package razerdp.github.com.ui.widget.commentwidget;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Transformation;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.socks.library.KLog;
 
@@ -22,12 +27,14 @@ import java.lang.reflect.Array;
 import java.util.List;
 
 import razerdp.github.com.baseuilib.R;
+import razerdp.github.com.ui.util.AnimUtils;
 import razerdp.github.com.ui.util.UIHelper;
 
 /**
  * Created by 大灯泡 on 2017/12/14.
  * <p>
  * 评论展示layout，容纳commentwidget的layout
+ * 为了防止过多层layout（过度绘制），所以展开部分采取直接绘制
  */
 
 public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnHierarchyChangeListener {
@@ -44,12 +51,13 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
     @Mode
     private int mode = Mode.NORMAL;
     private int mWrapCount = DEFAULT_WRAP_COUNT;
-    private boolean showMore = false;
     private boolean wrapAnimation = true;
+    private InnerExpandableAnimation mExpandableAnimation;
 
     //评论区的view对象池
     private SimpleWeakObjectPool<CommentWidget> COMMENT_TEXT_POOL;
 
+    private int showMoreTextHeight = UIHelper.dipToPx(24f);
     private int commentLeftAndPaddintRight = UIHelper.dipToPx(8f);
     private int commentTopAndPaddintBottom = UIHelper.dipToPx(3f);
 
@@ -57,7 +65,9 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
     private OnCommentItemLongClickListener onCommentItemLongClickListener;
     private OnCommentWidgetItemClickListener onCommentWidgetItemClickListener;
 
-    private TextView show;
+    private Paint mTextPaint;
+    private Rect mDrawRect = new Rect();
+    private RectF mMoreButtonTouchRect = new RectF();
 
 
     public CommentContentsLayout(Context context) {
@@ -77,18 +87,8 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
 
     private void initView() {
         setOrientation(VERTICAL);
+        mExpandableAnimation = new InnerExpandableAnimation();
         COMMENT_TEXT_POOL = new SimpleWeakObjectPool<CommentWidget>();
-    }
-
-    private void initShowTextView() {
-        if (show == null) {
-            show = new TextView(getContext());
-            show.setText("更多评论↓");
-            show.setTextSize(12);
-            show.setTextColor(0xff1a1a1a);
-            show.setPadding(32, 32, 32, 32);
-        }
-        show.setOnClickListener(onShowClickListener);
     }
 
     /**
@@ -149,12 +149,11 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
     private void onModeChanged(@Mode int mode) {
         switch (mode) {
             case Mode.NORMAL:
-                if (show != null) {
-                    removeView(show);
-                }
+                setWillNotDraw(true);
+                requestLayout();
                 break;
             case Mode.WRAP:
-                if (show == null) initShowTextView();
+             /*   if (show == null) initShowTextView();
                 ViewGroup.LayoutParams params = show.getLayoutParams();
                 if (params == null || !(params instanceof LinearLayout.LayoutParams)) {
                     params = generateDefaultLayoutParams();
@@ -162,9 +161,85 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
                 ((LayoutParams) params).gravity = Gravity.CENTER_HORIZONTAL;
                 if (show.getParent() != null) {
                     addView(show, params);
+                }*/
+                initPaint();
+                setWillNotDraw(false);
+                mExpandableAnimation.setOpenState(false, true);
+                break;
+        }
+
+    }
+
+    private void initPaint() {
+        if (mTextPaint == null) {
+            mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mTextPaint.setStyle(Paint.Style.FILL);
+            mTextPaint.setColor(Color.parseColor("#4AA0E2"));
+            mTextPaint.setTextSize(UIHelper.dipToPx(12));
+        }
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int targetHeight = drawWrapButton() ? getMeasuredHeight() + showMoreTextHeight : getMeasuredHeight();
+        setMeasuredDimension(widthMeasureSpec, targetHeight);
+        mExpandableAnimation.originalHeight = targetHeight;
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mExpandableAnimation.restoreOpenState();
+    }
+
+    private boolean drawWrapButton() {
+        return mode == Mode.WRAP && getChildCount() > mWrapCount;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (drawWrapButton()) {
+            getDrawingRect(mDrawRect);
+            if (mDrawRect.isEmpty()) return;
+            float textWidth = mTextPaint.measureText(mExpandableAnimation.isOpen ? "收起评论" : "更多设置");
+            canvas.drawText(mExpandableAnimation.isOpen ? "收起评论" : "更多设置", (mDrawRect.width() - textWidth) / 2, mDrawRect.bottom - UIHelper.dipToPx(8), mTextPaint);
+            mMoreButtonTouchRect.set(mDrawRect.left,
+                    mDrawRect.bottom - UIHelper.dipToPx(16),
+                    mDrawRect.right,
+                    mDrawRect.bottom);
+        }
+    }
+
+    float touchX = 0;
+    float touchY = 0;
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                touchX = ev.getX();
+                touchY = ev.getY();
+                if (mMoreButtonTouchRect.contains(touchX, touchY)) return true;
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mMoreButtonTouchRect.contains(touchX, touchY)) {
+                    onShowMoreChanged();
+                    return true;
                 }
                 break;
         }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private void onShowMoreChanged() {
+        if (wrapAnimation) {
+            mExpandableAnimation.toggleOpenState(false);
+        } else {
+            mExpandableAnimation.toggleOpenState(true);
+        }
+
     }
 
     @Override
@@ -183,15 +258,6 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
     public void clearCommentPool() {
         COMMENT_TEXT_POOL.clearPool();
     }
-
-    private OnClickListener onShowClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (mode != Mode.WRAP) return;
-            showMore = !showMore;
-
-        }
-    };
 
 
     private OnClickListener onCommentWidgetClickListener = new OnClickListener() {
@@ -305,17 +371,107 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
 
     final class InnerExpandableAnimation extends Animation {
 
+        private int originalHeight;
         private int targetHeight;
         private boolean isOpen;
+        private boolean isInAnimating;
+        private RestoreWaittingInfo mRestoreWaittingInfo;
+
+        InnerExpandableAnimation() {
+            isOpen = false;
+            setDuration(500);
+            setInterpolator(new DecelerateInterpolator());
+            setAnimationListener(new AnimUtils.SimpleAnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    super.onAnimationStart(animation);
+                    isInAnimating = true;
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    isInAnimating = false;
+                    originalHeight = 0;
+                }
+            });
+        }
 
         @Override
         protected void applyTransformation(float interpolatedTime, Transformation t) {
             super.applyTransformation(interpolatedTime, t);
+            applyAnimation(interpolatedTime);
         }
 
         @Override
         public boolean willChangeBounds() {
             return true;
         }
+
+        boolean toggleOpenState(boolean immediately) {
+            setOpenState(!isOpen, immediately);
+            return isOpen;
+        }
+
+        private void setOpenState(boolean wantOpen, boolean immediately) {
+            if (originalHeight == 0) {
+                mRestoreWaittingInfo = new RestoreWaittingInfo(wantOpen, immediately);
+                return;
+            }
+            this.isOpen = wantOpen;
+            final int childCount = getChildCount();
+            if (wantOpen) {
+                targetHeight = originalHeight;
+            } else {
+                if (childCount > mWrapCount) {
+                    targetHeight = 0;
+                    for (int i = 0; i < mWrapCount; i++) {
+                        targetHeight += getChildAt(i).getHeight();
+                    }
+                    targetHeight += getPaddingTop() + getPaddingBottom() + showMoreTextHeight;
+                }
+            }
+            if (immediately) {
+                applyAnimation(-1);
+            } else {
+                if (!isInAnimating) {
+                    startAnimation(this);
+                }
+            }
+        }
+
+        private void restoreOpenState() {
+            if (mRestoreWaittingInfo != null) {
+                setOpenState(mRestoreWaittingInfo.wantOpen, mRestoreWaittingInfo.immediately);
+                mRestoreWaittingInfo = null;
+            }
+        }
+
+        /**
+         * -1表示立刻执行
+         *
+         * @param timeSet
+         */
+        void applyAnimation(float timeSet) {
+            LayoutParams p = (LayoutParams) getLayoutParams();
+            float subHeight = originalHeight - targetHeight;
+            if (timeSet > 0 && timeSet < 1) {
+                p.height = originalHeight + (int) (subHeight * timeSet);
+            } else if (timeSet <= -1) {
+                p.height = targetHeight;
+            }
+            requestLayout();
+        }
+
+
+        private class RestoreWaittingInfo {
+            boolean wantOpen;
+            boolean immediately;
+
+            public RestoreWaittingInfo(boolean wantOpen, boolean immediately) {
+                this.wantOpen = wantOpen;
+                this.immediately = immediately;
+            }
+        }
+
     }
 }

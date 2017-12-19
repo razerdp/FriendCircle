@@ -24,7 +24,6 @@ import razerdp.friendcircle.app.mvp.presenter.impl.MomentPresenter;
 import razerdp.friendcircle.ui.widget.popup.CommentPopup;
 import razerdp.friendcircle.ui.widget.popup.DeleteCommentPopup;
 import razerdp.friendcircle.ui.widget.praisewidget.PraiseWidget;
-import razerdp.github.com.lib.utils.SimpleObjectPool;
 import razerdp.github.com.lib.utils.StringUtil;
 import razerdp.github.com.lib.utils.TimeUtil;
 import razerdp.github.com.lib.utils.ToolUtil;
@@ -35,7 +34,6 @@ import razerdp.github.com.ui.util.ViewUtil;
 import razerdp.github.com.ui.widget.commentwidget.CommentContentsLayout;
 import razerdp.github.com.ui.widget.commentwidget.CommentWidget;
 import razerdp.github.com.ui.widget.commentwidget.IComment;
-import razerdp.github.com.ui.widget.commentwidget.OnCommentUserClickListener;
 import razerdp.github.com.ui.widget.common.ClickShowMoreLayout;
 
 /**
@@ -99,6 +97,7 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         commentLayout.setOnCommentItemClickListener(onCommentItemClickListener);
         commentLayout.setOnCommentItemLongClickListener(onCommentItemLongClickListener);
         commentLayout.setOnCommentWidgetItemClickListener(onCommentWidgetItemClickListener);
+        commentLayout.setMode(CommentContentsLayout.Mode.WRAP);
         //content
         contentLayout = (LinearLayout) findView(contentLayout, R.id.content);
 
