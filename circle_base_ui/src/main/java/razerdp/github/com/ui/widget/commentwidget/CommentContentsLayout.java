@@ -10,6 +10,7 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Transformation;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.socks.library.KLog;
 
@@ -153,21 +155,11 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
                 requestLayout();
                 break;
             case Mode.WRAP:
-             /*   if (show == null) initShowTextView();
-                ViewGroup.LayoutParams params = show.getLayoutParams();
-                if (params == null || !(params instanceof LinearLayout.LayoutParams)) {
-                    params = generateDefaultLayoutParams();
-                }
-                ((LayoutParams) params).gravity = Gravity.CENTER_HORIZONTAL;
-                if (show.getParent() != null) {
-                    addView(show, params);
-                }*/
                 initPaint();
                 setWillNotDraw(false);
                 mExpandableAnimation.setOpenState(false, true);
                 break;
         }
-
     }
 
     private void initPaint() {
@@ -184,13 +176,11 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int targetHeight = drawWrapButton() ? getMeasuredHeight() + showMoreTextHeight : getMeasuredHeight();
         setMeasuredDimension(widthMeasureSpec, targetHeight);
-        mExpandableAnimation.originalHeight = targetHeight;
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        mExpandableAnimation.restoreOpenState();
+        Log.i(TAG, "onMeasure: taegetHeight  >>  " + targetHeight);
+        if (drawWrapButton() && mExpandableAnimation.mDelayApplyOpenStateInfo != null) {
+            mExpandableAnimation.setOriginalHeight(targetHeight);
+            mExpandableAnimation.applyDelaySetOpenState();
+        }
     }
 
     private boolean drawWrapButton() {
@@ -203,10 +193,10 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
         if (drawWrapButton()) {
             getDrawingRect(mDrawRect);
             if (mDrawRect.isEmpty()) return;
-            float textWidth = mTextPaint.measureText(mExpandableAnimation.isOpen ? "收起评论" : "更多设置");
-            canvas.drawText(mExpandableAnimation.isOpen ? "收起评论" : "更多设置", (mDrawRect.width() - textWidth) / 2, mDrawRect.bottom - UIHelper.dipToPx(8), mTextPaint);
+            float textWidth = mTextPaint.measureText(mExpandableAnimation.isOpen ? "收起评论" : "展开评论");
+            canvas.drawText(mExpandableAnimation.isOpen ? "收起评论" : "展开评论", (mDrawRect.width() - textWidth) / 2, mDrawRect.bottom - getPaddingBottom() - UIHelper.dipToPx(8), mTextPaint);
             mMoreButtonTouchRect.set(mDrawRect.left,
-                    mDrawRect.bottom - UIHelper.dipToPx(16),
+                    mDrawRect.bottom - getPaddingBottom() - UIHelper.dipToPx(16),
                     mDrawRect.right,
                     mDrawRect.bottom);
         }
@@ -375,7 +365,7 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
         private int targetHeight;
         private boolean isOpen;
         private boolean isInAnimating;
-        private RestoreWaittingInfo mRestoreWaittingInfo;
+        private DelayApplyOpenStateInfo mDelayApplyOpenStateInfo;
 
         InnerExpandableAnimation() {
             isOpen = false;
@@ -384,14 +374,12 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
             setAnimationListener(new AnimUtils.SimpleAnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
-                    super.onAnimationStart(animation);
                     isInAnimating = true;
                 }
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     isInAnimating = false;
-                    originalHeight = 0;
                 }
             });
         }
@@ -407,6 +395,10 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
             return true;
         }
 
+        public void setOriginalHeight(int height) {
+            if (originalHeight == 0 && height > 0) originalHeight = height;
+        }
+
         boolean toggleOpenState(boolean immediately) {
             setOpenState(!isOpen, immediately);
             return isOpen;
@@ -414,7 +406,7 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
 
         private void setOpenState(boolean wantOpen, boolean immediately) {
             if (originalHeight == 0) {
-                mRestoreWaittingInfo = new RestoreWaittingInfo(wantOpen, immediately);
+                createDelaySetOpenState(wantOpen, immediately);
                 return;
             }
             this.isOpen = wantOpen;
@@ -425,7 +417,7 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
                 if (childCount > mWrapCount) {
                     targetHeight = 0;
                     for (int i = 0; i < mWrapCount; i++) {
-                        targetHeight += getChildAt(i).getHeight();
+                        targetHeight += getChildAt(i).getMeasuredHeight();
                     }
                     targetHeight += getPaddingTop() + getPaddingBottom() + showMoreTextHeight;
                 }
@@ -439,10 +431,14 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
             }
         }
 
-        private void restoreOpenState() {
-            if (mRestoreWaittingInfo != null) {
-                setOpenState(mRestoreWaittingInfo.wantOpen, mRestoreWaittingInfo.immediately);
-                mRestoreWaittingInfo = null;
+        private void createDelaySetOpenState(boolean wantOpen, boolean immediately) {
+            mDelayApplyOpenStateInfo = new DelayApplyOpenStateInfo(wantOpen, immediately);
+        }
+
+        private void applyDelaySetOpenState() {
+            if (mDelayApplyOpenStateInfo != null) {
+                setOpenState(mDelayApplyOpenStateInfo.wantOpen, mDelayApplyOpenStateInfo.immediately);
+                mDelayApplyOpenStateInfo = null;
             }
         }
 
@@ -453,25 +449,28 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
          */
         void applyAnimation(float timeSet) {
             LayoutParams p = (LayoutParams) getLayoutParams();
-            float subHeight = originalHeight - targetHeight;
+            float subHeight = targetHeight - originalHeight;
             if (timeSet > 0 && timeSet < 1) {
                 p.height = originalHeight + (int) (subHeight * timeSet);
+                Log.d(TAG, "动画中:  time  >>  " + timeSet + "  subHeight  >>  " + subHeight + "   targetHeight = " + targetHeight + "   originalHeight = " + originalHeight);
             } else if (timeSet <= -1) {
                 p.height = targetHeight;
             }
+            Log.i(TAG, "applyAnimation: >> targetHeight = " + targetHeight + "   originalHeight = " + originalHeight +
+                    "  firstView  >>  " + ((getChildAt(0) instanceof TextView) ? ((TextView) getChildAt(0)).getText().toString() : "not textView"));
             requestLayout();
         }
 
+        private class DelayApplyOpenStateInfo {
+            final boolean wantOpen;
+            final boolean immediately;
 
-        private class RestoreWaittingInfo {
-            boolean wantOpen;
-            boolean immediately;
-
-            public RestoreWaittingInfo(boolean wantOpen, boolean immediately) {
+            public DelayApplyOpenStateInfo(boolean wantOpen, boolean immediately) {
                 this.wantOpen = wantOpen;
                 this.immediately = immediately;
             }
         }
+
 
     }
 }
