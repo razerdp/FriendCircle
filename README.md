@@ -96,5 +96,5 @@
 
 
 ## LICENSE：
-***
+
 [GPL3.0](https://github.com/razerdp/FriendCircle/blob/master/LICENSE)
