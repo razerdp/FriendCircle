@@ -20,6 +20,28 @@
             android:id="@id/title_bar_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/service_tips"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:alpha="0"
+            android:background="#aa517fae"
+            android:drawableRight="@drawable/arrow_white"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center_vertical"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            tools:text="服务器提醒"
+            tools:visibility="visible"
+            />
     </FrameLayout>
 
     <razerdp.github.com.ui.widget.commentwidget.CommentBox

@@ -18,11 +18,9 @@ public enum UpdateInfoManager {
     private UpdateInfoPopup popup;
     private boolean hasShow;
 
-    final String title = "开发日志(2017/10/27)";
-    final String content = "  +   再次修复长文字折叠问题\n\n" +
-            "  +   增加test分支（用于测试）\n\n" +
-            "  +   修复相册扫描没有进度条的问题\n\n"+
-            "  +   增加kotlin分支（用于学习并逐渐转换到kotlin）\n";
+    final String title = "开发日志(2017/12/20)";
+    final String content = "  +   评论展示控件重构\n\n" +
+            "  +   评论控件允许展开/收缩评论（开发中）\n\n";
 
 
     public void init(Activity act) {

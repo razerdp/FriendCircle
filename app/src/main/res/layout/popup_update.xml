@@ -66,7 +66,12 @@
                         <ImageView
                             android:layout_width="100dp"
                             android:layout_height="100dp"
-                            android:src="@drawable/wechat"/>
+                            android:src="@drawable/wechat_full"/>
+
+                        <ImageView
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:src="@drawable/ali_full"/>
 
                         <ImageView
                             android:layout_width="100dp"

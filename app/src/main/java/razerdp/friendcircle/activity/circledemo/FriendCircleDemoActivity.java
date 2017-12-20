@@ -1,5 +1,6 @@
 package razerdp.friendcircle.activity.circledemo;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import com.razerdp.github.com.common.entity.CommentInfo;
 import com.razerdp.github.com.common.entity.LikesInfo;
 import com.razerdp.github.com.common.entity.MomentsInfo;
 import com.razerdp.github.com.common.entity.UserInfo;
+import com.razerdp.github.com.common.entity.other.ServiceInfo;
 import com.razerdp.github.com.common.manager.LocalHostManager;
 import com.razerdp.github.com.common.request.MomentsRequest;
 import com.razerdp.github.com.common.router.RouterList;
@@ -24,10 +26,12 @@ import com.socks.library.KLog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import cn.bmob.v3.exception.BmobException;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.activity.ActivityLauncher;
+import razerdp.friendcircle.app.manager.ServiceInfoManager;
 import razerdp.friendcircle.app.manager.UpdateInfoManager;
 import razerdp.friendcircle.app.mvp.presenter.impl.MomentPresenter;
 import razerdp.friendcircle.app.mvp.view.IMomentView;
@@ -45,6 +49,7 @@ import razerdp.github.com.lib.utils.ToolUtil;
 import razerdp.github.com.ui.base.BaseTitleBarActivity;
 import razerdp.github.com.ui.helper.PhotoHelper;
 import razerdp.github.com.ui.imageloader.ImageLoadMnanger;
+import razerdp.github.com.ui.util.AnimUtils;
 import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.ui.widget.commentwidget.CommentBox;
 import razerdp.github.com.ui.widget.commentwidget.CommentWidget;
@@ -53,6 +58,9 @@ import razerdp.github.com.ui.widget.popup.SelectPhotoMenuPopup;
 import razerdp.github.com.ui.widget.pullrecyclerview.CircleRecyclerView;
 import razerdp.github.com.ui.widget.pullrecyclerview.CircleRecyclerView.OnPreDispatchTouchListener;
 import razerdp.github.com.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 /**
  * Created by 大灯泡 on 2016/10/26.
@@ -67,6 +75,7 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
 
 
     private CircleRecyclerView circleRecyclerView;
+    private TextView mServiceTipsView;
     private CommentBox commentBox;
     private HostViewHolder hostViewHolder;
     private CircleMomentsAdapter adapter;
@@ -88,8 +97,10 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         initView();
         initKeyboardHeightObserver();
         UIHelper.ToastMessage("请尽量不要上传黄图，谢谢");
+        delayCheckServiceInfo();
 
     }
+
 
     @Override
     public void onHandleIntent(Intent intent) {
@@ -114,16 +125,18 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         circleRecyclerView.setOnPreDispatchTouchListener(this);
         circleRecyclerView.addHeaderView(hostViewHolder.getView());
 
+        mServiceTipsView = (TextView) findViewById(R.id.service_tips);
+
         commentBox = (CommentBox) findViewById(R.id.widget_comment);
         commentBox.setOnCommentSendClickListener(onCommentSendClickListener);
 
         CircleMomentsAdapter.Builder<MomentsInfo> builder = new CircleMomentsAdapter.Builder<>(this);
         builder.addType(EmptyMomentsVH.class, MomentsType.EMPTY_CONTENT, R.layout.moments_empty_content)
-               .addType(MultiImageMomentsVH.class, MomentsType.MULTI_IMAGES, R.layout.moments_multi_image)
-               .addType(TextOnlyMomentsVH.class, MomentsType.TEXT_ONLY, R.layout.moments_only_text)
-               .addType(WebMomentsVH.class, MomentsType.WEB, R.layout.moments_web)
-               .setData(momentsInfoList)
-               .setPresenter(presenter);
+                .addType(MultiImageMomentsVH.class, MomentsType.MULTI_IMAGES, R.layout.moments_multi_image)
+                .addType(TextOnlyMomentsVH.class, MomentsType.TEXT_ONLY, R.layout.moments_only_text)
+                .addType(WebMomentsVH.class, MomentsType.WEB, R.layout.moments_web)
+                .setData(momentsInfoList)
+                .setPresenter(presenter);
         adapter = builder.build();
         circleRecyclerView.setAdapter(adapter);
         circleRecyclerView.autoRefresh();
@@ -228,9 +241,9 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
                 List<ImageInfo> selectedPhotos = new ArrayList<ImageInfo>();
                 selectedPhotos.add(new ImageInfo(filePath, null, null, 0, 0));
                 ActivityLauncher.startToPublishActivityWithResult(FriendCircleDemoActivity.this,
-                                                                  RouterList.PublishActivity.MODE_MULTI,
-                                                                  selectedPhotos,
-                                                                  RouterList.PublishActivity.requestCode);
+                        RouterList.PublishActivity.MODE_MULTI,
+                        selectedPhotos,
+                        RouterList.PublishActivity.requestCode);
             }
 
             @Override
@@ -354,6 +367,48 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
             super.onBackPressed();
         }
     }
+
+
+    //服务器消息检查，非项目所需↓
+    private void delayCheckServiceInfo() {
+        Observable.timer(500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        checkServiceInfo();
+                    }
+                });
+    }
+
+    private void checkServiceInfo() {
+        ServiceInfoManager.INSTANCE.check(new ServiceInfoManager.OnCheckServiceInfoListener() {
+            @Override
+            public void onCheckFinish(@Nullable final ServiceInfo serviceInfo) {
+                if (serviceInfo != null) {
+                    mServiceTipsView.setText(serviceInfo.getTips());
+                    mServiceTipsView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ActivityLauncher.startToServiceInfoActivity(FriendCircleDemoActivity.this, serviceInfo);
+                        }
+                    });
+                    mServiceTipsView.animate().alpha(1).translationY(UIHelper.dipToPx(50)).setDuration(500).setListener(new AnimUtils.SimpleAnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            mServiceTipsView.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mServiceTipsView.requestFocus();
+                        }
+                    }).start();
+                }
+            }
+        });
+    }
+    //服务器消息检查，非项目所需↑
 
     //=============================================================call back
     private CommentBox.OnCommentSendClickListener onCommentSendClickListener = new CommentBox.OnCommentSendClickListener() {

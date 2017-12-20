@@ -51,6 +51,9 @@
     <color name="text_black">#1A1A1A</color>
     <color name="text_gray">#bbc2ca</color>
     <color name="text_dark_gray">#9fa3a7</color>
+    <color name="color_black1">#333333</color>
+    <color name="color_black2">#666666</color>
+    <color name="color_black3">#888888</color>
 
     <!--popup-->
     <color name="popup_progress_bg">#bc000000</color>
