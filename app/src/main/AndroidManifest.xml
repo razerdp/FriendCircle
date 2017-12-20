@@ -31,6 +31,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Transparent"/>
 
+        <activity
+            android:name=".activity.other.ServiceInfoActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

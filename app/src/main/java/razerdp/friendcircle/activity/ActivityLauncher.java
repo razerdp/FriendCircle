@@ -7,12 +7,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.razerdp.github.com.common.entity.PhotoBrowseInfo;
+import com.razerdp.github.com.common.entity.other.ServiceInfo;
 import com.razerdp.github.com.common.router.RouterList;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import razerdp.friendcircle.activity.gallery.PhotoBrowseActivity;
+import razerdp.friendcircle.activity.other.ServiceInfoActivity;
 import razerdp.github.com.lib.common.entity.ImageInfo;
 import razerdp.github.com.photoselect.PhotoSelectActivity;
 import razerdp.github.com.publish.PublishActivity;
@@ -58,6 +60,18 @@ public class ActivityLauncher {
         Intent intent = new Intent(act, PhotoSelectActivity.class);
         act.startActivityForResult(intent, requestCode);
         SwitchActivityTransitionUtil.transitionVerticalIn(act);
-
     }
+
+    /**
+     * 发射到服务器消息页面
+     *
+     * @param act
+     */
+    public static void startToServiceInfoActivity(Activity act, ServiceInfo info) {
+        Intent intent = new Intent(act, ServiceInfoActivity.class);
+        intent.putExtra("info", info);
+        act.startActivity(intent);
+        SwitchActivityTransitionUtil.transitionVerticalIn(act);
+    }
+
 }

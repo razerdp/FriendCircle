@@ -3,6 +3,7 @@ package razerdp.github.com.ui.imageloader;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.BitmapRequestBuilder;
@@ -21,6 +22,8 @@ import razerdp.github.com.lib.api.AppContext;
 public enum ImageLoadMnanger {
     INSTANCE;
 
+    static final String DRAWABLE_PREFIX = "drawable://";
+
     public void clearMemory(Context context) {
         Glide.get(context).clearMemory();
     }
@@ -35,18 +38,24 @@ public enum ImageLoadMnanger {
 
     public void loadImageDontAnimate(ImageView imageView, String imgUrl) {
         loadImageByNormalConfig(imageView, imgUrl).dontAnimate()
-                                                  .into(imageView);
+                .into(imageView);
     }
 
     public void loadImage(ImageView imageView, String imgUrl, int width, int height) {
         loadImageByNormalConfig(imageView, imgUrl).placeholder(R.drawable.image_nophoto)
-                                                  .override(width, height)
-                                                  .into(imageView);
+                .override(width, height)
+                .into(imageView);
     }
 
 
     private BitmapRequestBuilder loadImageByNormalConfig(ImageView imageView, String url) {
-        return Glide.with(getImageContext(imageView)).load(url).asBitmap();
+        int resid = 0;
+        try {
+            resid = Integer.valueOf(url);
+        } catch (NumberFormatException e) {
+            Log.w("ImageLoadMnanger", "loadImageByNormalConfig: not a resource id");
+        }
+        return Glide.with(getImageContext(imageView)).load(resid != 0 ? resid : url).asBitmap();
     }
 
     private Context getImageContext(@Nullable ImageView imageView) {
