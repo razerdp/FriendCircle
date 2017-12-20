@@ -87,9 +87,10 @@
 
 
 如果您愿意捐助一下项目，可以通过微信/支付宝捐助哟~
-| 微信 | 支付宝 |
-| ---- |  ----  |
-| ![](https://github.com/razerdp/FriendCircle/blob/master/wechat.png)| ![](https://github.com/razerdp/FriendCircle/blob/master/alipay.png) |
+
+|微信         | 支付宝           | 
+| ------------- |:-------------:| 
+| ![](https://github.com/razerdp/FriendCircle/blob/master/wechat.png)      | ![](https://github.com/razerdp/FriendCircle/blob/master/alipay.png) |
 
 
 
