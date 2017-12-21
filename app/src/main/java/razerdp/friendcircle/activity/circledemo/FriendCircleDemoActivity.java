@@ -10,7 +10,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.razerdp.github.com.common.MomentsType;
@@ -29,6 +31,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import cn.bmob.v3.exception.BmobException;
+import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.activity.ActivityLauncher;
 import razerdp.friendcircle.app.manager.ServiceInfoManager;
@@ -43,6 +46,7 @@ import razerdp.friendcircle.ui.viewholder.WebMomentsVH;
 import razerdp.friendcircle.ui.widget.popup.RegisterPopup;
 import razerdp.github.com.lib.common.entity.ImageInfo;
 import razerdp.github.com.lib.helper.AppSetting;
+import razerdp.github.com.lib.interfaces.SingleClickListener;
 import razerdp.github.com.lib.manager.KeyboardControlMnanager;
 import razerdp.github.com.lib.network.base.OnResponseListener;
 import razerdp.github.com.lib.utils.ToolUtil;
@@ -74,8 +78,13 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
     private static final int REQUEST_LOADMORE = 0x11;
 
 
-    private CircleRecyclerView circleRecyclerView;
+    private int clickServiceCount = 0;
+    private RelativeLayout mTipsLayout;
     private TextView mServiceTipsView;
+    private ImageView mCloseImageView;
+    //服务器消息检查，非项目所需↑
+
+    private CircleRecyclerView circleRecyclerView;
     private CommentBox commentBox;
     private HostViewHolder hostViewHolder;
     private CircleMomentsAdapter adapter;
@@ -91,14 +100,18 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        UpdateInfoManager.INSTANCE.init(this);
         momentsInfoList = new ArrayList<>();
         momentsRequest = new MomentsRequest();
         initView();
         initKeyboardHeightObserver();
         UIHelper.ToastMessage("请尽量不要上传黄图，谢谢");
-        delayCheckServiceInfo();
 
+        UpdateInfoManager.INSTANCE.init(this, new BasePopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                delayCheckServiceInfo();
+            }
+        });
     }
 
 
@@ -125,7 +138,9 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         circleRecyclerView.setOnPreDispatchTouchListener(this);
         circleRecyclerView.addHeaderView(hostViewHolder.getView());
 
+        mTipsLayout = (RelativeLayout) findViewById(R.id.tips_layout);
         mServiceTipsView = (TextView) findViewById(R.id.service_tips);
+        mCloseImageView = (ImageView) findViewById(R.id.iv_close);
 
         commentBox = (CommentBox) findViewById(R.id.widget_comment);
         commentBox.setOnCommentSendClickListener(onCommentSendClickListener);
@@ -387,24 +402,52 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
             public void onCheckFinish(@Nullable final ServiceInfo serviceInfo) {
                 if (serviceInfo != null) {
                     mServiceTipsView.setText(serviceInfo.getTips());
-                    mServiceTipsView.setOnClickListener(new View.OnClickListener() {
+                    mServiceTipsView.setOnClickListener(new SingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
                             ActivityLauncher.startToServiceInfoActivity(FriendCircleDemoActivity.this, serviceInfo);
+                            clickServiceCount++;
+                            applyClose();
                         }
                     });
-                    mServiceTipsView.animate().alpha(1).translationY(UIHelper.dipToPx(50)).setDuration(500).setListener(new AnimUtils.SimpleAnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            mServiceTipsView.setVisibility(View.VISIBLE);
-                        }
+                    mTipsLayout.animate()
+                            .alpha(1)
+                            .translationY(UIHelper.dipToPx(50))
+                            .setDuration(800)
+                            .setInterpolator(new DecelerateInterpolator())
+                            .setListener(new AnimUtils.SimpleAnimatorListener() {
+                                @Override
+                                public void onAnimationStart(Animator animation) {
+                                    mTipsLayout.setVisibility(View.VISIBLE);
+                                }
 
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mServiceTipsView.requestFocus();
-                        }
-                    }).start();
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    mServiceTipsView.requestFocus();
+                                }
+                            }).start();
                 }
+            }
+        });
+    }
+
+    private void applyClose() {
+        if (clickServiceCount < 3) return;
+        mCloseImageView.setImageResource(R.drawable.ic_close);
+        mCloseImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTipsLayout.animate()
+                        .alpha(0)
+                        .translationY(0)
+                        .setDuration(800)
+                        .setInterpolator(new DecelerateInterpolator())
+                        .setListener(new AnimUtils.SimpleAnimatorListener() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                mTipsLayout.setVisibility(View.GONE);
+                            }
+                        }).start();
             }
         });
     }
