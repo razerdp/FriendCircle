@@ -30,6 +30,10 @@ public class MultiSpanUtil {
     private MultiSpanUtil() {
     }
 
+    public static MultiSpanOption create(@StringRes int strId, Object... objs) {
+        return create(StringUtil.getResourceStringAndFormat(strId, objs));
+    }
+
     public static MultiSpanOption create(@StringRes int source) {
         return create(StringUtil.getResourceString(source));
     }
@@ -153,6 +157,10 @@ public class MultiSpanUtil {
             mItemOptions = new ArrayList<>();
         }
 
+        public ItemOption append(@StringRes int strId, Object... objs) {
+            return append(StringUtil.getResourceStringAndFormat(strId, objs));
+        }
+
         public ItemOption append(@StringRes int keyWord) {
             return appendInternal(null, StringUtil.getResourceString(keyWord));
         }
@@ -178,7 +186,7 @@ public class MultiSpanUtil {
     public static class ItemOption extends BaseItemOption<ItemOption> {
         private boolean matchLast = false;
         private int textSize = -1;
-        private Typeface textType;
+        private Typeface textType = Typeface.DEFAULT;
         private int textColor = -1;
         private boolean underLine = false;
         private boolean isUrl = false;
@@ -208,8 +216,8 @@ public class MultiSpanUtil {
             return textSize;
         }
 
-        public ItemOption setTextSize(int textSize) {
-            this.textSize = textSize;
+        public ItemOption setTextSize(int spTextSize) {
+            this.textSize = UIHelper.sp2px(spTextSize);
             return this;
         }
 
