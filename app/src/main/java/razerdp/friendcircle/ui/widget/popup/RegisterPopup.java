@@ -39,6 +39,7 @@ public class RegisterPopup extends BasePopupWindow implements View.OnClickListen
         setBackPressEnable(false);
         vh = new ViewHolder(getPopupWindowView());
         setViewClickListener(this, vh.cancel, vh.ok);
+        setBlurBackgroundEnable(true);
     }
 
     @Override

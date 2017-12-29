@@ -27,6 +27,7 @@ public class DeleteCommentPopup extends BasePopupWindow implements View.OnClickL
         mCancel = (TextView) findViewById(R.id.cancel);
 
         setViewClickListener(this, mDel, mCancel);
+        setBlurBackgroundEnable(true);
     }
 
     @Override

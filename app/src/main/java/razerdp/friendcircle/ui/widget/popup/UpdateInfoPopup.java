@@ -35,6 +35,7 @@ public class UpdateInfoPopup extends BasePopupWindow {
                 return true;
             }
         });
+        setBlurBackgroundEnable(true);
     }
 
     @Override

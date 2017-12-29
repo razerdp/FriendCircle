@@ -11,6 +11,9 @@ android {
         versionCode rootProject.ext.android.versionCode
         versionName rootProject.ext.android.versionName
 
+        renderscriptTargetApi 25
+        renderscriptSupportModeEnabled true
+
         if (isModule.toBoolean()) {
             buildConfigField 'boolean', 'isModule', 'true'
         } else {
