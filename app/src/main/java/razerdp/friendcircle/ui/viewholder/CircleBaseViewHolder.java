@@ -97,7 +97,8 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         commentLayout.setOnCommentItemClickListener(onCommentItemClickListener);
         commentLayout.setOnCommentItemLongClickListener(onCommentItemLongClickListener);
         commentLayout.setOnCommentWidgetItemClickListener(onCommentWidgetItemClickListener);
-        commentLayout.setMode(CommentContentsLayout.Mode.WRAP);
+        // FIXME: 2018/1/3 暂时未开发完
+//        commentLayout.setMode(CommentContentsLayout.Mode.WRAP);
         //content
         contentLayout = (LinearLayout) findView(contentLayout, R.id.content);
 

@@ -37,12 +37,12 @@ public class DeleteCommentPopup extends BasePopupWindow implements View.OnClickL
 
     @Override
     protected Animation initShowAnimation() {
-        return getTranslateAnimation(300, 0, 300);
+        return getTranslateVerticalAnimation(1f, 0, 500);
     }
 
     @Override
     protected Animation initExitAnimation() {
-        return getTranslateAnimation(0, 300, 300);
+        return getTranslateVerticalAnimation(0, 1f, 500);
     }
 
     @Override

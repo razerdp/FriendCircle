@@ -43,11 +43,11 @@ dependencies {
     compile rootProject.ext.dependencies.design
     compile rootProject.ext.dependencies.support_util
 
-    compile 'com.github.razerdp:BasePopup_Candy:1.9.0-alpha2'
+    compile 'com.github.razerdp:BasePopup:1.9.1'
     //over scroller helper
     compile 'me.everything:overscroll-decor-android:1.0.3'
     //bmob
-    compile('cn.bmob.android:bmob-sdk:3.5.8') {
+    compile('cn.bmob.android:bmob-sdk:3.5.9') {
         exclude group: 'com.google.code.gson'
     }
     //log

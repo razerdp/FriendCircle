@@ -30,16 +30,17 @@ public class SelectPhotoMenuPopup extends BasePopupWindow implements View.OnClic
         cancel = findViewById(R.id.cancel);
 
         ViewUtil.setViewsClickListener(this, shoot, album, cancel);
+        setBlurBackgroundEnable(true);
     }
 
     @Override
     protected Animation initShowAnimation() {
-        return getTranslateAnimation(600, 0, 300);
+        return getTranslateVerticalAnimation(1f, 0, 500);
     }
 
     @Override
     protected Animation initExitAnimation() {
-        return getTranslateAnimation(0, 600, 300);
+        return getTranslateVerticalAnimation(0, 1f, 500);
     }
 
     @Override
