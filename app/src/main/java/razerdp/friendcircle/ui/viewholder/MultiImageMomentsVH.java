@@ -7,8 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.razerdp.github.com.common.MomentsType;
 import com.razerdp.github.com.common.entity.MomentsInfo;
 import com.razerdp.github.com.common.entity.PhotoBrowseInfo;
+import com.razerdp.github.com.util.BmobUrlUtil;
 import com.socks.library.KLog;
 
 import java.util.ArrayList;
@@ -88,7 +90,16 @@ public class MultiImageMomentsVH extends CircleBaseViewHolder implements PhotoCo
 
         @Override
         public void onBindData(int position, @NonNull ImageView convertView) {
-            ImageLoadMnanger.INSTANCE.loadImage(convertView, datas.get(position));
+            int width = convertView.getWidth();
+            int height = convertView.getHeight();
+            String imageUrl = datas.get(position);
+            if (width > 0 && height > 0) {
+                imageUrl = BmobUrlUtil.getThumbImageUrl(imageUrl, width, height);
+            } else {
+                imageUrl = BmobUrlUtil.getThumbImageUrl(imageUrl, 25);
+            }
+            KLog.i("处理的url  >>>  " + imageUrl);
+            ImageLoadMnanger.INSTANCE.loadImage(convertView, imageUrl);
         }
 
         @Override

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.razerdp.github.com.common.entity.PhotoBrowseInfo;
+import com.razerdp.github.com.util.BmobUrlUtil;
 import com.socks.library.KLog;
 
 import java.util.LinkedList;
@@ -153,7 +154,7 @@ public class PhotoBrowseActivity extends BaseActivity {
         public Object instantiateItem(ViewGroup container, int position) {
             GalleryPhotoView photoView = viewBuckets.get(position);
             String photoUrl = photoBrowseInfo.getPhotoUrls().get(position);
-            ImageLoadMnanger.INSTANCE.loadImageDontAnimate(photoView, photoUrl);
+            ImageLoadMnanger.INSTANCE.loadImageDontAnimate(photoView, BmobUrlUtil.getThumbImageUrl(photoUrl, 50));
             container.addView(photoView);
             return photoView;
         }
