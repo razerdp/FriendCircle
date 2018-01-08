@@ -1,5 +1,7 @@
-# FriendCircle
-## 一起来撸个朋友圈吧(重构版)
+FriendCircle
+---
+
+### 一起来撸个朋友圈吧(重构版)
 
 欢迎来到本项目，这个项目是一个尝试性项目，目的在于从无到有撸出一个微信朋友圈。</br>
 
@@ -19,29 +21,33 @@
 >
 > 最后，如果您遇到图片加载失败，请不要担心，纯粹就是没流量而已。
 
-## 【简略更新日志】
+【简略更新日志】
+---
 
- - 2017/12/20
-    + 添加服务器消息
-    + 优化`CommentContentsLayout`，在`circle_dev_commentcontentslayout`分支中开发收起/展开评论功能
+* 2018/1/3
+ * 增加bmob缩略图url，，，减少流量损耗
 
- - 2017/12/13
-    + 修复`PraiseWidget`点赞控件可能出现的无限回调`draw()`方法的问题，感谢[@Leu-Z](https://github.com/Leu-Z)
-    + 优化控件，将评论展示控件封装到`CommentContentsLayout`，同时用`addViewInLayout`代替`addView`防止多次 **requestLayout()** ，下一步将会解决[#28](https://github.com/razerdp/FriendCircle/issues/28)
+* 2017/12/20
+ * 添加服务器消息
+ * 优化`CommentContentsLayout`，在`circle_dev_commentcontentslayout`分支中开发收起/展开评论功能
 
- - 2017/11/17
-    + 重构组件化，命名统一，针对以前不合理的地方进行修正，引入common模块
-    + 剥离一些控件，防止耦合度过高
+* 2017/12/13
+ * 修复`PraiseWidget`点赞控件可能出现的无限回调`draw()`方法的问题，感谢[@Leu-Z](https://github.com/Leu-Z)
+ * 优化控件，将评论展示控件封装到`CommentContentsLayout`，同时用`addViewInLayout`代替`addView`防止多次 **requestLayout()** ，下一步将会解决[#28](https://github.com/razerdp/FriendCircle/issues/28)
 
- - 2017/10/27
-    + 再次修复长文字折叠问题
-    + 增加test分支（用于测试）
-    + 修复相册扫描没有进度条的问题
-    + 增加kotlin分支（用于学习并逐渐转换到kotlin）
+* 2017/11/17
+ * 重构组件化，命名统一，针对以前不合理的地方进行修正，引入common模块
+ * 剥离一些控件，防止耦合度过高
 
- - ...more
-    
- - 更多日志请看 → [更新日志](https://github.com/razerdp/FriendCircle/blob/master/UPDATE_LOG.md)
+* 2017/10/27
+ * 再次修复长文字折叠问题
+ * 增加test分支（用于测试）
+ * 修复相册扫描没有进度条的问题
+ * 增加kotlin分支（用于学习并逐渐转换到kotlin）
+
+*  ...more
+
+* 更多日志请看 → [更新日志](https://github.com/razerdp/FriendCircle/blob/master/UPDATE_LOG.md)
 
 ---
 
@@ -50,34 +56,41 @@
 [代码实现逻辑（简书合集）](http://www.jianshu.com/notebooks/3224048/latest)
 
 
-## 【最新进度：发布动态】
-### 2017-10-24
+【最新进度：发布动态】
+---
 
-发布页面完成（图片选择）
+* 2017-10-24
+ * 发布页面完成（图片选择）
 
 ![](https://github.com/razerdp/FriendCirclePreview/blob/master/img/device-2017-10-24.gif)
 
 ***
 
-## 部分问题解决:
+部分问题解决
+---
 
-#### 在更新了Gradle 3.0后，可能会出现dexMerge错误，定位知道是bmob的sdk内含gson与gson2.8的冲突
-#### 事实上暂时来说我不知道哪里引用了gson2.8（打印dependences Tree也找不到），所以如果出现这个情况，请删除bmob包下的gson-2.6.2.jar
+* 在更新了Gradle 3.0后，可能会出现dexMerge错误，定位知道是bmob的sdk内含gson与gson2.8的冲突
+* 事实上暂时来说我不知道哪里引用了gson2.8（打印dependences Tree也找不到），所以如果出现这个情况，请删除bmob包下的gson-2.6.2.jar
+
 >具体方法：
->  - 切换到Project标签
->  - 定位到External Libraries
->  - 找到cn.bmob.android:bmob-sdk-xxx，展开
->  - 找到gson-2.6.2.jar，右键delete即可
+>  * 切换到Project标签
+>  * 定位到External Libraries
+>  * 找到cn.bmob.android:bmob-sdk-xxx，展开
+>  * 找到gson-2.6.2.jar，右键delete即可
 
 ##### 如果您需要bmob的后台数据查看，可以提交issue，留下用户名或者邮箱，我拉你进团队管理（无修改权限）
 
 ##### 因为采取组件化，所以可能push上来的是组件的build，如果您要build整个app，请把gradle.properties下的  isModule=true 切换为false并sync gradle
 
 
-## 关于作者我:
+关于作者我
+---
+
 普普通通的安卓开发者一枚。
 
-## 关于项目：
+关于项目
+---
+
 本项目意在按照我的经验弄出一个微信朋友圈，也许无法完全实现，但高仿应该是没问题的，只是时间问题←_←。
 
 如果您感兴趣，欢迎加群一起讨论，本群新创建，暂时没有什么特别的要求哈，大家都是因为兴趣-V-
@@ -95,6 +108,7 @@
 
 
 
-## LICENSE：
+LICENSE
+---
 
 [GPL3.0](https://github.com/razerdp/FriendCircle/blob/master/LICENSE)
