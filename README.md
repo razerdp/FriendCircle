@@ -24,6 +24,9 @@ FriendCircle
 【简略更新日志】
 ---
 
+* 2018/1/9
+  * 解决gson冲突问题
+
 * 2018/1/3
   * 增加bmob缩略图url，，，减少流量损耗
 
@@ -49,8 +52,8 @@ FriendCircle
 
 * 更多日志请看 → [更新日志](https://github.com/razerdp/FriendCircle/blob/master/UPDATE_LOG.md)
 
+关于思路
 ---
-
 **本项目的一切实现思路以及逻辑都有记录，它们都有在我的简书文集记载：自4月份起停止更新，如果您感兴趣，可以加群一起探讨（590777418）**
 
 [代码实现逻辑（简书合集）](http://www.jianshu.com/notebooks/3224048/latest)
@@ -66,23 +69,6 @@ FriendCircle
 
 ***
 
-部分问题解决
----
-
-* 在更新了Gradle 3.0后，可能会出现dexMerge错误，定位知道是bmob的sdk内含gson与gson2.8的冲突
-* 事实上暂时来说我不知道哪里引用了gson2.8（打印dependences Tree也找不到），所以如果出现这个情况，请删除bmob包下的gson-2.6.2.jar
-
->具体方法：
->  * 切换到Project标签
->  * 定位到External Libraries
->  * 找到cn.bmob.android:bmob-sdk-xxx，展开
->  * 找到gson-2.6.2.jar，右键delete即可
-
-##### 如果您需要bmob的后台数据查看，可以提交issue，留下用户名或者邮箱，我拉你进团队管理（无修改权限）
-
-##### 因为采取组件化，所以可能push上来的是组件的build，如果您要build整个app，请把gradle.properties下的  isModule=true 切换为false并sync gradle
-
-
 关于作者我
 ---
 
@@ -92,6 +78,11 @@ FriendCircle
 ---
 
 本项目意在按照我的经验弄出一个微信朋友圈，也许无法完全实现，但高仿应该是没问题的，只是时间问题←_←。
+
+**如果您需要bmob的后台数据查看，可以提交issue，留下用户名或者邮箱，我拉你进团队管理（无修改权限）**
+
+**因为采取组件化，所以可能push上来的是组件的build，如果您要build整个app，请把gradle.properties下的  isModule=true 切换为false并sync gradle**
+
 
 如果您感兴趣，欢迎加群一起讨论，本群新创建，暂时没有什么特别的要求哈，大家都是因为兴趣-V-
 
