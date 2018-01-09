@@ -66,5 +66,5 @@ dependencies {
     compile rootProject.ext.dependencies.arouter_api
     annotationProcessor rootProject.ext.dependencies.arouter_compiler
     //朋友圈九宫格控件
-    compile 'com.github.razerdp:PhotoContents:v1.4.3'
+    compile 'com.github.razerdp:PhotoContents:1.4.3'
 }
