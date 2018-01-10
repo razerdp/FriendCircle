@@ -11,6 +11,10 @@ import android.widget.ImageView;
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.razerdp.github.com.common.entity.photo.PhotoBrowserInfo;
+import com.razerdp.github.com.common.manager.LocalHostManager;
+import com.razerdp.github.com.common.request.AddMomentsRequest;
+import com.razerdp.github.com.common.router.RouterList;
 import com.socks.library.KLog;
 
 import java.util.List;
@@ -18,26 +22,25 @@ import java.util.List;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.UploadBatchListener;
+import razerdp.github.com.lib.common.entity.ImageInfo;
 import razerdp.github.com.lib.helper.AppSetting;
-import razerdp.github.com.ui.imageloader.ImageLoadMnanger;
 import razerdp.github.com.lib.interfaces.adapter.TextWatcherAdapter;
+import razerdp.github.com.lib.manager.compress.CompressManager;
+import razerdp.github.com.lib.manager.compress.OnMultiCompressListener;
+import razerdp.github.com.lib.manager.compress.OnMultiCompressListener.OnMultiCompressListenerAdapter;
 import razerdp.github.com.lib.network.base.OnResponseListener;
 import razerdp.github.com.lib.utils.StringUtil;
 import razerdp.github.com.lib.utils.ToolUtil;
+import razerdp.github.com.ui.base.BaseTitleBarActivity;
+import razerdp.github.com.ui.helper.PhotoHelper;
+import razerdp.github.com.ui.imageloader.ImageLoadMnanger;
 import razerdp.github.com.ui.util.SwitchActivityTransitionUtil;
 import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.ui.util.ViewUtil;
-import razerdp.github.com.ui.base.BaseTitleBarActivity;
-import razerdp.github.com.ui.helper.PhotoHelper;
 import razerdp.github.com.ui.widget.common.TitleBar;
 import razerdp.github.com.ui.widget.imageview.PreviewImageView;
 import razerdp.github.com.ui.widget.popup.PopupProgress;
 import razerdp.github.com.ui.widget.popup.SelectPhotoMenuPopup;
-import com.razerdp.github.com.common.manager.LocalHostManager;
-import razerdp.github.com.lib.common.entity.ImageInfo;
-import com.razerdp.github.com.common.entity.photo.PhotoBrowserInfo;
-import com.razerdp.github.com.common.request.AddMomentsRequest;
-import com.razerdp.github.com.common.router.RouterList;
 
 
 /**
@@ -110,10 +113,10 @@ public class PublishActivity extends BaseTitleBarActivity {
             public void onPhotoClickListener(int pos, ImageInfo data, @NonNull ImageView imageView) {
                 PhotoBrowserInfo info = PhotoBrowserInfo.create(pos, null, selectedPhotos);
                 ARouter.getInstance()
-                       .build(RouterList.PhotoMultiBrowserActivity.path)
-                       .withParcelable(RouterList.PhotoMultiBrowserActivity.key_browserinfo, info)
-                       .withInt(RouterList.PhotoMultiBrowserActivity.key_maxSelectCount, selectedPhotos.size())
-                       .navigation(PublishActivity.this, RouterList.PhotoMultiBrowserActivity.requestCode);
+                        .build(RouterList.PhotoMultiBrowserActivity.path)
+                        .withParcelable(RouterList.PhotoMultiBrowserActivity.key_browserinfo, info)
+                        .withInt(RouterList.PhotoMultiBrowserActivity.key_maxSelectCount, selectedPhotos.size())
+                        .navigation(PublishActivity.this, RouterList.PhotoMultiBrowserActivity.requestCode);
             }
         });
         mPreviewImageView.setOnAddPhotoClickListener(new View.OnClickListener() {
@@ -146,9 +149,9 @@ public class PublishActivity extends BaseTitleBarActivity {
                 @Override
                 public void onAlbumClick() {
                     ARouter.getInstance()
-                           .build(RouterList.PhotoSelectActivity.path)
-                           .withInt(RouterList.PhotoSelectActivity.key_maxSelectCount, mPreviewImageView.getRestPhotoCount())
-                           .navigation(PublishActivity.this, RouterList.PhotoSelectActivity.requestCode);
+                            .build(RouterList.PhotoSelectActivity.path)
+                            .withInt(RouterList.PhotoSelectActivity.key_maxSelectCount, mPreviewImageView.getRestPhotoCount())
+                            .navigation(PublishActivity.this, RouterList.PhotoSelectActivity.requestCode);
                 }
             });
         }
@@ -239,38 +242,82 @@ public class PublishActivity extends BaseTitleBarActivity {
             for (int i = 0; i < datas.size(); i++) {
                 uploadTaskPaths[i] = datas.get(i).getImagePath();
             }
-            BmobFile.uploadBatch(uploadTaskPaths, new UploadBatchListener() {
+            doCompress(uploadTaskPaths, new OnMultiCompressListenerAdapter() {
                 @Override
-                public void onSuccess(List<BmobFile> list, List<String> list1) {
-                    //1、有多少个文件上传，onSuccess方法就会执行多少次;
-                    //2、通过onSuccess回调方法中的files或urls集合的大小与上传的总文件个数比较，如果一样，则表示全部文件上传成功。
-                    if (!ToolUtil.isListEmpty(list1) && list1.size() == uploadTaskPaths.length) {
-                        publishInternal(inputContent, list1);
+                public void onCompressSuccess(List<String> targetImagePath) {
+                    if (!ToolUtil.isListEmpty(targetImagePath)) {
+                        for (int i = 0; i < targetImagePath.size(); i++) {
+                            uploadTaskPaths[i] = targetImagePath.get(i);
+                        }
+                        doUpload(uploadTaskPaths, inputContent);
+                    } else {
+                        publishInternal(inputContent, null);
                     }
-                }
-
-                @Override
-                public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
-                    //1、curIndex--表示当前第几个文件正在上传
-                    //2、curPercent--表示当前上传文件的进度值（百分比）
-                    //3、total--表示总的上传文件数
-                    //4、totalPercent--表示总的上传进度（百分比）
-                    mPopupProgress.setProgressTips("正在上传第" + curIndex + "/" + total + "张图片");
-                    mPopupProgress.setProgress(totalPercent);
-                    if (!mPopupProgress.isShowing()) {
-                        mPopupProgress.showPopupWindow();
-                    }
-                }
-
-                @Override
-                public void onError(int i, String s) {
-                    mPopupProgress.dismiss();
-                    UIHelper.ToastMessage(s);
                 }
             });
         } else {
             publishInternal(inputContent, null);
         }
+    }
+
+    private void doCompress(String[] uploadPaths, final OnMultiCompressListenerAdapter listener) {
+        CompressManager compressManager = CompressManager.create(this);
+        for (String uploadPath : uploadPaths) {
+            compressManager.addTask().setOriginalImagePath(uploadPath);
+        }
+        mPopupProgress.showPopupWindow();
+        compressManager.start(new OnMultiCompressListener() {
+            @Override
+            public void onCompressSuccess(List<String> targetImagePath) {
+                listener.onCompressSuccess(targetImagePath);
+                mPopupProgress.dismiss();
+            }
+
+            @Override
+            public void onCompress(long current, long target) {
+                float progress = (float) current / target;
+                mPopupProgress.setProgressTips("正在压缩第" + current + "/" + target + "张图片");
+                mPopupProgress.setProgress((int) (progress * 100));
+            }
+
+            @Override
+            public void onError(String tag) {
+                mPopupProgress.dismiss();
+                UIHelper.ToastMessage(tag);
+            }
+        });
+    }
+
+    private void doUpload(final String[] uploadTaskPaths, final String inputContent) {
+        BmobFile.uploadBatch(uploadTaskPaths, new UploadBatchListener() {
+            @Override
+            public void onSuccess(List<BmobFile> list, List<String> list1) {
+                //1、有多少个文件上传，onSuccess方法就会执行多少次;
+                //2、通过onSuccess回调方法中的files或urls集合的大小与上传的总文件个数比较，如果一样，则表示全部文件上传成功。
+                if (!ToolUtil.isListEmpty(list1) && list1.size() == uploadTaskPaths.length) {
+                    publishInternal(inputContent, list1);
+                }
+            }
+
+            @Override
+            public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
+                //1、curIndex--表示当前第几个文件正在上传
+                //2、curPercent--表示当前上传文件的进度值（百分比）
+                //3、total--表示总的上传文件数
+                //4、totalPercent--表示总的上传进度（百分比）
+                mPopupProgress.setProgressTips("正在上传第" + curIndex + "/" + total + "张图片");
+                mPopupProgress.setProgress(totalPercent);
+                if (!mPopupProgress.isShowing()) {
+                    mPopupProgress.showPopupWindow();
+                }
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                mPopupProgress.dismiss();
+                UIHelper.ToastMessage(s);
+            }
+        });
     }
 
     private void publishInternal(String input, List<String> uploadPicPaths) {
@@ -280,9 +327,9 @@ public class PublishActivity extends BaseTitleBarActivity {
         }
         AddMomentsRequest addMomentsRequest = new AddMomentsRequest();
         addMomentsRequest.setAuthId(LocalHostManager.INSTANCE.getUserid())
-                         //暂时Host强制使用开发者id
-                         .setHostId(AppSetting.loadStringPreferenceByKey(AppSetting.HOST_ID, "MMbKLCCU"))
-                         .addText(input);
+                //暂时Host强制使用开发者id
+                .setHostId(AppSetting.loadStringPreferenceByKey(AppSetting.HOST_ID, "MMbKLCCU"))
+                .addText(input);
         if (!ToolUtil.isListEmpty(uploadPicPaths)) {
             for (String uploadPicPath : uploadPicPaths) {
                 addMomentsRequest.addPicture(uploadPicPath);

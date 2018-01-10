@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -74,11 +75,15 @@ public class AppContext {
         return sApplication.getResources();
     }
 
-    public static void initARouter(){
+    public static void initARouter() {
         ARouter.openLog();
         ARouter.openDebug();
         ARouter.printStackTrace();
         ARouter.init(getAppInstance());
+    }
+
+    public static boolean isMainThread() {
+        return Looper.getMainLooper().getThread() == Thread.currentThread();
     }
 
 

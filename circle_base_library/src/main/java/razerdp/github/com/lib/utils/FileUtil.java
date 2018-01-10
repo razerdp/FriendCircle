@@ -61,6 +61,34 @@ public class FileUtil {
         }
     }
 
+
+    /**
+     * 得到除去文件名部分的路径 实际上就是路径中的最后一个路径分隔符前的部分。
+     */
+    public static String getNameDelLastPath(String fileName) {
+        int point = getPathLastIndex(fileName);
+        if (point == -1) {
+            return fileName;
+        } else {
+            return fileName.substring(0, point);
+        }
+    }
+
+    /**
+     * 得到路径分隔符在文件路径中最后出现的位置。 对于DOS或者UNIX风格的分隔符都可以。
+     *
+     * @param fileName 文件路径
+     * @return 路径分隔符在路径中最后出现的位置，没有出现时返回-1。
+     * @since 0.5
+     */
+    public static int getPathLastIndex(String fileName) {
+        int point = fileName.lastIndexOf('/');
+        if (point == -1) {
+            point = fileName.lastIndexOf('\\');
+        }
+        return point;
+    }
+
     /**
      * 如果文件末尾有了"/"则判断是否有多个"/"，是则保留一个，没有则添加
      *

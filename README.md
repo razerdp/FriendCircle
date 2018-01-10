@@ -24,6 +24,9 @@ FriendCircle
 【简略更新日志】
 ---
 
+* 2018/1/10
+  * 增加压缩图片类，上传时压缩
+
 * 2018/1/9
   * 解决gson冲突问题
 
@@ -33,20 +36,6 @@ FriendCircle
 * 2017/12/20
   * 添加服务器消息
   * 优化`CommentContentsLayout`，在`circle_dev_commentcontentslayout`分支中开发收起/展开评论功能
-
-* 2017/12/13
-  * 修复`PraiseWidget`点赞控件可能出现的无限回调`draw()`方法的问题，感谢[@Leu-Z](https://github.com/Leu-Z)
-  * 优化控件，将评论展示控件封装到`CommentContentsLayout`，同时用`addViewInLayout`代替`addView`防止多次 **requestLayout()** ，下一步将会解决[#28](https://github.com/razerdp/FriendCircle/issues/28)
-
-* 2017/11/17
-  * 重构组件化，命名统一，针对以前不合理的地方进行修正，引入common模块
-  * 剥离一些控件，防止耦合度过高
-
-* 2017/10/27
-  * 再次修复长文字折叠问题
-  * 增加test分支（用于测试）
-  * 修复相册扫描没有进度条的问题
-  * 增加kotlin分支（用于学习并逐渐转换到kotlin）
 
 *  ...more
 

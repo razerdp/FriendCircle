@@ -28,7 +28,7 @@ public class AppFileHelper {
     public static final String CACHE_PATH = ROOT_PATH + ".cache/";
     public static final String PIC_PATH = ROOT_PATH + ".pic/.nomedia/";
     public static final String LOG_PATH = ROOT_PATH + ".log/";
-    public static final String TEMP_PATH = ROOT_PATH + ".temp/";
+    public static final String TEMP_PATH = ROOT_PATH + "temp/";
 
     private static String storagePath;
 
