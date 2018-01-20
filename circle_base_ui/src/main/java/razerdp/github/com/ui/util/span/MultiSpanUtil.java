@@ -1,4 +1,4 @@
-package razerdp.github.com.ui.util;
+package razerdp.github.com.ui.util.span;
 
 import android.graphics.Typeface;
 import android.support.annotation.ColorRes;
@@ -9,6 +9,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import razerdp.github.com.lib.utils.StringUtil;
-import razerdp.github.com.ui.widget.span.UrlSpanEx;
+import razerdp.github.com.ui.util.UIHelper;
 
 /**
  * Created by 大灯泡 on 2017/12/21.
@@ -53,6 +54,18 @@ public class MultiSpanUtil {
         private BaseItemOption(CharSequence keyWord, MultiSpanOption option) {
             this.mOption = option;
             this.keyWord = keyWord;
+        }
+
+        public T append() {
+            return append(mOption.sourceToString());
+        }
+
+        public T append(@StringRes int keyWord, Object... formatted) {
+            return append(StringUtil.getResourceStringAndFormat(keyWord, formatted));
+        }
+
+        public T append(@StringRes int keyWord) {
+            return append(StringUtil.getResourceString(keyWord));
         }
 
         public T append(String keyWord) {
@@ -136,6 +149,10 @@ public class MultiSpanUtil {
                         .length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
 
+            if (option.getBgColor() != -1) {
+                spanBuilder.setSpan(new BackgroundColorSpan(option.getBgColor()), index, index + keyWord.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+
         }
     }
 
@@ -153,8 +170,12 @@ public class MultiSpanUtil {
         }
 
         private MultiSpanOption(CharSequence source) {
-            this.source = source;
+            this.source = TextUtils.isEmpty(source) ? "" : source;
             mItemOptions = new ArrayList<>();
+        }
+
+        public ItemOption append() {
+            return append(sourceToString());
         }
 
         public ItemOption append(@StringRes int strId, Object... objs) {
@@ -192,7 +213,7 @@ public class MultiSpanUtil {
         private boolean isUrl = false;
         private View.OnClickListener onUrlClickListener;
         private int urlColor = -1;
-
+        private int bgColor = -1;
 
         public ItemOption(CharSequence keyWord, MultiSpanOption option) {
             super(keyWord, option);
@@ -270,7 +291,15 @@ public class MultiSpanUtil {
             onUrlClickListener = l;
             return this;
         }
-    }
 
+        public ItemOption setBgColorFromRes(@ColorRes int bgColor) {
+            this.bgColor = UIHelper.getResourceColor(bgColor);
+            return this;
+        }
+
+        public int getBgColor() {
+            return bgColor;
+        }
+    }
 
 }

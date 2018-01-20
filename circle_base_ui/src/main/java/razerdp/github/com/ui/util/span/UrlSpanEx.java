@@ -1,4 +1,4 @@
-package razerdp.github.com.ui.widget.span;
+package razerdp.github.com.ui.util.span;
 
 import android.os.Parcel;
 import android.text.TextPaint;
