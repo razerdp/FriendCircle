@@ -16,6 +16,7 @@ import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.widget.TextView;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class MultiSpanUtil {
 
         private BaseItemOption(CharSequence keyWord, MultiSpanOption option) {
             this.mOption = option;
-            this.keyWord = keyWord;
+            this.keyWord = TextUtils.isEmpty(keyWord) ? "" : keyWord;
         }
 
         public T append() {
@@ -120,7 +121,8 @@ public class MultiSpanUtil {
         }
 
         private void applySpan(SpannableStringBuilder spanBuilder, String keyWord, @NonNull ItemOption option, int index) {
-            if (index <= -1 || spanBuilder == null || option == null) return;
+            if (index <= -1 || spanBuilder == null || option == null || TextUtils.isEmpty(keyWord) || (index + keyWord.length() <= 0))
+                return;
             //color
             if (option.getTextColor() != -1) {
                 spanBuilder.setSpan(new ForegroundColorSpan(option.getTextColor()), index, index + keyWord
