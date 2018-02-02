@@ -52,7 +52,7 @@ public class AppContext {
     }
 
     public static boolean isAppBackground() {
-        return INNER_LIFECYCLE_HANDLER != null && INNER_LIFECYCLE_HANDLER.paused > INNER_LIFECYCLE_HANDLER.resumed;
+        return INNER_LIFECYCLE_HANDLER != null && INNER_LIFECYCLE_HANDLER.resumed <= INNER_LIFECYCLE_HANDLER.stopped;
     }
 
     private static void checkAppContext() {
