@@ -74,7 +74,7 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
-    protected PermissionHelper getPermissionHelper() {
+    public PermissionHelper getPermissionHelper() {
         return mPermissionHelper;
     }
 

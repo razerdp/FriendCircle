@@ -171,7 +171,12 @@ public class PermissionHelper {
             requestPermissionsInternal(permissionsList.toArray(new String[permissionsList.size()]), CODE_MULTI_PERMISSION);
 
         } else if (shouldRationalePermissionsList.size() > 0) {
-            shoMessageDialog(getContext(), "需要权限", "确定", new DialogInterface.OnClickListener() {
+            StringBuilder builder = new StringBuilder();
+            for (String s : shouldRationalePermissionsList) {
+                builder.append(s);
+                builder.append('\n');
+            }
+            shoMessageDialog(getContext(), "需要权限", "需要申请以下权限：" + builder.toString(), "确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     requestPermissionsInternal(shouldRationalePermissionsList.toArray(new String[shouldRationalePermissionsList.size()]),
@@ -197,7 +202,7 @@ public class PermissionHelper {
 
     private void shouldShowRationale(final Context activity, final int requestCode, final String requestPermission) {
         String[] permissionsHint = activity.getResources().getStringArray(R.array.permissions);
-        shoMessageDialog(activity, "Rationale: " + permissionsHint[requestCode], "确定", new DialogInterface.OnClickListener() {
+        shoMessageDialog(activity, "申请授权失败", "Rationale: " + permissionsHint[requestCode], "确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 requestPermissionsInternal(new String[]{requestPermission}, requestCode);
@@ -205,10 +210,11 @@ public class PermissionHelper {
         });
     }
 
-    private static void shoMessageDialog(final Context context, String message, String buttonText, final DialogInterface.OnClickListener
+    private static void shoMessageDialog(final Context context, String title, String message, String buttonText, final DialogInterface.OnClickListener
             dialogButtonClickListener) {
         new AlertDialog.Builder(context)
-                .setTitle(message)
+                .setTitle(title)
+                .setMessage(message)
                 .setPositiveButton(buttonText, dialogButtonClickListener)
                 .create()
                 .show();
@@ -234,14 +240,14 @@ public class PermissionHelper {
             callPermissionGranted(requestCode);
         } else {
             String[] permissionsHint = getContext().getResources().getStringArray(R.array.permissions);
-            openSettingActivity(getContext(), "Result" + permissionsHint[requestCode]);
+            openSettingActivity(getContext(), permissionsHint[requestCode]);
         }
 
     }
 
     private static void openSettingActivity(final Context context, String message) {
 
-        shoMessageDialog(context, "手动授权", message, new DialogInterface.OnClickListener() {
+        shoMessageDialog(context, "授权被永久禁止", message, "手动授权", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent();

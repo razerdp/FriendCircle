@@ -52,9 +52,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
 
-    protected PermissionHelper getPermissionHelper() {
+    public PermissionHelper getPermissionHelper() {
         return mPermissionHelper;
     }
+
 
     @Override
     protected void onStop() {

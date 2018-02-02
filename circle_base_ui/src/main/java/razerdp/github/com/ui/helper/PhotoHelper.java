@@ -12,6 +12,8 @@ import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import razerdp.github.com.lib.base.BaseActivity;
+import razerdp.github.com.lib.base.BaseFragment;
 import razerdp.github.com.lib.helper.AppFileHelper;
 import razerdp.github.com.lib.helper.PermissionHelper;
 import razerdp.github.com.lib.utils.ImageSelectUtil;
@@ -115,9 +117,9 @@ public class PhotoHelper {
             }
         };
         if (object instanceof Activity) {
-            permissionHelper = new PermissionHelper((Activity) object);
+            permissionHelper = object instanceof BaseActivity ? ((BaseActivity) object).getPermissionHelper() : new PermissionHelper((Activity) object);
         } else if (object instanceof Fragment) {
-            permissionHelper = new PermissionHelper(((Fragment) object).getActivity());
+            permissionHelper = object instanceof BaseFragment ? ((BaseFragment) object).getPermissionHelper() : new PermissionHelper(((Fragment) object).getActivity());
         }
         if (permissionHelper != null) {
             permissionHelper.requestPermission(PermissionHelper.CODE_CAMERA, onPermissionGrantListener);
