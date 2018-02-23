@@ -19,21 +19,24 @@
     -->
     <!--当path 为空时 5个全配置就可以解决-->
     <external-path
-        name="extfiles"
-        path="Android/data/razerdp.friendcircle/files/"/>
+        name="data"
+        path="razerdp/github/friendcircle/data/"/>
     <external-path
-        name="photo"
-        path="github/razerdp/friendcircle/photo"/>
-
+        name="cache"
+        path="razerdp/github/friendcircle/cache/"/>
+    <external-path
+        name="picture"
+        path="razerdp/github/friendcircle/pic/"/>
     <external-path
         name="camera"
-        path="github/razerdp/friendcircle/camera"/>
-
+        path="razerdp/github/friendcircle/pic/camera/"/>
     <external-path
-        name="icon"
-        path="github/razerdp/friendcircle/icon"/>
-
+        name="log"
+        path="razerdp/github/friendcircle/log/"/>
+    <external-path
+        name="temp"
+        path="razerdp/github/friendcircle/temp/"/>
     <external-path
         name="download"
-        path="github/razerdp/friendcircle/download"/>
+        path="razerdp/github/friendcircle/download/"/>
 </paths>

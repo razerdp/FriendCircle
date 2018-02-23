@@ -3,7 +3,6 @@ package razerdp.github.com.lib.base;
 import android.app.Application;
 
 import razerdp.github.com.lib.api.AppContext;
-import razerdp.github.com.lib.helper.AppFileHelper;
 import razerdp.github.com.lib.manager.localphoto.LocalPhotoManager;
 
 /**
@@ -18,7 +17,6 @@ public class BaseModuleApplication extends Application {
     public void onCreate() {
         super.onCreate();
         AppContext.initARouter();
-        AppFileHelper.initStoryPath();
         LocalPhotoManager.INSTANCE.registerContentObserver(null);
     }
 

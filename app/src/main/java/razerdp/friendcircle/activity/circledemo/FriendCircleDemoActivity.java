@@ -45,6 +45,7 @@ import razerdp.friendcircle.ui.viewholder.TextOnlyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.WebMomentsVH;
 import razerdp.friendcircle.ui.widget.popup.RegisterPopup;
 import razerdp.github.com.lib.common.entity.ImageInfo;
+import razerdp.github.com.lib.helper.AppFileHelper;
 import razerdp.github.com.lib.helper.AppSetting;
 import razerdp.github.com.lib.interfaces.SingleClickListener;
 import razerdp.github.com.lib.manager.KeyboardControlMnanager;
@@ -114,6 +115,11 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppFileHelper.initStroagePath(this);
+    }
 
     @Override
     public void onHandleIntent(Intent intent) {

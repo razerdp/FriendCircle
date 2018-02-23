@@ -62,7 +62,7 @@ public class PhotoHelper {
     }
 
     public static String getCropImagePath() {
-        return AppFileHelper.getAppPicPath() + AppFileHelper.createCropImageName();
+        return AppFileHelper.getAppTempPath() + AppFileHelper.createCropImageName();
     }
 
     public static void toCrop(Activity activity, Uri imageUri) {
@@ -131,7 +131,7 @@ public class PhotoHelper {
         if (object == null) return;
         cropPath = getCropImagePath();
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        curTempPhotoPath = AppFileHelper.getAppPicPath() + AppFileHelper.createShareImageName();
+        curTempPhotoPath = AppFileHelper.getCameraPath() + AppFileHelper.createShareImageName();
         Uri uri = CompatHelper.getUri(new File(curTempPhotoPath));
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         if (CompatHelper.isOverM()) {
