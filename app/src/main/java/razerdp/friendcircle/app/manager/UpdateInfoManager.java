@@ -17,10 +17,10 @@ public enum UpdateInfoManager {
     private boolean hasShow;
     private BasePopupWindow.OnDismissListener mOnDismissListener;
 
-    final String title = "开发日志(2018/01/10)";
+    final String title = "开发日志(2018/02/23)";
     final String content = "  *   压缩文件\n\n" +
-            "  *   评论控件允许展开/收缩评论（开发中）\n\n" +
-            "  *   Gson依赖问题解决\n\n";
+            "  *   针对8.0的文件路径问题修复\n\n" +
+            "  *   新年快乐哦~\n\n";
 
 
     public void init(Activity act, BasePopupWindow.OnDismissListener l) {
