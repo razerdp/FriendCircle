@@ -43,8 +43,6 @@ public class CompressManager {
 
     private List<CompressOption> mOptions;
 
-    OnMultiCompressListener mMultiCompressListener;
-
     private CompressManager(Context context) {
         mWeakReference = new WeakReference<Context>(context);
         mOptions = new ArrayList<>();
@@ -78,7 +76,7 @@ public class CompressManager {
         start(null);
     }
 
-    public void start(BaseCompressListener listener) {
+    public void start(OnCompressListener listener) {
         BaseCompressTaskHelper helper;
         if (getContext() == null) {
             KLog.e("context为空");
@@ -88,11 +86,6 @@ public class CompressManager {
             KLog.e("配置为空");
             return;
         }
-        if (mOptions.size() == 1) {
-            helper = new CompressTaskHelper(getContext(), mOptions.get(0), listener);
-        } else {
-            helper = new CompressMultiTaskHelper(getContext(), mOptions, listener);
-        }
-        helper.start();
+        new CompressTaskQueue(getContext(), mOptions, listener).start();
     }
 }

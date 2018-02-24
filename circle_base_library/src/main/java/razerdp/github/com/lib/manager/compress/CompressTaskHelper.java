@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import com.socks.library.KLog;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import razerdp.github.com.lib.helper.AppFileHelper;
 import razerdp.github.com.lib.manager.ThreadPoolManager;
@@ -17,11 +19,13 @@ import razerdp.github.com.lib.utils.StringUtil;
 /**
  * Created by 大灯泡 on 2018/1/10.
  */
-public class CompressTaskHelper extends BaseCompressTaskHelper<CompressOption> {
+class CompressTaskHelper extends BaseCompressTaskHelper<CompressOption> {
 
+    private List<String> result;
 
-    public CompressTaskHelper(Context context, CompressOption options, BaseCompressListener baseCompressListener) {
-        super(context, options, baseCompressListener);
+    public CompressTaskHelper(Context context, CompressOption options, OnCompressListener compressListener) {
+        super(context, options, compressListener);
+        result = new ArrayList<>();
     }
 
     @Override
@@ -93,7 +97,8 @@ public class CompressTaskHelper extends BaseCompressTaskHelper<CompressOption> {
         if (StringUtil.noEmpty(targetImagePath)) {
             KLog.i(TAG, "压缩成功，图片地址  >>  " + targetImagePath);
             callCompress(1, 1);
-            callSuccess(targetImagePath);
+            result.add(targetImagePath);
+            callSuccess(result);
         } else {
             callError("压缩失败");
         }

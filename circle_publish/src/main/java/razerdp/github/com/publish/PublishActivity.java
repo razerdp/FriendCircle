@@ -26,8 +26,7 @@ import razerdp.github.com.lib.common.entity.ImageInfo;
 import razerdp.github.com.lib.helper.AppSetting;
 import razerdp.github.com.lib.interfaces.adapter.TextWatcherAdapter;
 import razerdp.github.com.lib.manager.compress.CompressManager;
-import razerdp.github.com.lib.manager.compress.OnMultiCompressListener;
-import razerdp.github.com.lib.manager.compress.OnMultiCompressListener.OnMultiCompressListenerAdapter;
+import razerdp.github.com.lib.manager.compress.OnCompressListener;
 import razerdp.github.com.lib.network.base.OnResponseListener;
 import razerdp.github.com.lib.utils.StringUtil;
 import razerdp.github.com.lib.utils.ToolUtil;
@@ -242,12 +241,12 @@ public class PublishActivity extends BaseTitleBarActivity {
             for (int i = 0; i < datas.size(); i++) {
                 uploadTaskPaths[i] = datas.get(i).getImagePath();
             }
-            doCompress(uploadTaskPaths, new OnMultiCompressListenerAdapter() {
+            doCompress(uploadTaskPaths, new OnCompressListener.OnCompressListenerAdapter() {
                 @Override
-                public void onCompressSuccess(List<String> targetImagePath) {
-                    if (!ToolUtil.isListEmpty(targetImagePath)) {
-                        for (int i = 0; i < targetImagePath.size(); i++) {
-                            uploadTaskPaths[i] = targetImagePath.get(i);
+                public void onSuccess(List<String> imagePath) {
+                    if (!ToolUtil.isListEmpty(imagePath)) {
+                        for (int i = 0; i < imagePath.size(); i++) {
+                            uploadTaskPaths[i] = imagePath.get(i);
                         }
                         doUpload(uploadTaskPaths, inputContent);
                     } else {
@@ -260,16 +259,18 @@ public class PublishActivity extends BaseTitleBarActivity {
         }
     }
 
-    private void doCompress(String[] uploadPaths, final OnMultiCompressListenerAdapter listener) {
+    private void doCompress(String[] uploadPaths, final OnCompressListener.OnCompressListenerAdapter listener) {
         CompressManager compressManager = CompressManager.create(this);
         for (String uploadPath : uploadPaths) {
             compressManager.addTask().setOriginalImagePath(uploadPath);
         }
         mPopupProgress.showPopupWindow();
-        compressManager.start(new OnMultiCompressListener() {
+        compressManager.start(new OnCompressListener.OnCompressListenerAdapter() {
             @Override
-            public void onCompressSuccess(List<String> targetImagePath) {
-                listener.onCompressSuccess(targetImagePath);
+            public void onSuccess(List<String> imagePath) {
+                if (listener != null) {
+                    listener.onSuccess(imagePath);
+                }
                 mPopupProgress.dismiss();
             }
 

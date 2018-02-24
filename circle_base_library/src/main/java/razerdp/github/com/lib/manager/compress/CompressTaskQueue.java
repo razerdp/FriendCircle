@@ -10,15 +10,15 @@ import razerdp.github.com.lib.utils.ToolUtil;
 /**
  * Created by 大灯泡 on 2018/1/10.
  */
-public class CompressMultiTaskHelper extends BaseCompressTaskHelper<List<CompressOption>> {
+public class CompressTaskQueue extends BaseCompressTaskHelper<List<CompressOption>> {
 
     private List<CompressTaskHelper> mTaskHelpers;
     private List<String> result;
     private int taskSize;
     private volatile boolean abort = false;
 
-    public CompressMultiTaskHelper(Context context, List<CompressOption> options, BaseCompressListener baseCompressListener) {
-        super(context, options, baseCompressListener);
+    CompressTaskQueue(Context context, List<CompressOption> options, OnCompressListener onCompressListener) {
+        super(context, options, onCompressListener);
     }
 
 
@@ -49,7 +49,7 @@ public class CompressMultiTaskHelper extends BaseCompressTaskHelper<List<Compres
             //如果已经全部完成，并检查之后,则意味着已经success了
             return;
         }
-        if (abort){
+        if (abort) {
             mTaskHelpers.clear();
             return;
         }
@@ -61,14 +61,16 @@ public class CompressMultiTaskHelper extends BaseCompressTaskHelper<List<Compres
 
     //-----------------------------------------single listener-----------------------------------------
     private OnCompressListener mOnCompressListener = new OnCompressListener() {
-        @Override
-        public void onRotate(int width, int height) {
 
+        @Override
+        public void onRotate(int picIndex, int width, int height) {
+            callRotated(taskSize - mTaskHelpers.size(), width, height);
         }
 
+
         @Override
-        public void onCompressSuccess(String targetImagePath) {
-            result.add(targetImagePath);
+        public void onSuccess(List<String> imagePath) {
+            result.add(imagePath.get(0));
             if (result.size() == taskSize) {
                 callSuccess(result);
                 return;

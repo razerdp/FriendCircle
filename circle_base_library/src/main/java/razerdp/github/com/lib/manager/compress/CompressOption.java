@@ -102,7 +102,7 @@ public class CompressOption implements Serializable {
         start(null);
     }
 
-    public void start(OnMultiCompressListener listener) {
+    public void start(OnCompressListener listener) {
         if (getManager() == null) {
             throw new NullPointerException("CompressManager must not be null");
         }

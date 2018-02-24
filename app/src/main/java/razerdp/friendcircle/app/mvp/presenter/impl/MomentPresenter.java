@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.UpdateListener;
 import razerdp.friendcircle.app.mvp.callback.OnCommentChangeCallback;
@@ -192,6 +193,7 @@ public class MomentPresenter implements IMomentPresenter {
                             @Override
                             public void done(BmobException e) {
                                 if (e == null && momentView != null) {
+                                    deleteFiles(momentsInfo);
                                     momentView.onDeleteMomentsInfo(momentsInfo);
                                 } else {
                                     UIHelper.ToastMessage("删除失败");
@@ -200,6 +202,26 @@ public class MomentPresenter implements IMomentPresenter {
                         });
                     }
                 }).show();
+    }
+
+    private void deleteFiles(MomentsInfo momentsInfo) {
+        if (momentsInfo == null) return;
+        final List<String> pics = momentsInfo.getContent().getPics();
+        if (ToolUtil.isListEmpty(pics)) return;
+        for (final String pic : pics) {
+            BmobFile file = new BmobFile();
+            file.setUrl(pic);
+            file.delete(new UpdateListener() {
+                @Override
+                public void done(BmobException e) {
+                    if (e == null) {
+                        KLog.d("delPic", "文件删除成功 : " + pic);
+                    } else {
+                        KLog.d("delPic", "文件删除失败：" + e.getErrorCode() + "," + e.getMessage());
+                    }
+                }
+            });
+        }
     }
 
 

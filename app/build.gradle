@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
-    buildToolsVersion rootProject.ext.android.buildToolsVersion
 
     defaultConfig {
         applicationId "razerdp.friendcircle"
@@ -48,20 +47,20 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
     //图片选择模块尚未完成，所以暂时不需要分开依赖
     if (!isModule.toBoolean()) {
-        compile project(':circle_base_library')
-        compile project(':circle_base_ui')
-        compile project(':circle_photoselect')
-        compile project(':circle_publish')
+        implementation project(':circle_base_library')
+        implementation project(':circle_base_ui')
+        implementation project(':circle_photoselect')
+        implementation project(':circle_publish')
         annotationProcessor rootProject.ext.dependencies.arouter_compiler
 
     } else {
-        compile project(':circle_base_library')
-        compile project(':circle_base_ui')
-        compile project(':circle_common')
+        implementation project(':circle_base_library')
+        implementation project(':circle_base_ui')
+        implementation project(':circle_common')
     }
 
 }

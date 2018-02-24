@@ -1,46 +1,33 @@
 package razerdp.github.com.lib.manager.compress;
 
+import java.util.List;
+
 /**
  * Created by 大灯泡 on 2018/1/8.
  */
-public abstract class OnCompressListener implements BaseCompressListener {
+public interface OnCompressListener {
 
-    public abstract void onRotate(int width, int height);
+    void onRotate(int picIndex, int width, int height);
 
-    /**
-     * @param imagePath
-     * @hide
-     * @deprecated
-     */
-    @Override
-    public void onSuccess(Object imagePath) {
-        if (String.class.isInstance(imagePath)) {
-            onCompressSuccess((String) imagePath);
-        } else {
-            onError("压缩失败，结果并不是string");
-        }
-    }
+    void onSuccess(List<String> imagePath);
 
-    public abstract void onCompressSuccess(String targetImagePath);
+    void onCompress(long current, long target);
 
-    public static abstract class OnCompressListenerAdapter extends OnCompressListener {
+    void onError(String tag);
+
+    public static abstract class OnCompressListenerAdapter implements OnCompressListener {
         @Override
-        public void onRotate(int width, int height) {
-
-        }
-
-        @Override
-        public void onError(String tag) {
-
-        }
-
-        @Override
-        public void onCompressSuccess(String targetImagePath) {
+        public void onRotate(int picIndex, int width, int height) {
 
         }
 
         @Override
         public void onCompress(long current, long target) {
+
+        }
+
+        @Override
+        public void onError(String tag) {
 
         }
     }

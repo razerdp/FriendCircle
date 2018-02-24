@@ -6,7 +6,6 @@ if (isModule.toBoolean()) {
 
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
-    buildToolsVersion rootProject.ext.android.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.android.minSdkVersion
@@ -57,13 +56,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-
-    testCompile 'junit:junit:4.12'
-    compile project(':circle_common')
+    api project(':circle_common')
     annotationProcessor rootProject.ext.dependencies.arouter_compiler
 
 }

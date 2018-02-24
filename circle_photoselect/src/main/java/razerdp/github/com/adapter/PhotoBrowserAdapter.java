@@ -55,7 +55,9 @@ public class PhotoBrowserAdapter extends PagerAdapter implements ClearMemoryObje
             photoView.setCacheInViewPager(true);
             photoView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
-        ImageLoadMnanger.INSTANCE.loadImage(photoView, info.getImagePath());
+        ImageLoadMnanger.INSTANCE.glide(photoView, info.getImagePath())
+                .apply(ImageLoadMnanger.OPTION_TRANSLATE_PLACEHOLDER.dontAnimate())
+                .into(photoView);
         container.addView(photoView);
         if (photoView.getOnViewTapListener() == null) {
             photoView.setOnViewTapListener(onViewTapListener);

@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
-    buildToolsVersion rootProject.ext.android.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.android.minSdkVersion
@@ -31,10 +30,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    api project(':circle_base_ui')
     annotationProcessor rootProject.ext.dependencies.arouter_compiler
-    testCompile 'junit:junit:4.12'
-    compile project(':circle_base_ui')
 
 }

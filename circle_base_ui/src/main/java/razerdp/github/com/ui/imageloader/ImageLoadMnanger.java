@@ -1,13 +1,19 @@
 package razerdp.github.com.ui.imageloader;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.ImageView;
 
-import com.bumptech.glide.BitmapRequestBuilder;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.request.RequestOptions;
+
+import java.io.File;
 
 import razerdp.github.com.baseuilib.R;
 import razerdp.github.com.lib.api.AppContext;
@@ -22,44 +28,82 @@ import razerdp.github.com.lib.api.AppContext;
 public enum ImageLoadMnanger {
     INSTANCE;
 
-    static final String DRAWABLE_PREFIX = "drawable://";
+    private final GlideDipatcher DIPATCHER = new GlideDipatcher();
+
+    public static RequestOptions OPTION_DEFAULT = new RequestOptions().placeholder(R.drawable.image_nophoto).error(R.drawable.image_nophoto);
+    public static RequestOptions OPTION_TRANSLATE_PLACEHOLDER = new RequestOptions().placeholder(new ColorDrawable()).error(new ColorDrawable());
+
 
     public void clearMemory(Context context) {
         Glide.get(context).clearMemory();
     }
 
-    public void loadImage(ImageView imageView, String imgUrl) {
-        loadImageByNormalConfig(imageView, imgUrl).placeholder(R.drawable.image_nophoto).into(imageView);
+    public void loadImage(ImageView iv, Object o) {
+        loadImage(iv, R.drawable.image_nophoto, o);
     }
 
-    public void loadImage(ImageView imageView, int placeHolderColor, String imgUrl) {
-        loadImageByNormalConfig(imageView, imgUrl).placeholder(new ColorDrawable(placeHolderColor)).into(imageView);
+    public void loadImage(ImageView iv, int placeHolder, Object o) {
+        loadImage(iv, placeHolder, R.drawable.image_nophoto, o);
     }
 
-    public void loadImageDontAnimate(ImageView imageView, String imgUrl) {
-        loadImageByNormalConfig(imageView, imgUrl).dontAnimate()
-                .into(imageView);
+    public void loadImage(ImageView iv, int placeHolder, int errorHolder, Object o) {
+        DIPATCHER.getGlide(o, iv).apply(OPTION_DEFAULT.placeholder(placeHolder).error(errorHolder)).into(iv);
     }
 
-    public void loadImage(ImageView imageView, String imgUrl, int width, int height) {
-        loadImageByNormalConfig(imageView, imgUrl).placeholder(R.drawable.image_nophoto)
-                .override(width, height)
-                .into(imageView);
+    public void loadImageWithoutAnimate(ImageView iv, Object o) {
+        DIPATCHER.getGlide(o, iv).apply(OPTION_DEFAULT.dontAnimate()).into(iv);
     }
 
-
-    private BitmapRequestBuilder loadImageByNormalConfig(ImageView imageView, String url) {
-        int resid = 0;
-        try {
-            resid = Integer.valueOf(url);
-        } catch (NumberFormatException e) {
-            Log.w("ImageLoadMnanger", "loadImageByNormalConfig: not a resource id");
-        }
-        return Glide.with(getImageContext(imageView)).load(resid != 0 ? resid : url).asBitmap();
+    public RequestBuilder glide(ImageView iv, Object o) {
+        return DIPATCHER.getGlide(o, iv);
     }
 
     private Context getImageContext(@Nullable ImageView imageView) {
         if (imageView == null) return AppContext.getAppContext();
-        return imageView.getContext();
+        Context context = imageView.getContext();
+        if (context instanceof Activity) {
+            Activity act = ((Activity) context);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                if (act.isDestroyed() || act.isFinishing()) return AppContext.getAppContext();
+            } else {
+                if (act.isFinishing()) return AppContext.getAppContext();
+            }
+            return act;
+        }
+        return context;
+    }
+
+
+    private class GlideDipatcher {
+
+        RequestBuilder getGlide(Object o, ImageView iv) {
+            RequestManager manager = Glide.with(getImageContext(iv));
+            if (o instanceof String) {
+                return getGlideString(manager, (String) o, iv);
+            } else if (o instanceof Integer) {
+                return getGlideInteger(manager, (Integer) o, iv);
+            } else if (o instanceof Uri) {
+                return getGlideUri(manager, (Uri) o, iv);
+            } else if (o instanceof File) {
+                return getGlideFile(manager, (File) o, iv);
+            }
+            return getGlideString(manager, "", iv);
+        }
+
+        private RequestBuilder getGlideString(RequestManager manager, String str, ImageView iv) {
+            return manager.load(str);
+        }
+
+        private RequestBuilder getGlideInteger(RequestManager manager, int source, ImageView iv) {
+            return manager.load(source);
+        }
+
+        private RequestBuilder getGlideUri(RequestManager manager, Uri uri, ImageView iv) {
+            return manager.load(uri);
+        }
+
+        private RequestBuilder getGlideFile(RequestManager manager, File file, ImageView iv) {
+            return manager.load(file);
+        }
     }
 }
