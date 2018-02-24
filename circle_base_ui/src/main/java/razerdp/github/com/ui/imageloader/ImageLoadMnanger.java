@@ -79,7 +79,12 @@ public enum ImageLoadMnanger {
         RequestBuilder getGlide(Object o, ImageView iv) {
             RequestManager manager = Glide.with(getImageContext(iv));
             if (o instanceof String) {
-                return getGlideString(manager, (String) o, iv);
+                try {
+                    int t = Integer.parseInt(String.valueOf(o));
+                    return getGlideInteger(manager, t, iv);
+                } catch (Exception e) {
+                    return getGlideString(manager, (String) o, iv);
+                }
             } else if (o instanceof Integer) {
                 return getGlideInteger(manager, (Integer) o, iv);
             } else if (o instanceof Uri) {
