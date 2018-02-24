@@ -28,7 +28,7 @@ import razerdp.github.com.lib.api.AppContext;
 public enum ImageLoadMnanger {
     INSTANCE;
 
-    private final GlideDipatcher DIPATCHER = new GlideDipatcher();
+    private final GlideDispatcher DISPATCHER = new GlideDispatcher();
 
     public static RequestOptions OPTION_DEFAULT = new RequestOptions().placeholder(R.drawable.image_nophoto).error(R.drawable.image_nophoto);
     public static RequestOptions OPTION_TRANSLATE_PLACEHOLDER = new RequestOptions().placeholder(new ColorDrawable()).error(new ColorDrawable());
@@ -47,15 +47,15 @@ public enum ImageLoadMnanger {
     }
 
     public void loadImage(ImageView iv, int placeHolder, int errorHolder, Object o) {
-        DIPATCHER.getGlide(o, iv).apply(OPTION_DEFAULT.placeholder(placeHolder).error(errorHolder)).into(iv);
+        DISPATCHER.getGlide(o, iv).apply(OPTION_DEFAULT.placeholder(placeHolder).error(errorHolder)).into(iv);
     }
 
     public void loadImageWithoutAnimate(ImageView iv, Object o) {
-        DIPATCHER.getGlide(o, iv).apply(OPTION_DEFAULT.dontAnimate()).into(iv);
+        DISPATCHER.getGlide(o, iv).apply(OPTION_DEFAULT.dontAnimate()).into(iv);
     }
 
     public RequestBuilder glide(ImageView iv, Object o) {
-        return DIPATCHER.getGlide(o, iv);
+        return DISPATCHER.getGlide(o, iv);
     }
 
     private Context getImageContext(@Nullable ImageView imageView) {
@@ -74,7 +74,7 @@ public enum ImageLoadMnanger {
     }
 
 
-    private class GlideDipatcher {
+    private class GlideDispatcher {
 
         RequestBuilder getGlide(Object o, ImageView iv) {
             RequestManager manager = Glide.with(getImageContext(iv));
