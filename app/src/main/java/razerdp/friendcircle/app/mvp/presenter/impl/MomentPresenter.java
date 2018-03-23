@@ -125,14 +125,14 @@ public class MomentPresenter implements IMomentPresenter {
         commentModel.addComment(momentid, LocalHostManager.INSTANCE.getUserid(), replyUserid, commentContent, new OnCommentChangeCallback() {
             @Override
             public void onAddComment(CommentInfo response) {
-                List<CommentInfo> resultLikeList = new ArrayList<CommentInfo>();
+                List<CommentInfo> commentList = new ArrayList<CommentInfo>();
                 if (!ToolUtil.isListEmpty(currentCommentList)) {
-                    resultLikeList.addAll(currentCommentList);
+                    commentList.addAll(currentCommentList);
                 }
-                resultLikeList.add(response);
+                commentList.add(response);
                 KLog.i("comment", "评论成功 >>>  " + response.toString());
                 if (momentView != null) {
-                    momentView.onCommentChange(viewHolderPos, resultLikeList);
+                    momentView.onCommentChange(viewHolderPos, commentList);
                 }
 
             }

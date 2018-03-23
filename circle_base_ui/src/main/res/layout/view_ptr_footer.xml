@@ -5,7 +5,7 @@
               android:layout_height="60dp"
               android:gravity="center"
               android:orientation="horizontal"
-              tools:background="@color/color_c6c6c6">
+              android:background="@color/color_c6c6c6">
 
     <ImageView
         android:id="@+id/iv_loading"

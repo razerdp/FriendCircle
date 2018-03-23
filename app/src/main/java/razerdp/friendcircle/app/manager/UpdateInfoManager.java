@@ -18,10 +18,8 @@ public enum UpdateInfoManager {
     private BasePopupWindow.OnDismissListener mOnDismissListener;
 
 
-    final String title = "开发日志(2018/02/24)";
-    final String content = "  *   删除朋友圈时也删除对应文件\n\n" +
-            "  *   修复单张图片上传时无法压缩的问题\n\n" +
-            "  *   Glide升级到4.6.1\n\n";
+    final String title = "开发日志(2018/03/23)";
+    final String content = "  * 修复评论的问题。";
 
 
     public void init(Activity act, BasePopupWindow.OnDismissListener l) {

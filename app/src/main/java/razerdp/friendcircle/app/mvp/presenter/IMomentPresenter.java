@@ -22,7 +22,7 @@ public interface IMomentPresenter extends IBasePresenter<IMomentView> {
 
     void addLike(int viewHolderPos, String momentid, List<LikesInfo> currentLikeList);
 
-    void unLike(int viewHolderPos, String momentid, List<LikesInfo> currentLikeList);
+    void unLike(int viewHolderPos, String likesid, List<LikesInfo> currentLikeList);
 
     void addComment(int viewHolderPos, String momentid, String replyUserid, String commentContent, List<CommentInfo> currentCommentList);
 

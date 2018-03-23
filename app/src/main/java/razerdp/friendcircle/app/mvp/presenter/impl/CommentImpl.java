@@ -2,6 +2,7 @@ package razerdp.friendcircle.app.mvp.presenter.impl;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.razerdp.github.com.common.entity.CommentInfo;
 import com.razerdp.github.com.common.request.AddCommentRequest;
@@ -29,7 +30,9 @@ public class CommentImpl implements ICommentPresenter {
         addCommentRequest.setContent(content);
         addCommentRequest.setMomentsInfoId(momentid);
         addCommentRequest.setAuthorId(authorid);
-        addCommentRequest.setReplyUserId(replyUserId);
+        if (!TextUtils.isEmpty(replyUserId)) {
+            addCommentRequest.setReplyUserId(replyUserId);
+        }
         addCommentRequest.setOnResponseListener(new SimpleResponseListener<CommentInfo>() {
             @Override
             public void onSuccess(CommentInfo response, int requestType) {

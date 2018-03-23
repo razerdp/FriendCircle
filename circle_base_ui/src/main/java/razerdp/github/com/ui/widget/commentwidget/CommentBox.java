@@ -72,8 +72,7 @@ public class CommentBox extends FrameLayout {
             public void onClick(View v) {
                 if (onCommentSendClickListener != null)
                     onCommentSendClickListener.onCommentSendClick(v,
-                            momentid,
-                            mIComment == null ? null : mIComment.getCommentCreatorName(),
+                            mIComment,
                             mInputContent.getText().toString().trim());
             }
         });
@@ -179,6 +178,6 @@ public class CommentBox extends FrameLayout {
     }
 
     public interface OnCommentSendClickListener {
-        void onCommentSendClick(View v, String momentid, String commentAuthorId, String commentContent);
+        void onCommentSendClick(View v, IComment comment, String commentContent);
     }
 }

@@ -58,6 +58,7 @@ import razerdp.github.com.ui.util.AnimUtils;
 import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.ui.widget.commentwidget.CommentBox;
 import razerdp.github.com.ui.widget.commentwidget.CommentWidget;
+import razerdp.github.com.ui.widget.commentwidget.IComment;
 import razerdp.github.com.ui.widget.common.TitleBar;
 import razerdp.github.com.ui.widget.popup.SelectPhotoMenuPopup;
 import razerdp.github.com.ui.widget.pullrecyclerview.CircleRecyclerView;
@@ -462,12 +463,16 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
     //=============================================================call back
     private CommentBox.OnCommentSendClickListener onCommentSendClickListener = new CommentBox.OnCommentSendClickListener() {
         @Override
-        public void onCommentSendClick(View v, String momentid, String commentAuthorId, String commentContent) {
-            if (TextUtils.isEmpty(commentContent)) return;
+        public void onCommentSendClick(View v, IComment comment, String commentContent) {
+            if (TextUtils.isEmpty(commentContent)) {
+                commentBox.dismissCommentBox(true);
+                return;
+            }
             int itemPos = mViewHelper.getCommentItemDataPosition();
             if (itemPos < 0 || itemPos > adapter.getItemCount()) return;
             List<CommentInfo> commentInfos = adapter.findData(itemPos).getCommentList();
-            presenter.addComment(itemPos, momentid, commentAuthorId, commentContent, commentInfos);
+            String userid = (comment instanceof CommentInfo) ? ((CommentInfo) comment).getAuthor().getUserid() : null;
+            presenter.addComment(itemPos, commentBox.getMomentid(), userid, commentContent, commentInfos);
             commentBox.clearDraft();
             commentBox.dismissCommentBox(true);
         }
