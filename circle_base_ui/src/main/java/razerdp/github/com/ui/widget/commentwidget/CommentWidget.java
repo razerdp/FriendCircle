@@ -72,7 +72,8 @@ public class CommentWidget extends TextView {
 
         if (!isApply) {
             //用户A，B不空，证明是回复评论
-            CommentClick userA = new CommentClick.Builder(getContext(), info).setColor(0xff517fae)
+            CommentClick userA = new CommentClick.Builder(getContext(), info)
+                    .setColor(0xff517fae)
                     .setClickEventColor(0xffc6c6c6)
                     .setTextSize(textSize)
                     .setClickListener(mOnCommentUserClickListener)
@@ -88,6 +89,7 @@ public class CommentWidget extends TextView {
                     .build();
             mSpannableStringBuilderCompat.append(info.getCommentCreatorName(), userA, 0);
             mSpannableStringBuilderCompat.append(" 回复 ");
+
             CommentClick userB = new CommentClick.Builder(getContext(), info).setColor(0xff517fae)
                     .setClickEventColor(0xffc6c6c6)
                     .setTextSize(textSize)

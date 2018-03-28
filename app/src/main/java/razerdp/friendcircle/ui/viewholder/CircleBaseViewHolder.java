@@ -94,11 +94,12 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         praiseWidget = (PraiseWidget) findView(praiseWidget, R.id.praise);
         line = findView(line, R.id.divider);
         commentLayout = (CommentContentsLayout) findView(commentLayout, R.id.comment_layout);
+        commentLayout.setMode(CommentContentsLayout.Mode.EXPANDABLE);
         commentLayout.setOnCommentItemClickListener(onCommentItemClickListener);
         commentLayout.setOnCommentItemLongClickListener(onCommentItemLongClickListener);
         commentLayout.setOnCommentWidgetItemClickListener(onCommentWidgetItemClickListener);
         // FIXME: 2018/1/3 暂时未开发完
-//        commentLayout.setMode(CommentContentsLayout.Mode.WRAP);
+//        commentLayout.setMode(CommentContentsLayout.Mode.EXPANDABLE);
         //content
         contentLayout = (LinearLayout) findView(contentLayout, R.id.content);
 
@@ -147,12 +148,12 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
         nick.setText(data.getAuthor().getNick());
         userText.setText(data.getContent().getText());
         ViewUtil.setViewsVisible(StringUtil.noEmpty(data.getContent().getText()) ?
-                                         View.VISIBLE : View.GONE, userText);
+                View.VISIBLE : View.GONE, userText);
 
         //bottom
         createTime.setText(TimeUtil.getTimeStringFromBmob(data.getCreatedAt()));
         ViewUtil.setViewsVisible(TextUtils.equals(momentsInfo.getAuthor().getUserid(), LocalHostManager.INSTANCE.getUserid()) ?
-                                         View.VISIBLE : View.GONE, deleteMoments);
+                View.VISIBLE : View.GONE, deleteMoments);
         boolean needPraiseData = addLikes(data.getLikesList());
         boolean needCommentData = commentLayout.addComments(data.getCommentList());
         praiseWidget.setVisibility(needPraiseData ? View.VISIBLE : View.GONE);
@@ -184,8 +185,9 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
     private CommentContentsLayout.OnCommentWidgetItemClickListener onCommentWidgetItemClickListener = new CommentContentsLayout.OnCommentWidgetItemClickListener() {
         @Override
         public void onCommentItemClicked(@NonNull IComment comment) {
-            String name = TextUtils.isEmpty(comment.getReplyerName()) ? comment.getCommentCreatorName() : comment.getReplyerName();
-            UIHelper.ToastMessage("点击的用户 ： 【 " + name + " 】");
+            if (comment instanceof CommentInfo) {
+                UIHelper.ToastMessage("点击的用户 ： 【 " + ((CommentInfo) comment).getAuthor().getNick() + " 】");
+            }
         }
     };
 

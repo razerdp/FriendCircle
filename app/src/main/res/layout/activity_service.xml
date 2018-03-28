@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <razerdp.github.com.ui.widget.commentwidget.ExTextView
                 android:id="@+id/tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
 
             <View style="@style/base_divider_top_10"/>
 
-            <TextView
+            <razerdp.github.com.ui.widget.commentwidget.ExTextView
                 android:id="@+id/tv_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

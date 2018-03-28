@@ -57,7 +57,8 @@ public class PreviewImageView<T> extends FlowLayout implements ViewGroup.OnHiera
         setOrientation(HORIZONTAL);
         setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         setOnHierarchyChangeListener(this);
-        ivPool = new SimpleObjectPool<>(DEFAULT_MAX_PHOTO_COUNT);
+        ivPool = new SimpleObjectPool<>(ImageView.class,DEFAULT_MAX_PHOTO_COUNT);
+        datas = new ArrayList<>();
     }
 
     @Override
@@ -78,7 +79,9 @@ public class PreviewImageView<T> extends FlowLayout implements ViewGroup.OnHiera
     }
 
     public void setDatas(List<T> datas, @NonNull OnLoadPhotoListener<T> onLoadPhotoListener) {
-        this.datas = datas;
+        if (datas==null)return;
+        this.datas .clear();
+        this.datas.addAll(datas);
         setOnLoadPhotoListener(onLoadPhotoListener);
         callToUpdateData();
     }

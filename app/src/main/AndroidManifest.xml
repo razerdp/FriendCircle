@@ -40,6 +40,9 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             />
+        <activity android:name=".activity.TestActivity">
+
+        </activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

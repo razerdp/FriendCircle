@@ -20,13 +20,14 @@ import java.util.List;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.activity.ActivityLauncher;
 import razerdp.github.com.ui.base.BaseTitleBarActivity;
+import razerdp.github.com.ui.widget.commentwidget.ExTextView;
 
 /**
  * Created by 大灯泡 on 2017/12/20.
  */
 public class ServiceInfoActivity extends BaseTitleBarActivity implements View.OnClickListener {
-    private TextView tvTitle;
-    private TextView tvContent;
+    private ExTextView tvTitle;
+    private ExTextView tvContent;
 
     private ServiceInfo mInfo;
     private LinearLayout mIvContents;
@@ -49,8 +50,8 @@ public class ServiceInfoActivity extends BaseTitleBarActivity implements View.On
 
     private void initView() {
         setTitle("服务器消息");
-        tvTitle = (TextView) findViewById(R.id.tv_title);
-        tvContent = (TextView) findViewById(R.id.tv_content);
+        tvTitle = (ExTextView) findViewById(R.id.tv_title);
+        tvContent = (ExTextView) findViewById(R.id.tv_content);
 
         tvTitle.setText(mInfo.getTitle());
         tvContent.setText(mInfo.getContent());

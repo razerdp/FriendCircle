@@ -1,25 +1,26 @@
 package razerdp.github.com.lib.utils;
 
+import java.lang.reflect.Array;
+
 /**
- * Created by 大灯泡 on 2016/11/1.
+ * Created by 大灯泡 on 2017/05/5.
  * <p>
  * 简单的对象池
  */
 
 public class SimpleObjectPool<T> {
 
-    private T[] objsPool;
-    private int size;
-    private int curPointer = -1;
+    protected T[] objsPool;
+    protected int size;
+    protected int curPointer = -1;
 
-
-    public SimpleObjectPool() {
-        this(8);
+    public SimpleObjectPool(Class<T> type) {
+        this(type, 8);
     }
 
-    public SimpleObjectPool(int size) {
+    public SimpleObjectPool(Class<T> type, int size) {
         this.size = size;
-        objsPool = (T[]) new Object[size];
+        objsPool = (T[]) Array.newInstance(type, size);
     }
 
     public synchronized T get() {

@@ -28,7 +28,7 @@ public class PhotoBrowserAdapter extends PagerAdapter implements ClearMemoryObje
     private PhotoViewAttacher.OnViewTapListener onViewTapListener;
 
     public PhotoBrowserAdapter(Context context, List<ImageInfo> datas) {
-        viewPool = new SimpleObjectPool<>();
+        viewPool = new SimpleObjectPool<>(PhotoViewEx.class);
         this.context = context;
         this.datas = datas;
     }

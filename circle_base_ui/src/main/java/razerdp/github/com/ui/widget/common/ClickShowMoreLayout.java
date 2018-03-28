@@ -19,6 +19,7 @@ import java.lang.annotation.RetentionPolicy;
 
 import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.baseuilib.R;
+import razerdp.github.com.ui.widget.commentwidget.ExTextView;
 
 /**
  * Created by 大灯泡 on 2016/2/19.
@@ -38,7 +39,7 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
 
     private int preState;
 
-    private TextView mTextView;
+    private ExTextView mTextView;
     private TextView mClickToShow;
 
     private int textColor;
@@ -74,7 +75,7 @@ public class ClickShowMoreLayout extends LinearLayout implements View.OnClickLis
     }
 
     private void initView(Context context) {
-        mTextView = new TextView(context);
+        mTextView = new ExTextView(context);
         mClickToShow = new TextView(context);
 
         mTextView.setTextSize(textSize);
