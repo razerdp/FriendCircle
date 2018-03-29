@@ -26,14 +26,14 @@ public class CommentClick extends ClickableSpanEx {
         super(builder.color, builder.clickEventColor);
         mContext = builder.mContext;
         mComment = builder.mComment;
-        mOnCommentUserClickListener=builder.mListener;
+        mOnCommentUserClickListener = builder.mListener;
         textSize = builder.textSize;
     }
 
     @Override
-    public void onClick(View widget) {
+    public void onClickEx(View widget, CharSequence text) {
         if (mComment != null && mOnCommentUserClickListener != null) {
-            mOnCommentUserClickListener.onCommentClicked(mComment);
+            mOnCommentUserClickListener.onCommentClicked(mComment, text);
         }
     }
 

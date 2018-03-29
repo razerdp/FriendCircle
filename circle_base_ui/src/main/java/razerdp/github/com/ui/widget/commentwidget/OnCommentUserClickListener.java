@@ -9,5 +9,5 @@ import android.support.annotation.NonNull;
  */
 
 public interface OnCommentUserClickListener {
-    void onCommentClicked(@NonNull IComment comment);
+    void onCommentClicked(@NonNull IComment comment,CharSequence text);
 }

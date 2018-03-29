@@ -205,7 +205,7 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
         for (int i = mWrapCount; i < getChildCount(); i++) {
             View child = getChildAt(i);
             if (child.getVisibility() != View.GONE) {
-                Log.i(TAG, "onMeasure: "+delay);
+                Log.i(TAG, "onMeasure: " + delay);
                 child.setTranslationY(-delay);
             }
         }
@@ -343,9 +343,9 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
 
     private OnCommentUserClickListener mOnCommentUserClickListener = new OnCommentUserClickListener() {
         @Override
-        public void onCommentClicked(@NonNull IComment comment) {
+        public void onCommentClicked(@NonNull IComment comment, CharSequence text) {
             if (onCommentWidgetItemClickListener != null) {
-                onCommentWidgetItemClickListener.onCommentItemClicked(comment);
+                onCommentWidgetItemClickListener.onCommentItemClicked(comment, text);
             }
         }
     };
@@ -383,7 +383,7 @@ public class CommentContentsLayout extends LinearLayout implements ViewGroup.OnH
     }
 
     public interface OnCommentWidgetItemClickListener {
-        void onCommentItemClicked(@NonNull IComment comment);
+        void onCommentItemClicked(@NonNull IComment comment, CharSequence text);
     }
 
 

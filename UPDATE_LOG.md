@@ -1,5 +1,9 @@
 # 更新日志
 
+* 2018/3/29
+  * 修复点击名字问题，优化spanEx（#65）https://github.com/razerdp/FriendCircle/issues/65
+  * 继续编写可收缩/展开的评论layout
+
 * 2018/3/23
   * 修复评论的问题。
   

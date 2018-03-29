@@ -24,11 +24,17 @@ public class PraiseClick extends ClickableSpanEx {
 
     private PraiseClick() {}
 
+
     private PraiseClick(Builder builder) {
         super(builder.color,builder.clickBgColor);
         mContext = builder.mContext;
         mPraiseInfo = builder.mPraiseInfo;
         this.textSize = builder.textSize;
+    }
+
+    @Override
+    public void onClickEx(View widget, CharSequence text) {
+
     }
 
     @Override

@@ -184,9 +184,9 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
 
     private CommentContentsLayout.OnCommentWidgetItemClickListener onCommentWidgetItemClickListener = new CommentContentsLayout.OnCommentWidgetItemClickListener() {
         @Override
-        public void onCommentItemClicked(@NonNull IComment comment) {
+        public void onCommentItemClicked(@NonNull IComment comment, CharSequence text) {
             if (comment instanceof CommentInfo) {
-                UIHelper.ToastMessage("点击的用户 ： 【 " + ((CommentInfo) comment).getAuthor().getNick() + " 】");
+                UIHelper.ToastMessage("点击的用户 ： 【 " + text + " 】");
             }
         }
     };

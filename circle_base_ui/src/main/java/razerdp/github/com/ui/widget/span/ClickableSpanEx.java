@@ -1,13 +1,13 @@
 /*
-* This class comes from Github:
-* https://github.com/LiesSu/AndroidExtenders/blob/master/app/src/main/java/com/liessu/extender/span/ClickableSpanEx.java
-*
-* @author:LiesSu
-*
-* Thanks for his help :)
-*
-*
-* */
+ * This class comes from Github:
+ * https://github.com/LiesSu/AndroidExtenders/blob/master/app/src/main/java/com/liessu/extender/span/ClickableSpanEx.java
+ *
+ * @author:LiesSu
+ *
+ * Thanks for his help :)
+ *
+ *
+ * */
 package razerdp.github.com.ui.widget.span;
 
 import android.graphics.Color;
@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 /**
  * A extensional class for ClickableSpan .
- *
+ * <p>
  * ex:
  * new ClickableSpanEx(Color.BLUE,Color.GRAY) {
  * public void onClick(View widget) {
@@ -53,7 +53,8 @@ public abstract class ClickableSpanEx extends ClickableSpan {
      **/
     protected boolean isBackgroundTransparent = true;
 
-    public ClickableSpanEx() {}
+    public ClickableSpanEx() {
+    }
 
     /**
      * New ClickableSpanEx instance .
@@ -78,7 +79,7 @@ public abstract class ClickableSpanEx extends ClickableSpan {
     /**
      * If you implement OnTouchListener, call this one in the onTouch method .
      *
-     * @param v The view the touch event has been dispatched to.
+     * @param v     The view the touch event has been dispatched to.
      * @param event The MotionEvent object containing full information about the event.
      * @return True if the listener has consumed the event , false otherwise.
      */
@@ -109,23 +110,38 @@ public abstract class ClickableSpanEx extends ClickableSpan {
             ClickableSpanEx[] link = buffer.getSpans(off, off, ClickableSpanEx.class);
 
             if (link.length != 0) {
+                ClickableSpanEx span = link[0];
                 if (action == MotionEvent.ACTION_DOWN) {
-                    Selection.setSelection(buffer, buffer.getSpanStart(link[0]), buffer.getSpanEnd(link[0]));
-                    link[0].setTransparent(false);
-                }
-                else {
-                    if (action == MotionEvent.ACTION_UP) link[0].onClick(widget);
-                    link[0].setTransparent(true);
+                    Selection.setSelection(buffer, buffer.getSpanStart(span), buffer.getSpanEnd(span));
+                    span.setTransparent(false);
+                } else {
+                    if (action == MotionEvent.ACTION_UP) {
+                        int start = buffer.getSpanStart(span);
+                        int end = buffer.getSpanEnd(span);
+                        span.onClickExInternal(widget, widget.getText().subSequence(start, end));
+                    }
+                    span.setTransparent(true);
                     Selection.removeSelection(buffer);
                 }
                 return true;
             }
 
-        }
-        else {
+        } else {
             Log.e(TAG, "ClickableSpanEx supports TextView only .");
         }
         return false;
+    }
+
+    private void onClickExInternal(View widget, CharSequence text) {
+        onClickEx(widget, text);
+        onClick(widget);
+    }
+
+    public abstract void onClickEx(View widget, CharSequence text);
+
+    @Override
+    public void onClick(View widget) {
+
     }
 
     /**
