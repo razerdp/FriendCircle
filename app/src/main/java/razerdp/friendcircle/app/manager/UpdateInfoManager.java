@@ -20,7 +20,7 @@ public enum UpdateInfoManager {
 
     final String title = "开发日志(2018/03/29)";
     final String content = "  * 修复点击名字问题，优化spanEx（#65）https://github.com/razerdp/FriendCircle/issues/65"+
-            "  * 继续编写可收缩/展开的评论layout";
+            "\n  * 继续编写可收缩/展开的评论layout";
 
 
     public void init(Activity act, BasePopupWindow.OnDismissListener l) {
