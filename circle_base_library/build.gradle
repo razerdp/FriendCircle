@@ -52,7 +52,7 @@ dependencies {
     //eventbus
     api 'org.greenrobot:eventbus:3.0.0'
     //网页查看数据库，sp
-    debugApi('com.amitshekhar.android:debug-db:1.0.1') {
+    debugApi('com.amitshekhar.android:debug-db:1.0.2') {
         exclude group: 'com.google.code.gson'
     }
     //glide

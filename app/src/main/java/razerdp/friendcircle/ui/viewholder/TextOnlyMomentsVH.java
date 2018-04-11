@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 
 import com.razerdp.github.com.common.entity.MomentsInfo;
 
+import razerdp.friendcircle.R;
+import razerdp.github.com.ui.base.adapter.LayoutId;
+
 
 /**
  * Created by 大灯泡 on 2016/11/3.
@@ -16,11 +19,11 @@ import com.razerdp.github.com.common.entity.MomentsInfo;
  * @see MomentsType
  */
 
+@LayoutId(id =  R.layout.moments_only_text)
 public class TextOnlyMomentsVH extends CircleBaseViewHolder {
-    public TextOnlyMomentsVH(Context context,
-                             ViewGroup viewGroup,
-                             int layoutResId) {
-        super(context, viewGroup, layoutResId);
+
+    public TextOnlyMomentsVH(View itemView, int viewType) {
+        super(itemView, viewType);
     }
 
     @Override

@@ -12,6 +12,7 @@ import java.util.List;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobRelation;
 import razerdp.github.com.lib.utils.ToolUtil;
+import razerdp.github.com.ui.base.adapter.MultiType;
 
 /**
  * Created by 大灯泡 on 2016/10/27.
@@ -19,8 +20,13 @@ import razerdp.github.com.lib.utils.ToolUtil;
  * 朋友圈动态
  */
 
-public class MomentsInfo extends BmobObject {
+public class MomentsInfo extends BmobObject implements MultiType {
 
+
+    @Override
+    public int getItemType() {
+        return getMomentType();
+    }
 
     public interface MomentsFields {
         String LIKES = "likes";
@@ -98,8 +104,8 @@ public class MomentsInfo extends BmobObject {
 
     public void addLikes(LikesInfo likesInfo) {
         if (likesInfo == null) return;
-        if (this.likesList==null){
-            this.likesList=new ArrayList<>();
+        if (this.likesList == null) {
+            this.likesList = new ArrayList<>();
         }
         this.likesList.add(likesInfo);
     }

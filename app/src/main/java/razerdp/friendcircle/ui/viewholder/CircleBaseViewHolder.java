@@ -1,11 +1,9 @@
 package razerdp.friendcircle.ui.viewholder;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,7 +25,7 @@ import razerdp.friendcircle.ui.widget.praisewidget.PraiseWidget;
 import razerdp.github.com.lib.utils.StringUtil;
 import razerdp.github.com.lib.utils.TimeUtil;
 import razerdp.github.com.lib.utils.ToolUtil;
-import razerdp.github.com.ui.base.adapter.BaseRecyclerViewHolder;
+import razerdp.github.com.ui.base.adapter.BaseMultiRecyclerViewHolder;
 import razerdp.github.com.ui.imageloader.ImageLoadMnanger;
 import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.ui.util.ViewUtil;
@@ -41,7 +39,7 @@ import razerdp.github.com.ui.widget.common.ClickShowMoreLayout;
  * <p>
  * 朋友圈基本item
  */
-public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<MomentsInfo> implements BaseMomentVH<MomentsInfo> {
+public abstract class CircleBaseViewHolder extends BaseMultiRecyclerViewHolder<MomentsInfo> implements BaseMomentVH<MomentsInfo> {
 
 
     //头部
@@ -70,8 +68,8 @@ public abstract class CircleBaseViewHolder extends BaseRecyclerViewHolder<Moment
     private MomentsInfo momentsInfo;
 
 
-    public CircleBaseViewHolder(Context context, ViewGroup viewGroup, int layoutResId) {
-        super(context, viewGroup, layoutResId);
+    public CircleBaseViewHolder(View itemView, int viewType) {
+        super(itemView, viewType);
         onFindView(itemView);
 
         //header

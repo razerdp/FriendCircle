@@ -18,6 +18,7 @@ import java.util.List;
 
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.activity.ActivityLauncher;
+import razerdp.github.com.ui.base.adapter.LayoutId;
 import razerdp.github.com.ui.imageloader.ImageLoadMnanger;
 import razerdp.github.com.ui.widget.imageview.ForceClickImageView;
 import razerdp.github.com.widget.PhotoContents;
@@ -31,15 +32,17 @@ import razerdp.github.com.widget.adapter.PhotoContentsBaseAdapter;
  * @see MomentsType
  */
 
+@LayoutId(id = R.layout.moments_multi_image)
 public class MultiImageMomentsVH extends CircleBaseViewHolder implements PhotoContents.OnItemClickListener {
 
 
     private PhotoContents imageContainer;
     private InnerContainerAdapter adapter;
 
-    public MultiImageMomentsVH(Context context, ViewGroup viewGroup, int layoutResId) {
-        super(context, viewGroup, layoutResId);
+    public MultiImageMomentsVH(View itemView, int viewType) {
+        super(itemView, viewType);
     }
+
 
     @Override
     public void onFindView(@NonNull View rootView) {

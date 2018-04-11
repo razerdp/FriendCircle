@@ -8,12 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
-import razerdp.github.com.lib.utils.ToolUtil;
 import razerdp.github.com.baseuilib.R;
+import razerdp.github.com.lib.utils.ToolUtil;
 
 
 /**
@@ -31,6 +30,10 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
 
     private OnRecyclerViewItemClickListener<T> onRecyclerViewItemClickListener;
     private OnRecyclerViewLongItemClickListener<T> onRecyclerViewLongItemClickListener;
+
+    public BaseRecyclerViewAdapter(@NonNull Context context) {
+        this(context, new ArrayList<T>());
+    }
 
     public BaseRecyclerViewAdapter(@NonNull Context context, @NonNull List<T> datas) {
         this.context = context;
@@ -57,6 +60,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
         } else {
             holder = getViewHolder(parent, null, viewType);
         }
+        onInitViewHolder(holder);
         setUpItemEvent(holder);
         return holder;
     }
@@ -91,6 +95,10 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
                 }
             });
         }
+    }
+
+    protected void onInitViewHolder(BaseRecyclerViewHolder holder) {
+
     }
 
     @Override
@@ -152,7 +160,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
 
     protected abstract int getLayoutResId(int viewType);
 
-    protected abstract BaseRecyclerViewHolder getViewHolder(ViewGroup parent, View rootView, int viewType);
+    protected abstract <V extends BaseRecyclerViewHolder> V getViewHolder(ViewGroup parent, View rootView, int viewType);
 
     protected void onBindData(BaseRecyclerViewHolder<T> holder, T data, int position) {
 

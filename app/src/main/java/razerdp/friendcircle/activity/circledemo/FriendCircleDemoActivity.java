@@ -152,14 +152,11 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         commentBox = (CommentBox) findViewById(R.id.widget_comment);
         commentBox.setOnCommentSendClickListener(onCommentSendClickListener);
 
-        CircleMomentsAdapter.Builder<MomentsInfo> builder = new CircleMomentsAdapter.Builder<>(this);
-        builder.addType(EmptyMomentsVH.class, MomentsType.EMPTY_CONTENT, R.layout.moments_empty_content)
-                .addType(MultiImageMomentsVH.class, MomentsType.MULTI_IMAGES, R.layout.moments_multi_image)
-                .addType(TextOnlyMomentsVH.class, MomentsType.TEXT_ONLY, R.layout.moments_only_text)
-                .addType(WebMomentsVH.class, MomentsType.WEB, R.layout.moments_web)
-                .setData(momentsInfoList)
-                .setPresenter(presenter);
-        adapter = builder.build();
+        adapter = new CircleMomentsAdapter(this, momentsInfoList, presenter);
+        adapter.addViewHolder(EmptyMomentsVH.class, MomentsType.EMPTY_CONTENT)
+                .addViewHolder(MultiImageMomentsVH.class, MomentsType.MULTI_IMAGES)
+                .addViewHolder(TextOnlyMomentsVH.class, MomentsType.TEXT_ONLY)
+                .addViewHolder(WebMomentsVH.class, MomentsType.WEB);
         circleRecyclerView.setAdapter(adapter);
         circleRecyclerView.autoRefresh();
 
