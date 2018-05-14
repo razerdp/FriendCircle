@@ -1,24 +1,31 @@
 package razerdp.github.com.ui.util.span;
 
 import android.graphics.Typeface;
+import android.os.Parcel;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
+import android.text.style.AlignmentSpan;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import razerdp.github.com.lib.api.AppContext;
 import razerdp.github.com.lib.utils.StringUtil;
 import razerdp.github.com.ui.util.UIHelper;
 
@@ -151,8 +158,14 @@ public class MultiSpanUtil {
                         .length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
 
+            //bgcolor
             if (option.getBgColor() != -1) {
                 spanBuilder.setSpan(new BackgroundColorSpan(option.getBgColor()), index, index + keyWord.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+
+            //gravity
+            if (option.getTextGravity() != null) {
+                spanBuilder.setSpan(new AlignmentSpan.Standard(option.getTextGravity()), index, index + keyWord.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
 
         }
@@ -216,6 +229,7 @@ public class MultiSpanUtil {
         private View.OnClickListener onUrlClickListener;
         private int urlColor = -1;
         private int bgColor = -1;
+        private Layout.Alignment textGravity = null;
 
         public ItemOption(CharSequence keyWord, MultiSpanOption option) {
             super(keyWord, option);
@@ -240,7 +254,7 @@ public class MultiSpanUtil {
         }
 
         public ItemOption setTextSize(int spTextSize) {
-            this.textSize = UIHelper.sp2px(spTextSize);
+            this.textSize = sp2px(spTextSize);
             return this;
         }
 
@@ -302,6 +316,77 @@ public class MultiSpanUtil {
         public int getBgColor() {
             return bgColor;
         }
+
+        public Layout.Alignment getTextGravity() {
+            return textGravity;
+        }
+
+        public ItemOption setTextGravity(Layout.Alignment textGravity) {
+            this.textGravity = textGravity;
+            return this;
+        }
     }
 
+
+    public static class UrlSpanEx extends URLSpan {
+        int color = -1;
+        private View.OnClickListener mOnClickListener;
+
+        public UrlSpanEx(String url) {
+            super(url);
+        }
+
+        public UrlSpanEx(Parcel src) {
+            super(src);
+        }
+
+        public UrlSpanEx(String url, int color) {
+            super(url);
+            this.color = color;
+        }
+
+        public UrlSpanEx(String url, int color, View.OnClickListener onClickListener) {
+            super(url);
+            this.color = color;
+            this.mOnClickListener = onClickListener;
+        }
+
+        public UrlSpanEx(Parcel src, int color) {
+            super(src);
+            this.color = color;
+        }
+
+
+        public View.OnClickListener getOnClickListener() {
+            return mOnClickListener;
+        }
+
+        public void setOnClickListener(View.OnClickListener onClickListener) {
+            mOnClickListener = onClickListener;
+        }
+
+        @Override
+        public void onClick(View widget) {
+            if (mOnClickListener != null) {
+                mOnClickListener.onClick(widget);
+            } else {
+                super.onClick(widget);
+            }
+        }
+
+        @Override
+        public void updateDrawState(TextPaint ds) {
+            super.updateDrawState(ds);
+            if (color != -1) {
+                ds.setColor(color);
+            }
+            ds.setUnderlineText(false);
+        }
+
+    }
+
+    static int sp2px(float spValue) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                spValue, AppContext.getAppContext().getResources().getDisplayMetrics());
+    }
 }
