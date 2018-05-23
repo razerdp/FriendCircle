@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import razerdp.github.com.lib.helper.PermissionHelper;
+import razerdp.github.com.lib.interfaces.IPermission;
+import razerdp.github.com.lib.interfaces.OnPermissionGrantListener;
 
 /**
  * Created by 大灯泡 on 2017/3/29.
@@ -19,7 +21,7 @@ import razerdp.github.com.lib.helper.PermissionHelper;
  * basefragment
  */
 
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment implements IPermission {
     private View rootView;
     protected Activity mActivity;
     private PermissionHelper mPermissionHelper;
@@ -74,17 +76,24 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
+    @Override
     public PermissionHelper getPermissionHelper() {
+        if (mPermissionHelper == null) {
+            mPermissionHelper = new PermissionHelper(this);
+        }
         return mPermissionHelper;
     }
 
+    public void requestPermission(OnPermissionGrantListener listener, PermissionHelper.Permission... permissions) {
+        getPermissionHelper().requestPermission(listener, permissions);
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mPermissionHelper!=null){
+        if (mPermissionHelper != null) {
             mPermissionHelper.handleDestroy();
         }
-        mPermissionHelper=null;
+        mPermissionHelper = null;
     }
 
     @LayoutRes

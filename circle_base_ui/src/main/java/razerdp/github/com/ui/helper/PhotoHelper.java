@@ -12,10 +12,10 @@ import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import razerdp.github.com.lib.base.BaseActivity;
-import razerdp.github.com.lib.base.BaseFragment;
 import razerdp.github.com.lib.helper.AppFileHelper;
 import razerdp.github.com.lib.helper.PermissionHelper;
+import razerdp.github.com.lib.interfaces.IPermission;
+import razerdp.github.com.lib.interfaces.OnPermissionGrantListener;
 import razerdp.github.com.lib.utils.ImageSelectUtil;
 
 /**
@@ -45,48 +45,63 @@ public class PhotoHelper {
     private static String cropPath;
 
 
-    public static void fromCamera(Activity activity) {
-        fromCamera(activity, true);
+    public static void fromCamera(Object obj) {
+        fromCamera(obj, true);
     }
 
-    public static void fromCamera(Activity activity, boolean needCrop) {
-        checkAndRequestCameraPermission(activity, needCrop);
+    public static void fromCamera(Object obj, boolean needCrop) {
+        if (!checkTargetValided(obj)) return;
+        checkAndRequestCameraPermission(obj, needCrop, false);
     }
 
-    public static void fromAlbum(Activity activity) {
-        fromAlbum(activity, true);
+    public static void fromAlbum(Object obj) {
+        fromAlbum(obj, true);
     }
 
-    public static void fromAlbum(Activity activity, boolean needCrop) {
-        fromAlbumInternal(activity, needCrop);
+    public static void fromAlbum(Object obj, boolean needCrop) {
+        if (!checkTargetValided(obj)) return;
+        checkAndRequestCameraPermission(obj, needCrop, true);
     }
 
     public static String getCropImagePath() {
         return AppFileHelper.getAppTempPath() + AppFileHelper.createCropImageName();
     }
 
-    public static void toCrop(Activity activity, Uri imageUri) {
-        toCropInternal(activity, imageUri);
+    public static void toCrop(Object obj, Uri imageUri) {
+        if (!checkTargetValided(obj)) return;
+        toCropInternal(obj, imageUri);
     }
 
-    public static void fromCamera(Fragment fragment) {
-        fromCamera(fragment, true);
-    }
+    private static void checkAndRequestCameraPermission(final Object object, final boolean needCrop, final boolean album) {
+        PermissionHelper permissionHelper = null;
+        OnPermissionGrantListener onPermissionGrantListener = new OnPermissionGrantListener() {
+            @Override
+            public void onPermissionGranted(PermissionHelper.Permission... grantedPermissions) {
+                if (album) {
+                    fromAlbumInternal(object, needCrop);
+                } else {
+                    fromCameraInternal(object, needCrop);
+                }
+            }
 
-    public static void fromCamera(Fragment fragment, boolean needCrop) {
-        checkAndRequestCameraPermission(fragment, needCrop);
-    }
+            @Override
+            public void onPermissionsDenied(PermissionHelper.Permission... deniedPermissions) {
 
-    public static void fromAlbum(Fragment fragment) {
-        fromAlbum(fragment, true);
-    }
+            }
+        };
+        if (object instanceof Activity) {
+            permissionHelper = object instanceof IPermission ? ((IPermission) object).getPermissionHelper() : new PermissionHelper((Activity) object);
+        } else if (object instanceof Fragment) {
+            permissionHelper = object instanceof IPermission ? ((IPermission) object).getPermissionHelper() : new PermissionHelper(((Fragment) object).getActivity());
+        }
+        if (permissionHelper != null) {
+            if (album) {
+                permissionHelper.requestPermission(onPermissionGrantListener, PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE, PermissionHelper.Permission.READ_EXTERNAL_STORAGE);
+            } else {
+                permissionHelper.requestPermission(onPermissionGrantListener, PermissionHelper.Permission.CAMERA, PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE, PermissionHelper.Permission.READ_EXTERNAL_STORAGE);
+            }
+        }
 
-    public static void fromAlbum(Fragment fragment, boolean needCrop) {
-        fromAlbumInternal(fragment, needCrop);
-    }
-
-    public static void toCrop(Fragment fragment, Uri imageUri) {
-        toCropInternal(fragment, imageUri);
     }
 
 
@@ -101,30 +116,6 @@ public class PhotoHelper {
         } else if (obj instanceof Activity) {
             ((Activity) obj).startActivityForResult(albumIntent, needCrop ? REQUEST_FROM_ALBUM : REQUEST_FROM_ALBUM_WITHO_OUT_CROP);
         }
-    }
-
-    private static void checkAndRequestCameraPermission(final Object object, final boolean needCrop) {
-        PermissionHelper permissionHelper = null;
-        PermissionHelper.OnPermissionGrantListener onPermissionGrantListener = new PermissionHelper.OnPermissionGrantListener() {
-            @Override
-            public void onPermissionGranted(@PermissionHelper.PermissionResultCode int requestCode) {
-                fromCameraInternal(object, needCrop);
-            }
-
-            @Override
-            public void onPermissionsDenied(@PermissionHelper.PermissionResultCode int requestCode) {
-
-            }
-        };
-        if (object instanceof Activity) {
-            permissionHelper = object instanceof BaseActivity ? ((BaseActivity) object).getPermissionHelper() : new PermissionHelper((Activity) object);
-        } else if (object instanceof Fragment) {
-            permissionHelper = object instanceof BaseFragment ? ((BaseFragment) object).getPermissionHelper() : new PermissionHelper(((Fragment) object).getActivity());
-        }
-        if (permissionHelper != null) {
-            permissionHelper.requestPermission(PermissionHelper.CODE_CAMERA, onPermissionGrantListener);
-        }
-
     }
 
     private static void fromCameraInternal(Object object, boolean needCrop) {
@@ -308,6 +299,10 @@ public class PhotoHelper {
                 break;
 
         }
+    }
+
+    private static boolean checkTargetValided(Object obj) {
+        return obj instanceof Activity || obj instanceof Fragment;
     }
 
     private static void callFinish(PhotoCallback callback, String filePath) {

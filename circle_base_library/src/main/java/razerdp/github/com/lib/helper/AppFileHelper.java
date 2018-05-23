@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import razerdp.github.com.lib.api.AppContext;
 import razerdp.github.com.lib.base.BaseActivity;
+import razerdp.github.com.lib.interfaces.OnPermissionGrantListener;
 import razerdp.github.com.lib.utils.FileUtil;
 
 /**
@@ -45,17 +46,17 @@ public class AppFileHelper {
         if (!TextUtils.isEmpty(storagePath)) return;
         if (OVERM) {
             if (activity instanceof BaseActivity) {
-                ((BaseActivity) activity).getPermissionHelper().requestPermission(PermissionHelper.CODE_WRITE_EXTERNAL_STORAGE, new PermissionHelper.OnPermissionGrantListener() {
+                ((BaseActivity) activity).getPermissionHelper().requestPermission(new OnPermissionGrantListener() {
                     @Override
-                    public void onPermissionGranted(int requestCode) {
+                    public void onPermissionGranted(PermissionHelper.Permission... grantedPermissions) {
                         initStroagePathInternal();
                     }
 
                     @Override
-                    public void onPermissionsDenied(int requestCode) {
+                    public void onPermissionsDenied(PermissionHelper.Permission... deniedPermissions) {
 
                     }
-                });
+                }, PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE, PermissionHelper.Permission.READ_EXTERNAL_STORAGE);
             } else {
                 int permission1 = ActivityCompat.checkSelfPermission(activity,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE);

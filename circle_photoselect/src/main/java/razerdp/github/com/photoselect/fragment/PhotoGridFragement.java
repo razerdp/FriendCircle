@@ -14,25 +14,26 @@ import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.razerdp.github.com.common.entity.photo.PhotoBrowserInfo;
+import com.razerdp.github.com.common.router.RouterList;
 import com.socks.library.KLog;
 
 import java.util.List;
 
 import razerdp.github.com.adapter.PhotoSelectAdapter;
 import razerdp.github.com.lib.base.BaseFragment;
+import razerdp.github.com.lib.common.entity.ImageInfo;
 import razerdp.github.com.lib.helper.AppSetting;
 import razerdp.github.com.lib.helper.PermissionHelper;
+import razerdp.github.com.lib.interfaces.OnPermissionGrantListener;
 import razerdp.github.com.lib.manager.localphoto.LPException;
 import razerdp.github.com.lib.manager.localphoto.LocalPhotoManager;
-import razerdp.github.com.ui.util.UIHelper;
-import razerdp.github.com.ui.util.ViewUtil;
-import razerdp.github.com.ui.itemdecoration.GridItemDecoration;
-import razerdp.github.com.ui.widget.popup.PopupProgress;
-import razerdp.github.com.lib.common.entity.ImageInfo;
-import com.razerdp.github.com.common.entity.photo.PhotoBrowserInfo;
-import com.razerdp.github.com.common.router.RouterList;
 import razerdp.github.com.photoselect.PhotoSelectActivity;
 import razerdp.github.com.photoselect.R;
+import razerdp.github.com.ui.itemdecoration.GridItemDecoration;
+import razerdp.github.com.ui.util.UIHelper;
+import razerdp.github.com.ui.util.ViewUtil;
+import razerdp.github.com.ui.widget.popup.PopupProgress;
 
 /**
  * Created by 大灯泡 on 2017/3/29.
@@ -118,17 +119,12 @@ public class PhotoGridFragement extends BaseFragment {
         getActivity().getWindow().getDecorView().postDelayed(new Runnable() {
             @Override
             public void run() {
-                getPermissionHelper().requestPermission(PermissionHelper.CODE_READ_EXTERNAL_STORAGE, new PermissionHelper.OnPermissionGrantListener() {
+                requestPermission(new OnPermissionGrantListener.OnPermissionGrantListenerAdapter() {
                     @Override
-                    public void onPermissionGranted(@PermissionHelper.PermissionResultCode int requestCode) {
+                    public void onPermissionGranted(PermissionHelper.Permission... grantedPermissions) {
                         scanImgSyncWithProgress();
                     }
-
-                    @Override
-                    public void onPermissionsDenied(@PermissionHelper.PermissionResultCode int requestCode) {
-
-                    }
-                });
+                }, PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE, PermissionHelper.Permission.READ_EXTERNAL_STORAGE);
             }
         }, 500);
     }

@@ -18,6 +18,8 @@ import com.socks.library.KLog;
 
 import razerdp.github.com.lib.api.AppContext;
 import razerdp.github.com.lib.helper.PermissionHelper;
+import razerdp.github.com.lib.interfaces.IPermission;
+import razerdp.github.com.lib.interfaces.OnPermissionGrantListener;
 
 /**
  * Created by 大灯泡 on 2017/3/22.
@@ -25,7 +27,7 @@ import razerdp.github.com.lib.helper.PermissionHelper;
  * BaseActivity
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements IPermission{
 
     private PermissionHelper mPermissionHelper;
 
@@ -43,6 +45,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         onHandleIntent(getIntent());
     }
 
+    public void requestPermission(OnPermissionGrantListener listener, PermissionHelper.Permission... permissions) {
+        getPermissionHelper().requestPermission(listener, permissions);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -52,7 +58,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
 
+    @Override
     public PermissionHelper getPermissionHelper() {
+        if (mPermissionHelper==null){
+            mPermissionHelper=new PermissionHelper(this);
+        }
         return mPermissionHelper;
     }
 
