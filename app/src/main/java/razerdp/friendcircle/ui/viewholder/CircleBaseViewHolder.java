@@ -92,7 +92,7 @@ public abstract class CircleBaseViewHolder extends BaseMultiRecyclerViewHolder<M
         praiseWidget = (PraiseWidget) findView(praiseWidget, R.id.praise);
         line = findView(line, R.id.divider);
         commentLayout = (CommentContentsLayout) findView(commentLayout, R.id.comment_layout);
-        commentLayout.setMode(CommentContentsLayout.Mode.EXPANDABLE);
+        commentLayout.setMode(CommentContentsLayout.Mode.NORMAL);
         commentLayout.setOnCommentItemClickListener(onCommentItemClickListener);
         commentLayout.setOnCommentItemLongClickListener(onCommentItemLongClickListener);
         commentLayout.setOnCommentWidgetItemClickListener(onCommentWidgetItemClickListener);

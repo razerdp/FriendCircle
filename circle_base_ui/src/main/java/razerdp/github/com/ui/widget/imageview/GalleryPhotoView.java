@@ -34,7 +34,7 @@ import uk.co.senab.photoview.PhotoView;
  */
 
 public class GalleryPhotoView extends PhotoView {
-    private static final int ANIMA_DURATION = 350;
+    private static final int ANIMA_DURATION = 500;
 
     private BitmapTransform bitmapTransform;
     private OnEnterAnimaEndListener onEnterAnimaEndListener;

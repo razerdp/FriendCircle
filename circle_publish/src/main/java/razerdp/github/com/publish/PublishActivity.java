@@ -189,6 +189,8 @@ public class PublishActivity extends BaseTitleBarActivity {
                 UIHelper.ToastMessage(msg);
             }
         });
+
+        //相册选择
         if (requestCode == RouterList.PhotoSelectActivity.requestCode && resultCode == RESULT_OK) {
             List<ImageInfo> result = data.getParcelableArrayListExtra(RouterList.PhotoSelectActivity.key_result);
             if (result != null) {
@@ -196,6 +198,19 @@ public class PublishActivity extends BaseTitleBarActivity {
             }
             refreshTitleRightClickable();
         }
+
+        //多图选择
+        if (requestCode == RouterList.PhotoMultiBrowserActivity.requestCode && resultCode == RESULT_OK) {
+            List<ImageInfo> result = data.getParcelableArrayListExtra(RouterList.PhotoMultiBrowserActivity.key_result);
+            selectedPhotos.clear();
+            if (result != null) {
+                selectedPhotos.addAll(result);
+            }
+            loadImage();
+            refreshTitleRightClickable();
+        }
+
+
     }
 
     @Override

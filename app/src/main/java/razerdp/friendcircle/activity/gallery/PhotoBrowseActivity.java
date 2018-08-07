@@ -93,6 +93,10 @@ public class PhotoBrowseActivity extends BaseActivity {
                 dotIndicator.setCurrentSelection(position);
             }
         });
+        blackBackground.animate()
+                .alpha(1f)
+                .setDuration(500)
+                .start();
     }
 
     @Override

@@ -14,6 +14,12 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
+    <style name="CompactTransparent" parent="AppTheme">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowDisablePreview">true</item>
+    </style>
+
     <style name="Transparent_FullScreen" parent="AppTheme">
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>

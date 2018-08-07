@@ -1,6 +1,7 @@
 package razerdp.github.com.ui.widget.imageview;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -57,7 +58,7 @@ public class PreviewImageView<T> extends FlowLayout implements ViewGroup.OnHiera
         setOrientation(HORIZONTAL);
         setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         setOnHierarchyChangeListener(this);
-        ivPool = new SimpleObjectPool<>(ImageView.class,DEFAULT_MAX_PHOTO_COUNT);
+        ivPool = new SimpleObjectPool<>(ImageView.class, DEFAULT_MAX_PHOTO_COUNT);
         datas = new ArrayList<>();
     }
 
@@ -66,7 +67,7 @@ public class PreviewImageView<T> extends FlowLayout implements ViewGroup.OnHiera
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = MeasureSpec.getSize(widthMeasureSpec);
         if (mImageSize == 0) {
-            mImageSize = width / 4 - DEFAULT_PADDING * 2;
+            mImageSize = (width - getPaddingLeft() - getPaddingRight()) / 3 - DEFAULT_PADDING * 2;
         }
         if (addImageView == null) {
             initAddImageView();
@@ -79,8 +80,8 @@ public class PreviewImageView<T> extends FlowLayout implements ViewGroup.OnHiera
     }
 
     public void setDatas(List<T> datas, @NonNull OnLoadPhotoListener<T> onLoadPhotoListener) {
-        if (datas==null)return;
-        this.datas .clear();
+        if (datas == null) return;
+        this.datas.clear();
         this.datas.addAll(datas);
         setOnLoadPhotoListener(onLoadPhotoListener);
         callToUpdateData();
@@ -207,6 +208,7 @@ public class PreviewImageView<T> extends FlowLayout implements ViewGroup.OnHiera
     private void initAddImageView() {
         if (addImageView == null) {
             addImageView = new ImageView(getContext());
+            addImageView.setBackgroundColor(Color.parseColor("#f2f2f2"));
             addImageView.setImageResource(R.drawable.ic_add_photo);
             addImageView.setId(ADD_IMAGE_ID);
             addImageView.setOnClickListener(new OnClickListener() {

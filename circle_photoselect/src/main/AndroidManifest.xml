@@ -1,5 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="razerdp.github.com.photoselect">
+<manifest package="razerdp.github.com.photoselect"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:allowBackup="true"
@@ -9,14 +9,15 @@
         >
         <activity
             android:name=".PhotoSelectActivity"
-            android:screenOrientation="portrait"
             android:configChanges="keyboard|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
 
             />
         <activity
             android:name=".PhotoMultiBrowserActivity"
-            android:screenOrientation="portrait"
             android:configChanges="keyboard|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/FullScreen"
 
             />
     </application>

@@ -32,8 +32,7 @@
             android:name=".activity.gallery.PhotoBrowseActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/Transparent"/>
+            android:theme="@style/Transparent_FullScreen"/>
 
         <activity
             android:name=".activity.other.ServiceInfoActivity"

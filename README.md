@@ -26,6 +26,12 @@ FriendCircle
 
 【简略更新日志】
 ---
+
+* 2018/8/7
+  * 修复多图发布无法移除图片问题  #62 (https://github.com/razerdp/FriendCircle/issues/62)
+  * 适配Android O
+  * 展开评论暂时没有完成，因此暂时禁用。
+  
 * 2018/3/29
   * 修复点击名字问题，优化spanEx（#65）https://github.com/razerdp/FriendCircle/issues/65
   * 继续编写可收缩/展开的评论layout
