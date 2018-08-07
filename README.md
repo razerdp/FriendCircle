@@ -3,7 +3,7 @@ FriendCircle
 
 ### 一起来撸个朋友圈吧(重构版)
 
-[**apk下载**](http://bmob-cdn-14711.b0.upaiyun.com/2018/03/29/294e2c9440cbb63a806a09c35ea88fa2.apk)
+[**apk下载**](http://bmob-cdn-14711.b0.upaiyun.com/2018/08/07/54bf965c40a3c9eb800fe3023704f890.apk)
 
 
 欢迎来到本项目，这个项目是一个尝试性项目，目的在于从无到有撸出一个微信朋友圈。</br>
