@@ -122,6 +122,7 @@ public class PhotoBrowseActivity extends BaseActivity {
 
     @Override
     public void finish() {
+        showStatusBar();
         final GalleryPhotoView currentPhotoView = viewBuckets.get(photoViewpager.getCurrentItem());
         if (currentPhotoView == null) {
             KLog.e(TAG, "childView is null");

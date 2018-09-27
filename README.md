@@ -27,6 +27,10 @@ FriendCircle
 【简略更新日志】
 ---
 
+* 2018/9/27
+  * fixed #79
+  * 近期因为个人工作问题，暂时不更新，。。
+
 * 2018/8/7
   * 修复多图发布无法移除图片问题  #62 (https://github.com/razerdp/FriendCircle/issues/62)
   * 适配Android O
@@ -43,23 +47,6 @@ FriendCircle
   * 删除朋友圈时也删除对应文件
   * 修复单张图片上传时无法压缩的问题
   * Glide升级到4.6.1
-  
-* 2018/2/23
-  * 针对8.0的文件路径问题修复
-  * 新年快乐哦~
-
-* 2018/1/10
-  * 增加压缩图片类，上传时压缩
-
-* 2018/1/9
-  * 解决gson冲突问题
-
-* 2018/1/3
-  * 增加bmob缩略图url，，，减少流量损耗
-
-* 2017/12/20
-  * 添加服务器消息
-  * 优化`CommentContentsLayout`，在`circle_dev_commentcontentslayout`分支中开发收起/展开评论功能
 
 *  ...more
 

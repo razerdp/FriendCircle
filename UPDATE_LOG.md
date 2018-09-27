@@ -1,5 +1,9 @@
 # 更新日志
 
+* 2018/9/27
+  * fixed #79
+  * 近期因为个人工作问题，暂时不更新，。。
+  
 * 2018/8/7
   * 修复多图发布无法移除图片问题  #62 (https://github.com/razerdp/FriendCircle/issues/62)
   * 适配Android O

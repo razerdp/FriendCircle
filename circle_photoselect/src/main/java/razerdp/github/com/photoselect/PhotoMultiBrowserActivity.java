@@ -21,12 +21,15 @@ import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.razerdp.github.com.common.entity.photo.PhotoBrowserInfo;
+import com.razerdp.github.com.common.router.RouterList;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import razerdp.github.com.adapter.PhotoBrowserAdapter;
 import razerdp.github.com.lib.base.BaseActivity;
+import razerdp.github.com.lib.common.entity.ImageInfo;
 import razerdp.github.com.lib.manager.localphoto.LocalPhotoManager;
 import razerdp.github.com.lib.utils.ToolUtil;
 import razerdp.github.com.ui.util.AnimUtils;
@@ -34,9 +37,6 @@ import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.ui.util.ViewUtil;
 import razerdp.github.com.ui.widget.common.HackyViewPager;
 import razerdp.github.com.ui.widget.imageview.CheckDrawable;
-import razerdp.github.com.lib.common.entity.ImageInfo;
-import com.razerdp.github.com.common.entity.photo.PhotoBrowserInfo;
-import com.razerdp.github.com.common.router.RouterList;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
@@ -98,8 +98,8 @@ public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnCl
         //如果初始值为0的话，不会触发pagechangelistener里面的pageselected，所以对于预览模式需要手动设定
         //详看源码(api:25.2.0)viewpager:line657
         //final boolean dispatchSelected = mCurItem != item;
-        if (browserInfo.getCurPos()==0){
-            vh.setSelected(checkIsSelect(0),false);
+        if (browserInfo.getCurPos() == 0) {
+            vh.setSelected(checkIsSelect(0), false);
         }
         vh.viewPager.setCurrentItem(browserInfo.getCurPos());
         ViewUtil.setViewsClickListener(this, vh.back, vh.mFinish, vh.mPhotoEdit);
@@ -265,7 +265,7 @@ public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnCl
             mTopBar = findView(R.id.browser_top_bar);
             back = findView(R.id.back);
             selectedIcon = findView(R.id.select);
-            selectedTouchDelegate=findView(R.id.select_touch_delegate);
+            selectedTouchDelegate = findView(R.id.select_touch_delegate);
             checkDrawable = new CheckDrawable(selectedIcon.getContext());
             selectedIcon.setImageDrawable(checkDrawable);
 
@@ -277,7 +277,7 @@ public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnCl
             mSelectCount = findView(R.id.photo_select_count);
             mFinish = findView(R.id.photo_select_finish);
 
-            ViewUtil.expandViewTouchDelegate(mFinish,20,20,20,20);
+            ViewUtil.expandViewTouchDelegate(mFinish, 20, 20, 20, 20);
 
             mTopBar.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -27,7 +27,7 @@ import razerdp.github.com.lib.interfaces.OnPermissionGrantListener;
  * BaseActivity
  */
 
-public abstract class BaseActivity extends AppCompatActivity implements IPermission{
+public abstract class BaseActivity extends AppCompatActivity implements IPermission {
 
     private PermissionHelper mPermissionHelper;
 
@@ -60,8 +60,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IPermiss
 
     @Override
     public PermissionHelper getPermissionHelper() {
-        if (mPermissionHelper==null){
-            mPermissionHelper=new PermissionHelper(this);
+        if (mPermissionHelper == null) {
+            mPermissionHelper = new PermissionHelper(this);
         }
         return mPermissionHelper;
     }
@@ -117,11 +117,27 @@ public abstract class BaseActivity extends AppCompatActivity implements IPermiss
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         } else {
             View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
             decorView.setSystemUiVisibility(uiOptions);
             ActionBar actionBar = getActionBar();
             if (actionBar != null) {
                 actionBar.hide();
+            }
+        }
+    }
+
+    protected void showStatusBar() {
+        final int sdkVer = Build.VERSION.SDK_INT;
+        if (sdkVer < 16) {
+            //4.0及一下
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } else {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+            ActionBar actionBar = getActionBar();
+            if (actionBar != null) {
+                actionBar.show();
             }
         }
     }
