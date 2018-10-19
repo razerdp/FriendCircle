@@ -29,15 +29,17 @@ public class PopupProgress extends BasePopupWindow {
         progressTips = (TextView) findViewById(R.id.progress_tips);
         progressView.setCurrentPresent(0);
         setBackPressEnable(false);
+        setAllowDismissWhenTouchOutside(false);
     }
 
+
     @Override
-    protected Animation initShowAnimation() {
+    protected Animation onCreateShowAnimation() {
         return getDefaultAlphaAnimation();
     }
 
     @Override
-    protected Animation initExitAnimation() {
+    protected Animation onCreateDismissAnimation() {
         AlphaAnimation alphaAnimation = new AlphaAnimation(1.0F, 0.0F);
         alphaAnimation.setDuration(300L);
         alphaAnimation.setInterpolator(new AccelerateInterpolator());
@@ -45,19 +47,10 @@ public class PopupProgress extends BasePopupWindow {
     }
 
     @Override
-    public View getClickToDismissView() {
-        return null;
-    }
-
-    @Override
-    public View onCreatePopupView() {
+    public View onCreateContentView() {
         return createPopupById(R.layout.popup_progress);
     }
 
-    @Override
-    public View initAnimaView() {
-        return findViewById(R.id.popup_container);
-    }
 
     public void setProgress(int progress) {
         if (progressView != null) {

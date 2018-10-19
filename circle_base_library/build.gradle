@@ -12,7 +12,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [moduleName: project.getName()]
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
             }
         }
     }
@@ -42,22 +42,22 @@ dependencies {
     api rootProject.ext.dependencies.design
     api rootProject.ext.dependencies.support_util
 
-    api 'com.github.razerdp:BasePopup:1.9.4'
+    api 'com.github.razerdp:BasePopup_Candy:2.0.8-alpha2'
     //over scroller helper
-    api 'me.everything:overscroll-decor-android:1.0.3'
+    api 'me.everything:overscroll-decor-android:1.0.4'
     //bmob
-    api 'cn.bmob.android:bmob-sdk:3.5.9'
+    api 'cn.bmob.android:bmob-sdk:3.6.6'
     //log
     api 'com.github.zhaokaiqiang.klog:library:1.6.0'
     //eventbus
-    api 'org.greenrobot:eventbus:3.0.0'
+    api 'org.greenrobot:eventbus:3.1.1'
     //网页查看数据库，sp
     debugApi('com.amitshekhar.android:debug-db:1.0.2') {
         exclude group: 'com.google.code.gson'
     }
     //glide
-    api 'com.github.bumptech.glide:glide:4.6.1'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
+    api 'com.github.bumptech.glide:glide:4.7.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     api('com.github.bumptech.glide:okhttp3-integration:4.6.1') {
         exclude group: 'glide-parent'
         exclude group: 'com.squareup.okio'

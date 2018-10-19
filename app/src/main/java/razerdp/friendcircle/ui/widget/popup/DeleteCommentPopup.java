@@ -30,30 +30,22 @@ public class DeleteCommentPopup extends BasePopupWindow implements View.OnClickL
         setBlurBackgroundEnable(true);
     }
 
-    @Override
-    public View initAnimaView() {
-        return findViewById(R.id.popup_container);
-    }
 
     @Override
-    protected Animation initShowAnimation() {
+    protected Animation onCreateShowAnimation() {
         return getTranslateVerticalAnimation(1f, 0, 500);
     }
 
     @Override
-    protected Animation initExitAnimation() {
+    protected Animation onCreateDismissAnimation() {
         return getTranslateVerticalAnimation(0, 1f, 500);
     }
 
     @Override
-    public View onCreatePopupView() {
+    public View onCreateContentView() {
         return createPopupById(R.layout.popup_delete_comment);
     }
 
-    @Override
-    public View getClickToDismissView() {
-        return getPopupWindowView();
-    }
 
 
     public void showPopupWindow(CommentInfo commentInfo) {

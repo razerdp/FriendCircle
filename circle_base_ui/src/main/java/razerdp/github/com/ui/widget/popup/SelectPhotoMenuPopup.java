@@ -34,29 +34,21 @@ public class SelectPhotoMenuPopup extends BasePopupWindow implements View.OnClic
     }
 
     @Override
-    protected Animation initShowAnimation() {
+    protected Animation onCreateShowAnimation() {
         return getTranslateVerticalAnimation(1f, 0, 500);
     }
 
     @Override
-    protected Animation initExitAnimation() {
+    protected Animation onCreateDismissAnimation() {
         return getTranslateVerticalAnimation(0, 1f, 500);
     }
 
-    @Override
-    public View getClickToDismissView() {
-        return getPopupWindowView();
-    }
 
     @Override
-    public View onCreatePopupView() {
+    public View onCreateContentView() {
         return createPopupById(R.layout.popup_select_photo);
     }
 
-    @Override
-    public View initAnimaView() {
-        return findViewById(R.id.popup_container);
-    }
 
     public OnSelectPhotoMenuClickListener getOnSelectPhotoMenuClickListener() {
         return listener;
@@ -74,13 +66,13 @@ public class SelectPhotoMenuPopup extends BasePopupWindow implements View.OnClic
             if (listener != null) {
                 listener.onShootClick();
             }
-            dismissWithOutAnima();
+            dismissWithOutAnimate();
 
         } else if (i == R.id.album) {
             if (listener != null) {
                 listener.onAlbumClick();
             }
-            dismissWithOutAnima();
+            dismissWithOutAnimate();
 
         } else if (i == R.id.cancel) {
             dismiss();

@@ -22,7 +22,6 @@ import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
 import razerdp.github.com.lib.thirdpart.WeakHandler;
 import razerdp.github.com.lib.utils.ToolUtil;
-import razerdp.github.com.ui.util.UIHelper;
 
 /**
  * Created by 大灯泡 on 2016/3/6.
@@ -49,7 +48,6 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
 
     public CommentPopup(Activity context) {
         super(context, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        setNeedPopupFade(false);
         handler = new WeakHandler();
 
         mLikeView = (ImageView) findViewById(R.id.iv_like);
@@ -63,13 +61,21 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
 
         buildAnima();
         setBlurBackgroundEnable(true);
-        setInterceptTouchEvent(false);
-        setDismissWhenTouchOutside(true);
+        setAllowInterceptTouchEvent(false);
+        setAllowDismissWhenTouchOutside(true);
+        setPopupFadeEnable(false);
     }
 
     @Override
-    protected Animation initShowAnimation() {
-        TranslateAnimation showAnima = new TranslateAnimation(UIHelper.dipToPx(180f), 0, 0, 0);
+    protected Animation onCreateShowAnimation() {
+        TranslateAnimation showAnima = new TranslateAnimation(Animation.RELATIVE_TO_PARENT,
+                1f,
+                Animation.RELATIVE_TO_PARENT,
+                0,
+                Animation.RELATIVE_TO_PARENT,
+                0,
+                Animation.RELATIVE_TO_PARENT,
+                0);
         showAnima.setInterpolator(new DecelerateInterpolator());
         showAnima.setDuration(250);
         showAnima.setFillAfter(true);
@@ -77,17 +83,24 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
     }
 
     @Override
-    protected Animation initExitAnimation() {
-        TranslateAnimation exitAnima = new TranslateAnimation(0, UIHelper.dipToPx(180f), 0, 0);
-        exitAnima.setInterpolator(new DecelerateInterpolator());
-        exitAnima.setDuration(250);
-        exitAnima.setFillAfter(true);
-        return exitAnima;
+    protected Animation onCreateDismissAnimation() {
+        TranslateAnimation showAnima = new TranslateAnimation(Animation.RELATIVE_TO_PARENT,
+                0,
+                Animation.RELATIVE_TO_PARENT,
+                1f,
+                Animation.RELATIVE_TO_PARENT,
+                0,
+                Animation.RELATIVE_TO_PARENT,
+                0);
+        showAnima.setInterpolator(new DecelerateInterpolator());
+        showAnima.setDuration(250);
+        showAnima.setFillAfter(true);
+        return showAnima;
     }
 
     private void buildAnima() {
         mScaleAnimation = new ScaleAnimation(1f, 2.5f, 1f, 2.5f, Animation.RELATIVE_TO_SELF, 0.5f,
-                                             Animation.RELATIVE_TO_SELF, 0.5f);
+                Animation.RELATIVE_TO_SELF, 0.5f);
         mScaleAnimation.setDuration(300);
         mScaleAnimation.setInterpolator(new SpringInterPolator());
         mScaleAnimation.setFillAfter(false);
@@ -115,25 +128,17 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
         });
     }
 
-    @Override
-    public View getClickToDismissView() {
-        return null;
-    }
 
     @Override
-    public View onCreatePopupView() {
+    public View onCreateContentView() {
         return createPopupById(R.layout.popup_comment);
     }
 
-    @Override
-    public View initAnimaView() {
-        return findViewById(R.id.comment_popup_contianer);
-    }
 
     @Override
     public void showPopupWindow(View v) {
         setOffsetX(-getWidth() - 10);
-        setOffsetY(-getHeight()*2/3);
+        setOffsetY(-getHeight() * 2 / 3);
         super.showPopupWindow(v);
     }
 
@@ -150,7 +155,7 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
             case R.id.item_comment:
                 if (mOnCommentPopupClickListener != null) {
                     mOnCommentPopupClickListener.onCommentClick(v, mMomentsInfo);
-                    dismissWithOutAnima();
+                    dismissWithOutAnimate();
                 }
                 break;
         }

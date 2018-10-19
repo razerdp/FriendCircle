@@ -6,7 +6,6 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,51 +36,39 @@ public class RegisterPopup extends BasePopupWindow implements View.OnClickListen
     public RegisterPopup(Activity context) {
         super(context);
         setBackPressEnable(false);
-        vh = new ViewHolder(getPopupWindowView());
+        vh = new ViewHolder(getContentView());
         setViewClickListener(this, vh.cancel, vh.ok);
         setBlurBackgroundEnable(true);
     }
 
-    @Override
-    protected Animation initShowAnimation() {
-        return null;
-    }
 
     @Override
-    protected Animator initShowAnimator() {
+    protected Animator onCreateShowAnimator() {
         AnimatorSet set;
         set = new AnimatorSet();
-        ObjectAnimator transAnimator = ObjectAnimator.ofFloat(mAnimaView, "translationY", 300, 0).setDuration(600);
+        ObjectAnimator transAnimator = ObjectAnimator.ofFloat(getContentView(), "translationY", 300, 0).setDuration(600);
         transAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(mAnimaView, "alpha", 0.4f, 1).setDuration(250 * 3 / 2);
+        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(getContentView(), "alpha", 0.4f, 1).setDuration(250 * 3 / 2);
         set.playTogether(transAnimator, alphaAnimator);
         return set;
     }
 
+
     @Override
-    protected Animator initExitAnimator() {
+    protected Animator onCreateDismissAnimator() {
         AnimatorSet set;
         set = new AnimatorSet();
-        ObjectAnimator transAnimator = ObjectAnimator.ofFloat(mAnimaView, "translationY", 0, 250).setDuration(600);
+        ObjectAnimator transAnimator = ObjectAnimator.ofFloat(getContentView(), "translationY", 0, 250).setDuration(600);
         transAnimator.setInterpolator(new OvershootInterpolator(-6));
-        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(mAnimaView, "alpha", 1f, 0).setDuration(800);
+        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(getContentView(), "alpha", 1f, 0).setDuration(800);
         set.playTogether(transAnimator, alphaAnimator);
         return set;
     }
 
-    @Override
-    public View getClickToDismissView() {
-        return null;
-    }
 
     @Override
-    public View onCreatePopupView() {
+    public View onCreateContentView() {
         return createPopupById(R.layout.popup_register);
-    }
-
-    @Override
-    public View initAnimaView() {
-        return findViewById(R.id.popup_content);
     }
 
     @Override
@@ -89,7 +76,8 @@ public class RegisterPopup extends BasePopupWindow implements View.OnClickListen
         switch (v.getId()) {
             case R.id.cancel:
                 AppSetting.saveBooleanPreferenceByKey(AppSetting.CHECK_REGISTER, true);
-                if (onRegisterSuccess != null) onRegisterSuccess.onSuccess(LocalHostManager.INSTANCE.getDeveloperHostUser());
+                if (onRegisterSuccess != null)
+                    onRegisterSuccess.onSuccess(LocalHostManager.INSTANCE.getDeveloperHostUser());
                 dismiss();
                 break;
             case R.id.ok:
@@ -165,9 +153,9 @@ public class RegisterPopup extends BasePopupWindow implements View.OnClickListen
             this.ed_pass = (EditText) rootView.findViewById(R.id.ed_pass);
             this.ed_nick = (EditText) rootView.findViewById(R.id.ed_nick);
             this.cancel = (Button) rootView.findViewById(R.id.cancel);
-            this.loadingView= (LoadingView) rootView.findViewById(R.id.view_loading);
+            this.loadingView = (LoadingView) rootView.findViewById(R.id.view_loading);
             this.ok = (Button) rootView.findViewById(R.id.ok);
-            this.rl_loading= (RelativeLayout) rootView.findViewById(R.id.rl_loading);
+            this.rl_loading = (RelativeLayout) rootView.findViewById(R.id.rl_loading);
             loadingView.start();
         }
 

@@ -5,7 +5,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.view.View;
-import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
 import android.widget.TextView;
 
@@ -37,48 +36,41 @@ public class UpdateInfoPopup extends BasePopupWindow {
             }
         });
         setBlurBackgroundEnable(true);
+        findViewById(R.id.tv_ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
     }
 
     @Override
-    protected Animation initShowAnimation() {
-        return null;
-    }
-
-    @Override
-    protected Animator initShowAnimator() {
+    protected Animator onCreateShowAnimator() {
         AnimatorSet set;
         set = new AnimatorSet();
-        ObjectAnimator transAnimator = ObjectAnimator.ofFloat(mAnimaView, View.TRANSLATION_Y, 300, 0).setDuration(600);
+        ObjectAnimator transAnimator = ObjectAnimator.ofFloat(getContentView(), View.TRANSLATION_Y, 300, 0).setDuration(600);
         transAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(mAnimaView, View.ALPHA, 0.4f, 1).setDuration(250 * 3 / 2);
+        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(getContentView(), View.ALPHA, 0.4f, 1).setDuration(250 * 3 / 2);
         set.playTogether(transAnimator, alphaAnimator);
         return set;
     }
 
+
     @Override
-    protected Animator initExitAnimator() {
+    protected Animator onCreateDismissAnimator() {
         AnimatorSet set;
         set = new AnimatorSet();
-        ObjectAnimator transAnimator = ObjectAnimator.ofFloat(mAnimaView, View.TRANSLATION_Y, 0, 250).setDuration(600);
+        ObjectAnimator transAnimator = ObjectAnimator.ofFloat(getContentView(), View.TRANSLATION_Y, 0, 250).setDuration(600);
         transAnimator.setInterpolator(new OvershootInterpolator(-6));
-        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(mAnimaView, View.ALPHA, 1f, 0).setDuration(800);
+        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(getContentView(), View.ALPHA, 1f, 0).setDuration(800);
         set.playTogether(transAnimator, alphaAnimator);
         return set;
     }
 
-    @Override
-    public View getClickToDismissView() {
-        return findViewById(R.id.tv_ok);
-    }
 
     @Override
-    public View onCreatePopupView() {
+    public View onCreateContentView() {
         return createPopupById(R.layout.popup_update);
-    }
-
-    @Override
-    public View initAnimaView() {
-        return findViewById(R.id.popup_content);
     }
 
 
