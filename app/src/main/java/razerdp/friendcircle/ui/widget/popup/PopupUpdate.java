@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.socks.library.KLog;
 
 import java.io.File;
-import java.net.URI;
 
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
@@ -95,7 +94,7 @@ public class PopupUpdate extends BasePopupWindow {
                 @Override
                 public void done(String s, BmobException e) {
                     if (e == null) {
-                        install(new File(s).getAbsolutePath());
+                        install(s);
                     }
                 }
 
@@ -117,7 +116,7 @@ public class PopupUpdate extends BasePopupWindow {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.setAction(Intent.ACTION_VIEW);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Uri fileUri = FileProvider.getUriForFile(getContext(), "github.razerdp.friendcircle", new File(URI.create(file)));
+            Uri fileUri = FileProvider.getUriForFile(getContext(), "github.razerdp.friendcircle", new File(file));
             intent.setDataAndType(fileUri, MIME_TYPE_APK);
         } else {
             intent.setDataAndType(Uri.parse(file), MIME_TYPE_APK);
