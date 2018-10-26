@@ -1,6 +1,7 @@
 package razerdp.friendcircle.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import com.razerdp.github.com.common.router.RouterList;
 import java.util.ArrayList;
 import java.util.List;
 
+import razerdp.friendcircle.activity.circledemo.FriendCircleDemoFragmentActivity;
 import razerdp.friendcircle.activity.gallery.PhotoBrowseActivity;
 import razerdp.friendcircle.activity.other.ServiceInfoActivity;
 import razerdp.github.com.lib.common.entity.ImageInfo;
@@ -49,6 +51,10 @@ public class ActivityLauncher {
     public static void startToPhotoBrosweActivity(Activity act, @NonNull PhotoBrowseInfo info) {
         if (info == null) return;
         PhotoBrowseActivity.startToPhotoBrowseActivity(act, info);
+    }
+
+    public static void startToFriendCircleFragmentDemoActivity(Context context) {
+        context.startActivity(new Intent(context, FriendCircleDemoFragmentActivity.class));
     }
 
     /**

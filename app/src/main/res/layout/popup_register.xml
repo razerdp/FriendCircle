@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#9f000000"
                 android:gravity="center"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp">
@@ -33,9 +32,9 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="15dp"
-                android:inputType="text"
                 android:background="@drawable/bg_input_edittext"
                 android:hint="用户名"
+                android:inputType="text"
                 android:padding="8dp"
                 android:textSize="14sp"/>
 
@@ -45,10 +44,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:inputType="numberPassword"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/bg_input_edittext"
                 android:hint="密码"
+                android:inputType="numberPassword"
                 android:padding="8dp"
                 android:textSize="14sp"/>
 

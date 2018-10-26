@@ -64,6 +64,7 @@ public class CommentPopup extends BasePopupWindow implements View.OnClickListene
         setAllowInterceptTouchEvent(false);
         setAllowDismissWhenTouchOutside(true);
         setPopupFadeEnable(false);
+        setBackground(null);
     }
 
     @Override

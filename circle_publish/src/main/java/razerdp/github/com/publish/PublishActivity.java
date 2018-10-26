@@ -170,7 +170,7 @@ public class PublishActivity extends BaseTitleBarActivity {
 
 
     private void setTitleRightTextColor(boolean canClick) {
-        setRightTextColor(canClick ? UIHelper.getResourceColor(R.color.wechat_green_bg) : UIHelper.getResourceColor(R.color.wechat_green_transparent));
+        setRightTextColor(canClick ? UIHelper.getColor(R.color.wechat_green_bg) : UIHelper.getColor(R.color.wechat_green_transparent));
         canTitleRightClick = canClick;
     }
 

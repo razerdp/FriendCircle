@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="razerdp.friendcircle"
+<manifest xmlns:tools="http://schemas.android.com/tools"
+          package="razerdp.friendcircle"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -19,7 +20,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".activity.circledemo.FriendCircleDemoActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -39,9 +41,11 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             />
-        <activity android:name=".activity.TestActivity">
 
-        </activity>
+        <activity
+            android:name=".activity.circledemo.FriendCircleDemoFragmentActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

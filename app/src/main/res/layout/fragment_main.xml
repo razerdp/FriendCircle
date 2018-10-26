@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".activity.circledemo.FriendCircleDemoActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <razerdp.github.com.ui.widget.pullrecyclerview.CircleRecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <RelativeLayout
+            android:id="@+id/tips_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0"
+            android:visibility="gone"
+            tools:alpha="1"
+            tools:layout_marginTop="50dp"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/service_tips"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#aa517fae"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center_vertical"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                tools:text="服务器提醒"
+                />
+
+            <ImageView
+                android:id="@+id/iv_close"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/arrow_white"
+                />
+        </RelativeLayout>
+
+        <razerdp.github.com.ui.widget.common.TitleBar
+            android:id="@id/title_bar_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+    </FrameLayout>
+
+    <razerdp.github.com.ui.widget.commentwidget.CommentBox
+        android:id="@+id/widget_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

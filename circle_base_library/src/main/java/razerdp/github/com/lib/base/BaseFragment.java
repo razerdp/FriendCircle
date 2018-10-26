@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import razerdp.github.com.lib.helper.PermissionHelper;
 import razerdp.github.com.lib.interfaces.IPermission;
 import razerdp.github.com.lib.interfaces.OnPermissionGrantListener;
+import razerdp.github.com.lib.utils.KeyBoardUtil;
 
 /**
  * Created by 大灯泡 on 2017/3/29.
@@ -25,7 +26,6 @@ public abstract class BaseFragment extends Fragment implements IPermission {
     private View rootView;
     protected Activity mActivity;
     private PermissionHelper mPermissionHelper;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +54,7 @@ public abstract class BaseFragment extends Fragment implements IPermission {
         }
         rootView = inflater.inflate(getLayoutResId(), container, false);
         if (rootView != null) {
+            onPreInitView(rootView);
             onInitData();
             onInitView(rootView);
             return rootView;
@@ -87,6 +88,7 @@ public abstract class BaseFragment extends Fragment implements IPermission {
     public void requestPermission(OnPermissionGrantListener listener, PermissionHelper.Permission... permissions) {
         getPermissionHelper().requestPermission(listener, permissions);
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -98,6 +100,10 @@ public abstract class BaseFragment extends Fragment implements IPermission {
 
     @LayoutRes
     public abstract int getLayoutResId();
+
+    protected void onPreInitView(View rootView) {
+    }
+
 
     protected abstract void onInitData();
 
@@ -115,6 +121,15 @@ public abstract class BaseFragment extends Fragment implements IPermission {
             return (T) rootView.findViewById(id);
         } else {
             return null;
+        }
+    }
+
+    protected void back() {
+        KeyBoardUtil.close(getActivity());
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+            getActivity().finish();
         }
     }
 }

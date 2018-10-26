@@ -74,11 +74,12 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
         tx_right = (TextView) findViewById(R.id.tx_title_bar_right);
 
         title = (TextView) findViewById(R.id.tx_title);
-        this.setBackgroundColor(UIHelper.getResourceColor(R.color.action_bar_bg));
+        this.setBackgroundColor(UIHelper.getColor(R.color.action_bar_bg));
 
         ll_right.setOnClickListener(null);
         ll_right.setVisibility(INVISIBLE);
         ll_left.setOnClickListener(this);
+        title.setOnLongClickListener(this);
 
     }
 
@@ -266,6 +267,10 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
                 return onTitleBarClickListener.onRightClick(ll_left, true);
             }
 
+        } else if (i == R.id.tx_title) {
+            if (onTitleBarClickListener != null) {
+                return onTitleBarClickListener.onTitleLongClick(v);
+            }
         }
         return false;
     }
@@ -282,6 +287,8 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
 
     public interface OnTitleBarClickListener {
         boolean onLeftClick(View v, boolean isLongClick);
+
+        boolean onTitleLongClick(View v);
 
         boolean onRightClick(View v, boolean isLongClick);
     }

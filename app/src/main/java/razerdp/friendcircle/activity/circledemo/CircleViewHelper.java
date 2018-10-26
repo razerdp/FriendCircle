@@ -1,5 +1,6 @@
 package razerdp.friendcircle.activity.circledemo;
 
+import android.app.Activity;
 import android.graphics.Rect;
 import android.view.View;
 
@@ -15,7 +16,7 @@ import razerdp.github.com.ui.widget.pullrecyclerview.CircleRecyclerView;
  */
 
 public class CircleViewHelper {
-    FriendCircleDemoActivity mActivity;
+    private Activity mActivity;
 
     //评论时对应的参照View
     /**
@@ -27,7 +28,7 @@ public class CircleViewHelper {
     private View commentAnchorView;
     private int commentItemDataPosition;
 
-    public CircleViewHelper(FriendCircleDemoActivity activity) {
+    public CircleViewHelper(Activity activity) {
         mActivity = activity;
     }
 
@@ -153,7 +154,6 @@ public class CircleViewHelper {
         commentBox.getLocationInWindow(commentBoxViewLocation);
         return commentBoxViewLocation[1];
     }
-
 
 
 }

@@ -184,7 +184,7 @@ public class UIHelper {
      * 资源工具
      */
 
-    public static int getResourceColor(int colorResId) {
+    public static int getColor(int colorResId) {
         try {
             return AppContext.getResources().getColor(colorResId);
         } catch (Exception e) {

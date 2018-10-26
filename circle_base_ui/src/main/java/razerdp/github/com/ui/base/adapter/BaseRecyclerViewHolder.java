@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 /**
  * Created by 大灯泡 on 2016/11/1.
- *
+ * <p>
  * 对viewholder的封装
  */
 
@@ -22,7 +22,7 @@ public abstract class BaseRecyclerViewHolder<T> extends RecyclerView.ViewHolder 
     }
 
     public BaseRecyclerViewHolder(Context context, int layoutResId) {
-        this(context,null,layoutResId);
+        this(context, null, layoutResId);
     }
 
     public BaseRecyclerViewHolder(View itemView, int viewType) {
@@ -30,7 +30,7 @@ public abstract class BaseRecyclerViewHolder<T> extends RecyclerView.ViewHolder 
         this.viewType = viewType;
     }
 
-    public final View findViewById(int resid) {
+    public final <V extends View> V findViewById(int resid) {
         if (resid > 0 && itemView != null) {
             return itemView.findViewById(resid);
         }
@@ -43,7 +43,7 @@ public abstract class BaseRecyclerViewHolder<T> extends RecyclerView.ViewHolder 
         return viewType;
     }
 
-    protected Context getContext(){
+    protected Context getContext() {
         return itemView.getContext();
     }
 

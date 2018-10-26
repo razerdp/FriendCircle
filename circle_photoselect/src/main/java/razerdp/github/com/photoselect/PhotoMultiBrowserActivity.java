@@ -350,12 +350,12 @@ public class PhotoMultiBrowserActivity extends BaseActivity implements View.OnCl
 
         public void setPhotoSlectCount(int count) {
             if (count <= 0) {
-                mFinish.setTextColor(UIHelper.getResourceColor(R.color.wechat_green_transparent));
+                mFinish.setTextColor(UIHelper.getColor(R.color.wechat_green_transparent));
                 mSelectCount.clearAnimation();
                 mSelectCount.setVisibility(View.GONE);
                 ViewUtil.setViewsEnableAndClickable(false, false, mPhotoEdit, mFinish);
             } else {
-                mFinish.setTextColor(UIHelper.getResourceColor(R.color.wechat_green_bg));
+                mFinish.setTextColor(UIHelper.getColor(R.color.wechat_green_bg));
                 mSelectCount.setVisibility(View.VISIBLE);
                 mSelectCount.clearAnimation();
                 mSelectCount.setText(String.valueOf(count));

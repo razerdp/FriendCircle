@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/common_selector_white"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="16dp"
+        android:textColor="@color/color_black2"
+        android:textSize="14sp"
+        tools:text="啦啦啦"/>
+
+
+    <View style="@style/basedivider"/>
+</LinearLayout>

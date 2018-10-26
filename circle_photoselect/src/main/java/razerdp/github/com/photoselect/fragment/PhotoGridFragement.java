@@ -233,18 +233,18 @@ public class PhotoGridFragement extends BaseFragment {
 
         public void setPhotoSlectCount(int count) {
             if (count <= 0) {
-                mPhotoEdit.setTextColor(UIHelper.getResourceColor(R.color.text_gray));
-                mPhotoPreview.setTextColor(UIHelper.getResourceColor(R.color.text_gray));
-                mFinish.setTextColor(UIHelper.getResourceColor(R.color.wechat_green_transparent));
+                mPhotoEdit.setTextColor(UIHelper.getColor(R.color.text_gray));
+                mPhotoPreview.setTextColor(UIHelper.getColor(R.color.text_gray));
+                mFinish.setTextColor(UIHelper.getColor(R.color.wechat_green_transparent));
                 mSelectCount.clearAnimation();
                 mSelectCount.setVisibility(View.GONE);
 
                 ViewUtil.setViewsEnableAndClickable(false, false, mPhotoEdit, mPhotoPreview, mFinish);
             } else {
                 //如果选择的照片大于一张，是不允许编辑的(iOS版微信的交互如此设计)
-                mPhotoEdit.setTextColor(count == 1 ? UIHelper.getResourceColor(R.color.text_black) : UIHelper.getResourceColor(R.color.text_gray));
-                mPhotoPreview.setTextColor(UIHelper.getResourceColor(R.color.text_black));
-                mFinish.setTextColor(UIHelper.getResourceColor(R.color.wechat_green_bg));
+                mPhotoEdit.setTextColor(count == 1 ? UIHelper.getColor(R.color.text_black) : UIHelper.getColor(R.color.text_gray));
+                mPhotoPreview.setTextColor(UIHelper.getColor(R.color.text_black));
+                mFinish.setTextColor(UIHelper.getColor(R.color.wechat_green_bg));
                 mSelectCount.setVisibility(View.VISIBLE);
                 mSelectCount.clearAnimation();
                 mSelectCount.setText(String.valueOf(count));

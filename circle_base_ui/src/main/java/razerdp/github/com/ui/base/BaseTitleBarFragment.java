@@ -2,43 +2,21 @@ package razerdp.github.com.ui.base;
 
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 
-import razerdp.github.com.lib.base.BaseActivity;
-import razerdp.github.com.lib.interfaces.MultiClickListener;
 import razerdp.github.com.baseuilib.R;
+import razerdp.github.com.lib.base.BaseFragment;
+import razerdp.github.com.lib.interfaces.MultiClickListener;
 import razerdp.github.com.ui.widget.common.TitleBar;
-import razerdp.github.com.ui.widget.common.TitleBar.OnTitleBarClickListener;
 
 /**
- * Created by 大灯泡 on 2017/3/22.
- * <p>
- * 拥有titlebar的act基类
+ * Created by 大灯泡 on 2018/10/26.
  */
-
-public abstract class BaseTitleBarActivity extends BaseActivity {
+public abstract class BaseTitleBarFragment extends BaseFragment {
     protected TitleBar titleBar;
 
     @Override
-    public void setContentView(int layoutResID) {
-        super.setContentView(layoutResID);
-        initTitlebar();
-    }
-
-    @Override
-    public void setContentView(View view) {
-        super.setContentView(view);
-        initTitlebar();
-    }
-
-    @Override
-    public void setContentView(View view, ViewGroup.LayoutParams params) {
-        super.setContentView(view, params);
-        initTitlebar();
-    }
-
-    private void initTitlebar() {
-        if (titleBar == null) titleBar = (TitleBar) findViewById(R.id.title_bar_view);
+    protected void onPreInitView(View rootView) {
+        if (titleBar == null) titleBar = rootView.findViewById(R.id.title_bar_view);
         if (titleBar != null) {
             titleBar.setOnClickListener(new MultiClickListener() {
                 @Override
@@ -51,39 +29,34 @@ public abstract class BaseTitleBarActivity extends BaseActivity {
                     onTitleDoubleClick();
                 }
             });
-            titleBar.setOnTitleBarClickListener(onTitleClickListener);
+            titleBar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
+                @Override
+                public boolean onLeftClick(View v, boolean isLongClick) {
+                    if (!isLongClick) {
+                        onTitleLeftClick();
+                        return false;
+                    } else {
+                        return onTitleLeftLongClick();
+                    }
+                }
+
+                @Override
+                public boolean onTitleLongClick(View v) {
+                    return BaseTitleBarFragment.this.onTitleLongClick(v);
+                }
+
+                @Override
+                public boolean onRightClick(View v, boolean isLongClick) {
+                    if (!isLongClick) {
+                        onTitleRightClick();
+                        return false;
+                    } else {
+                        return onTitleRightLongClick();
+                    }
+                }
+            });
         }
     }
-
-
-    // titlebar相关事件
-    private OnTitleBarClickListener onTitleClickListener = new OnTitleBarClickListener() {
-
-        @Override
-        public boolean onLeftClick(View v, boolean isLongClick) {
-            if (!isLongClick) {
-                onTitleLeftClick();
-                return false;
-            } else {
-                return onTitleLeftLongClick();
-            }
-        }
-
-        @Override
-        public boolean onTitleLongClick(View v) {
-            return BaseTitleBarActivity.this.onTitleLongClick(v);
-        }
-
-        @Override
-        public boolean onRightClick(View v, boolean isLongClick) {
-            if (!isLongClick) {
-                onTitleRightClick();
-                return false;
-            } else {
-                return onTitleRightLongClick();
-            }
-        }
-    };
 
     public boolean onTitleLongClick(View v) {
         return false;
@@ -98,7 +71,7 @@ public abstract class BaseTitleBarActivity extends BaseActivity {
     }
 
     public void onTitleLeftClick() {
-        finish();
+        back();
     }
 
     public void onTitleRightClick() {
@@ -177,6 +150,4 @@ public abstract class BaseTitleBarActivity extends BaseActivity {
         }
         return null;
     }
-
-
 }

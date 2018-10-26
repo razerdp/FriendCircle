@@ -3,11 +3,16 @@ package razerdp.github.com.ui.base.adapter;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.socks.library.KLog;
+
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Constructor;
 import java.util.List;
 
 import razerdp.github.com.lib.thirdpart.joor.Reflect;
@@ -16,7 +21,11 @@ import razerdp.github.com.lib.thirdpart.joor.ReflectException;
 /**
  * Created by 大灯泡 on 2018/4/10.
  */
-public class BaseMultiRecyclerViewAdapter<A extends BaseMultiRecyclerViewAdapter, T extends MultiType> extends BaseRecyclerViewAdapter<T> {
+public abstract class BaseMultiRecyclerViewAdapter<A extends BaseMultiRecyclerViewAdapter, T extends MultiType> extends BaseRecyclerViewAdapter<T> {
+    private final String TAG = this.getClass().getSimpleName();
+
+    //部分viewholder内部类默认持有外部引用，此时需要传入该对象
+    private WeakReference<Object> binderReference;
 
     private SparseArray<ViewHolderInfo> mViewHolderInfos;
 
@@ -28,6 +37,11 @@ public class BaseMultiRecyclerViewAdapter<A extends BaseMultiRecyclerViewAdapter
     public BaseMultiRecyclerViewAdapter(@NonNull Context context, @NonNull List<T> datas) {
         super(context, datas);
         init();
+    }
+
+    public A bindWith(Object obj) {
+        binderReference = new WeakReference<>(obj);
+        return slef();
     }
 
     private void init() {
@@ -48,31 +62,50 @@ public class BaseMultiRecyclerViewAdapter<A extends BaseMultiRecyclerViewAdapter
 
     @Override
     protected <V extends BaseRecyclerViewHolder> V getViewHolder(ViewGroup parent, View rootView, int viewType) {
+        if (mViewHolderInfos.size() <= 0) {
+            Log.e(TAG, "holder信息列为空，请留意有无添加类型#addViewHolder");
+        }
         ViewHolderInfo viewHolderInfo = mViewHolderInfos.get(viewType);
         if (viewHolderInfo != null) {
             if (rootView == null) {
                 rootView = View.inflate(context, viewHolderInfo.getLayoutResid(), null);
             }
-            Class<?>[] types = {context.getClass(), View.class, int.class};
+
+            Constructor[] testCons = viewHolderInfo.holderClass.getDeclaredConstructors();
+            if (testCons != null && testCons.length > 0) {
+                for (Constructor testCon : testCons) {
+                    KLog.i(TAG, testCon.toString());
+                }
+            }
+
             try {
-                return (V) Reflect.on(viewHolderInfo.holderClass).create(types, context, rootView, viewType).<BaseMultiRecyclerViewHolder>get();
+                Class<?>[] types = {View.class, int.class};
+                return (V) Reflect.on(viewHolderInfo.holderClass).create(types, rootView, viewType).<BaseMultiRecyclerViewHolder>get();
             } catch (ReflectException e) {
-                Class<?>[] types2 = {View.class, int.class};
-                return (V) Reflect.on(viewHolderInfo.holderClass).create(types2, rootView, viewType).<BaseMultiRecyclerViewHolder>get();
+                e.printStackTrace();
+                if (binderReference != null) {
+                    Class<?>[] types2 = {binderReference.get().getClass(), View.class, int.class};
+                    return (V) Reflect.on(viewHolderInfo.holderClass).create(types2, binderReference.get(), rootView, viewType).<BaseMultiRecyclerViewHolder>get();
+                }
+                Class<?>[] types2 = {context.getClass(), View.class, int.class};
+                return (V) Reflect.on(viewHolderInfo.holderClass).create(types2, context, rootView, viewType).<BaseMultiRecyclerViewHolder>get();
             }
         }
         return null;
     }
 
-    public A addViewHolder(Class<? extends BaseMultiRecyclerViewHolder> viewHolderClass, int viewType) {
-        mViewHolderInfos.put(viewType, new ViewHolderInfo(viewHolderClass, viewType));
+    public A addViewHolder(Class<? extends BaseMultiRecyclerViewHolder> viewHolderClass, int... viewType) {
+        for (int i : viewType) {
+            mViewHolderInfos.put(i, new ViewHolderInfo(viewHolderClass, i));
+        }
+
         return slef();
     }
 
     /**
      * vh的信息类
      */
-    private static final class ViewHolderInfo implements Serializable {
+    public static final class ViewHolderInfo implements Serializable {
         final Class<? extends BaseMultiRecyclerViewHolder> holderClass;
         final int viewType;
 
@@ -94,6 +127,14 @@ public class BaseMultiRecyclerViewAdapter<A extends BaseMultiRecyclerViewAdapter
 
         public void setLayoutResid(int layoutResid) {
             this.layoutResid = layoutResid;
+        }
+
+        public Class<? extends BaseMultiRecyclerViewHolder> getHolderClass() {
+            return holderClass;
+        }
+
+        public int getViewType() {
+            return viewType;
         }
     }
 

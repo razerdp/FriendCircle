@@ -31,4 +31,22 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="basedivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0.5dp</item>
+        <item name="android:background">@color/gray_divider</item>
+    </style>
+
+    <style name="basedivider_top_16" parent="basedivider">
+        <item name="android:layout_marginTop">16dp</item>
+    </style>
+
+    <style name="basedivider_bold" parent="basedivider">
+        <item name="android:layout_height">16dp</item>
+    </style>
+
+    <style name="basedivider_middle_light" parent="basedivider_bold">
+        <item name="android:layout_height">8dp</item>
+    </style>
+
 </resources>

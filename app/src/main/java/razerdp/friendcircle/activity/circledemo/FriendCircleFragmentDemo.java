@@ -3,7 +3,6 @@ package razerdp.friendcircle.activity.circledemo;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -43,16 +42,12 @@ import razerdp.friendcircle.ui.viewholder.EmptyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.MultiImageMomentsVH;
 import razerdp.friendcircle.ui.viewholder.TextOnlyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.WebMomentsVH;
-import razerdp.friendcircle.ui.widget.popup.PopupTextAction;
-import razerdp.friendcircle.ui.widget.popup.RegisterPopup;
 import razerdp.github.com.lib.common.entity.ImageInfo;
-import razerdp.github.com.lib.helper.AppFileHelper;
-import razerdp.github.com.lib.helper.AppSetting;
 import razerdp.github.com.lib.interfaces.SingleClickListener;
 import razerdp.github.com.lib.manager.KeyboardControlMnanager;
 import razerdp.github.com.lib.network.base.OnResponseListener;
 import razerdp.github.com.lib.utils.ToolUtil;
-import razerdp.github.com.ui.base.BaseTitleBarActivity;
+import razerdp.github.com.ui.base.BaseTitleBarFragment;
 import razerdp.github.com.ui.helper.PhotoHelper;
 import razerdp.github.com.ui.imageloader.ImageLoadMnanger;
 import razerdp.github.com.ui.util.AnimUtils;
@@ -63,19 +58,17 @@ import razerdp.github.com.ui.widget.commentwidget.IComment;
 import razerdp.github.com.ui.widget.common.TitleBar;
 import razerdp.github.com.ui.widget.popup.SelectPhotoMenuPopup;
 import razerdp.github.com.ui.widget.pullrecyclerview.CircleRecyclerView;
-import razerdp.github.com.ui.widget.pullrecyclerview.CircleRecyclerView.OnPreDispatchTouchListener;
 import razerdp.github.com.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-/**
- * Created by 大灯泡 on 2016/10/26.
- * <p>
- * 朋友圈主界面
- */
+import static android.app.Activity.RESULT_OK;
 
-public class FriendCircleDemoActivity extends BaseTitleBarActivity implements OnRefreshListener2, IMomentView, OnPreDispatchTouchListener {
+/**
+ * Created by 大灯泡 on 2018/10/26.
+ */
+public class FriendCircleFragmentDemo extends BaseTitleBarFragment implements OnRefreshListener2, IMomentView, CircleRecyclerView.OnPreDispatchTouchListener {
 
     private static final int REQUEST_REFRESH = 0x10;
     private static final int REQUEST_LOADMORE = 0x11;
@@ -97,18 +90,25 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
 
     private CircleViewHelper mViewHelper;
 
+    @Override
+    public int getLayoutResId() {
+        return R.layout.fragment_main;
+    }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    protected void onInitData() {
+
+    }
+
+    @Override
+    protected void onInitView(View rootView) {
         momentsInfoList = new ArrayList<>();
         momentsRequest = new MomentsRequest();
-        initView();
+        initView(rootView);
         initKeyboardHeightObserver();
         UIHelper.ToastMessage("请尽量不要上传黄图，谢谢");
 
-        UpdateInfoManager.INSTANCE.init(this, new BasePopupWindow.OnDismissListener() {
+        UpdateInfoManager.INSTANCE.init(getActivity(), new BasePopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 delayCheckServiceInfo();
@@ -116,21 +116,9 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        AppFileHelper.initStroagePath(this);
-    }
-
-    @Override
-    public void onHandleIntent(Intent intent) {
-
-    }
-
-
-    private void initView() {
+    private void initView(View rootView) {
         if (mViewHelper == null) {
-            mViewHelper = new CircleViewHelper(this);
+            mViewHelper = new CircleViewHelper(getActivity());
         }
         setTitle("朋友圈");
         setTitleMode(TitleBar.MODE_BOTH);
@@ -139,20 +127,20 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         setTitleLeftIcon(R.drawable.back_left);
         presenter = new MomentPresenter(this);
 
-        hostViewHolder = new HostViewHolder(this);
-        circleRecyclerView = (CircleRecyclerView) findViewById(R.id.recycler);
+        hostViewHolder = new HostViewHolder(getContext());
+        circleRecyclerView = findView(R.id.recycler);
         circleRecyclerView.setOnRefreshListener(this);
         circleRecyclerView.setOnPreDispatchTouchListener(this);
         circleRecyclerView.addHeaderView(hostViewHolder.getView());
 
-        mTipsLayout = (RelativeLayout) findViewById(R.id.tips_layout);
-        mServiceTipsView = (TextView) findViewById(R.id.service_tips);
-        mCloseImageView = (ImageView) findViewById(R.id.iv_close);
+        mTipsLayout = findView(R.id.tips_layout);
+        mServiceTipsView = findView(R.id.service_tips);
+        mCloseImageView = findView(R.id.iv_close);
 
-        commentBox = (CommentBox) findViewById(R.id.widget_comment);
+        commentBox = findView(R.id.widget_comment);
         commentBox.setOnCommentSendClickListener(onCommentSendClickListener);
 
-        adapter = new CircleMomentsAdapter(this, momentsInfoList, presenter);
+        adapter = new CircleMomentsAdapter(getContext(), momentsInfoList, presenter);
         adapter.addViewHolder(EmptyMomentsVH.class, MomentsType.EMPTY_CONTENT)
                 .addViewHolder(MultiImageMomentsVH.class, MomentsType.MULTI_IMAGES)
                 .addViewHolder(TextOnlyMomentsVH.class, MomentsType.TEXT_ONLY)
@@ -164,7 +152,7 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
 
     private void initKeyboardHeightObserver() {
         //观察键盘弹出与消退
-        KeyboardControlMnanager.observerKeyboardVisibleChange(this, new KeyboardControlMnanager.OnKeyboardStateChangeListener() {
+        KeyboardControlMnanager.observerKeyboardVisibleChange(getActivity(), new KeyboardControlMnanager.OnKeyboardStateChangeListener() {
             View anchorView;
 
             @Override
@@ -181,7 +169,6 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
             }
         });
     }
-
 
     @Override
     public void onRefresh() {
@@ -201,23 +188,6 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
 
     //titlebar click
 
-
-    @Override
-    public boolean onTitleLongClick(View v) {
-        new PopupTextAction(this)
-                .setTitle("开发工具")
-                .setTitleColor(UIHelper.getColor(R.color.text_gray))
-                .addData("跳转到Fragment朋友圈", 1)
-                .setOnSelectedListener(new PopupTextAction.OnActionClickedListener() {
-                    @Override
-                    public void onClicked(CharSequence action, int actionCode) {
-                        ActivityLauncher.startToFriendCircleFragmentDemoActivity(FriendCircleDemoActivity.this);
-                    }
-                })
-                .showPopupWindow();
-        return super.onTitleLongClick(v);
-    }
-
     @Override
     public void onTitleDoubleClick() {
         super.onTitleDoubleClick();
@@ -236,22 +206,24 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
 
     }
 
+    private long lastClickBackTime;
+
     @Override
     public void onTitleLeftClick() {
         if (System.currentTimeMillis() - lastClickBackTime > 2000) { // 后退阻断
-            UIHelper.ToastMessage("这是朋友圈工程哦，不是整个微信哦~再点一次退出");
+            UIHelper.ToastMessage("再点一次返回Activity");
             lastClickBackTime = System.currentTimeMillis();
         } else { // 关掉app
-            super.onBackPressed();
+            super.onTitleLeftClick();
         }
     }
 
     @Override
     public void onTitleRightClick() {
-        new SelectPhotoMenuPopup(this).setOnSelectPhotoMenuClickListener(new SelectPhotoMenuPopup.OnSelectPhotoMenuClickListener() {
+        new SelectPhotoMenuPopup(getActivity()).setOnSelectPhotoMenuClickListener(new SelectPhotoMenuPopup.OnSelectPhotoMenuClickListener() {
             @Override
             public void onShootClick() {
-                PhotoHelper.fromCamera(FriendCircleDemoActivity.this, false);
+                PhotoHelper.fromCamera(this, false);
             }
 
             @Override
@@ -263,19 +235,20 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
 
     @Override
     public boolean onTitleRightLongClick() {
-        ActivityLauncher.startToPublishActivityWithResult(this, RouterList.PublishActivity.MODE_TEXT, null, RouterList.PublishActivity.requestCode);
+        ActivityLauncher.startToPublishActivityWithResult(getActivity(), RouterList.PublishActivity.MODE_TEXT, null, RouterList.PublishActivity.requestCode);
         return true;
     }
 
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         PhotoHelper.handleActivityResult(this, requestCode, resultCode, data, new PhotoHelper.PhotoCallback() {
             @Override
             public void onFinish(String filePath) {
                 List<ImageInfo> selectedPhotos = new ArrayList<ImageInfo>();
                 selectedPhotos.add(new ImageInfo(filePath, null, null, 0, 0));
-                ActivityLauncher.startToPublishActivityWithResult(FriendCircleDemoActivity.this,
+                ActivityLauncher.startToPublishActivityWithResult(getActivity(),
                         RouterList.PublishActivity.MODE_MULTI,
                         selectedPhotos,
                         RouterList.PublishActivity.requestCode);
@@ -289,7 +262,7 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         if (requestCode == RouterList.PhotoSelectActivity.requestCode && resultCode == RESULT_OK) {
             List<ImageInfo> selectedPhotos = data.getParcelableArrayListExtra(RouterList.PhotoSelectActivity.key_result);
             if (selectedPhotos != null) {
-                ActivityLauncher.startToPublishActivityWithResult(this, RouterList.PublishActivity.MODE_MULTI, selectedPhotos, RouterList.PublishActivity.requestCode);
+                ActivityLauncher.startToPublishActivityWithResult(getActivity(), RouterList.PublishActivity.MODE_MULTI, selectedPhotos, RouterList.PublishActivity.requestCode);
             }
         }
 
@@ -311,7 +284,6 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
                         hostViewHolder.loadHostData(LocalHostManager.INSTANCE.getLocalHostUser());
                         adapter.updateData(response);
                     }
-                    checkRegister();
                     break;
                 case REQUEST_LOADMORE:
                     adapter.addMore(response);
@@ -374,34 +346,6 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
     }
 
     //=============================================================tool method
-    private void checkRegister() {
-        boolean hasCheckRegister = (boolean) AppSetting.loadBooleanPreferenceByKey(AppSetting.CHECK_REGISTER, false);
-        if (!hasCheckRegister) {
-            RegisterPopup registerPopup = new RegisterPopup(FriendCircleDemoActivity.this);
-            registerPopup.setOnRegisterSuccess(new RegisterPopup.onRegisterSuccess() {
-                @Override
-                public void onSuccess(UserInfo userInfo) {
-                    hostViewHolder.loadHostData(userInfo);
-                    UpdateInfoManager.INSTANCE.showUpdateInfo();
-                }
-            });
-            registerPopup.showPopupWindow();
-        } else {
-            UpdateInfoManager.INSTANCE.showUpdateInfo();
-        }
-    }
-
-    private long lastClickBackTime;
-
-    @Override
-    public void onBackPressed() {
-        if (System.currentTimeMillis() - lastClickBackTime > 2000) { // 后退阻断
-            UIHelper.ToastMessage("再点一次退出");
-            lastClickBackTime = System.currentTimeMillis();
-        } else { // 关掉app
-            super.onBackPressed();
-        }
-    }
 
 
     //服务器消息检查，非项目所需↓
@@ -425,7 +369,7 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
                     mServiceTipsView.setOnClickListener(new SingleClickListener() {
                         @Override
                         public void onSingleClick(View v) {
-                            ActivityLauncher.startToServiceInfoActivity(FriendCircleDemoActivity.this, serviceInfo);
+                            ActivityLauncher.startToServiceInfoActivity(getActivity(), serviceInfo);
                             clickServiceCount++;
                             applyClose();
                         }
@@ -471,6 +415,7 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
             }
         });
     }
+
     //服务器消息检查，非项目所需↑
 
     //=============================================================call back
@@ -490,7 +435,6 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
             commentBox.dismissCommentBox(true);
         }
     };
-
 
     private static class HostViewHolder {
         private View rootView;
@@ -522,3 +466,5 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
 
     }
 }
+
+

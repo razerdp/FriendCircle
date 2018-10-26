@@ -277,7 +277,7 @@ public class MultiSpanUtil {
         }
 
         public ItemOption setTextColorFromRes(@ColorRes int textColor) {
-            return setTextColor(UIHelper.getResourceColor(textColor));
+            return setTextColor(UIHelper.getColor(textColor));
         }
 
         public boolean isUnderLine() {
@@ -309,7 +309,7 @@ public class MultiSpanUtil {
         }
 
         public ItemOption setBgColorFromRes(@ColorRes int bgColor) {
-            this.bgColor = UIHelper.getResourceColor(bgColor);
+            this.bgColor = UIHelper.getColor(bgColor);
             return this;
         }
 
