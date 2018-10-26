@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ExButton">
+        <attr name="android:background"/>
+        <attr name="android:textColor"/>
+        <attr name="android:lineSpacingExtra"/>
+        <attr name="android:lineSpacingMultiplier"/>
+        <attr name="textPressedColor" format="color"/>
+        <attr name="textDisableColor" format="color"/>
+        <attr name="strokeMode" format="boolean"/>
+        <attr name="stroke_Width" format="dimension"/>
+        <attr name="backgroundColor" format="color"/>
+        <attr name="backgroundPressedColor" format="color"/>
+        <attr name="backgroundDisableColor" format="color"/>
+        <attr name="corner_radius" format="dimension"/>
+        <attr name="corner_topLeftRadius" format="dimension"/>
+        <attr name="corner_topRightRadius" format="dimension"/>
+        <attr name="corner_bottomLeftRadius" format="dimension"/>
+        <attr name="corner_bottomRightRadius" format="dimension"/>
+        <attr name="drawable_horizontal_reduce" format="dimension"/>
+        <attr name="drawable_vertical_reduce" format="dimension"/>
+
+        <attr name="type">
+            <enum name="normal" value="0"/>
+            <enum name="round" value="1"/>
+            <enum name="round_rect" value="2"/>
+            <enum name="rect" value="3"/>
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="ExTextView">
+        <attr name="android:background"/>
+        <attr name="android:textColor"/>
+        <attr name="android:lineSpacingExtra"/>
+        <attr name="android:lineSpacingMultiplier"/>
+        <attr name="textPressedColor"/>
+        <attr name="textDisableColor"/>
+        <attr name="strokeMode"/>
+        <attr name="stroke_Width"/>
+        <attr name="backgroundColor"/>
+        <attr name="backgroundPressedColor"/>
+        <attr name="backgroundDisableColor"/>
+        <attr name="corner_radius"/>
+        <attr name="corner_topLeftRadius"/>
+        <attr name="corner_topRightRadius"/>
+        <attr name="corner_bottomLeftRadius"/>
+        <attr name="corner_bottomRightRadius"/>
+        <attr name="urlRegion" format="boolean"/>
+
+        <attr name="type"/>
+    </declare-styleable>
+
+    <declare-styleable name="ExEditText">
+        <attr name="formatMode">
+            <enum name="normal" value="0"/>
+            <enum name="phone" value="1"/>
+        </attr>
+    </declare-styleable>
+</resources>

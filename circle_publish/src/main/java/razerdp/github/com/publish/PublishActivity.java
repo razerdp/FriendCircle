@@ -11,12 +11,14 @@ import android.widget.ImageView;
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.razerdp.github.com.common.entity.PhotoInfo;
 import com.razerdp.github.com.common.entity.photo.PhotoBrowserInfo;
 import com.razerdp.github.com.common.manager.LocalHostManager;
 import com.razerdp.github.com.common.request.AddMomentsRequest;
 import com.razerdp.github.com.common.router.RouterList;
 import com.socks.library.KLog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.datatype.BmobFile;
@@ -26,6 +28,7 @@ import razerdp.github.com.lib.common.entity.ImageInfo;
 import razerdp.github.com.lib.helper.AppSetting;
 import razerdp.github.com.lib.interfaces.adapter.TextWatcherAdapter;
 import razerdp.github.com.lib.manager.compress.CompressManager;
+import razerdp.github.com.lib.manager.compress.CompressResult;
 import razerdp.github.com.lib.manager.compress.OnCompressListener;
 import razerdp.github.com.lib.network.base.OnResponseListener;
 import razerdp.github.com.lib.utils.StringUtil;
@@ -258,12 +261,9 @@ public class PublishActivity extends BaseTitleBarActivity {
             }
             doCompress(uploadTaskPaths, new OnCompressListener.OnCompressListenerAdapter() {
                 @Override
-                public void onSuccess(List<String> imagePath) {
-                    if (!ToolUtil.isListEmpty(imagePath)) {
-                        for (int i = 0; i < imagePath.size(); i++) {
-                            uploadTaskPaths[i] = imagePath.get(i);
-                        }
-                        doUpload(uploadTaskPaths, inputContent);
+                public void onSuccess(List<CompressResult> imagePaths) {
+                    if (!ToolUtil.isListEmpty(imagePaths)) {
+                        doUpload(imagePaths, inputContent);
                     } else {
                         publishInternal(inputContent, null);
                     }
@@ -282,7 +282,7 @@ public class PublishActivity extends BaseTitleBarActivity {
         mPopupProgress.showPopupWindow();
         compressManager.start(new OnCompressListener.OnCompressListenerAdapter() {
             @Override
-            public void onSuccess(List<String> imagePath) {
+            public void onSuccess(List<CompressResult> imagePath) {
                 if (listener != null) {
                     listener.onSuccess(imagePath);
                 }
@@ -304,14 +304,26 @@ public class PublishActivity extends BaseTitleBarActivity {
         });
     }
 
-    private void doUpload(final String[] uploadTaskPaths, final String inputContent) {
+    private void doUpload(final List<CompressResult> imagePaths, final String inputContent) {
+        String[] uploadTaskPaths = new String[imagePaths.size()];
+        for (int i = 0; i < imagePaths.size(); i++) {
+            uploadTaskPaths[i] = imagePaths.get(i).getCompressedFilePath();
+        }
         BmobFile.uploadBatch(uploadTaskPaths, new UploadBatchListener() {
             @Override
             public void onSuccess(List<BmobFile> list, List<String> list1) {
                 //1、有多少个文件上传，onSuccess方法就会执行多少次;
                 //2、通过onSuccess回调方法中的files或urls集合的大小与上传的总文件个数比较，如果一样，则表示全部文件上传成功。
-                if (!ToolUtil.isListEmpty(list1) && list1.size() == uploadTaskPaths.length) {
-                    publishInternal(inputContent, list1);
+                if (!ToolUtil.isListEmpty(list1) && list1.size() == imagePaths.size()) {
+                    List<PhotoInfo> photoInfos = new ArrayList<>();
+                    for (int i = 0; i < imagePaths.size(); i++) {
+                        CompressResult result = imagePaths.get(i);
+                        photoInfos.add(new PhotoInfo()
+                                .setUrl(list1.get(i))
+                                .setWidth(result.getCompressedWidth())
+                                .setHeight(result.getCompressedHeight()));
+                    }
+                    publishInternal(inputContent, photoInfos);
                 }
             }
 
@@ -336,21 +348,16 @@ public class PublishActivity extends BaseTitleBarActivity {
         });
     }
 
-    private void publishInternal(String input, List<String> uploadPicPaths) {
+    private void publishInternal(String input, List<PhotoInfo> uploadPicPaths) {
         mPopupProgress.setProgressTips("正在发布");
         if (!mPopupProgress.isShowing()) {
             mPopupProgress.showPopupWindow();
         }
         AddMomentsRequest addMomentsRequest = new AddMomentsRequest();
         addMomentsRequest.setAuthId(LocalHostManager.INSTANCE.getUserid())
-                //暂时Host强制使用开发者id
                 .setHostId(AppSetting.loadStringPreferenceByKey(AppSetting.HOST_ID, "MMbKLCCU"))
+                .setPictureBuckets(uploadPicPaths)
                 .addText(input);
-        if (!ToolUtil.isListEmpty(uploadPicPaths)) {
-            for (String uploadPicPath : uploadPicPaths) {
-                addMomentsRequest.addPicture(uploadPicPath);
-            }
-        }
         addMomentsRequest.setOnResponseListener(new OnResponseListener.SimpleResponseListener<String>() {
             @Override
             public void onSuccess(String response, int requestType) {

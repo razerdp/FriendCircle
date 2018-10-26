@@ -28,7 +28,7 @@ abstract class BaseCompressTaskHelper<T> {
     public abstract void start();
 
 
-    void callSuccess(final List<String> imagePath) {
+    void callSuccess(final List<CompressResult> imagePath) {
 
         if (mOnCompressListener == null) return;
         if (AppContext.isMainThread()) {

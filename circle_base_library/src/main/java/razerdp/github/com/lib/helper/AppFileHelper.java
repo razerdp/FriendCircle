@@ -179,4 +179,15 @@ public class AppFileHelper {
         return dateFormat.format(date) + "_crop.png";
     }
 
+    public static String getDownloadDir() {
+        KLog.i("downloadDir=" + storagePath.concat(ROOT_PATH + DOWNLOAD_PATH));
+        checkAndMakeDir(new File(storagePath.concat(ROOT_PATH + DOWNLOAD_PATH)));
+        return storagePath.concat(ROOT_PATH + DOWNLOAD_PATH);
+    }
+
+    public static String getDownloadPath(String url) {
+        String name = FileUtil.getFileName(url);
+        return getDownloadDir() + name;
+    }
+
 }

@@ -13,7 +13,7 @@ import razerdp.github.com.lib.utils.ToolUtil;
 public class CompressTaskQueue extends BaseCompressTaskHelper<List<CompressOption>> {
 
     private List<CompressTaskHelper> mTaskHelpers;
-    private List<String> result;
+    private List<CompressResult> result;
     private int taskSize;
     private volatile boolean abort = false;
 
@@ -69,7 +69,7 @@ public class CompressTaskQueue extends BaseCompressTaskHelper<List<CompressOptio
 
 
         @Override
-        public void onSuccess(List<String> imagePath) {
+        public void onSuccess(List<CompressResult> imagePath) {
             result.add(imagePath.get(0));
             if (result.size() == taskSize) {
                 callSuccess(result);

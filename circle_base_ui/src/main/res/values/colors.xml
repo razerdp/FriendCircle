@@ -54,8 +54,9 @@
     <color name="color_black1">#333333</color>
     <color name="color_black2">#666666</color>
     <color name="color_black3">#888888</color>
-
+    <color name="common_black">#222222</color>
     <!--popup-->
     <color name="popup_progress_bg">#bc000000</color>
+    <color name="btn_disable">#999999</color>
 
 </resources>

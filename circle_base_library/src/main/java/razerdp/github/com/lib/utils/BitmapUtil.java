@@ -3,6 +3,7 @@ package razerdp.github.com.lib.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.text.TextUtils;
 
 import com.socks.library.KLog;
@@ -13,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
+import razerdp.github.com.lib.api.AppContext;
 import razerdp.github.com.lib.manager.compress.CompressManager;
 
 /**
@@ -21,6 +23,27 @@ import razerdp.github.com.lib.manager.compress.CompressManager;
 public class BitmapUtil {
 
     private static final String TAG = "BitmapUtil";
+
+    private static final int s_defaultPicWidth = 720;
+    private static final int s_defaultPicHeight = 1080;
+
+    private static int s_ScreenWidth;
+    private static int s_ScreenHeight;
+
+    public static int getScreenWidthPix() {
+        if (s_ScreenWidth == 0) {
+            s_ScreenWidth = AppContext.getResources().getDisplayMetrics().widthPixels;
+        }
+        return s_ScreenWidth;
+    }
+
+    public static int getScreenHeightPix() {
+        if (s_ScreenHeight == 0) {
+            s_ScreenHeight = AppContext.getResources().getDisplayMetrics().heightPixels;
+        }
+        return s_ScreenHeight;
+    }
+
 
     /**
      * 获取图像的宽高
@@ -49,16 +72,19 @@ public class BitmapUtil {
     public static int calculateSampleSize(BitmapFactory.Options options, int width, int height) {
         int w = options.outWidth;
         int h = options.outHeight;
-        float candidateW = w / width;
-        float candidateH = h / height;
-        float candidate = Math.max(candidateW, candidateH);
-        candidate = (float) (candidate + 0.5);
+        int result = 1;
 
-        if (candidate < 1.0) {
-            return 1;
+        if (w > width || h > height) {
+
+            final int halfWidth = w / 2;
+            final int halfHeight = h / 2;
+
+            while ((halfHeight / result) >= width && (halfWidth / result) >= height) {
+                result *= 2;
+            }
         }
 
-        return (int) candidate;
+        return result;
     }
 
     public static Bitmap loadBitmap(Context c, String filePath) {
@@ -169,5 +195,32 @@ public class BitmapUtil {
             System.gc();
             return false;
         }
+    }
+
+
+    public static Bitmap compressBmpWithScale(Bitmap bm) {
+        if (bm == null) return null;
+        int bitmapWidth = bm.getWidth();
+        int bitmapHeight = bm.getHeight();
+        boolean smallerThenScreen = true;
+
+        float ratio = bitmapWidth / bitmapHeight;
+
+        int width = Math.min(getScreenWidthPix(), s_defaultPicWidth);
+        int height = Math.min(getScreenHeightPix(), s_defaultPicHeight);
+        float scaleWidth;
+        float scaleHeight;
+        if (bitmapWidth > width) {
+            scaleWidth = (float) width / bitmapWidth;
+            scaleHeight = width * bitmapHeight / bitmapWidth;
+        } else {
+            scaleHeight = (float) height / bitmapHeight;
+            scaleWidth = bitmapWidth * height / bitmapHeight;
+        }
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+        // 产生缩放后的Bitmap对象
+        return Bitmap.createBitmap(bm, 0, 0, bitmapWidth, bitmapHeight, matrix, true);
     }
 }

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.razerdp.github.com.common.entity.MomentContent;
 import com.razerdp.github.com.common.entity.MomentsInfo;
+import com.razerdp.github.com.common.entity.PhotoInfo;
 import com.razerdp.github.com.common.entity.UserInfo;
 
 import java.util.ArrayList;
@@ -104,8 +105,18 @@ public class AddMomentsRequest extends BaseRequestClient<String> {
         return this;
     }
 
-    public AddMomentsRequest addPicture(String pic) {
+    public AddMomentsRequest addPicture(PhotoInfo pic) {
         momentContent.addPicture(pic);
+        return this;
+    }
+
+
+    public AddMomentsRequest setPictureBuckets(List<PhotoInfo> datas) {
+        if (!ToolUtil.isListEmpty(datas)) {
+            for (PhotoInfo data : datas) {
+                momentContent.addPicture(data);
+            }
+        }
         return this;
     }
 

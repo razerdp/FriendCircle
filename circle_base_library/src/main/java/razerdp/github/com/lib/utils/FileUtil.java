@@ -61,6 +61,14 @@ public class FileUtil {
         }
     }
 
+    public static String getFileName(String path) {
+        int start = path.lastIndexOf("/");
+        if (start != -1) {
+            return path.substring(start + 1);
+        } else {
+            return null;
+        }
+    }
 
     /**
      * 得到除去文件名部分的路径 实际上就是路径中的最后一个路径分隔符前的部分。

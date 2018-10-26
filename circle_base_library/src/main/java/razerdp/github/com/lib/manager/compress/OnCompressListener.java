@@ -9,7 +9,7 @@ public interface OnCompressListener {
 
     void onRotate(int picIndex, int width, int height);
 
-    void onSuccess(List<String> imagePath);
+    void onSuccess(List<CompressResult> imagePath);
 
     void onCompress(long current, long target);
 

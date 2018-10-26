@@ -2,8 +2,17 @@ package razerdp.friendcircle.app.manager;
 
 import android.app.Activity;
 
+import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 import razerdp.basepopup.BasePopupWindow;
+import razerdp.friendcircle.app.mvp.model.UpdateInfo;
 import razerdp.friendcircle.ui.widget.popup.UpdateInfoPopup;
+import razerdp.github.com.lib.interfaces.SimpleCallback;
+import razerdp.github.com.lib.utils.ToolUtil;
+import razerdp.github.com.lib.utils.VersionUtil;
 
 /**
  * Created by 大灯泡 on 2017/4/7.
@@ -19,10 +28,9 @@ public enum UpdateInfoManager {
 
 
     final String title = "开发日志(2018/08/7)";
-    final String content = "  * 修复多图发布无法移除图片问题  #62 (https://github.com/razerdp/FriendCircle/issues/62)"+
-            "\n  * 适配Android O"+
+    final String content = "  * 修复多图发布无法移除图片问题  #62 (https://github.com/razerdp/FriendCircle/issues/62)" +
+            "\n  * 适配Android O" +
             "\n  * 展开评论暂时没有完成，因此暂时禁用。";
-
 
 
     public void init(Activity act, BasePopupWindow.OnDismissListener l) {
@@ -50,5 +58,25 @@ public enum UpdateInfoManager {
             }
         }
     };
+
+    public void checkUpdate(final SimpleCallback<UpdateInfo> cb) {
+        BmobQuery<UpdateInfo> updateQuery = new BmobQuery<>("Update");
+        updateQuery.findObjects(new FindListener<UpdateInfo>() {
+            @Override
+            public void done(List<UpdateInfo> list, BmobException e) {
+                if (e == null && !ToolUtil.isListEmpty(list)) {
+                    UpdateInfo updateInfo = list.get(0);
+                    if (updateInfo.getFile() != null) {
+                        int curVersionCode = VersionUtil.getAppVersionCode();
+                        int targetCode = updateInfo.getBuildCode();
+                        if (curVersionCode < targetCode && cb != null) {
+                            cb.onCall(updateInfo);
+                        }
+                    }
+                }
+            }
+        });
+
+    }
 
 }

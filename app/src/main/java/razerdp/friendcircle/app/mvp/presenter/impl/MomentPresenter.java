@@ -11,6 +11,7 @@ import android.view.View;
 import com.razerdp.github.com.common.entity.CommentInfo;
 import com.razerdp.github.com.common.entity.LikesInfo;
 import com.razerdp.github.com.common.entity.MomentsInfo;
+import com.razerdp.github.com.common.entity.PhotoInfo;
 import com.razerdp.github.com.common.manager.LocalHostManager;
 import com.socks.library.KLog;
 
@@ -206,11 +207,11 @@ public class MomentPresenter implements IMomentPresenter {
 
     private void deleteFiles(MomentsInfo momentsInfo) {
         if (momentsInfo == null) return;
-        final List<String> pics = momentsInfo.getContent().getPics();
+        final List<PhotoInfo> pics = momentsInfo.getContent().getPics();
         if (ToolUtil.isListEmpty(pics)) return;
-        for (final String pic : pics) {
+        for (final PhotoInfo pic : pics) {
             BmobFile file = new BmobFile();
-            file.setUrl(pic);
+            file.setUrl(pic.getUrl());
             file.delete(new UpdateListener() {
                 @Override
                 public void done(BmobException e) {

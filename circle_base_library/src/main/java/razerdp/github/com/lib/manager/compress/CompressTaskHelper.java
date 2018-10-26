@@ -14,18 +14,17 @@ import razerdp.github.com.lib.manager.ThreadPoolManager;
 import razerdp.github.com.lib.utils.BitmapUtil;
 import razerdp.github.com.lib.utils.EncryUtil;
 import razerdp.github.com.lib.utils.FileUtil;
-import razerdp.github.com.lib.utils.StringUtil;
 
 /**
  * Created by 大灯泡 on 2018/1/10.
  */
 class CompressTaskHelper extends BaseCompressTaskHelper<CompressOption> {
 
-    private List<String> result;
+    private List<CompressResult> resultBucket;
 
     public CompressTaskHelper(Context context, CompressOption options, OnCompressListener compressListener) {
         super(context, options, compressListener);
-        result = new ArrayList<>();
+        resultBucket = new ArrayList<>();
     }
 
     @Override
@@ -76,56 +75,72 @@ class CompressTaskHelper extends BaseCompressTaskHelper<CompressOption> {
     }
 
     private void startInternal(int[] imageSize, long fileSize, CompressOption option) throws Exception {
-        String targetImagePath = null;
+        CompressResult result = null;
         switch (option.compressType) {
             case CompressManager.SCALE:
-                targetImagePath = compressOnScale(option.originalImagePath, imageSize, option);
+                result = compressOnScale(option.originalImagePath, imageSize, option);
                 break;
             case CompressManager.SIZE:
-                targetImagePath = compressOnSize(option.originalImagePath, fileSize, option);
+                result = compressOnSize(option.originalImagePath, fileSize, option);
                 break;
             case CompressManager.BOTH:
                 String savePath = option.saveCompressImagePath;
                 option.setSaveCompressImagePath(AppFileHelper.getAppTempPath().concat(EncryUtil.MD5(savePath) + option.suffix));
-                String scaleTargetPath = compressOnScale(option.originalImagePath, imageSize, option);
-                if (StringUtil.noEmpty(scaleTargetPath)) {
+                CompressResult scaleResult = compressOnScale(option.originalImagePath, imageSize, option);
+                if (scaleResult != null) {
                     option.setSaveCompressImagePath(savePath);
-                    targetImagePath = compressOnSize(scaleTargetPath, fileSize, option);
+                    result = compressOnSize(scaleResult.getCompressedFilePath(), fileSize, option);
                 }
                 break;
         }
-        if (StringUtil.noEmpty(targetImagePath)) {
-            KLog.i(TAG, "压缩成功，图片地址  >>  " + targetImagePath);
+        if (result != null) {
+            KLog.i(TAG, "压缩成功，图片地址  >>  " + result.getCompressedFilePath());
             callCompress(1, 1);
-            result.add(targetImagePath);
-            callSuccess(result);
+            resultBucket.add(result);
+            callSuccess(resultBucket);
         } else {
             callError("压缩失败");
         }
     }
 
-    private String compressOnScale(String imagePath, int[] imageSize, CompressOption option) throws Exception {
+    private CompressResult compressOnScale(String imagePath, int[] imageSize, CompressOption option) throws Exception {
+        CompressResult result = new CompressResult();
+        result.setOriginWidth(imageSize[0])
+                .setOriginHeight(imageSize[1]);
         KLog.i(TAG, "压缩前分辨率  >>  【" + imageSize[0] + "x" + imageSize[1] + "】");
         Bitmap bp = BitmapUtil.loadBitmap(mContext, option.originalImagePath, option.maxWidth, option.maxHeight);
-        boolean save = BitmapUtil.saveBitmap(option.saveCompressImagePath, bp, option.suffix);
+        boolean success = BitmapUtil.saveBitmap(option.saveCompressImagePath, bp, option.suffix);
         bp.recycle();
         int[] resultSize = BitmapUtil.getImageSize(option.saveCompressImagePath);
         KLog.i(TAG, "压缩后分辨率  >>  【" + resultSize[0] + "x" + resultSize[1] + "】");
-        return save ? option.saveCompressImagePath : null;
+        result.setCompressedFilePath(option.saveCompressImagePath)
+                .setCompressedWidth(resultSize[0])
+                .setCompressedHeight(resultSize[1]);
+        return success ? result : null;
     }
 
-    private String compressOnSize(String originalImagePath, long fileSize, CompressOption option) {
+    private CompressResult compressOnSize(String originalImagePath, long fileSize, CompressOption option) {
+        CompressResult result = new CompressResult();
         long sizeInKB = fileSize >> 10;
+        int[] size = BitmapUtil.getImageSize(option.originalImagePath);
+        result.setOriginWidth(size[0])
+                .setOriginHeight(size[1]);
         KLog.i(TAG, "压缩前的文件大小  >>  " + FileUtil.fileLengthFormat(fileSize) + "\n当前设置最大文件大小  >>  " + option.sizeTarget + "kb");
         if (option.sizeTarget >= sizeInKB) {
             KLog.i(TAG, "小于理论大小，放弃压缩");
             FileUtil.moveFile(originalImagePath, option.saveCompressImagePath);
-            return option.saveCompressImagePath;
+            result.setCompressedFilePath(option.saveCompressImagePath)
+                    .setCompressedWidth(size[0])
+                    .setCompressedHeight(size[1]);
+            return result;
         }
         boolean success = BitmapUtil.compressBmpToFile(BitmapUtil.loadBitmap(mContext, originalImagePath),
                 new File(option.saveCompressImagePath),
                 option.sizeTarget,
                 option.suffix);
-        return success ? option.saveCompressImagePath : null;
+        size = BitmapUtil.getImageSize(option.saveCompressImagePath);
+        result.setCompressedWidth(size[0])
+                .setCompressedHeight(size[1]);
+        return success ? result : null;
     }
 }

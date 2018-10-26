@@ -67,48 +67,48 @@ public class AppSetting {
         createSharedPreferencesIfNotExist();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     public static void saveBooleanPreferenceByKey(String key, boolean value) {
         createSharedPreferencesIfNotExist();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     public static void saveIntegerPreferenceByKey(String key, int value) {
         createSharedPreferencesIfNotExist();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     public static void saveFloatPreferenceByKey(String key, float value) {
         createSharedPreferencesIfNotExist();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putFloat(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     public static void saveLongPreferenceByKey(String key, long value) {
         createSharedPreferencesIfNotExist();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     public static void removePreferenceByKey(String key) {
         createSharedPreferencesIfNotExist();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(key);
-        editor.commit();
+        editor.apply();
     }
 
     public static void clearAllPreference() {
         createSharedPreferencesIfNotExist();
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear().commit();
+        editor.clear().apply();
     }
 
     private static void createSharedPreferencesIfNotExist() {

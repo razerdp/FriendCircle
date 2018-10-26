@@ -1,6 +1,6 @@
 package razerdp.github.com.ui.widget.popup;
 
-import android.app.Activity;
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -23,7 +23,7 @@ public class PopupProgress extends BasePopupWindow {
     private CircleProgressView progressView;
     private TextView progressTips;
 
-    public PopupProgress(Activity context) {
+    public PopupProgress(Context context) {
         super(context);
         progressView = (CircleProgressView) findViewById(R.id.popup_progress);
         progressTips = (TextView) findViewById(R.id.progress_tips);
@@ -32,6 +32,9 @@ public class PopupProgress extends BasePopupWindow {
         setAllowDismissWhenTouchOutside(false);
     }
 
+    public CircleProgressView getProgressView() {
+        return progressView;
+    }
 
     @Override
     protected Animation onCreateShowAnimation() {

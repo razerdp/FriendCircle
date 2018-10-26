@@ -22,6 +22,8 @@ public class MomentContent implements Serializable {
     private String text;
     //图片
     private List<String> pics;
+    //图片优化版
+    private List<PhotoInfo> pics2;
     //web
     private String webUrl;
     //webTitle
@@ -40,8 +42,16 @@ public class MomentContent implements Serializable {
         this.text = text;
     }
 
-    public List<String> getPics() {
-        return pics;
+    public List<PhotoInfo> getPics() {
+        if (ToolUtil.isListEmpty(pics2)) {
+            pics2 = new ArrayList<>();
+            if (!ToolUtil.isListEmpty(pics)) {
+                for (String pic : pics) {
+                    pics2.add(new PhotoInfo().setUrl(pic));
+                }
+            }
+        }
+        return pics2;
     }
 
     public void setPics(List<String> pics) {
@@ -82,7 +92,7 @@ public class MomentContent implements Serializable {
     public int getMomentType() {
         int type = MomentsType.TEXT_ONLY;
         //图片列表为空，则只能是文字或者web
-        if (ToolUtil.isListEmpty(pics)) {
+        if (ToolUtil.isListEmpty(pics)&&ToolUtil.isListEmpty(pics2)) {
             if (StringUtil.noEmpty(webUrl)) {
                 type = MomentsType.WEB;
             } else {
@@ -106,6 +116,16 @@ public class MomentContent implements Serializable {
         }
         if (pics.size() < 9) {
             pics.add(pic);
+        }
+        return this;
+    }
+
+    public MomentContent addPicture(PhotoInfo info) {
+        if (pics2 == null) {
+            pics2 = new ArrayList<>();
+        }
+        if (pics2.size() < 9) {
+            pics2.add(info);
         }
         return this;
     }

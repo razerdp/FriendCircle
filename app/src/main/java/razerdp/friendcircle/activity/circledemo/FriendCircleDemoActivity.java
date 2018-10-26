@@ -36,6 +36,7 @@ import razerdp.friendcircle.R;
 import razerdp.friendcircle.activity.ActivityLauncher;
 import razerdp.friendcircle.app.manager.ServiceInfoManager;
 import razerdp.friendcircle.app.manager.UpdateInfoManager;
+import razerdp.friendcircle.app.mvp.model.UpdateInfo;
 import razerdp.friendcircle.app.mvp.presenter.impl.MomentPresenter;
 import razerdp.friendcircle.app.mvp.view.IMomentView;
 import razerdp.friendcircle.ui.adapter.CircleMomentsAdapter;
@@ -44,10 +45,12 @@ import razerdp.friendcircle.ui.viewholder.MultiImageMomentsVH;
 import razerdp.friendcircle.ui.viewholder.TextOnlyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.WebMomentsVH;
 import razerdp.friendcircle.ui.widget.popup.PopupTextAction;
+import razerdp.friendcircle.ui.widget.popup.PopupUpdate;
 import razerdp.friendcircle.ui.widget.popup.RegisterPopup;
 import razerdp.github.com.lib.common.entity.ImageInfo;
 import razerdp.github.com.lib.helper.AppFileHelper;
 import razerdp.github.com.lib.helper.AppSetting;
+import razerdp.github.com.lib.interfaces.SimpleCallback;
 import razerdp.github.com.lib.interfaces.SingleClickListener;
 import razerdp.github.com.lib.manager.KeyboardControlMnanager;
 import razerdp.github.com.lib.network.base.OnResponseListener;
@@ -85,6 +88,9 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
     private RelativeLayout mTipsLayout;
     private TextView mServiceTipsView;
     private ImageView mCloseImageView;
+
+    private TextView mUpdateTipsView;
+    private RelativeLayout mUpdateLayout;
 
     private CircleRecyclerView circleRecyclerView;
     private CommentBox commentBox;
@@ -148,6 +154,9 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         mTipsLayout = (RelativeLayout) findViewById(R.id.tips_layout);
         mServiceTipsView = (TextView) findViewById(R.id.service_tips);
         mCloseImageView = (ImageView) findViewById(R.id.iv_close);
+
+        mUpdateTipsView = (TextView) findViewById(R.id.update_tips);
+        mUpdateLayout = (RelativeLayout) findViewById(R.id.update_layout);
 
         commentBox = (CommentBox) findViewById(R.id.widget_comment);
         commentBox.setOnCommentSendClickListener(onCommentSendClickListener);
@@ -412,8 +421,47 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
                     @Override
                     public void call(Long aLong) {
                         checkServiceInfo();
+                        checkUpdateInfo();
                     }
                 });
+    }
+
+    private void checkUpdateInfo() {
+        UpdateInfoManager.INSTANCE.checkUpdate(new SimpleCallback<UpdateInfo>() {
+            @Override
+            public void onCall(final UpdateInfo data) {
+                mUpdateTipsView.setText(String.format("新版本(%1$s)已经发布，点击查看更新日志并更新。", data.getVersion()));
+                mUpdateTipsView.setOnClickListener(new SingleClickListener() {
+                    @Override
+                    public void onSingleClick(View v) {
+                        toUpdate(data);
+                    }
+                });
+                mUpdateLayout.setVisibility(View.VISIBLE);
+                mUpdateTipsView.requestFocus();
+//                mUpdateLayout.animate()
+//                        .alpha(1)
+//                        .translationY(UIHelper.dipToPx(100))
+//                        .setDuration(800)
+//                        .setInterpolator(new DecelerateInterpolator())
+//                        .setListener(new AnimUtils.SimpleAnimatorListener() {
+//                            @Override
+//                            public void onAnimationStart(Animator animation) {
+//                                mUpdateLayout.setVisibility(View.VISIBLE);
+//                            }
+//
+//                            @Override
+//                            public void onAnimationEnd(Animator animation) {
+//                                mUpdateTipsView.requestFocus();
+//                            }
+//                        }).start();
+            }
+        });
+    }
+
+    private void toUpdate(UpdateInfo data) {
+        PopupUpdate popupUpdate = new PopupUpdate(this);
+        popupUpdate.showPopupWindow(data);
     }
 
     private void checkServiceInfo() {
@@ -430,25 +478,28 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
                             applyClose();
                         }
                     });
-                    mTipsLayout.animate()
-                            .alpha(1)
-                            .translationY(UIHelper.dipToPx(50))
-                            .setDuration(800)
-                            .setInterpolator(new DecelerateInterpolator())
-                            .setListener(new AnimUtils.SimpleAnimatorListener() {
-                                @Override
-                                public void onAnimationStart(Animator animation) {
-                                    mTipsLayout.setVisibility(View.VISIBLE);
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    mServiceTipsView.requestFocus();
-                                }
-                            }).start();
+                    mTipsLayout.setVisibility(View.VISIBLE);
+                    mServiceTipsView.requestFocus();
+//                    mTipsLayout.animate()
+//                            .alpha(1)
+//                            .translationY(UIHelper.dipToPx(50))
+//                            .setDuration(800)
+//                            .setInterpolator(new DecelerateInterpolator())
+//                            .setListener(new AnimUtils.SimpleAnimatorListener() {
+//                                @Override
+//                                public void onAnimationStart(Animator animation) {
+//                                    mTipsLayout.setVisibility(View.VISIBLE);
+//                                }
+//
+//                                @Override
+//                                public void onAnimationEnd(Animator animation) {
+//                                    mServiceTipsView.requestFocus();
+//                                }
+//                            }).start();
                 }
             }
         });
+
     }
 
     private void applyClose() {
