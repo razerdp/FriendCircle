@@ -27,10 +27,8 @@ public enum UpdateInfoManager {
     private BasePopupWindow.OnDismissListener mOnDismissListener;
 
 
-    final String title = "开发日志(2018/08/7)";
-    final String content = "  * 修复多图发布无法移除图片问题  #62 (https://github.com/razerdp/FriendCircle/issues/62)" +
-            "\n  * 适配Android O" +
-            "\n  * 展开评论暂时没有完成，因此暂时禁用。";
+    final String title = "开发日志(2018/10/29)";
+    final String content = "  * 增加更新功能";
 
 
     public void init(Activity act, BasePopupWindow.OnDismissListener l) {

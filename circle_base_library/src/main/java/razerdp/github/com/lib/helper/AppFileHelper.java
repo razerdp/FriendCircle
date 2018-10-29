@@ -180,9 +180,7 @@ public class AppFileHelper {
     }
 
     public static String getDownloadDir() {
-        KLog.i("downloadDir=" + storagePath.concat(ROOT_PATH + DOWNLOAD_PATH));
-        checkAndMakeDir(new File(storagePath.concat(ROOT_PATH + DOWNLOAD_PATH)));
-        return storagePath.concat(ROOT_PATH + DOWNLOAD_PATH);
+        return storagePath.concat(DOWNLOAD_PATH);
     }
 
     public static String getDownloadPath(String url) {

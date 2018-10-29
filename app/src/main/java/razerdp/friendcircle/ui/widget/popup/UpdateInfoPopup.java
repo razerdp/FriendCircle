@@ -35,7 +35,6 @@ public class UpdateInfoPopup extends BasePopupWindow {
                 return true;
             }
         });
-        setBlurBackgroundEnable(true);
         findViewById(R.id.tv_ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

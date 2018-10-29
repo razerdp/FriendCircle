@@ -6,8 +6,6 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
-import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
@@ -27,10 +25,9 @@ import razerdp.github.com.lib.helper.AppFileHelper;
 import razerdp.github.com.lib.helper.PermissionHelper;
 import razerdp.github.com.lib.interfaces.IPermission;
 import razerdp.github.com.lib.interfaces.OnPermissionGrantListener;
+import razerdp.github.com.lib.utils.ToolUtil;
 import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.ui.widget.popup.PopupProgress;
-
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 /**
  * Created by 大灯泡 on 2017/7/19.
@@ -111,17 +108,7 @@ public class PopupUpdate extends BasePopupWindow {
 
     private void install(String file) {
         KLog.i("文件 = " + file);
-        Intent intent = new Intent();
-        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.setAction(Intent.ACTION_VIEW);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Uri fileUri = FileProvider.getUriForFile(getContext(), "github.razerdp.friendcircle", new File(file));
-            intent.setDataAndType(fileUri, MIME_TYPE_APK);
-        } else {
-            intent.setDataAndType(Uri.parse(file), MIME_TYPE_APK);
-        }
-        getContext().startActivity(intent);
+        ToolUtil.install(getContext(),file);
     }
 
     private void requestPermissionAndUpdate(UpdateInfo updateInfo) {

@@ -12,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.razerdp.github.com.common.MomentsType;
@@ -85,12 +84,12 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
 
 
     private int clickServiceCount = 0;
-    private RelativeLayout mTipsLayout;
+    private View mTipsLayout;
     private TextView mServiceTipsView;
     private ImageView mCloseImageView;
 
     private TextView mUpdateTipsView;
-    private RelativeLayout mUpdateLayout;
+    private View mUpdateLayout;
 
     private CircleRecyclerView circleRecyclerView;
     private CommentBox commentBox;
@@ -151,12 +150,12 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         circleRecyclerView.setOnPreDispatchTouchListener(this);
         circleRecyclerView.addHeaderView(hostViewHolder.getView());
 
-        mTipsLayout = (RelativeLayout) findViewById(R.id.tips_layout);
+        mTipsLayout = findViewById(R.id.tips_layout);
         mServiceTipsView = (TextView) findViewById(R.id.service_tips);
         mCloseImageView = (ImageView) findViewById(R.id.iv_close);
 
         mUpdateTipsView = (TextView) findViewById(R.id.update_tips);
-        mUpdateLayout = (RelativeLayout) findViewById(R.id.update_layout);
+        mUpdateLayout = findViewById(R.id.update_layout);
 
         commentBox = (CommentBox) findViewById(R.id.widget_comment);
         commentBox.setOnCommentSendClickListener(onCommentSendClickListener);
@@ -437,24 +436,24 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
                         toUpdate(data);
                     }
                 });
-                mUpdateLayout.setVisibility(View.VISIBLE);
-                mUpdateTipsView.requestFocus();
-//                mUpdateLayout.animate()
-//                        .alpha(1)
-//                        .translationY(UIHelper.dipToPx(100))
-//                        .setDuration(800)
-//                        .setInterpolator(new DecelerateInterpolator())
-//                        .setListener(new AnimUtils.SimpleAnimatorListener() {
-//                            @Override
-//                            public void onAnimationStart(Animator animation) {
-//                                mUpdateLayout.setVisibility(View.VISIBLE);
-//                            }
-//
-//                            @Override
-//                            public void onAnimationEnd(Animator animation) {
-//                                mUpdateTipsView.requestFocus();
-//                            }
-//                        }).start();
+                mUpdateLayout.setTranslationY(-UIHelper.dipToPx(50));
+                mUpdateLayout.animate()
+                        .setStartDelay(300)
+                        .alpha(1f)
+                        .translationY(0)
+                        .setDuration(800)
+                        .setInterpolator(new DecelerateInterpolator())
+                        .setListener(new AnimUtils.SimpleAnimatorListener() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                mUpdateLayout.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                mUpdateTipsView.requestFocus();
+                            }
+                        }).start();
             }
         });
     }
@@ -478,24 +477,18 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
                             applyClose();
                         }
                     });
-                    mTipsLayout.setVisibility(View.VISIBLE);
-                    mServiceTipsView.requestFocus();
-//                    mTipsLayout.animate()
-//                            .alpha(1)
-//                            .translationY(UIHelper.dipToPx(50))
-//                            .setDuration(800)
-//                            .setInterpolator(new DecelerateInterpolator())
-//                            .setListener(new AnimUtils.SimpleAnimatorListener() {
-//                                @Override
-//                                public void onAnimationStart(Animator animation) {
-//                                    mTipsLayout.setVisibility(View.VISIBLE);
-//                                }
-//
-//                                @Override
-//                                public void onAnimationEnd(Animator animation) {
-//                                    mServiceTipsView.requestFocus();
-//                                }
-//                            }).start();
+                    mTipsLayout.setTranslationY(-UIHelper.dipToPx(50));
+                    mTipsLayout.animate()
+                            .alpha(1f)
+                            .translationY(0)
+                            .setDuration(800)
+                            .setInterpolator(new DecelerateInterpolator())
+                            .setListener(new AnimUtils.SimpleAnimatorListener() {
+                                @Override
+                                public void onAnimationStart(Animator animation) {
+                                    mTipsLayout.setVisibility(View.VISIBLE);
+                                }
+                            }).start();
                 }
             }
         });
