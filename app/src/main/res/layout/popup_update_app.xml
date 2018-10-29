@@ -91,7 +91,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_close"/>
+            android:src="@drawable/ic_close_black"/>
 
     </RelativeLayout>
 </RelativeLayout>

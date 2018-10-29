@@ -36,7 +36,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/common_selector"
-                android:src="@drawable/ic_close"/>
+                android:src="@drawable/ic_close_black"/>
 
         </RelativeLayout>
 

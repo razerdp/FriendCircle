@@ -496,8 +496,8 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
     }
 
     private void applyClose() {
-        if (clickServiceCount < 3) return;
-        mCloseImageView.setImageResource(R.drawable.ic_close);
+        if (clickServiceCount < 1) return;
+        mCloseImageView.setImageResource(R.drawable.ic_close_white);
         mCloseImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

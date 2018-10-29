@@ -397,7 +397,7 @@ public class FriendCircleFragmentDemo extends BaseTitleBarFragment implements On
 
     private void applyClose() {
         if (clickServiceCount < 3) return;
-        mCloseImageView.setImageResource(R.drawable.ic_close);
+        mCloseImageView.setImageResource(R.drawable.ic_close_black);
         mCloseImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
