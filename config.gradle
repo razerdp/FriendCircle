@@ -4,8 +4,8 @@ ext {
             compileSdkVersion: 27,
             minSdkVersion    : 17,
             targetSdkVersion : 27,
-            versionCode      : 20,
-            versionName      : "2.0"
+            versionCode      : 22,
+            versionName      : "2.2"
     ]
 
     baselib = [
