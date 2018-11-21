@@ -30,6 +30,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import cn.bmob.v3.exception.BmobException;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.activity.ActivityLauncher;
@@ -59,9 +62,6 @@ import razerdp.github.com.ui.widget.common.TitleBar;
 import razerdp.github.com.ui.widget.popup.SelectPhotoMenuPopup;
 import razerdp.github.com.ui.widget.pullrecyclerview.CircleRecyclerView;
 import razerdp.github.com.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -352,9 +352,9 @@ public class FriendCircleFragmentDemo extends BaseTitleBarFragment implements On
     private void delayCheckServiceInfo() {
         Observable.timer(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Long>() {
+                .subscribe(new Consumer<Long>() {
                     @Override
-                    public void call(Long aLong) {
+                    public void accept(Long aLong) throws Exception {
                         checkServiceInfo();
                     }
                 });

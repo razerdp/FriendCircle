@@ -1,6 +1,7 @@
 package razerdp.friendcircle.activity.circledemo;
 
 import android.animation.Animator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,6 +31,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import cn.bmob.v3.exception.BmobException;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.activity.ActivityLauncher;
@@ -67,9 +71,6 @@ import razerdp.github.com.ui.widget.popup.SelectPhotoMenuPopup;
 import razerdp.github.com.ui.widget.pullrecyclerview.CircleRecyclerView;
 import razerdp.github.com.ui.widget.pullrecyclerview.CircleRecyclerView.OnPreDispatchTouchListener;
 import razerdp.github.com.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 /**
  * Created by 大灯泡 on 2016/10/26.
@@ -413,12 +414,13 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
 
 
     //服务器消息检查，非项目所需↓
+    @SuppressLint("CheckResult")
     private void delayCheckServiceInfo() {
         Observable.timer(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Long>() {
+                .subscribe(new Consumer<Long>() {
                     @Override
-                    public void call(Long aLong) {
+                    public void accept(Long aLong) throws Exception {
                         checkServiceInfo();
                         checkUpdateInfo();
                     }

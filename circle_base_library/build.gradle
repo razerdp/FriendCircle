@@ -46,7 +46,14 @@ dependencies {
     //over scroller helper
     api 'me.everything:overscroll-decor-android:1.0.4'
     //bmob
-    api 'cn.bmob.android:bmob-sdk:3.6.6'
+    api 'cn.bmob.android:bmob-sdk:3.6.8-rc2'
+    //gson
+    api 'com.google.code.gson:gson:2.8.2'
+    // rx
+    api 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    api 'io.reactivex.rxjava2:rxjava:2.1.14-RC1'
+    //okio
+    api 'com.squareup.okio:okio:1.14.0'
     //log
     api 'com.github.zhaokaiqiang.klog:library:1.6.0'
     //eventbus
