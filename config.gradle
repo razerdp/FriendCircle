@@ -1,9 +1,9 @@
 ext {
 
     android = [
-            compileSdkVersion: 27,
+            compileSdkVersion: 28,
             minSdkVersion    : 17,
-            targetSdkVersion : 27,
+            targetSdkVersion : 28,
             versionCode      : 22,
             versionName      : "2.2"
     ]
@@ -34,9 +34,9 @@ ext {
     ]
 
     dependencies = [
-            appcompat_v7    : 'com.android.support:appcompat-v7:27.1.1',
-            design          : 'com.android.support:design:27.1.1',
-            support_util    : 'com.android.support:support-core-utils:27.1.1',
+            appcompat_v7    : 'com.android.support:appcompat-v7:28.0.0',
+            design          : 'com.android.support:design:28.0.0',
+            support_util    : 'com.android.support:support-core-utils:28.0.0',
             arouter_api     : 'com.alibaba:arouter-api:1.4.0',
             arouter_compiler: 'com.alibaba:arouter-compiler:1.2.1'
     ]
