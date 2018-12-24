@@ -42,7 +42,7 @@ dependencies {
     api rootProject.ext.dependencies.design
     api rootProject.ext.dependencies.support_util
 
-    api 'com.github.razerdp:BasePopup:2.0.9'
+    api 'com.github.razerdp:BasePopup:2.1.4'
     //over scroller helper
     api 'me.everything:overscroll-decor-android:1.0.4'
     //bmob
