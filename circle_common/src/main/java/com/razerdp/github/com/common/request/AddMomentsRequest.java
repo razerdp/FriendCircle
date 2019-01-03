@@ -60,7 +60,8 @@ public class AddMomentsRequest extends BaseRequestClient<String> {
                 public void done(String s, BmobException e) {
                     if (e == null) {
                         onResponseSuccess(s, requestType);
-
+                    } else {
+                        onResponseError(e, requestType);
                     }
                 }
             });
