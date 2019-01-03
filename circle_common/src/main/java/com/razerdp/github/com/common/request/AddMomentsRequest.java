@@ -7,13 +7,10 @@ import com.razerdp.github.com.common.entity.MomentsInfo;
 import com.razerdp.github.com.common.entity.PhotoInfo;
 import com.razerdp.github.com.common.entity.UserInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
-import cn.bmob.v3.listener.UpdateListener;
 import razerdp.github.com.lib.network.base.BaseRequestClient;
 import razerdp.github.com.lib.utils.ToolUtil;
 
@@ -28,11 +25,9 @@ public class AddMomentsRequest extends BaseRequestClient<String> {
     private String authId;
     private String hostId;
     private MomentContent momentContent;
-    private List<UserInfo> likesUserId;
 
     public AddMomentsRequest() {
         momentContent = new MomentContent();
-        likesUserId = new ArrayList<>();
     }
 
     public AddMomentsRequest setAuthId(String authId) {
@@ -64,29 +59,7 @@ public class AddMomentsRequest extends BaseRequestClient<String> {
                 @Override
                 public void done(String s, BmobException e) {
                     if (e == null) {
-                        if (ToolUtil.isListEmpty(likesUserId)) {
-                            onResponseSuccess(s, requestType);
-                        } else {
-                            MomentsInfo resultMoment = new MomentsInfo();
-                            resultMoment.setObjectId(s);
-
-                            //关联点赞的
-                            BmobRelation relation = new BmobRelation();
-                            for (UserInfo user : likesUserId) {
-                                relation.add(user);
-                            }
-                            resultMoment.setLikesBmobRelation(relation);
-                            resultMoment.update(new UpdateListener() {
-                                @Override
-                                public void done(BmobException e) {
-                                    if (e == null) {
-                                        onResponseSuccess("添加成功", requestType);
-                                    } else {
-                                        onResponseError(e, requestType);
-                                    }
-                                }
-                            });
-                        }
+                        onResponseSuccess(s, requestType);
 
                     }
                 }
@@ -132,11 +105,6 @@ public class AddMomentsRequest extends BaseRequestClient<String> {
 
     public AddMomentsRequest addWebImage(String webImage) {
         momentContent.addWebImage(webImage);
-        return this;
-    }
-
-    public AddMomentsRequest addLikes(UserInfo user) {
-        likesUserId.add(user);
         return this;
     }
 }
