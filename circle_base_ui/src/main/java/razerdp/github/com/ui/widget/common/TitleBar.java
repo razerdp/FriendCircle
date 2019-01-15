@@ -1,7 +1,12 @@
 package razerdp.github.com.ui.widget.common;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -16,10 +21,15 @@ import com.socks.library.KLog;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.baseuilib.R;
+import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.ui.util.ViewUtil;
 import razerdp.github.com.ui.widget.indicator.DotWidget;
+
+import static razerdp.github.com.ui.widget.common.TitleBar.TitleBarMode.MODE_BOTH;
+import static razerdp.github.com.ui.widget.common.TitleBar.TitleBarMode.MODE_LEFT;
+import static razerdp.github.com.ui.widget.common.TitleBar.TitleBarMode.MODE_NONE;
+import static razerdp.github.com.ui.widget.common.TitleBar.TitleBarMode.MODE_RIGHT;
 
 /**
  * Created by 大灯泡 on 2016/7/20.
@@ -29,6 +39,26 @@ import razerdp.github.com.ui.widget.indicator.DotWidget;
 
 public class TitleBar extends FrameLayout implements View.OnClickListener, View.OnLongClickListener {
 
+    protected String leftText;
+    protected String rightText;
+    @DrawableRes
+    protected int leftIcon;
+    @DrawableRes
+    protected int rightIcon;
+    protected boolean isTransparent;
+    @ColorInt
+    protected int mainTextColor;
+    protected int mainTextSize;
+    protected String mainText;
+
+    @ColorInt
+    protected int leftTextColor;
+    @ColorInt
+    protected int rightTextColor;
+    protected int leftTextSize;
+    protected int rightTextSize;
+    private int rightBtnPadding;
+
     private LinearLayout ll_left;
     private ImageView iv_left;
     private TextView tx_left;
@@ -36,16 +66,18 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
     private ImageView iv_right;
     private TextView tx_right;
     private TextView title;
+    private View root;
+
+    Drawable background = null;
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({MODE_LEFT, MODE_RIGHT, MODE_BOTH, MODE_TITLE})
+    @IntDef({MODE_LEFT, MODE_RIGHT, MODE_BOTH, MODE_NONE})
     public @interface TitleBarMode {
+        int MODE_LEFT = 16;
+        int MODE_RIGHT = 17;
+        int MODE_BOTH = 18;
+        int MODE_NONE = 19;
     }
-
-    public static final int MODE_LEFT = 0x11;
-    public static final int MODE_RIGHT = 0x12;
-    public static final int MODE_BOTH = 0x13;
-    public static final int MODE_TITLE = 0x14;
 
     private int currentMode = MODE_LEFT;
 
@@ -59,69 +91,130 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
 
     public TitleBar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        initFromAttrs(context, attrs);
         initView(context);
+    }
+
+    private void initFromAttrs(Context context, AttributeSet attrs) {
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TitleBar);
+        background = a.getDrawable(R.styleable.TitleBar_android_background);
+        isTransparent = a.getBoolean(R.styleable.TitleBar_transparentMode, false);
+        leftIcon = a.getResourceId(R.styleable.TitleBar_icon_left, R.drawable.back_left);
+        rightIcon = a.getResourceId(R.styleable.TitleBar_icon_right, 0);
+        leftText = a.getString(R.styleable.TitleBar_text_left);
+        rightText = a.getString(R.styleable.TitleBar_text_right);
+        currentMode = a.getInt(R.styleable.TitleBar_mode, MODE_LEFT);
+        mainTextSize = a.getDimensionPixelSize(R.styleable.TitleBar_title_text_size, 18);
+        mainTextColor = a.getColor(R.styleable.TitleBar_title_text_color, Color.WHITE);
+
+        leftTextSize = a.getDimensionPixelSize(R.styleable.TitleBar_left_text_size, 16);
+        leftTextColor = a.getColor(R.styleable.TitleBar_left_text_color, Color.WHITE);
+
+        rightTextSize = a.getDimensionPixelSize(R.styleable.TitleBar_right_text_size, 16);
+        rightTextColor = a.getColor(R.styleable.TitleBar_right_text_color, Color.WHITE);
+        rightBtnPadding = a.getDimensionPixelSize(R.styleable.TitleBar_right_btn_padding, 0);
+
+        mainText = a.getString(R.styleable.TitleBar_title_text);
+        a.recycle();
     }
 
     private void initView(Context context) {
 
         View.inflate(context, R.layout.widget_title_bar, this);
-        ll_left = (LinearLayout) findViewById(R.id.ll_title_bar_left);
-        iv_left = (ImageView) findViewById(R.id.ic_title_bar_left);
-        tx_left = (TextView) findViewById(R.id.tx_title_bar_left);
+        root = findViewById(R.id.title_bar_root);
+        ll_left = findViewById(R.id.ll_title_bar_left);
+        iv_left = findViewById(R.id.ic_title_bar_left);
+        tx_left = findViewById(R.id.tx_title_bar_left);
 
-        ll_right = (LinearLayout) findViewById(R.id.ll_title_bar_right);
-        iv_right = (ImageView) findViewById(R.id.ic_title_bar_right);
-        tx_right = (TextView) findViewById(R.id.tx_title_bar_right);
+        ll_right = findViewById(R.id.ll_title_bar_right);
+        iv_right = findViewById(R.id.ic_title_bar_right);
+        tx_right = findViewById(R.id.tx_title_bar_right);
 
-        title = (TextView) findViewById(R.id.tx_title);
-        this.setBackgroundColor(UIHelper.getColor(R.color.action_bar_bg));
+        title = findViewById(R.id.tx_title);
 
-        ll_right.setOnClickListener(null);
+        ll_right.setOnClickListener(this);
         ll_right.setVisibility(INVISIBLE);
         ll_left.setOnClickListener(this);
         title.setOnLongClickListener(this);
 
+        setValues();
+
+    }
+
+    private void setValues() {
+        setTransparentMode(isTransparent);
+        setMode(currentMode);
+        setTitleTextSize(mainTextSize);
+        setTitleTextColor(mainTextColor);
+        setLeftTextColor(leftTextColor);
+        setLeftTextSize(leftTextSize);
+        setRightTextColor(rightTextColor);
+        setRightTextSize(rightTextSize);
+        setTitleText(mainText);
+        setLeftIcon(leftIcon);
+        setRightIcon(rightIcon);
+        setLeftText(leftText);
+        setRightText(rightText);
     }
 
     public int getTitleBarMode() {
         return currentMode;
     }
 
-    public void setTitleBarMode(@TitleBarMode int currentMode) {
-        if (this.currentMode == currentMode) return;
-        this.currentMode = currentMode;
+    public void setMode(@TitleBarMode int mode) {
+        setModeInternal(mode, true);
+    }
+
+    public void setTitleTextSize(int pxSize) {
+        this.mainTextSize = pxSize;
+        this.title.setTextSize(mainTextSize);
+    }
+
+    void setModeInternal(@TitleBarMode int mode, boolean changeImmediately) {
+        this.currentMode = mode;
+        if (changeImmediately) {
+            onModeChange();
+        }
+    }
+
+    private void onModeChange() {
         switch (currentMode) {
+            case MODE_BOTH:
+                ViewUtil.setViewsVisible(VISIBLE, ll_left, ll_right);
+                break;
+            case MODE_NONE:
+                ViewUtil.setViewsVisible(GONE, ll_left, ll_right);
+                break;
             case MODE_LEFT:
-                ll_left.setVisibility(VISIBLE);
-                ll_right.setOnClickListener(null);
-                ll_right.setOnLongClickListener(null);
-                ll_right.setVisibility(INVISIBLE);
-                ll_left.setOnClickListener(this);
-                ll_left.setOnLongClickListener(this);
+                ViewUtil.setViewsVisible(VISIBLE, ll_left);
+                ViewUtil.setViewsVisible(GONE, ll_right);
                 break;
             case MODE_RIGHT:
-                ll_right.setVisibility(VISIBLE);
-                ll_left.setOnClickListener(null);
-                ll_left.setOnLongClickListener(null);
-                ll_left.setVisibility(INVISIBLE);
-                ll_right.setOnClickListener(this);
-                ll_right.setOnLongClickListener(this);
-                break;
-            case MODE_BOTH:
-                ll_left.setVisibility(VISIBLE);
-                ll_right.setVisibility(VISIBLE);
-                ViewUtil.setViewsClickListener(this, ll_left, ll_right);
-                ll_left.setOnLongClickListener(this);
-                ll_right.setOnLongClickListener(this);
-                break;
-            case MODE_TITLE:
-                ll_left.setVisibility(GONE);
-                ll_right.setVisibility(GONE);
-                ll_left.setOnClickListener(null);
-                ll_right.setOnClickListener(null);
+                ViewUtil.setViewsVisible(VISIBLE, ll_right);
+                ViewUtil.setViewsVisible(GONE, ll_left);
                 break;
             default:
+                //都不匹配则按照left模式设置
+                ViewUtil.setViewsVisible(VISIBLE, ll_left);
+                ViewUtil.setViewsVisible(GONE, ll_right);
                 break;
+        }
+    }
+
+    public void setTransparentMode(boolean transparent) {
+        if (background != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                root.setBackground(background);
+            } else {
+                root.setBackgroundDrawable(background);
+            }
+            return;
+        }
+        isTransparent = transparent;
+        if (isTransparent) {
+            root.setBackgroundColor(Color.TRANSPARENT);
+        } else {
+            root.setBackgroundColor(UIHelper.getColor(R.color.action_bar_bg));
         }
     }
 
@@ -135,7 +228,7 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
         return title;
     }
 
-    public void setTitle(String titleStr) {
+    public void setTitleText(String titleStr) {
         if (TextUtils.isEmpty(titleStr)) {
             title.setText("");
         } else {
@@ -143,10 +236,16 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
         }
     }
 
-    public void setTitle(int stringResid) {
+    public void setTitleText(int stringResid) {
         if (stringResid > 0) {
             title.setText(stringResid);
         }
+    }
+
+
+    public void setTitleTextColor(@ColorInt int mainTextColor) {
+        this.mainTextColor = mainTextColor;
+        this.title.setTextColor(mainTextColor);
     }
 
     public void setLeftIcon(int resid) {
@@ -186,10 +285,26 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
         tx_left.setTextColor(color);
     }
 
+    public void setLeftTextSize(int textSize) {
+        this.leftTextSize = textSize;
+        tx_left.setTextSize(textSize);
+    }
+
     public void setRightTextColor(int color) {
         tx_right.setTextColor(color);
     }
 
+    public void setRightTextSize(int textSize) {
+        this.rightTextSize = textSize;
+        tx_right.setTextSize(textSize);
+    }
+
+    public void setTitleText(CharSequence mainText) {
+        if (mainText != null) {
+            this.mainText = mainText.toString();
+            title.setText(mainText);
+        }
+    }
 
     public void setRightText(int resid) {
         if (resid > 0) {

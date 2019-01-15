@@ -1,6 +1,7 @@
 package razerdp.github.com.ui.widget.pullrecyclerview;
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
@@ -15,9 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -33,11 +32,10 @@ import me.everything.android.ui.overscroll.IOverScrollStateListener;
 import me.everything.android.ui.overscroll.IOverScrollUpdateListener;
 import me.everything.android.ui.overscroll.VerticalOverScrollBounceEffectDecorator;
 import me.everything.android.ui.overscroll.adapters.RecyclerViewOverScrollDecorAdapter;
+import razerdp.github.com.baseuilib.R;
 import razerdp.github.com.lib.utils.ToolUtil;
 import razerdp.github.com.ui.util.AnimUtils;
 import razerdp.github.com.ui.util.UIHelper;
-import razerdp.github.com.ui.util.ViewOffsetHelper;
-import razerdp.github.com.baseuilib.R;
 import razerdp.github.com.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
 import razerdp.github.com.ui.widget.pullrecyclerview.mode.Mode;
 import razerdp.github.com.ui.widget.pullrecyclerview.mode.PullMode;
@@ -315,7 +313,9 @@ public class CircleRecyclerView extends FrameLayout {
         decor.setOverScrollUpdateListener(new IOverScrollUpdateListener() {
             @Override
             public void onOverScrollUpdate(IOverScrollDecor decor, int state, float offset) {
-                if (offset > 0) {
+                Log.d(TAG, "onOverScrollUpdate: " + offset);
+
+                if (offset >= 0) {
                     if (!canRefresh()) return;
                     iconObserver.catchPullEvent(offset);
                     if (offset >= refreshPosition && state == STATE_BOUNCE_BACK) {
@@ -329,8 +329,6 @@ public class CircleRecyclerView extends FrameLayout {
                             iconObserver.catchRefreshEvent();
                         }
                     }
-                } else if (offset < 0) {
-                    //底部的overscroll
                 }
             }
         });
@@ -393,63 +391,53 @@ public class CircleRecyclerView extends FrameLayout {
      */
 
     private static class InnerRefreshIconObserver {
-        private ViewOffsetHelper viewOffsetHelper;
         private ImageView refreshIcon;
         private final int refreshPosition;
-        private RotateAnimation rotateAnimation;
         private ValueAnimator mValueAnimator;
+        private int defaultTranslationY;
+        private ObjectAnimator mRefreshRotationAnimator;
+        private float dampingOffset = 1.25f;
 
-        InnerRefreshIconObserver(ImageView refreshIcon, int refreshPosition) {
+        InnerRefreshIconObserver(final ImageView refreshIcon, final int refreshPosition) {
             this.refreshIcon = refreshIcon;
             this.refreshPosition = refreshPosition;
 
-            viewOffsetHelper = new ViewOffsetHelper(refreshIcon);
-
-            rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            rotateAnimation.setDuration(1000);
-            rotateAnimation.setInterpolator(new LinearInterpolator());
-            rotateAnimation.setRepeatCount(Animation.INFINITE);
-            rotateAnimation.setFillBefore(true);
+            refreshIcon.post(new Runnable() {
+                @Override
+                public void run() {
+                    defaultTranslationY = -refreshIcon.getHeight();
+                    refreshIcon.setTranslationY(defaultTranslationY);
+                    refreshIcon.setPivotX((float) refreshIcon.getWidth() / 2);
+                    refreshIcon.setPivotY((float) refreshIcon.getHeight() / 2);
+                }
+            });
 
         }
 
         void catchPullEvent(float offset) {
             if (checkHacIcon()) {
+                Log.d(TAG, "catchPullEvent: " + offset);
                 refreshIcon.setRotation(-offset * 2);
-                if (offset >= refreshPosition) {
-                    offset = refreshPosition;
-                }
-                viewOffsetHelper.absoluteOffsetTopAndBottom((int) offset);
-                adjustRefreshIconPosition();
+                float adjustOffset = Math.min(defaultTranslationY * dampingOffset + offset, refreshPosition);
+                refreshIcon.setTranslationY(adjustOffset);
             }
         }
 
-        /**
-         * 调整icon的位置界限
-         */
-        private void adjustRefreshIconPosition() {
-            if (refreshIcon.getY() < 0) {
-                refreshIcon.offsetTopAndBottom(Math.abs(refreshIcon.getTop()));
-            } else if (refreshIcon.getY() > refreshPosition) {
-                refreshIcon.offsetTopAndBottom(-(refreshIcon.getTop() - refreshPosition));
-            }
-        }
 
         void catchRefreshEvent() {
             if (checkHacIcon()) {
                 refreshIcon.clearAnimation();
                 if (refreshIcon.getTop() < refreshPosition) {
-                    viewOffsetHelper.absoluteOffsetTopAndBottom(refreshPosition);
+                    refreshIcon.setTranslationY(refreshPosition);
                 }
-                refreshIcon.startAnimation(rotateAnimation);
             }
+            startRefreshRotationAnimator();
         }
 
         void catchResetEvent() {
             KLog.i("refreshTop", " top  >>>  " + refreshIcon.getTop());
             if (mValueAnimator == null) {
-                mValueAnimator = ValueAnimator.ofFloat(refreshPosition, 0);
-                mValueAnimator.setInterpolator(new LinearInterpolator());
+                mValueAnimator = ValueAnimator.ofFloat(refreshPosition, defaultTranslationY);
                 mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
@@ -460,10 +448,10 @@ public class CircleRecyclerView extends FrameLayout {
                 mValueAnimator.addListener(new AnimUtils.SimpleAnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
-                        refreshIcon.clearAnimation();
+                        stopRefreshRotationAnimator();
                     }
                 });
-                mValueAnimator.setDuration(540);
+                mValueAnimator.setDuration(500);
             }
 
             refreshIcon.post(new Runnable() {
@@ -496,6 +484,22 @@ public class CircleRecyclerView extends FrameLayout {
                 }
             });
             animator.start();
+        }
+
+        void startRefreshRotationAnimator() {
+            if (mRefreshRotationAnimator == null) {
+                mRefreshRotationAnimator = ObjectAnimator.ofFloat(refreshIcon, View.ROTATION, 0f, 360f);
+                mRefreshRotationAnimator.setRepeatCount(ValueAnimator.INFINITE);
+                mRefreshRotationAnimator.setDuration(1000);
+                mRefreshRotationAnimator.start();
+            }
+            mRefreshRotationAnimator.start();
+        }
+
+        void stopRefreshRotationAnimator() {
+            if (mRefreshRotationAnimator != null) {
+                mRefreshRotationAnimator.cancel();
+            }
         }
     }
 

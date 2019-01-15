@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="74dp"
         android:layout_marginRight="@dimen/item_padding"
-        android:layout_marginTop="-35dp"
+        android:layout_marginTop="-30dp"
         android:background="#f1f1f1"
         android:orientation="vertical"
         android:padding="8dp">

@@ -69,11 +69,14 @@
     </declare-styleable>
 
     <!--圆形头像-->
-    <declare-styleable name="CircleImageView">
-        <attr name="civ_border_width" format="dimension"/>
-        <attr name="civ_border_color" format="color"/>
-        <attr name="civ_border_overlay" format="boolean"/>
-        <attr name="civ_fill_color" format="color"/>
+    <declare-styleable name="RoundedImageView">
+        <attr name="corner_radius"/>
+        <attr name="border_width" format="dimension"/>
+        <attr name="border_color" format="color"/>
+        <attr name="round_background" format="boolean"/>
+        <attr name="is_oval" format="boolean"/>
+        <attr name="android:scaleType"/>
+        <attr name="bottom_round" format="boolean"/>
     </declare-styleable>
 
     <!--ForceClickImageView-->

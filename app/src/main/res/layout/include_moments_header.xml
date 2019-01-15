@@ -9,11 +9,12 @@
                 android:paddingRight="@dimen/item_padding"
                 android:paddingTop="@dimen/item_padding">
 
-    <ImageView
+    <razerdp.github.com.ui.widget.imageview.RoundedImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/item_avatar"
         android:layout_height="@dimen/item_avatar"
         android:scaleType="centerCrop"
+        app:corner_radius="6dp"
         tools:src="@drawable/test_avatar"/>
 
     <TextView

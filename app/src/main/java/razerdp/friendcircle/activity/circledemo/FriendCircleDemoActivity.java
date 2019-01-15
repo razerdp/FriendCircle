@@ -138,10 +138,8 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         if (mViewHelper == null) {
             mViewHelper = new CircleViewHelper(this);
         }
-        setTitle("朋友圈");
-        setTitleMode(TitleBar.MODE_BOTH);
+        setTitleMode(TitleBar.TitleBarMode.MODE_BOTH);
         setTitleRightIcon(R.drawable.ic_camera);
-        setTitleLeftText("发现");
         setTitleLeftIcon(R.drawable.back_left);
         presenter = new MomentPresenter(this);
 
@@ -438,7 +436,7 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
                         toUpdate(data);
                     }
                 });
-                mUpdateLayout.setTranslationY(-UIHelper.dipToPx(50));
+                mUpdateLayout.setTranslationY(UIHelper.dipToPx(50));
                 mUpdateLayout.animate()
                         .setStartDelay(300)
                         .alpha(1f)
@@ -479,7 +477,7 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
                             applyClose();
                         }
                     });
-                    mTipsLayout.setTranslationY(-UIHelper.dipToPx(50));
+                    mTipsLayout.setTranslationY(UIHelper.dipToPx(50));
                     mTipsLayout.animate()
                             .alpha(1f)
                             .translationY(0)
@@ -559,7 +557,7 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
             if (hostInfo == null) return;
             ImageLoadMnanger.INSTANCE.loadImage(friend_wall_pic, hostInfo.getCover());
             ImageLoadMnanger.INSTANCE.loadImage(friend_avatar, hostInfo.getAvatar());
-            hostid.setText(String.format("您的测试ID为: %s\n您的测试用户名为: %s", hostInfo.getUserid(), hostInfo.getNick()));
+            hostid.setText(hostInfo.getNick());
         }
 
         public View getView() {

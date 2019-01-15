@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,6 +32,7 @@ import razerdp.github.com.ui.widget.commentwidget.CommentContentsLayout;
 import razerdp.github.com.ui.widget.commentwidget.CommentWidget;
 import razerdp.github.com.ui.widget.commentwidget.IComment;
 import razerdp.github.com.ui.widget.common.ClickShowMoreLayout;
+import razerdp.github.com.ui.widget.imageview.RoundedImageView;
 
 /**
  * Created by 大灯泡 on 2016/11/1.
@@ -43,7 +43,7 @@ public abstract class CircleBaseViewHolder extends BaseMultiRecyclerViewHolder<M
 
 
     //头部
-    protected ImageView avatar;
+    protected RoundedImageView avatar;
     protected TextView nick;
     protected ClickShowMoreLayout userText;
 
@@ -51,7 +51,6 @@ public abstract class CircleBaseViewHolder extends BaseMultiRecyclerViewHolder<M
     protected TextView createTime;
     protected TextView deleteMoments;
     protected ImageView commentImage;
-    protected FrameLayout menuButton;
     protected LinearLayout commentAndPraiseLayout;
     protected PraiseWidget praiseWidget;
     protected View line;
@@ -73,7 +72,7 @@ public abstract class CircleBaseViewHolder extends BaseMultiRecyclerViewHolder<M
         onFindView(itemView);
 
         //header
-        avatar = (ImageView) findView(avatar, R.id.avatar);
+        avatar = (RoundedImageView) findView(avatar, R.id.avatar);
         nick = (TextView) findView(nick, R.id.nick);
         userText = (ClickShowMoreLayout) findView(userText, R.id.item_text_field);
         userText.setOnStateKeyGenerateListener(new ClickShowMoreLayout.OnStateKeyGenerateListener() {
@@ -87,7 +86,7 @@ public abstract class CircleBaseViewHolder extends BaseMultiRecyclerViewHolder<M
         createTime = (TextView) findView(createTime, R.id.create_time);
         deleteMoments = (TextView) findView(deleteMoments, R.id.tv_delete_moment);
         commentImage = (ImageView) findView(commentImage, R.id.menu_img);
-        menuButton = (FrameLayout) findView(menuButton, R.id.menu_button);
+        ViewUtil.expandViewTouchDelegate(commentImage,40,40,40,40);
         commentAndPraiseLayout = (LinearLayout) findView(commentAndPraiseLayout, R.id.comment_praise_layout);
         praiseWidget = (PraiseWidget) findView(praiseWidget, R.id.praise);
         line = findView(line, R.id.divider);
@@ -102,7 +101,7 @@ public abstract class CircleBaseViewHolder extends BaseMultiRecyclerViewHolder<M
         contentLayout = (LinearLayout) findView(contentLayout, R.id.content);
 
         if (commentPopup == null) {
-            commentPopup = new CommentPopup((Activity) getContext());
+            commentPopup = new CommentPopup( getContext());
             commentPopup.setOnCommentPopupClickListener(onCommentPopupClickListener);
         }
 
@@ -133,8 +132,8 @@ public abstract class CircleBaseViewHolder extends BaseMultiRecyclerViewHolder<M
         //通用数据绑定
         onBindMutualDataToViews(data);
         //点击事件
-        menuButton.setOnClickListener(onMenuButtonClickListener);
-        menuButton.setTag(R.id.momentinfo_data_tag_id, data);
+        commentImage.setOnClickListener(onMenuButtonClickListener);
+        commentImage.setTag(R.id.momentinfo_data_tag_id, data);
         deleteMoments.setOnClickListener(onDeleteMomentClickListener);
         //传递到子类
         onBindDataToView(data, position, getViewType());

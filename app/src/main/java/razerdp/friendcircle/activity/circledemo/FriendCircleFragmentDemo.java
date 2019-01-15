@@ -58,12 +58,12 @@ import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.ui.widget.commentwidget.CommentBox;
 import razerdp.github.com.ui.widget.commentwidget.CommentWidget;
 import razerdp.github.com.ui.widget.commentwidget.IComment;
-import razerdp.github.com.ui.widget.common.TitleBar;
 import razerdp.github.com.ui.widget.popup.SelectPhotoMenuPopup;
 import razerdp.github.com.ui.widget.pullrecyclerview.CircleRecyclerView;
 import razerdp.github.com.ui.widget.pullrecyclerview.interfaces.OnRefreshListener2;
 
 import static android.app.Activity.RESULT_OK;
+import static razerdp.github.com.ui.widget.common.TitleBar.TitleBarMode.MODE_BOTH;
 
 /**
  * Created by 大灯泡 on 2018/10/26.
@@ -120,10 +120,8 @@ public class FriendCircleFragmentDemo extends BaseTitleBarFragment implements On
         if (mViewHelper == null) {
             mViewHelper = new CircleViewHelper(getActivity());
         }
-        setTitle("朋友圈");
-        setTitleMode(TitleBar.MODE_BOTH);
+        setTitleMode(MODE_BOTH);
         setTitleRightIcon(R.drawable.ic_camera);
-        setTitleLeftText("发现");
         setTitleLeftIcon(R.drawable.back_left);
         presenter = new MomentPresenter(this);
 

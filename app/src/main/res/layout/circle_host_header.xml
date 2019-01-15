@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="430dp"
@@ -13,28 +14,32 @@
         android:scaleType="centerCrop"
         android:src="@drawable/test_wallpic"/>
 
-    <ImageView
+    <razerdp.github.com.ui.widget.imageview.RoundedImageView
         android:id="@+id/friend_avatar"
         android:layout_width="67dp"
         android:layout_height="67dp"
         android:layout_alignBottom="@id/friend_wall_pic"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="-28dp"
+        android:layout_marginBottom="-16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/avatar_bg"
-        android:padding="3dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/test_avatar"/>
+        android:src="@drawable/test_avatar"
+        app:corner_radius="6dp"/>
+
 
     <TextView
         android:id="@+id/host_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@id/friend_avatar"
+        android:layout_alignTop="@id/friend_avatar"
         android:layout_below="@id/friend_avatar"
-        android:layout_marginTop="30dp"
-        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_toLeftOf="@id/friend_avatar"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/normal_font"
+        android:textStyle="bold"
         tools:text="您的注册测试ID为: 5555"/>
 
     <RelativeLayout

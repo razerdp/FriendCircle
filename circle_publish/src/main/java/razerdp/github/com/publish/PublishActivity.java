@@ -39,10 +39,11 @@ import razerdp.github.com.ui.imageloader.ImageLoadMnanger;
 import razerdp.github.com.ui.util.SwitchActivityTransitionUtil;
 import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.ui.util.ViewUtil;
-import razerdp.github.com.ui.widget.common.TitleBar;
 import razerdp.github.com.ui.widget.imageview.PreviewImageView;
 import razerdp.github.com.ui.widget.popup.PopupProgress;
 import razerdp.github.com.ui.widget.popup.SelectPhotoMenuPopup;
+
+import static razerdp.github.com.ui.widget.common.TitleBar.TitleBarMode.MODE_BOTH;
 
 
 /**
@@ -164,7 +165,7 @@ public class PublishActivity extends BaseTitleBarActivity {
     private void initTitle() {
         setTitle(mode == RouterList.PublishActivity.MODE_TEXT ? "发表文字" : null);
         setTitleRightTextColor(mode != RouterList.PublishActivity.MODE_TEXT);
-        setTitleMode(TitleBar.MODE_BOTH);
+        setTitleMode(MODE_BOTH);
         setTitleLeftText("取消");
         setTitleLeftIcon(0);
         setTitleRightText("发送");

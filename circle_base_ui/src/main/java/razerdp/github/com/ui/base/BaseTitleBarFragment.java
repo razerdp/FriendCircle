@@ -85,19 +85,19 @@ public abstract class BaseTitleBarFragment extends BaseFragment {
 
     public void setTitle(int resId) {
         if (titleBar != null && resId != 0) {
-            titleBar.setTitle(resId);
+            titleBar.setTitleText(resId);
         }
     }
 
     public void setTitle(String title) {
         if (titleBar != null && !TextUtils.isEmpty(title)) {
-            titleBar.setTitle(title);
+            titleBar.setTitleText(title);
         }
     }
 
     public void setTitleMode(@TitleBar.TitleBarMode int mode) {
         if (titleBar != null) {
-            titleBar.setTitleBarMode(mode);
+            titleBar.setMode(mode);
         }
     }
 

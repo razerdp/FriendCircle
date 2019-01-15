@@ -9,6 +9,7 @@ import android.text.TextUtils;
 
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.razerdp.github.com.common.router.RouterList;
 import com.socks.library.KLog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -17,17 +18,18 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
+import razerdp.github.com.bus.EventSelectAlbum;
 import razerdp.github.com.lib.base.BaseFragment;
+import razerdp.github.com.lib.common.entity.ImageInfo;
 import razerdp.github.com.lib.manager.localphoto.LocalPhotoManager;
 import razerdp.github.com.lib.utils.ToolUtil;
-import razerdp.github.com.ui.util.SwitchActivityTransitionUtil;
-import razerdp.github.com.ui.base.BaseTitleBarActivity;
-import razerdp.github.com.ui.widget.common.TitleBar;
-import razerdp.github.com.bus.EventSelectAlbum;
-import razerdp.github.com.lib.common.entity.ImageInfo;
-import com.razerdp.github.com.common.router.RouterList;
 import razerdp.github.com.photoselect.fragment.PhotoAlbumFragement;
 import razerdp.github.com.photoselect.fragment.PhotoGridFragement;
+import razerdp.github.com.ui.base.BaseTitleBarActivity;
+import razerdp.github.com.ui.util.SwitchActivityTransitionUtil;
+
+import static razerdp.github.com.ui.widget.common.TitleBar.TitleBarMode.MODE_BOTH;
+import static razerdp.github.com.ui.widget.common.TitleBar.TitleBarMode.MODE_RIGHT;
 
 /**
  * Created by 大灯泡 on 2017/3/22.
@@ -55,7 +57,7 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
         if (!TextUtils.equals(getBarTitle(), event.getAlbumName())) {
             gridFragement.changeAlbum(event.getAlbumName());
         }
-        setTitleMode(TitleBar.MODE_BOTH);
+        setTitleMode(MODE_BOTH);
         setTitle(event.getAlbumName());
         changeFragment(currentFragment, gridFragement, true);
     }
@@ -80,7 +82,7 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
 
     private void initTitle() {
         setTitle(LocalPhotoManager.INSTANCE.getAllPhotoTitle());
-        setTitleMode(TitleBar.MODE_BOTH);
+        setTitleMode(MODE_BOTH);
         setTitleLeftText("相册");
         setTitleRightText("取消");
         setTitleRightIcon(0);
@@ -137,7 +139,7 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
 
     @Override
     public void onTitleLeftClick() {
-        setTitleMode(TitleBar.MODE_RIGHT);
+        setTitleMode(MODE_RIGHT);
         setTitle("相册");
         changeFragment(gridFragement, albumFragement, true);
     }
