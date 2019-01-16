@@ -4,9 +4,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
-import razerdp.github.com.lib.base.BaseActivity;
-import razerdp.github.com.lib.interfaces.MultiClickListener;
 import razerdp.github.com.baseuilib.R;
+import razerdp.github.com.lib.interfaces.MultiClickListener;
 import razerdp.github.com.ui.widget.common.TitleBar;
 import razerdp.github.com.ui.widget.common.TitleBar.OnTitleBarClickListener;
 
@@ -16,7 +15,7 @@ import razerdp.github.com.ui.widget.common.TitleBar.OnTitleBarClickListener;
  * 拥有titlebar的act基类
  */
 
-public abstract class BaseTitleBarActivity extends BaseActivity {
+public abstract class BaseTitleBarActivity extends BaseStatusControlActivity {
     protected TitleBar titleBar;
 
     @Override
@@ -166,10 +165,13 @@ public abstract class BaseTitleBarActivity extends BaseActivity {
 
     public void setTitleBarBackground(int color) {
         if (titleBar != null) {
-            titleBar.setTitleBarBackground(color);
+            titleBar.setTitleBarBackgroundColor(color);
         }
     }
 
+    public TitleBar getTitleBar() {
+        return titleBar;
+    }
 
     public String getBarTitle() {
         if (titleBar != null) {

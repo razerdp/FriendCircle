@@ -22,5 +22,6 @@
         <attr name="left_text_size" format="dimension"/>
         <attr name="right_text_size" format="dimension"/>
         <attr name="right_btn_padding" format="dimension"/>
+        <attr name="dark_mode" format="boolean"/>
     </declare-styleable>
 </resources>

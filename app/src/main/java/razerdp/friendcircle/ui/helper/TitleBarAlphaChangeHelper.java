@@ -1,9 +1,14 @@
 package razerdp.friendcircle.ui.helper;
 
 import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import razerdp.friendcircle.R;
+import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.ui.widget.common.TitleBar;
 
 /**
@@ -12,30 +17,48 @@ import razerdp.github.com.ui.widget.common.TitleBar;
  * titlebar alpha 变化帮助类
  */
 public class TitleBarAlphaChangeHelper {
+    private static final String TAG = "TitleBarAlphaChangeHelp";
 
     private TitleBar mTitleBar;
-    private View which;
+    private View scrolledTarget;
+    private View target;
     private int scrolledAlphaCriticalOffset;
     private int fullAlphaBackgroundColor = Color.parseColor("#EBE9E6");
+    private int[] fullAlphaBackgroundColorSplit = new int[4];
+    private final int statusBarHeight;
+    private int defaultTitleBarColor;
+    private OnTitleBarAlphaColorChangeListener mAlphaColorChangeListener;
 
-    private TitleBarAlphaChangeHelper(TitleBar titleBar, View which) {
+    private TitleBarAlphaChangeHelper(TitleBar titleBar, View scrolledTarget, View target, OnTitleBarAlphaColorChangeListener mListener) {
         this.mTitleBar = titleBar;
-        this.which = which;
+        this.scrolledTarget = scrolledTarget;
+        this.target = target;
+        this.statusBarHeight = UIHelper.getStatusBarHeight(titleBar.getContext());
+        this.mAlphaColorChangeListener = mListener;
+        this.defaultTitleBarColor = mTitleBar.getTitleBarBackgroundColor();
+        setFullAlphaBackgroundColor(fullAlphaBackgroundColor);
         check();
-        handleInternal();
     }
 
-    public static TitleBarAlphaChangeHelper handle(TitleBar titleBar, View which) {
-        return new TitleBarAlphaChangeHelper(titleBar, which);
+    public static TitleBarAlphaChangeHelper handle(TitleBar titleBar, View scrolledTarget, View target) {
+        return new TitleBarAlphaChangeHelper(titleBar, scrolledTarget, target, null);
+    }
+
+    public static TitleBarAlphaChangeHelper handle(TitleBar titleBar, View scrolledTarget, View target, OnTitleBarAlphaColorChangeListener listener) {
+        return new TitleBarAlphaChangeHelper(titleBar, scrolledTarget, target, listener);
     }
 
     private void check() {
-        if (mTitleBar == null || which == null) return;
-        which.post(new Runnable() {
+        if (mTitleBar == null || scrolledTarget == null) return;
+        scrolledTarget.post(new Runnable() {
             @Override
             public void run() {
                 if (scrolledAlphaCriticalOffset == 0) {
-                    scrolledAlphaCriticalOffset = Math.abs(which.getTop() - mTitleBar.getBottom());
+                    int[] location = new int[2];
+                    target.getLocationOnScreen(location);
+                    int[] titleBarLocation = new int[2];
+                    mTitleBar.getLocationOnScreen(titleBarLocation);
+                    scrolledAlphaCriticalOffset = Math.abs(location[1] - (titleBarLocation[1] + mTitleBar.getHeight()));
                 }
                 handleInternal();
             }
@@ -43,17 +66,103 @@ public class TitleBarAlphaChangeHelper {
     }
 
     private void handleInternal() {
-        which.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                int scrollY = which.getScrollY();
-                if (scrollY > 0) {
-                    float alpha = Math.min((float) scrollY / scrolledAlphaCriticalOffset, 1f);
+        if (scrolledTarget instanceof RecyclerView) {
+            ((RecyclerView) scrolledTarget).addOnScrollListener(new RecyclerView.OnScrollListener() {
+                int totalScrollY;
 
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    totalScrollY += dy;
+                    Log.d(TAG, "RecyclerView: " + dy);
+                    TitleBarAlphaChangeHelper.this.onScrolled(totalScrollY, dy > 0 ? -1 : 1);
                 }
+            });
+        } else {
+            scrolledTarget.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                int lastScrollY = 0;
 
-
-            }
-        });
+                @Override
+                public void onScrollChanged() {
+                    int scrollY = scrolledTarget.getScrollY();
+                    onScrolled(scrollY, scrollY - lastScrollY > 0 ? -1 : 1);
+                    lastScrollY = scrollY;
+                }
+            });
+        }
     }
+
+    private void onScrolled(int scrollY, int direction) {
+        if (scrollY >= 0) {
+            float alpha;
+            int titleBarHeight = mTitleBar.getHeight();
+            //第二临界值：statusbar底部
+            int scrolledAlphaCriticalOffset2 = scrolledAlphaCriticalOffset + titleBarHeight;
+            int effectRange = scrolledAlphaCriticalOffset2 + statusBarHeight;
+            //到达临界值
+            if (scrollY >= scrolledAlphaCriticalOffset) {
+                if (scrollY - scrolledAlphaCriticalOffset > effectRange) return;
+                int offsetY;
+                //到达状态栏的临界值
+                if (scrollY >= scrolledAlphaCriticalOffset2) {
+                    offsetY = scrollY - scrolledAlphaCriticalOffset2;
+                    alpha = Math.min((float) offsetY / statusBarHeight, 1f);
+                    mTitleBar.setLeftIcon(R.drawable.back_left_black);
+                    mTitleBar.setRightIcon(R.drawable.ic_camera_black);
+                    mTitleBar.getLeftIconView().setAlpha(alpha);
+                    mTitleBar.getRightIconView().setAlpha(alpha);
+                    mTitleBar.getLeftTextView().setAlpha(alpha);
+                    int color = Color.argb(alphaRatioToInt(alpha),
+                            fullAlphaBackgroundColorSplit[1],
+                            fullAlphaBackgroundColorSplit[2],
+                            fullAlphaBackgroundColorSplit[3]);
+                    mTitleBar.setTitleBarBackgroundColor(color);
+                    if (mAlphaColorChangeListener != null) {
+                        mAlphaColorChangeListener.onChange(alpha, color);
+                    }
+                } else {
+                    mTitleBar.setLeftIcon(R.drawable.back_left);
+                    mTitleBar.setRightIcon(R.drawable.ic_camera);
+                    //如果没到statusbar的底部，图标渐隐，到达后更改
+                    offsetY = scrollY - scrolledAlphaCriticalOffset;
+                    alpha = Math.max(1f - (float) offsetY / titleBarHeight, 0f);
+                    mTitleBar.getLeftIconView().setAlpha(alpha);
+                    mTitleBar.getRightIconView().setAlpha(alpha);
+                }
+            } else {
+                alpha = 1f;
+                mTitleBar.setLeftIcon(R.drawable.back_left);
+                mTitleBar.setRightIcon(R.drawable.ic_camera);
+                mTitleBar.getLeftIconView().setAlpha(alpha);
+                mTitleBar.getRightIconView().setAlpha(alpha);
+                mTitleBar.getLeftTextView().setAlpha(0f);
+                mTitleBar.setTitleBarBackgroundColor(Color.TRANSPARENT);
+                if (mAlphaColorChangeListener != null) {
+                    mAlphaColorChangeListener.onChange(alpha, defaultTitleBarColor);
+                }
+            }
+        }
+    }
+
+    public int getFullAlphaBackgroundColor() {
+        return fullAlphaBackgroundColor;
+    }
+
+    public TitleBarAlphaChangeHelper setFullAlphaBackgroundColor(int fullAlphaBackgroundColor) {
+        this.fullAlphaBackgroundColor = fullAlphaBackgroundColor;
+        fullAlphaBackgroundColorSplit[0] = Color.alpha(fullAlphaBackgroundColor);
+        fullAlphaBackgroundColorSplit[1] = Color.red(fullAlphaBackgroundColor);
+        fullAlphaBackgroundColorSplit[2] = Color.green(fullAlphaBackgroundColor);
+        fullAlphaBackgroundColorSplit[3] = Color.blue(fullAlphaBackgroundColor);
+        return this;
+    }
+
+    private int alphaRatioToInt(float alpha) {
+        return (int) (alpha * 255.0f + 0.5f);
+    }
+
+
+    public interface OnTitleBarAlphaColorChangeListener {
+        void onChange(float alpha, int color);
+    }
+
 }

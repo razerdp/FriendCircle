@@ -27,10 +27,8 @@ public enum UpdateInfoManager {
     private BasePopupWindow.OnDismissListener mOnDismissListener;
 
 
-    final String title = "开发日志(2019/1/15)";
-    final String content = "  * UI按照新的朋友圈修改\n" +
-            "  * 修改下拉刷新的icon逻辑，去掉ViewOffsetHelper\n" +
-            "  * 按计划恢复功能";
+    final String title = "开发日志(2019/1/16)";
+    final String content = "  * 沉浸式完成，titlebar渐变完成";
 
 
     public void init(Activity act, BasePopupWindow.OnDismissListener l) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout android:id="@+id/title_bar_root"
+              xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/title_bar_root"
               android:layout_width="match_parent"
               android:layout_height="50dp"
               android:orientation="horizontal"
@@ -12,7 +12,7 @@
         android:id="@id/ll_title_bar_left"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="3"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         >
@@ -41,7 +41,7 @@
         android:id="@id/tx_title"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="6"
+        android:layout_weight="4"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
@@ -49,14 +49,13 @@
         android:paddingRight="8dp"
         android:textColor="@android:color/white"
         android:textSize="18sp"
-        android:textStyle="bold"
         tools:text="朋友圈"/>
 
     <LinearLayout
         android:id="@id/ll_title_bar_right"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="3"
         android:gravity="center_vertical|right"
         android:orientation="horizontal"
         >
@@ -77,7 +76,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
-            android:src="@drawable/ic_camera"/>
+            android:src="@drawable/ic_camera"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

@@ -1,9 +1,9 @@
 # 更新日志
 
-* 2019/01/15
-  * UI按照新的朋友圈修改
-  * 修改下拉刷新的icon逻辑，去掉ViewOffsetHelper
-  * 按计划恢复功能
+* 2019/01/16
+  * 沉浸式完成，titlebar渐变完成
+  * 效果图：
+  * ![](https://github.com/razerdp/Pics/blob/master/FirendCircle/demo.gif)
 
 * 2018/9/27
   * fixed #79

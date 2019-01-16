@@ -57,6 +57,7 @@ public abstract class BaseFragment extends Fragment implements IPermission {
             onPreInitView(rootView);
             onInitData();
             onInitView(rootView);
+            afterInitView();
             return rootView;
         } else {
             return super.onCreateView(inflater, container, savedInstanceState);
@@ -108,6 +109,9 @@ public abstract class BaseFragment extends Fragment implements IPermission {
     protected abstract void onInitData();
 
     protected abstract void onInitView(View rootView);
+
+    protected void afterInitView() {
+    }
 
     protected void onVisibleChange(boolean isVisibleToUser) {
     }

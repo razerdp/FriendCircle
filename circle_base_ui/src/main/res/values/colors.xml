@@ -5,10 +5,10 @@
     <color name="colorPrimaryDark">#232426</color>
     <color name="colorAccent">#10d21c</color>
 
-    <!--刷新头头-->
     <color name="ptr_header_bg">#323232</color>
-    <color name="action_bar_bg">#232426</color>
+    <color name="action_bar_bg">#B3EBE9E6</color>
     <color name="stroke_bg">#2b2b2b</color>
+    <color name="title_bar_dark">#040404</color>
 
     <!--刷新尾部-->
     <color name="ptr_footer_tx">#8e8e8e</color>

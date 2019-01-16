@@ -3,7 +3,7 @@ FriendCircle
 
 ### 一起来撸个朋友圈吧(重构版)
 
-[**apk下载**](http://bmob-cdn-14711.b0.upaiyun.com/2019/01/15/cb352cce405aa87b80b76086c72d15d7.apk)
+[**apk下载**](http://bmob-cdn-14711.b0.upaiyun.com/2019/01/16/52c9f15740dc9d9e805844c9e62b2702.apk)
 
 
 欢迎来到本项目，这个项目是一个尝试性项目，目的在于从无到有撸出一个微信朋友圈。</br>
@@ -26,6 +26,11 @@ FriendCircle
 
 【简略更新日志】
 ---
+
+* 2019/01/16
+  * 沉浸式完成，titlebar渐变完成
+  * 效果图：
+  * ![](https://github.com/razerdp/Pics/blob/master/FirendCircle/demo.gif)
 
 * 2019/01/15
   * UI按照新的朋友圈修改

@@ -3,9 +3,7 @@
              android:id="@+id/root_container"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:background="@color/transparent"
-             android:fitsSystemWindows="true"
-    >
+             android:background="@color/transparent">
 
     <View
         android:id="@+id/v_background"

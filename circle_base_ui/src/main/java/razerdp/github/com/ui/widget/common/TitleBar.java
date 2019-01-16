@@ -58,6 +58,8 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
     protected int leftTextSize;
     protected int rightTextSize;
     private int rightBtnPadding;
+    private int rootBackgroundColor;
+    private boolean darkMode;
 
     private LinearLayout ll_left;
     private ImageView iv_left;
@@ -106,6 +108,7 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
         currentMode = a.getInt(R.styleable.TitleBar_mode, MODE_LEFT);
         mainTextSize = a.getDimensionPixelSize(R.styleable.TitleBar_title_text_size, 18);
         mainTextColor = a.getColor(R.styleable.TitleBar_title_text_color, Color.WHITE);
+        darkMode = a.getBoolean(R.styleable.TitleBar_dark_mode, true);
 
         leftTextSize = a.getDimensionPixelSize(R.styleable.TitleBar_left_text_size, 16);
         leftTextColor = a.getColor(R.styleable.TitleBar_left_text_color, Color.WHITE);
@@ -115,6 +118,17 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
         rightBtnPadding = a.getDimensionPixelSize(R.styleable.TitleBar_right_btn_padding, 0);
 
         mainText = a.getString(R.styleable.TitleBar_title_text);
+        if (!isTransparent) {
+            if (darkMode) {
+                leftIcon = leftIcon == R.drawable.back_left ? R.drawable.back_left_black : leftIcon;
+                leftTextColor = leftTextColor == Color.WHITE ? getResources().getColor(R.color.title_bar_dark) : leftTextColor;
+                mainTextColor = mainTextColor == Color.WHITE ? getResources().getColor(R.color.title_bar_dark) : mainTextColor;
+                rightTextColor = rightTextColor == Color.WHITE ? getResources().getColor(R.color.title_bar_dark) : rightTextColor;
+                if (background == null) {
+                    setBackgroundColor(getResources().getColor(R.color.action_bar_bg));
+                }
+            }
+        }
         a.recycle();
     }
 
@@ -187,16 +201,16 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
                 break;
             case MODE_LEFT:
                 ViewUtil.setViewsVisible(VISIBLE, ll_left);
-                ViewUtil.setViewsVisible(GONE, ll_right);
+                ViewUtil.setViewsVisible(INVISIBLE, ll_right);
                 break;
             case MODE_RIGHT:
                 ViewUtil.setViewsVisible(VISIBLE, ll_right);
-                ViewUtil.setViewsVisible(GONE, ll_left);
+                ViewUtil.setViewsVisible(INVISIBLE, ll_left);
                 break;
             default:
                 //都不匹配则按照left模式设置
                 ViewUtil.setViewsVisible(VISIBLE, ll_left);
-                ViewUtil.setViewsVisible(GONE, ll_right);
+                ViewUtil.setViewsVisible(INVISIBLE, ll_right);
                 break;
         }
     }
@@ -212,16 +226,20 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
         }
         isTransparent = transparent;
         if (isTransparent) {
-            root.setBackgroundColor(Color.TRANSPARENT);
+            setTitleBarBackgroundColor(Color.TRANSPARENT);
         } else {
-            root.setBackgroundColor(UIHelper.getColor(R.color.action_bar_bg));
+            setTitleBarBackgroundColor(UIHelper.getColor(R.color.action_bar_bg));
         }
     }
 
-    public void setTitleBarBackground(int color) {
-        if (color != -1) {
-            this.setBackgroundColor(color);
-        }
+    public int getTitleBarBackgroundColor() {
+        return rootBackgroundColor;
+    }
+
+    public void setTitleBarBackgroundColor(int color) {
+        if (rootBackgroundColor == color) return;
+        rootBackgroundColor = color;
+        root.setBackgroundColor(color);
     }
 
     public TextView getTitleView() {
@@ -252,6 +270,7 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
         try {
             iv_left.setImageResource(resid);
             setShowLeftIcon(resid != 0);
+            leftIcon = resid;
         } catch (Exception e) {
             KLog.e(e);
         }
@@ -261,6 +280,7 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
         try {
             iv_right.setImageResource(resid);
             setShowRightIcon(resid != 0);
+            rightIcon = resid;
         } catch (Exception e) {
             KLog.e(e);
         }
@@ -278,6 +298,9 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
             tx_left.setVisibility(GONE);
         } else {
             tx_left.setText(leftText);
+            if (tx_left.getVisibility() != VISIBLE) {
+                tx_left.setVisibility(VISIBLE);
+            }
         }
     }
 
@@ -388,6 +411,34 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, View.
             }
         }
         return false;
+    }
+
+    public LinearLayout getLeftLayout() {
+        return ll_left;
+    }
+
+    public ImageView getLeftIconView() {
+        return iv_left;
+    }
+
+    public TextView getLeftTextView() {
+        return tx_left;
+    }
+
+    public LinearLayout getRightLayout() {
+        return ll_right;
+    }
+
+    public ImageView getRightIconView() {
+        return iv_right;
+    }
+
+    public TextView getRightTextView() {
+        return tx_right;
+    }
+
+    public TextView getTitleText() {
+        return title;
     }
 
     private OnTitleBarClickListener onTitleBarClickListener;

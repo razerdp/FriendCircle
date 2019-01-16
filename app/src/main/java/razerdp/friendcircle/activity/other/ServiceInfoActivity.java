@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.razerdp.github.com.common.entity.PhotoBrowseInfo;
 import com.razerdp.github.com.common.entity.other.ServiceInfo;
@@ -20,6 +19,7 @@ import java.util.List;
 import razerdp.friendcircle.R;
 import razerdp.friendcircle.activity.ActivityLauncher;
 import razerdp.github.com.ui.base.BaseTitleBarActivity;
+import razerdp.github.com.ui.util.UIHelper;
 import razerdp.github.com.ui.widget.commentwidget.ExTextView;
 
 /**
@@ -46,6 +46,17 @@ public class ServiceInfoActivity extends BaseTitleBarActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service);
         initView();
+        setStatusBarColor(UIHelper.getColor(R.color.action_bar_bg));
+    }
+
+    @Override
+    protected boolean isTranslucentStatus() {
+        return true;
+    }
+
+    @Override
+    protected boolean isFitsSystemWindows() {
+        return true;
     }
 
     private void initView() {

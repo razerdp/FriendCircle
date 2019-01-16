@@ -55,4 +55,7 @@
             <enum name="phone" value="1"/>
         </attr>
     </declare-styleable>
+    <declare-styleable name="StatusBarViewPlaceHolder">
+        <attr name="android:background"/>
+    </declare-styleable>
 </resources>

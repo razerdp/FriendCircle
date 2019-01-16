@@ -9,4 +9,5 @@
     <item name="ll_title_bar_right" type="id"/>
     <item name="tx_title_bar_right" type="id"/>
     <item name="ic_title_bar_right" type="id"/>
+    <item name="statusbar_placeholder" type="id"/>
 </resources>

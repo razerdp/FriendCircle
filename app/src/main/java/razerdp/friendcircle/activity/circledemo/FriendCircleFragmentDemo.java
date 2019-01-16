@@ -3,6 +3,7 @@ package razerdp.friendcircle.activity.circledemo;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -11,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.razerdp.github.com.common.MomentsType;
@@ -41,6 +41,7 @@ import razerdp.friendcircle.app.manager.UpdateInfoManager;
 import razerdp.friendcircle.app.mvp.presenter.impl.MomentPresenter;
 import razerdp.friendcircle.app.mvp.view.IMomentView;
 import razerdp.friendcircle.ui.adapter.CircleMomentsAdapter;
+import razerdp.friendcircle.ui.helper.TitleBarAlphaChangeHelper;
 import razerdp.friendcircle.ui.viewholder.EmptyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.MultiImageMomentsVH;
 import razerdp.friendcircle.ui.viewholder.TextOnlyMomentsVH;
@@ -75,7 +76,7 @@ public class FriendCircleFragmentDemo extends BaseTitleBarFragment implements On
 
 
     private int clickServiceCount = 0;
-    private RelativeLayout mTipsLayout;
+    private View mTipsLayout;
     private TextView mServiceTipsView;
     private ImageView mCloseImageView;
 
@@ -120,6 +121,9 @@ public class FriendCircleFragmentDemo extends BaseTitleBarFragment implements On
         if (mViewHelper == null) {
             mViewHelper = new CircleViewHelper(getActivity());
         }
+        getTitleBar().getLeftTextView().setAlpha(0f);
+        getTitleBar().setLeftText("朋友圈");
+        setLeftTextColor(Color.parseColor("#040404"));
         setTitleMode(MODE_BOTH);
         setTitleRightIcon(R.drawable.ic_camera);
         setTitleLeftIcon(R.drawable.back_left);
@@ -145,7 +149,26 @@ public class FriendCircleFragmentDemo extends BaseTitleBarFragment implements On
                 .addViewHolder(WebMomentsVH.class, MomentsType.WEB);
         circleRecyclerView.setAdapter(adapter);
         circleRecyclerView.autoRefresh();
+        TitleBarAlphaChangeHelper.handle(getTitleBar(),
+                circleRecyclerView.getRecyclerView(),
+                hostViewHolder.friend_avatar,
+                new TitleBarAlphaChangeHelper.OnTitleBarAlphaColorChangeListener() {
+                    @Override
+                    public void onChange(float alpha, int color) {
+                        setStatusBarDark(alpha > 1);
+                        setStatusBarHolderBackgroundColor(color);
+                    }
+                });
+    }
 
+    @Override
+    protected boolean isTranslucentStatus() {
+        return true;
+    }
+
+    @Override
+    protected boolean isFitsSystemWindows() {
+        return false;
     }
 
     private void initKeyboardHeightObserver() {
@@ -372,9 +395,10 @@ public class FriendCircleFragmentDemo extends BaseTitleBarFragment implements On
                             applyClose();
                         }
                     });
+                    mTipsLayout.setTranslationY(UIHelper.dipToPx(50));
                     mTipsLayout.animate()
-                            .alpha(1)
-                            .translationY(UIHelper.dipToPx(50))
+                            .alpha(1f)
+                            .translationY(0)
                             .setDuration(800)
                             .setInterpolator(new DecelerateInterpolator())
                             .setListener(new AnimUtils.SimpleAnimatorListener() {
@@ -455,7 +479,7 @@ public class FriendCircleFragmentDemo extends BaseTitleBarFragment implements On
             if (hostInfo == null) return;
             ImageLoadMnanger.INSTANCE.loadImage(friend_wall_pic, hostInfo.getCover());
             ImageLoadMnanger.INSTANCE.loadImage(friend_avatar, hostInfo.getAvatar());
-            hostid.setText(String.format("您的测试ID为: %s\n您的测试用户名为: %s", hostInfo.getUserid(), hostInfo.getNick()));
+            hostid.setText(hostInfo.getNick());
         }
 
         public View getView() {

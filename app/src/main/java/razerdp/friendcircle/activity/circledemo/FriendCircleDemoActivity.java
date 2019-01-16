@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -43,6 +44,7 @@ import razerdp.friendcircle.app.mvp.model.UpdateInfo;
 import razerdp.friendcircle.app.mvp.presenter.impl.MomentPresenter;
 import razerdp.friendcircle.app.mvp.view.IMomentView;
 import razerdp.friendcircle.ui.adapter.CircleMomentsAdapter;
+import razerdp.friendcircle.ui.helper.TitleBarAlphaChangeHelper;
 import razerdp.friendcircle.ui.viewholder.EmptyMomentsVH;
 import razerdp.friendcircle.ui.viewholder.MultiImageMomentsVH;
 import razerdp.friendcircle.ui.viewholder.TextOnlyMomentsVH;
@@ -138,6 +140,9 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         if (mViewHelper == null) {
             mViewHelper = new CircleViewHelper(this);
         }
+        getTitleBar().getLeftTextView().setAlpha(0f);
+        getTitleBar().setLeftText("朋友圈");
+        setLeftTextColor(Color.parseColor("#040404"));
         setTitleMode(TitleBar.TitleBarMode.MODE_BOTH);
         setTitleRightIcon(R.drawable.ic_camera);
         setTitleLeftIcon(R.drawable.back_left);
@@ -167,6 +172,17 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         circleRecyclerView.setAdapter(adapter);
         circleRecyclerView.autoRefresh();
 
+        TitleBarAlphaChangeHelper.handle(getTitleBar(),
+                circleRecyclerView.getRecyclerView(),
+                hostViewHolder.friend_avatar,
+                new TitleBarAlphaChangeHelper.OnTitleBarAlphaColorChangeListener() {
+                    @Override
+                    public void onChange(float alpha, int color) {
+                        setStatusBarDark(alpha > 1);
+                        setStatusBarHolderBackgroundColor(color);
+                    }
+                });
+
     }
 
     private void initKeyboardHeightObserver() {
@@ -189,6 +205,15 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
         });
     }
 
+    @Override
+    protected boolean isTranslucentStatus() {
+        return true;
+    }
+
+    @Override
+    protected boolean isFitsSystemWindows() {
+        return false;
+    }
 
     @Override
     public void onRefresh() {
