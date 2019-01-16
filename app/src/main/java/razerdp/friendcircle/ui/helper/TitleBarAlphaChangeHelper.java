@@ -28,6 +28,7 @@ public class TitleBarAlphaChangeHelper {
     private final int statusBarHeight;
     private int defaultTitleBarColor;
     private OnTitleBarAlphaColorChangeListener mAlphaColorChangeListener;
+    float alphaEffectRangePlusRatio = 2.0f;
 
     private TitleBarAlphaChangeHelper(TitleBar titleBar, View scrolledTarget, View target, OnTitleBarAlphaColorChangeListener mListener) {
         this.mTitleBar = titleBar;
@@ -97,7 +98,7 @@ public class TitleBarAlphaChangeHelper {
             int titleBarHeight = mTitleBar.getHeight();
             //第二临界值：statusbar底部
             int scrolledAlphaCriticalOffset2 = scrolledAlphaCriticalOffset + titleBarHeight;
-            int effectRange = scrolledAlphaCriticalOffset2 + statusBarHeight;
+            int effectRange = (int) (scrolledAlphaCriticalOffset2 + statusBarHeight * alphaEffectRangePlusRatio);
             //到达临界值
             if (scrollY >= scrolledAlphaCriticalOffset) {
                 if (scrollY - scrolledAlphaCriticalOffset > effectRange) return;
@@ -105,7 +106,7 @@ public class TitleBarAlphaChangeHelper {
                 //到达状态栏的临界值
                 if (scrollY >= scrolledAlphaCriticalOffset2) {
                     offsetY = scrollY - scrolledAlphaCriticalOffset2;
-                    alpha = Math.min((float) offsetY / statusBarHeight, 1f);
+                    alpha = Math.min((float) offsetY / (statusBarHeight * alphaEffectRangePlusRatio), 1f);
                     mTitleBar.setLeftIcon(R.drawable.back_left_black);
                     mTitleBar.setRightIcon(R.drawable.ic_camera_black);
                     mTitleBar.getLeftIconView().setAlpha(alpha);
