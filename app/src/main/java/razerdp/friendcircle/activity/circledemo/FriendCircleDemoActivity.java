@@ -195,9 +195,11 @@ public class FriendCircleDemoActivity extends BaseTitleBarActivity implements On
                 int commentType = commentBox.getCommentType();
                 if (isVisible) {
                     //定位评论框到view
+                    commentBox.setTranslationY(-keyboardHeight + UIHelper.getStatusBarHeight(FriendCircleDemoActivity.this));
                     anchorView = mViewHelper.alignCommentBoxToView(circleRecyclerView, commentBox, commentType);
                 } else {
                     //定位到底部
+                    commentBox.setTranslationY(0);
                     commentBox.dismissCommentBox(false);
                     mViewHelper.alignCommentBoxToViewWhenDismiss(circleRecyclerView, commentBox, commentType, anchorView);
                 }
