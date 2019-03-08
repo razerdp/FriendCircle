@@ -42,13 +42,13 @@ dependencies {
     api rootProject.ext.dependencies.design
     api rootProject.ext.dependencies.support_util
 
-    api 'com.github.razerdp:BasePopup_Candy:2.1.9-beta'
+    api 'com.github.razerdp:BasePopup:2.1.9'
     //over scroller helper
     api 'me.everything:overscroll-decor-android:1.0.4'
     //bmob
     api 'cn.bmob.android:bmob-sdk:3.6.8-rc2'
     //gson
-    api 'com.google.code.gson:gson:2.8.2'
+    api 'com.google.code.gson:gson:2.8.5'
     // rx
     api 'io.reactivex.rxjava2:rxandroid:2.0.2'
     api 'io.reactivex.rxjava2:rxjava:2.1.14-RC1'
@@ -63,9 +63,9 @@ dependencies {
         exclude group: 'com.google.code.gson'
     }
     //glide
-    api 'com.github.bumptech.glide:glide:4.7.1'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
-    api('com.github.bumptech.glide:okhttp3-integration:4.6.1') {
+    api 'com.github.bumptech.glide:glide:4.9.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+    api('com.github.bumptech.glide:okhttp3-integration:4.9.0') {
         exclude group: 'glide-parent'
         exclude group: 'com.squareup.okio'
     }
