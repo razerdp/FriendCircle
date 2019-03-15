@@ -28,6 +28,7 @@ import java.util.List;
 import razerdp.github.com.lib.api.AppContext;
 import razerdp.github.com.lib.utils.StringUtil;
 import razerdp.github.com.ui.util.UIHelper;
+import razerdp.github.com.ui.widget.span.CustomImageSpan;
 
 /**
  * Created by 大灯泡 on 2017/12/21.
@@ -35,6 +36,7 @@ import razerdp.github.com.ui.util.UIHelper;
  * 多span样式util
  */
 public class MultiSpanUtil {
+
     private MultiSpanUtil() {
     }
 
@@ -168,6 +170,14 @@ public class MultiSpanUtil {
                 spanBuilder.setSpan(new AlignmentSpan.Standard(option.getTextGravity()), index, index + keyWord.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
 
+            if (option.getDrawableId() != 0) {
+                try {
+                    CustomImageSpan imageSpan = new CustomImageSpan(AppContext.getResources().getDrawable(option.getDrawableId()));
+                    spanBuilder.setSpan(imageSpan, index, index + keyWord.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -230,6 +240,7 @@ public class MultiSpanUtil {
         private int urlColor = -1;
         private int bgColor = -1;
         private Layout.Alignment textGravity = null;
+        private int drawableId = 0;
 
         public ItemOption(CharSequence keyWord, MultiSpanOption option) {
             super(keyWord, option);
@@ -323,6 +334,15 @@ public class MultiSpanUtil {
 
         public ItemOption setTextGravity(Layout.Alignment textGravity) {
             this.textGravity = textGravity;
+            return this;
+        }
+
+        public int getDrawableId() {
+            return drawableId;
+        }
+
+        public ItemOption image(int drawableId) {
+            this.drawableId = drawableId;
             return this;
         }
     }

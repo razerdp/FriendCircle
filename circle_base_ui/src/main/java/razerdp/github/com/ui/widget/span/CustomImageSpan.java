@@ -15,19 +15,42 @@ import android.text.style.ImageSpan;
  */
 public class CustomImageSpan extends ImageSpan {
 
+    private boolean aequilate = true;
+    private Rect mRect = new Rect();
+
     public CustomImageSpan(Drawable drawable) {
         super(drawable);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight());
     }
-    public CustomImageSpan(Context context, int resID){
-        super(context,resID, ALIGN_BASELINE);
+
+    public CustomImageSpan(Context context, int resID) {
+        super(context, resID, ALIGN_BASELINE);
+    }
+
+    public boolean isAequilate() {
+        return aequilate;
+    }
+
+    public CustomImageSpan setAequilate(boolean aequilate) {
+        this.aequilate = aequilate;
+        return this;
     }
 
     public int getSize(Paint paint, CharSequence text, int start, int end,
                        Paint.FontMetricsInt fontMetricsInt) {
         Drawable drawable = getDrawable();
+        if (mRect.isEmpty()) {
+            mRect.set(drawable.getBounds());
+        }
         Rect rect = drawable.getBounds();
         if (fontMetricsInt != null) {
             Paint.FontMetricsInt fmPaint = paint.getFontMetricsInt();
+            if (aequilate) {
+                float scale = (float) (Math.abs(fontMetricsInt.ascent) + Math.abs(fontMetricsInt.descent)) / mRect.height();
+                drawable.setBounds(0, 0, (int) (mRect.width() * scale), (int) (mRect.height() * scale));
+                rect = drawable.getBounds();
+            }
             int fontHeight = fmPaint.bottom - fmPaint.top;
             int drHeight = rect.bottom - rect.top;
 
