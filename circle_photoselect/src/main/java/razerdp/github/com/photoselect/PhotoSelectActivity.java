@@ -45,6 +45,9 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
     @Autowired(name = RouterList.PhotoSelectActivity.key_maxSelectCount)
     int maxCount;
 
+    @Autowired(name = RouterList.PhotoSelectActivity.key_photoList)
+    ArrayList<ImageInfo> selectedPhotos;
+
     private PhotoGridFragement gridFragement;
     private PhotoAlbumFragement albumFragement;
 
@@ -91,7 +94,7 @@ public class PhotoSelectActivity extends BaseTitleBarActivity {
     private void initFrag() {
         if (gridFragement == null) {
             KLog.i(TAG, "maxCount = " + maxCount);
-            gridFragement = PhotoGridFragement.newInstance(maxCount);
+            gridFragement = PhotoGridFragement.newInstance(maxCount, selectedPhotos);
         }
         if (albumFragement == null) {
             albumFragement = new PhotoAlbumFragement();

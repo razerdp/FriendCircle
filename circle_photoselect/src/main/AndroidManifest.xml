@@ -16,9 +16,7 @@
         <activity
             android:name=".PhotoMultiBrowserActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
-            android:screenOrientation="portrait"
             android:theme="@style/FullScreen"
-
             />
     </application>
 

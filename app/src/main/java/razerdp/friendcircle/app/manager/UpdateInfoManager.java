@@ -27,8 +27,10 @@ public enum UpdateInfoManager {
     private BasePopupWindow.OnDismissListener mOnDismissListener;
 
 
-    final String title = "开发日志(2019/2/26)";
-    final String content = "  * 修复评论对齐问题";
+    final String title = "开发日志(2019/4/2)";
+    final String content = "  * 修复评论对齐问题" + "\n"
+            + "  * 修复8.0或以上系统浏览大图崩溃的问题" + "\n"
+            + "  * 优化选图操作";
 
 
     public void init(Activity act, BasePopupWindow.OnDismissListener l) {

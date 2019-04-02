@@ -181,7 +181,7 @@ public class FriendCircleFragmentDemo extends BaseTitleBarFragment implements On
                 int commentType = commentBox.getCommentType();
                 if (isVisible) {
                     //定位评论框到view
-                    commentBox.setTranslationY(-keyboardHeight + UIHelper.getStatusBarHeight(getContext()));
+                    commentBox.setTranslationY(-keyboardHeight + commentBox.getHeight() + UIHelper.getStatusBarHeight(getContext()));
                     anchorView = mViewHelper.alignCommentBoxToView(circleRecyclerView, commentBox, commentType);
                 } else {
                     //定位到底部

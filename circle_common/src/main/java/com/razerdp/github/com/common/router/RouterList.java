@@ -33,6 +33,7 @@ public interface RouterList {
     @Retention(RetentionPolicy.SOURCE)
     @interface PhotoSelectActivity {
         String path = "/photo/select";
+        String key_photoList = "photoList";
         String key_maxSelectCount = "maxSelectCount";
         String key_result = "selectedphoto";
         int requestCode = 0x22;

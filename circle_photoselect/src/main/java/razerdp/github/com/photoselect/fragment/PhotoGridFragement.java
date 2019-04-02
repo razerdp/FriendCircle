@@ -18,6 +18,7 @@ import com.razerdp.github.com.common.entity.photo.PhotoBrowserInfo;
 import com.razerdp.github.com.common.router.RouterList;
 import com.socks.library.KLog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import razerdp.github.com.adapter.PhotoSelectAdapter;
@@ -49,10 +50,13 @@ public class PhotoGridFragement extends BaseFragment {
     private String currentAlbumName;
     public static final int MAX_COUNT = 9;
     private int maxCount = MAX_COUNT;
+    private ArrayList<ImageInfo> mSelectedPhotos;
 
-    public static PhotoGridFragement newInstance(int maxCount) {
+
+    public static PhotoGridFragement newInstance(int maxCount, ArrayList<ImageInfo> mSelectedPhotos) {
         Bundle args = new Bundle();
         args.putInt("maxCount", (maxCount <= 0 || maxCount > 9) ? MAX_COUNT : maxCount);
+        args.putParcelableArrayList("selectedPhotos", mSelectedPhotos);
         PhotoGridFragement fragment = new PhotoGridFragement();
         fragment.setArguments(args);
         return fragment;
@@ -64,6 +68,7 @@ public class PhotoGridFragement extends BaseFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             maxCount = bundle.getInt("maxCount", MAX_COUNT);
+            mSelectedPhotos = bundle.getParcelableArrayList("selectedPhotos");
         }
     }
 
@@ -153,6 +158,7 @@ public class PhotoGridFragement extends BaseFragment {
         if (adapter == null) {
             final int itemDecoration = UIHelper.dipToPx(2);
             adapter = new PhotoSelectAdapter(getActivity(), itemDecoration, LocalPhotoManager.INSTANCE.getLocalImages(albumName), maxCount);
+            updateSelectList(mSelectedPhotos);
             initSelectCountChangeListener();
             GridLayoutManager manager = new GridLayoutManager(getActivity(), 4, LinearLayoutManager.VERTICAL, false);
             vh.mPhotoContent.setLayoutManager(manager);
@@ -170,7 +176,7 @@ public class PhotoGridFragement extends BaseFragment {
     public void updateSelectList(List<ImageInfo> newDatas) {
         if (adapter != null) {
             adapter.updateSelections(newDatas);
-            vh.setPhotoSlectCount(newDatas.size());
+            vh.setPhotoSlectCount(newDatas == null ? 0 : newDatas.size());
             adapter.notifyDataSetChanged();
         }
     }
@@ -188,10 +194,10 @@ public class PhotoGridFragement extends BaseFragment {
         public void onClick(View v) {
             PhotoBrowserInfo info = PhotoBrowserInfo.create(0, null, adapter.getSelectedRecordLists());
             ARouter.getInstance()
-                   .build(RouterList.PhotoMultiBrowserActivity.path)
-                   .withParcelable(RouterList.PhotoMultiBrowserActivity.key_browserinfo, info)
-                   .withInt(RouterList.PhotoMultiBrowserActivity.key_maxSelectCount, maxCount)
-                   .navigation((Activity) getContext(), RouterList.PhotoMultiBrowserActivity.requestCode);
+                    .build(RouterList.PhotoMultiBrowserActivity.path)
+                    .withParcelable(RouterList.PhotoMultiBrowserActivity.key_browserinfo, info)
+                    .withInt(RouterList.PhotoMultiBrowserActivity.key_maxSelectCount, maxCount)
+                    .navigation((Activity) getContext(), RouterList.PhotoMultiBrowserActivity.requestCode);
         }
     };
 

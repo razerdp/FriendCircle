@@ -2,6 +2,7 @@ package razerdp.github.com.publish;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.view.View;
@@ -58,7 +59,7 @@ public class PublishActivity extends BaseTitleBarActivity {
     int mode = -1;
 
     private boolean canTitleRightClick = false;
-    private List<ImageInfo> selectedPhotos;
+    private ArrayList<ImageInfo> selectedPhotos;
 
     private EditText mInputContent;
     private PreviewImageView<ImageInfo> mPreviewImageView;
@@ -153,6 +154,7 @@ public class PublishActivity extends BaseTitleBarActivity {
                 public void onAlbumClick() {
                     ARouter.getInstance()
                             .build(RouterList.PhotoSelectActivity.path)
+                            .withParcelableArrayList(RouterList.PhotoSelectActivity.key_photoList, (ArrayList<? extends Parcelable>) mPreviewImageView.getDatas())
                             .withInt(RouterList.PhotoSelectActivity.key_maxSelectCount, mPreviewImageView.getRestPhotoCount())
                             .navigation(PublishActivity.this, RouterList.PhotoSelectActivity.requestCode);
                 }
@@ -198,6 +200,7 @@ public class PublishActivity extends BaseTitleBarActivity {
         if (requestCode == RouterList.PhotoSelectActivity.requestCode && resultCode == RESULT_OK) {
             List<ImageInfo> result = data.getParcelableArrayListExtra(RouterList.PhotoSelectActivity.key_result);
             if (result != null) {
+                mPreviewImageView.clear();
                 mPreviewImageView.addData(result);
             }
             refreshTitleRightClickable();

@@ -87,6 +87,11 @@ public class PreviewImageView<T> extends FlowLayout implements ViewGroup.OnHiera
         callToUpdateData();
     }
 
+    public void clear() {
+        if (datas == null) return;
+        datas.clear();
+        callToUpdateData();
+    }
 
     public void deleteData(int pos) {
         if (datas == null) return;
@@ -115,6 +120,10 @@ public class PreviewImageView<T> extends FlowLayout implements ViewGroup.OnHiera
         if (needUpdataView) {
             callToUpdateData();
         }
+    }
+
+    public int getSelectedCount() {
+        return datas == null ? 0 : datas.size();
     }
 
     public int getRestPhotoCount() {
