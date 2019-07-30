@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">BaseLibrary</string>
+
+    <!--other-->
+    <string name="format_time_year" formatted="false">%s年前</string>
+    <string name="format_time_month" formatted="false">%s个月前</string>
+    <string name="format_time_day" formatted="false">%s天前</string>
+    <string name="format_time_hour" formatted="false">%s小时前</string>
+    <string name="format_time_minute" formatted="false">%s分钟前</string>
+    <string name="format_time_sec">刚刚</string>
+
+
+    <!--权限-->
+    <string-array name="permissions">
+        <item>@string/permission_recode_audio_hint</item>
+        <item>@string/permission_get_accounts_hint</item>
+        <item>@string/permission_read_phone_hint</item>
+        <item>@string/permission_call_phone_hint</item>
+        <item>@string/permission_camera_hint</item>
+        <item>@string/permission_access_fine_location_hint</item>
+        <item>@string/permission_access_coarse_location_hint</item>
+        <item>@string/permission_read_external_hint</item>
+        <item>@string/permission_white_external_hint</item>
+    </string-array>
+
+    <string name="permission_get_accounts_hint">没有此权限，无法开启这个功能。\n请手动开启权限:\n【PERMISSION_GET_ACCOUNTS】</string>
+    <string name="permission_read_phone_hint">没有此权限，无法开启这个功能。\n请手动开启权限:\n【PERMISSION_READ_PHONE_STATE】</string>
+    <string name="permission_call_phone_hint">没有此权限，无法开启这个功能。\n请手动开启权限:\n【PERMISSION_CALL_PHONE】</string>
+    <string name="permission_camera_hint">没有此权限，无法开启这个功能。\n请手动开启权限:\n【PERMISSION_CAMERA】</string>
+    <string name="permission_access_fine_location_hint">没有此权限，无法开启这个功能。\n请手动开启权限:\n【PERMISSION_ACCESS_FINE_LOCATION】</string>
+    <string name="permission_access_coarse_location_hint">没有此权限，无法开启这个功能。\n请手动开启权限:\n【PERMISSION_ACCESS_COARSE_LOCATION】</string>
+    <string name="permission_read_external_hint">没有此权限，无法开启这个功能。\n请手动开启权限:\n【PERMISSION_READ_EXTERNAL_STORAGE】</string>
+    <string name="permission_white_external_hint">没有此权限，无法开启这个功能。\n请手动开启权限:\n【PERMISSION_WRITE_EXTERNAL_STORAGE】</string>
+    <string name="permission_recode_audio_hint">没有此权限，无法开启这个功能。\n请手动开启权限:\n【PERMISSION_RECORD_AUDIO】</string>
+</resources>

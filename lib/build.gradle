@@ -1,0 +1,11 @@
+apply plugin: 'com.android.library'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    api rootProject.ext.dependencies.androidx
+
+    //gson
+    api rootProject.ext.dependencies.gson
+
+}
