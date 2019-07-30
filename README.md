@@ -24,6 +24,13 @@ FriendCircle
 [https://live.bilibili.com/724896](https://live.bilibili.com/724896)
 
 
+下次直播时间：2019/08/01 晚上十点钟~
+
+下次重构内容：
+
+ - 继续组件化重构
+
+
 
 【简略更新日志】
 ---
