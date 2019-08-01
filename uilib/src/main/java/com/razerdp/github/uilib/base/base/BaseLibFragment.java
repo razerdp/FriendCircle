@@ -1,4 +1,4 @@
-package com.razerdp.github.lib.base;
+package com.razerdp.github.uilib.base.base;
 
 import android.app.Activity;
 import android.os.Bundle;

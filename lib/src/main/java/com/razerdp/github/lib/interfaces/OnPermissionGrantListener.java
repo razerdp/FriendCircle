@@ -3,22 +3,24 @@ package com.razerdp.github.lib.interfaces;
 
 import com.razerdp.github.lib.helper.PermissionHelper;
 
+import java.util.Collection;
+
 /**
  * Created by 大灯泡 on 2018/5/7.
  */
 public interface OnPermissionGrantListener {
-    void onPermissionGranted(PermissionHelper.Permission... grantedPermissions);
+    void onPermissionGranted(Collection<PermissionHelper.Permission> permissions);
 
-    void onPermissionsDenied(PermissionHelper.Permission... deniedPermissions);
+    void onPermissionsDenied(Collection<PermissionHelper.Permission> permissions);
 
     abstract class OnPermissionGrantListenerAdapter implements OnPermissionGrantListener {
         @Override
-        public void onPermissionGranted(PermissionHelper.Permission... grantedPermissions) {
+        public void onPermissionGranted(Collection<PermissionHelper.Permission> permissions) {
 
         }
 
         @Override
-        public void onPermissionsDenied(PermissionHelper.Permission... deniedPermissions) {
+        public void onPermissionsDenied(Collection<PermissionHelper.Permission> permissions) {
 
         }
     }

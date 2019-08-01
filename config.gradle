@@ -8,7 +8,10 @@ ext {
     ]
 
     dependencies = [
-            androidx: 'androidx.appcompat:appcompat:1.1.0-rc01',
-            gson    : 'com.google.code.gson:gson:2.8.5'
+            androidx       : 'androidx.appcompat:appcompat:1.1.0-rc01',
+            gson           : 'com.google.code.gson:gson:2.8.5',
+            butterKnife    : 'com.jakewharton:butterknife:10.1.0',
+            butterKnife_apt: 'com.jakewharton:butterknife-compiler:10.1.0'
+
     ]
 }

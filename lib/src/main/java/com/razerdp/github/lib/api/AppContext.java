@@ -8,6 +8,11 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 
+import java.lang.ref.WeakReference;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+
 
 /**
  * Created by 大灯泡 on 2017/3/22.
@@ -79,12 +84,18 @@ public class AppContext {
     }
 
 
+    @Nullable
+    public static FragmentActivity getTopActivity() {
+        return INNER_LIFECYCLE_HANDLER.mTopActivity == null ? null : INNER_LIFECYCLE_HANDLER.mTopActivity.get();
+    }
+
     private static class InnerLifecycleHandler implements Application.ActivityLifecycleCallbacks {
         private int created;
         private int resumed;
         private int paused;
         private int started;
         private int stopped;
+        private WeakReference<FragmentActivity> mTopActivity;
 
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
@@ -101,7 +112,12 @@ public class AppContext {
         @Override
         public void onActivityResumed(Activity activity) {
             ++resumed;
-
+            if (mTopActivity != null) {
+                mTopActivity.clear();
+            }
+            if (activity instanceof FragmentActivity) {
+                mTopActivity = new WeakReference<>((FragmentActivity) activity);
+            }
         }
 
         @Override

@@ -8,4 +8,6 @@ dependencies {
     //gson
     api rootProject.ext.dependencies.gson
 
+    //butterknife
+    api rootProject.ext.dependencies.butterKnife
 }
