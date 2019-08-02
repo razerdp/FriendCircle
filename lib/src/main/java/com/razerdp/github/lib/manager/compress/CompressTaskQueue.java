@@ -25,7 +25,7 @@ public class CompressTaskQueue extends BaseCompressTaskHelper<List<CompressOptio
 
     @Override
     public void start() {
-        if (ToolUtil.isListEmpty(data)) {
+        if (ToolUtil.isEmpty(data)) {
             callError("配置为空");
             return;
         }
@@ -46,7 +46,7 @@ public class CompressTaskQueue extends BaseCompressTaskHelper<List<CompressOptio
     }
 
     private void startInternal() {
-        if (ToolUtil.isListEmpty(mTaskHelpers) && result.size() == taskSize) {
+        if (ToolUtil.isEmpty(mTaskHelpers) && result.size() == taskSize) {
             //如果已经全部完成，并检查之后,则意味着已经success了
             return;
         }

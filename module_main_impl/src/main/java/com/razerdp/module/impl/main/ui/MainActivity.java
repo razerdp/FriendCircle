@@ -1,16 +1,24 @@
 package com.razerdp.module.impl.main.ui;
 
-import android.os.Bundle;
+import android.view.View;
 
-import com.razerdp.module.impl.main.R;
+import com.razerdp.github.uilib.base.BaseLibActivity;
 
-import androidx.appcompat.app.AppCompatActivity;
+import static com.razerdp.module.impl.main.ui.MainActivity.Data;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends BaseLibActivity<Data> {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public int layoutId() {
+        return 0;
+    }
+
+    @Override
+    protected void onInitView(View rootView) {
+
+    }
+
+    public static class Data extends IntentData {
     }
 }

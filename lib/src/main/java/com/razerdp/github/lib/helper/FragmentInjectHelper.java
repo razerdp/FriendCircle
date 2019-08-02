@@ -19,7 +19,7 @@ import androidx.fragment.app.FragmentManager;
 public class FragmentInjectHelper {
 
     @Nullable
-    public static <F extends Fragment> F inject(@NonNull FragmentActivity target,
+    public  static <F extends Fragment> F inject(@NonNull FragmentActivity target,
                                                 @NonNull Class<F> fragClass) {
         return inject(target, fragClass, null);
     }

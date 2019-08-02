@@ -9,9 +9,11 @@ ext {
 
     dependencies = [
             androidx       : 'androidx.appcompat:appcompat:1.1.0-rc01',
+            recyclerview   : 'androidx.recyclerview:recyclerview:1.1.0-beta01',
             gson           : 'com.google.code.gson:gson:2.8.5',
             butterKnife    : 'com.jakewharton:butterknife:10.1.0',
             butterKnife_apt: 'com.jakewharton:butterknife-compiler:10.1.0'
+
 
     ]
 }

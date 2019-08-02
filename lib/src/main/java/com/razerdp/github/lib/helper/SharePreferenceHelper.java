@@ -34,72 +34,72 @@ public class SharePreferenceHelper {
         sharedPreferences = AppContext.getAppContext().getSharedPreferences(PERFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
-    public static String loadStringPreferenceByKey(String key, String defaultValue) {
+    public static String getString(String key, String defaultValue) {
         createSharedPreferencesIfNotExist();
         return sharedPreferences.getString(key, defaultValue);
     }
 
-    public static boolean loadBooleanPreferenceByKey(String key, boolean defaultValue) {
+    public static boolean getBoolean(String key, boolean defaultValue) {
         createSharedPreferencesIfNotExist();
         return sharedPreferences.getBoolean(key, defaultValue);
     }
 
-    public static float loadFloatPreferenceByKey(String key, float defaultValue) {
+    public static float getFloat(String key, float defaultValue) {
         createSharedPreferencesIfNotExist();
         return sharedPreferences.getFloat(key, defaultValue);
     }
 
-    public static long loadLongPreferenceByKey(String key, long defaultValue) {
+    public static long getLong(String key, long defaultValue) {
         createSharedPreferencesIfNotExist();
         return sharedPreferences.getLong(key, defaultValue);
     }
 
-    public static Map<String, ?> loadAllPreferenceByKey() {
+    public static Map<String, ?> getAll() {
         createSharedPreferencesIfNotExist();
         return sharedPreferences.getAll();
     }
 
-    public static int loadIntegerPreferenceByKey(String key, int defaultValue) {
+    public static int getInt(String key, int defaultValue) {
         createSharedPreferencesIfNotExist();
         return sharedPreferences.getInt(key, defaultValue);
     }
 
-    public static void saveStringPreferenceByKey(String key, String value) {
+    public static void saveString(String key, String value) {
         createSharedPreferencesIfNotExist();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key, value);
         editor.apply();
     }
 
-    public static void saveBooleanPreferenceByKey(String key, boolean value) {
+    public static void saveBoolean(String key, boolean value) {
         createSharedPreferencesIfNotExist();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(key, value);
         editor.apply();
     }
 
-    public static void saveIntegerPreferenceByKey(String key, int value) {
+    public static void saveInt(String key, int value) {
         createSharedPreferencesIfNotExist();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(key, value);
         editor.apply();
     }
 
-    public static void saveFloatPreferenceByKey(String key, float value) {
+    public static void saveFloat(String key, float value) {
         createSharedPreferencesIfNotExist();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putFloat(key, value);
         editor.apply();
     }
 
-    public static void saveLongPreferenceByKey(String key, long value) {
+    public static void saveLong(String key, long value) {
         createSharedPreferencesIfNotExist();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong(key, value);
         editor.apply();
     }
 
-    public static void removePreferenceByKey(String key) {
+    public static void delete(String key) {
         createSharedPreferencesIfNotExist();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(key);

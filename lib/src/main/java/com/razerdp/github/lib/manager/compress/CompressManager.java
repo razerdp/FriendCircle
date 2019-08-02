@@ -83,7 +83,7 @@ public class CompressManager {
             KLog.e("context为空");
             return;
         }
-        if (ToolUtil.isListEmpty(mOptions)) {
+        if (ToolUtil.isEmpty(mOptions)) {
             KLog.e("配置为空");
             return;
         }

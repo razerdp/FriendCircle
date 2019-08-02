@@ -71,7 +71,7 @@ public class PermissionFragment extends Fragment {
         //保存相关信息
         //检查是否已经拥有权限
         List<String> noGrantedPermission = checkHasGrantedAndRetrunNoGranted(mRequestPermissions);
-        if (ToolUtil.isListEmpty(noGrantedPermission)) {
+        if (ToolUtil.isEmpty(noGrantedPermission)) {
             callPermissionGranted(mRequestPermissions);
             return;
         }

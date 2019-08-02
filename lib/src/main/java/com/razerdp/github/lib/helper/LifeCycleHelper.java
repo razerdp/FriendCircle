@@ -72,47 +72,27 @@ public class LifeCycleHelper<T> implements LifecycleObserver {
         mOwner = null;
     }
 
-    public interface Callback<T> {
-        void onCreate(T obj);
-
-        void onStart(T obj);
-
-        void onResume(T obj);
-
-        void onPause(T obj);
-
-        void onStop(T obj);
-
-        void onDestroy(T obj);
-    }
-
-    public static abstract class CallbackAdapter<T> implements Callback<T>{
-        @Override
+    public static abstract class Callback<T> {
         public void onCreate(T obj) {
 
         }
 
-        @Override
         public void onStart(T obj) {
 
         }
 
-        @Override
         public void onResume(T obj) {
 
         }
 
-        @Override
         public void onPause(T obj) {
 
         }
 
-        @Override
         public void onStop(T obj) {
 
         }
 
-        @Override
         public void onDestroy(T obj) {
 
         }

@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     api project(':lib')
+    api rootProject.ext.dependencies.recyclerview
 
 }
