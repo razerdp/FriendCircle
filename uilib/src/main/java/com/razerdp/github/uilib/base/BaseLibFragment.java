@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.razerdp.github.lib.utils.KLog;
+import com.razerdp.github.lib.utils.log.KLog;
 import com.razerdp.github.lib.utils.KeyBoardUtil;
 
 import androidx.annotation.IdRes;
@@ -52,7 +52,7 @@ public abstract class BaseLibFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (mRootView == null) {
-            KLog.i(TAG, "打开Fragment ： " + TAG);
+            KLog.i(TAG, "打开Fragment ： " + KLog.wrapLocation(getClass(), 1));
             mRootView = inflater.inflate(layoutId(), container, false);
             mUnbinder = ButterKnife.bind(this, mRootView);
             onInitView(mRootView);

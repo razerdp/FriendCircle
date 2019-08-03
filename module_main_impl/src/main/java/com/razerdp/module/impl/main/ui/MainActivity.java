@@ -2,23 +2,22 @@ package com.razerdp.module.impl.main.ui;
 
 import android.view.View;
 
+import com.razerdp.github.module.main.ui.TimeLineFragment;
 import com.razerdp.github.uilib.base.BaseLibActivity;
+import com.razerdp.module.impl.main.R;
 
-import static com.razerdp.module.impl.main.ui.MainActivity.Data;
 
-
-public class MainActivity extends BaseLibActivity<Data> {
+public class MainActivity extends BaseLibActivity {
 
     @Override
     public int layoutId() {
-        return 0;
+        return R.layout.activity_main;
     }
 
     @Override
     protected void onInitView(View rootView) {
-
-    }
-
-    public static class Data extends IntentData {
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.layout_container, new TimeLineFragment(), "timeline")
+                .commitAllowingStateLoss();
     }
 }

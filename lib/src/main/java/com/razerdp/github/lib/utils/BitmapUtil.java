@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.razerdp.github.lib.api.AppContext;
 import com.razerdp.github.lib.manager.compress.CompressManager;
+import com.razerdp.github.lib.utils.log.KLog;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

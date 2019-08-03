@@ -1,25 +1,18 @@
 package com.razerdp.github.lib.helper;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
 
 import com.razerdp.github.lib.api.AppContext;
-import com.razerdp.github.lib.interfaces.IPermission;
-import com.razerdp.github.lib.interfaces.OnPermissionGrantListener;
 import com.razerdp.github.lib.utils.FileUtil;
-import com.razerdp.github.lib.utils.KLog;
+import com.razerdp.github.lib.utils.log.KLog;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.ConcurrentHashMap;
-
-import androidx.core.app.ActivityCompat;
 
 
 /**
@@ -46,40 +39,6 @@ public class AppFileHelper {
 
     public static void initStroagePath(Activity activity) {
         if (!TextUtils.isEmpty(storagePath)) return;
-        if (OVERM) {
-            if (activity instanceof IPermission) {
-                ((IPermission) activity).getPermissionHelper().requestPermission(new OnPermissionGrantListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionHelper.Permission... grantedPermissions) {
-                        initStroagePathInternal();
-                    }
-
-                    @Override
-                    public void onPermissionsDenied(PermissionHelper.Permission... deniedPermissions) {
-
-                    }
-                }, PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE, PermissionHelper.Permission.READ_EXTERNAL_STORAGE);
-            } else {
-                int permission1 = ActivityCompat.checkSelfPermission(activity,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                int permission2 = ActivityCompat.checkSelfPermission(activity,
-                        Manifest.permission.READ_EXTERNAL_STORAGE);
-
-                if (permission1 != PackageManager.PERMISSION_GRANTED ||
-                        permission2 != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(
-                            activity,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            1
-                    );
-                } else {
-                    initStroagePathInternal();
-                }
-            }
-        } else {
-            initStroagePathInternal();
-        }
     }
 
 

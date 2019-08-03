@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.razerdp.github.lib.R;
+import com.razerdp.github.lib.utils.log.KLog;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -65,7 +66,7 @@ public class TimeUtil {
         } else if (timeGap > MINUTE) {// 1分钟-59分钟
             timeStr = formatTimeFromResource(R.string.format_time_minute, (int) (timeGap / MINUTE));
         } else {// 1秒钟-59秒钟
-            timeStr = StringUtil.getResourceString(R.string.format_time_sec);
+            timeStr = StringUtil.getString(R.string.format_time_sec);
         }
         return timeStr;
     }
@@ -82,7 +83,7 @@ public class TimeUtil {
     }
 
     private static String formatTimeFromResource(int resource, int time) {
-        return StringUtil.getResourceStringAndFormat(resource, time);
+        return StringUtil.getString(resource, time);
     }
 
 

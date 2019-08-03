@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.razerdp.github.lib.utils.KLog;
+import com.razerdp.github.lib.utils.log.KLog;
 import com.razerdp.github.lib.utils.ToolUtil;
 
 import java.io.Serializable;
@@ -36,7 +36,7 @@ public abstract class BaseLibActivity<T extends BaseLibActivity.IntentData> exte
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        KLog.i("当前打开 :  ", TAG);
+        KLog.i("当前打开 :  " + KLog.wrapLocation(getClass(), 1));
         onHandleIntent(getIntent());
         if (layoutId() != 0) {
             setContentView(layoutId());

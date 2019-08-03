@@ -8,7 +8,7 @@ import com.razerdp.github.lib.manager.ThreadPoolManager;
 import com.razerdp.github.lib.utils.BitmapUtil;
 import com.razerdp.github.lib.utils.EncryUtil;
 import com.razerdp.github.lib.utils.FileUtil;
-import com.razerdp.github.lib.utils.KLog;
+import com.razerdp.github.lib.utils.log.KLog;
 
 import java.io.File;
 import java.util.ArrayList;

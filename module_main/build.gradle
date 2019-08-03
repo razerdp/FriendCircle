@@ -1,6 +1,9 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api project(':router')
+
+    annotationProcessor rootProject.ext.dependencies.butterKnife_apt
 }

@@ -11,6 +11,7 @@ import android.os.storage.StorageManager;
 import android.text.TextUtils;
 
 import com.razerdp.github.lib.api.AppContext;
+import com.razerdp.github.lib.utils.log.KLog;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;

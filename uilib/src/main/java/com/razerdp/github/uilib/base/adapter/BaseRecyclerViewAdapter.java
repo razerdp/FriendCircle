@@ -42,6 +42,9 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
     public BaseRecyclerViewAdapter(Context context, List<T> datas) {
         mContext = context;
         mDatas = new ArrayList<>();
+        if (!ToolUtil.isEmpty(datas)) {
+            mDatas.addAll(datas);
+        }
     }
 
     @Override
@@ -80,6 +83,15 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
                         return;
                     }
                 });
+        recyclerView.addOnItemTouchListener(new RecyclerView.SimpleOnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                if (mGestureDetectorCompat.onTouchEvent(e)) {
+                    return true;
+                }
+                return super.onInterceptTouchEvent(rv, e);
+            }
+        });
     }
 
     @NonNull

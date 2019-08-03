@@ -3,7 +3,7 @@ package com.razerdp.github.lib.manager;
 import android.os.AsyncTask;
 import android.os.Build;
 
-import com.razerdp.github.lib.utils.KLog;
+import com.razerdp.github.lib.utils.log.KLog;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;

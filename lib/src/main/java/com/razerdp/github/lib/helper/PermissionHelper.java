@@ -73,7 +73,7 @@ public class PermissionHelper {
 
     private PermissionHelper(FragmentActivity activity) {
         mRequestPermissions = new HashSet<>();
-        LifeCycleHelper.handle(this, activity, new LifeCycleHelper.CallbackAdapter<PermissionHelper>() {
+        LifeCycleHelper.handle(this, activity, new LifeCycleHelper.Callback<PermissionHelper>() {
             @Override
             public void onDestroy(PermissionHelper obj) {
                 destroy();

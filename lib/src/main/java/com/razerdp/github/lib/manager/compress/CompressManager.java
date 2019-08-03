@@ -2,7 +2,7 @@ package com.razerdp.github.lib.manager.compress;
 
 import android.content.Context;
 
-import com.razerdp.github.lib.utils.KLog;
+import com.razerdp.github.lib.utils.log.KLog;
 import com.razerdp.github.lib.utils.ToolUtil;
 
 import java.lang.annotation.Retention;

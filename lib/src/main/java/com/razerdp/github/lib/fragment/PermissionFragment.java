@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 
 import com.razerdp.github.lib.interfaces.OnPermissionGrantListener;
-import com.razerdp.github.lib.utils.KLog;
+import com.razerdp.github.lib.utils.log.KLog;
 import com.razerdp.github.lib.utils.ToolUtil;
 
 import java.util.ArrayList;

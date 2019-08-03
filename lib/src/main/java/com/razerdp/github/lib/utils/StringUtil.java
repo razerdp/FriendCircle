@@ -4,7 +4,8 @@ import android.text.TextUtils;
 
 import com.razerdp.github.lib.api.AppContext;
 
-import java.util.Locale;
+import androidx.annotation.ArrayRes;
+import androidx.annotation.StringRes;
 
 
 /**
@@ -34,22 +35,13 @@ public class StringUtil {
     /**
      * 从资源文件拿到文字
      */
-    public static String getResourceString(int strId) {
-        String result = "";
-        if (strId > 0) {
-            result = AppContext.getResources().getString(strId);
-        }
-        return result;
+    public static String getString(@StringRes int strId, Object... objs) {
+        if (strId == 0) return null;
+        return AppContext.getAppContext().getResources().getString(strId, objs);
     }
 
-    /**
-     * 从资源文件得到文字并format
-     */
-    public static String getResourceStringAndFormat(int strId, Object... objs) {
-        String result = "";
-        if (strId > 0) {
-            result = String.format(Locale.getDefault(), AppContext.getResources().getString(strId), objs);
-        }
-        return result;
+    public static String[] getStringArray(@ArrayRes int strId) {
+        if (strId == 0) return null;
+        return AppContext.getAppContext().getResources().getStringArray(strId);
     }
 }

@@ -12,6 +12,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath 'com.jakewharton:butterknife-gradle-plugin:10.1.0'
     }
 }
 
@@ -43,6 +44,11 @@ subprojects { project ->
                     targetSdkVersion rootProject.ext.android.targetSdkVersion
                     versionCode rootProject.ext.android.versionCode
                     versionName rootProject.ext.android.versionName
+                }
+
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_1_8
+                    targetCompatibility JavaVersion.VERSION_1_8
                 }
 
                 lintOptions {
