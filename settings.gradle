@@ -3,6 +3,10 @@ include ':network'
 include ':lib'
 include ':uilib'
 
+//apt
+include ':lib_annotations'
+include ':lib_processor'
+
 include ':common'
 include ':router'
 //modules

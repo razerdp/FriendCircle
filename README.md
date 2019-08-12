@@ -16,7 +16,12 @@ FriendCircle
     - 直播地址：[https://live.bilibili.com/724896](https://live.bilibili.com/724896)
     - 直播时间：一般周末白天
 
-### 当前重构进度：APT组件化路由构建
+### 进度：
+ * 2019/08/12
+   * apt初步搭建，processor编写
+   * 组件化优化
+   * 略微优化BaseRecyclerViewAdapter~
+
 
 ### 朋友圈QQ群将会在19/08/13解散，所有讨论将会转移到微信。如果有兴趣进微信群可以打赏一下然后找我拉您进去~
 

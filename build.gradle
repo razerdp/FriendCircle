@@ -37,13 +37,13 @@ subprojects { project ->
         //配置android通用属性
         if (project.hasProperty("android")) {
             android {
-                compileSdkVersion rootProject.ext.android.compileSdkVersion
+                compileSdkVersion rootProject.ext.compileSdkVersion
 
                 defaultConfig {
-                    minSdkVersion rootProject.ext.android.minSdkVersion
-                    targetSdkVersion rootProject.ext.android.targetSdkVersion
-                    versionCode rootProject.ext.android.versionCode
-                    versionName rootProject.ext.android.versionName
+                    minSdkVersion rootProject.ext.minSdkVersion
+                    targetSdkVersion rootProject.ext.targetSdkVersion
+                    versionCode rootProject.ext.versionCode
+                    versionName rootProject.ext.versionName
                 }
 
                 compileOptions {
@@ -55,6 +55,8 @@ subprojects { project ->
                     abortOnError false
                 }
             }
+        } else {
+            println "=========== no android project: ${project.name} ==========="
         }
 
         //对library进行配置
@@ -68,6 +70,19 @@ subprojects { project ->
                     release {
                         minifyEnabled true
                         consumerProguardFiles 'proguard-rules.pro'
+                    }
+                }
+            }
+            if (project.name.contains('module')) {
+                //针对所有组件，添加各自名字的argument，用于区别apt生成的类
+                println "============== 添加argument: ${project.name} ================"
+                android {
+                    defaultConfig {
+                        javaCompileOptions {
+                            annotationProcessorOptions {
+                                arguments = ['MODULE_NAME': project.name]
+                            }
+                        }
                     }
                 }
             }
