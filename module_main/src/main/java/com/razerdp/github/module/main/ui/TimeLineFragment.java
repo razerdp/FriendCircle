@@ -41,8 +41,8 @@ public class TimeLineFragment extends BaseAppFragment {
     protected void onInitView(View rootView) {
         List<SimpleMultiType> multiTypes = new ArrayList<>();
         int[] types = {1, 2, 3};
-        for (int i = 0; i < RandomUtil.random(100, 500); i++) {
-            multiTypes.add(new SimpleMultiType(types[RandomUtil.random(0, 2)]));
+        for (int i = 0; i < RandomUtil.randomInt(100, 500); i++) {
+            multiTypes.add(new SimpleMultiType(types[RandomUtil.randomInt(0, 2)]));
         }
         MultiRecyclerViewAdapter<SimpleMultiType> mAdapter = new MultiRecyclerViewAdapter<>(getContext(), multiTypes);
         mAdapter.appendHolder(TestHolder1.class, 1)

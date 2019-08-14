@@ -3,7 +3,11 @@ package com.razerdp.lib.processor.service;
 import com.razerdp.lib.annotations.ServiceImpl;
 import com.razerdp.lib.processor.BaseProcessor;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
@@ -24,7 +28,11 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
+import static com.razerdp.lib.config.AnnotationConfig.AndroidConfig.PACKAGE_SPARSEARRAY;
+import static com.razerdp.lib.config.AnnotationConfig.ServiceConfig.APT_FIELD_NAME;
 import static com.razerdp.lib.config.AnnotationConfig.ServiceConfig.APT_FILE_NAME;
+import static com.razerdp.lib.config.AnnotationConfig.ServiceConfig.APT_INTERFACE;
+import static com.razerdp.lib.config.AnnotationConfig.ServiceConfig.APT_INTERFACE_METHOD;
 import static com.razerdp.lib.config.AnnotationConfig.ServiceConfig.APT_PACKAGE_NAME;
 import static com.razerdp.lib.config.AnnotationConfig.ServiceConfig.PACKAGE_NAME;
 
@@ -41,6 +49,12 @@ public class ModuleServiceProcessor extends BaseProcessor {
     //key = service interface for every module
     //value = list service impl from key for every module
     private static final HashMap<TypeName, List<InnerAptInfo>> mServiceImplMap = new HashMap<>();
+    private final ParameterizedTypeName hashMapClass = ParameterizedTypeName.get(
+            ClassName.get(HashMap.class),//hashmap.class
+            ClassName.get(Class.class),//key class
+            ParameterizedTypeName.get(
+                    ClassName.get(PACKAGE_SPARSEARRAY, "SparseArray"),//sparsearray.class,
+                    ClassName.get(Object.class)));//object.class
 
     private static class InnerAptInfo {
         final TypeElement mirror;
@@ -72,12 +86,11 @@ public class ModuleServiceProcessor extends BaseProcessor {
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         if (roundEnvironment.processingOver()) {
             if (!set.isEmpty()) {
-                //让其他processor继续执行，自身已经执行过一遍无需再次执行
                 return false;
             }
         }
         if (set.isEmpty()) {
-            loge(TAG + "annotations is empty,return");
+            logi(TAG + "annotations is empty,return");
             return false;
         }
 
@@ -100,7 +113,6 @@ public class ModuleServiceProcessor extends BaseProcessor {
             JavaFile javaFile = JavaFile.builder(APT_PACKAGE_NAME, createType())
                     .addFileComment("$S", "Generated code from " + APT_PACKAGE_NAME + "." + APT_FILE_NAME + " Do not modify!")
                     .build();
-
             javaFile.writeTo(mFiler);
         } catch (IOException e) {
             loge(e);
@@ -108,10 +120,63 @@ public class ModuleServiceProcessor extends BaseProcessor {
     }
 
     private TypeSpec createType() {
-        TypeSpec.Builder types = TypeSpec.classBuilder(APT_FILE_NAME+"$$"+moduleName)
-                .addModifiers(Modifier.PUBLIC,Modifier.FINAL);
-        // TODO: 2019/8/12  增加方法实现类apt
+        //public final ServiceImplGen
+        TypeSpec.Builder types = TypeSpec.classBuilder(APT_FILE_NAME + "$$" + moduleName)
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
+        //add interface
+        types.addSuperinterface(ClassName.get(mElementUtil.getTypeElement(APT_INTERFACE)));
+        //add hashmap field
+        types.addField(createField());
+        //add static code for hashmap
+        types.addStaticBlock(createStaticBlock());
+        //add interface method
+        types.addMethod(createInterfaceMethod());
+        return types.build();
+    }
 
+
+    private FieldSpec createField() {
+        //private static final SERVICE_IMPL_MAP = new HashMap();
+        FieldSpec.Builder builder = FieldSpec.builder(hashMapClass, APT_FIELD_NAME)
+                .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+                .initializer("new $T()", hashMapClass);
+        return builder.build();
+    }
+
+    private CodeBlock createStaticBlock() {
+        CodeBlock.Builder builder = CodeBlock.builder();
+
+        final String listName = "mServiceImplList";
+        final TypeName sparseArrayType = ClassName.get(PACKAGE_SPARSEARRAY, "SparseArray");
+
+        //SparseArray mServiceImplList
+        builder.addStatement("$T " + listName, sparseArrayType);
+
+        for (Map.Entry<TypeName, List<InnerAptInfo>> entry : mServiceImplMap.entrySet()) {
+            //mServiceImplList = new SparseArray();
+            builder.addStatement(listName + " = new $T()", sparseArrayType);
+
+            for (InnerAptInfo aptInfo : entry.getValue()) {
+                //mServiceImplList.put(tag,new impl());
+                builder.addStatement(listName + ".put($L , new $T())",
+                        aptInfo.tag,
+                        ClassName.get(aptInfo.mirror));
+
+            }
+            //SERVICE_IMPL_MAP.put(impl.calss,mServiceImplList)
+            builder.addStatement(APT_FIELD_NAME + ".put($T.class," + listName + ")", entry.getKey());
+
+        }
+        return builder.build();
+    }
+
+    private MethodSpec createInterfaceMethod() {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(APT_INTERFACE_METHOD)
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC)
+                .addStatement("return " + APT_FIELD_NAME)
+                .returns(hashMapClass);
+        return builder.build();
     }
 
     private void scanClass(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {

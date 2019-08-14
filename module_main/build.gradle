@@ -6,4 +6,5 @@ dependencies {
     api project(':router')
 
     annotationProcessor rootProject.ext.dependencies.butterKnife_apt
+    annotationProcessor project(':lib_processor')
 }

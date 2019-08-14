@@ -10,4 +10,6 @@ dependencies {
 
     //butterknife
     api rootProject.ext.dependencies.butterKnife
+
+    api project(':lib_annotations')
 }
